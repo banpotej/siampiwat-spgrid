@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataGrid example</title>
+  </head>
+  <body>
+    <div id="grid"></div>
+    <script type="module">
+      import { DataGrid } from '/src/index.js';
+
+      new DataGrid(document.getElementById('grid'), {
+        columns: [
+          { key: 'id', label: 'ID' },
+          { key: 'name', label: 'Name' },
+          { key: 'role', label: 'Role' },
+        ],
+        rows: [
+          { id: 1, name: 'Ada', role: 'Engineer' },
+          { id: 2, name: 'Grace', role: 'Admiral' },
+          { id: 3, name: '<b>Eve</b>', role: 'Tester' },
+        ],
+      });
+    </script>
+  </body>
+</html>
