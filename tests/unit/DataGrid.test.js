@@ -30,6 +30,31 @@ describe('DataGrid', () => {
     expect(el.innerHTML).toBe('');
   });
 
+  it('setRows with the same array does not re-render', () => {
+    const el = document.createElement('div');
+    const rows = [{ id: 1, name: 'a' }];
+    const grid = new DataGrid(el, { columns, rows });
+    const table = el.querySelector('table');
+    grid.setRows(rows);
+    expect(el.querySelector('table')).toBe(table);
+  });
+
+  it('render() still forces a re-render', () => {
+    const el = document.createElement('div');
+    const grid = new DataGrid(el, { columns, rows: [{ id: 1, name: 'a' }] });
+    const table = el.querySelector('table');
+    grid.render();
+    expect(el.querySelector('table')).not.toBe(table);
+  });
+
+  it('setRows after destroy does not render', () => {
+    const el = document.createElement('div');
+    const grid = new DataGrid(el, { columns });
+    grid.destroy();
+    grid.setRows([{ id: 1, name: 'a' }]);
+    expect(el.innerHTML).toBe('');
+  });
+
   it('rejects invalid container', () => {
     expect(() => new DataGrid(/** @type {any} */ (null), { columns })).toThrow(TypeError);
   });

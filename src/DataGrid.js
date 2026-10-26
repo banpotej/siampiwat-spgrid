@@ -1,4 +1,5 @@
 // @ts-check
+import { createState } from './core/state.js';
 import { escapeHtml } from './utils/escape.js';
 import './datagrid.css';
 
@@ -8,10 +9,10 @@ import './datagrid.css';
 export class DataGrid {
   /** @type {HTMLElement} */
   #container;
-  /** @type {DataGridOptions['columns']} */
-  #columns;
-  /** @type {Row[]} */
-  #rows;
+  /** @type {import('./core/state.js').State<{ columns: DataGridOptions['columns'], rows: Row[] }>} */
+  #state;
+  /** @type {() => void} */
+  #unsubscribe;
 
   /**
    * @param {HTMLElement} container
@@ -22,24 +23,24 @@ export class DataGrid {
       throw new TypeError('DataGrid: container must be an HTMLElement');
     }
     this.#container = container;
-    this.#columns = options.columns;
-    this.#rows = options.rows ?? [];
+    this.#state = createState({ columns: options.columns, rows: options.rows ?? [] });
+    this.#unsubscribe = this.#state.subscribe(() => this.render());
     this.render();
   }
 
   /** @param {Row[]} rows */
   setRows(rows) {
-    this.#rows = rows;
-    this.render();
+    this.#state.set({ rows });
   }
 
   render() {
-    const head = this.#columns
+    const { columns, rows } = this.#state.get();
+    const head = columns
       .map((c) => `<th scope="col">${escapeHtml(c.label ?? c.key)}</th>`)
       .join('');
-    const body = this.#rows
+    const body = rows
       .map((row) => {
-        const cells = this.#columns.map((c) => `<td>${escapeHtml(row[c.key])}</td>`).join('');
+        const cells = columns.map((c) => `<td>${escapeHtml(row[c.key])}</td>`).join('');
         return `<tr>${cells}</tr>`;
       })
       .join('');
@@ -47,6 +48,7 @@ export class DataGrid {
   }
 
   destroy() {
+    this.#unsubscribe();
     this.#container.innerHTML = '';
   }
 }
