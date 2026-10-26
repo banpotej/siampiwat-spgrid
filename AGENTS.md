@@ -17,3 +17,12 @@ Plain JS with JSDoc types; every file under `src/` starts with `// @ts-check`.
 - Public API is exported from `src/index.js` and documented in `docs/API.md`.
 - Shared types live in `src/types.js`.
 - Scope is tracked in `docs/ROADMAP.md`; don't build features from later phases.
+
+## Rules
+
+- No new dependencies without asking.
+- One feature per task.
+- Tests are required with every change.
+- Keep files under 300 lines.
+- `src/core/*` must be pure: no DOM access.
+- Update `docs/API.md` and `CHANGELOG.md` on any public API change.

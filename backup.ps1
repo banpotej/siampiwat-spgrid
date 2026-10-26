@@ -15,8 +15,8 @@ $root = (Resolve-Path $Source).Path.TrimEnd('\')
 $zip = [System.IO.Compression.ZipFile]::Open($zipPath, 'Create')
 try {
     Get-ChildItem -LiteralPath $root -Recurse -File -Force | Where-Object {
-        $rel = $_.FullName.Substring($root.Length + 1)
-        -not ($exclude | Where-Object { $rel -like "$_\*" })
+        $segments = $_.DirectoryName.Substring($root.Length).Split('\', [StringSplitOptions]::RemoveEmptyEntries)
+        -not ($segments | Where-Object { $exclude -contains $_ })
     } | ForEach-Object {
         $rel = $_.FullName.Substring($root.Length + 1).Replace('\', '/')
         $null = [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $rel, 'Optimal')
