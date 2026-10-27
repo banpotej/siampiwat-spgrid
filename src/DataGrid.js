@@ -1,18 +1,19 @@
 // @ts-check
 import { createEmitter } from './core/emitter.js';
+import { dataKeys } from './core/columns.js';
 import { isSameFilter, normalizeFilter } from './core/filter.js';
 import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
 import { createState } from './core/state.js';
 import { computeView } from './core/view.js';
+import { bindControls } from './render/controls.js';
 import { bindHeaderEvents } from './render/headerEvents.js';
 import { resolveIcons } from './render/icons.js';
 import { resolveLabels } from './render/labels.js';
 import { renderPager } from './render/pager.js';
-import { bindPagerEvents } from './render/pagerEvents.js';
-import { bindSearchEvents, syncClearButton } from './render/searchEvents.js';
+import { syncClearButton } from './render/searchEvents.js';
 import { renderTable } from './render/table.js';
-import { renderShell } from './render/toolbar.js';
+import { mountShell } from './render/toolbar.js';
 import './datagrid.css';
 
 /** @typedef {import('./types.js').DataGridOptions} DataGridOptions */
@@ -26,30 +27,29 @@ import './datagrid.css';
 const DEFAULT_DEBOUNCE = 200;
 
 export class DataGrid {
-  /** @type {HTMLElement} */
-  #container;
+  /** @type {HTMLElement} */ #container;
   /** @type {HTMLElement} Where the table is (re)rendered; the rest of the shell is static. */
   #host;
   /** @type {HTMLElement} Pager content is swapped here; the element itself persists. */
   #pagerHost;
-  /** @type {HTMLElement} */
-  #status;
-  /** @type {HTMLInputElement | null} */
-  #search;
-  /** @type {import('./core/state.js').State<GridState>} */
-  #state;
-  /** @type {() => void} */
-  #unsubscribe;
-  #events = createEmitter(/** @type {const} */ (['sortChange', 'filterChange', 'pageChange']));
+  /** @type {HTMLElement} */ #status;
+  /** @type {HTMLInputElement | null} */ #search;
+  /** @type {import('./core/state.js').State<GridState>} */ #state;
+  /** @type {() => void} */ #unsubscribe;
+  #events = createEmitter(
+    /** @type {const} */ (['sortChange', 'filterChange', 'pageChange', 'action', 'cellClick']),
+  );
   #locale;
   #labels;
   #icons;
-  #pageSizeOptions;
+  /** @type {Pick<Parameters<typeof renderPager>[0], 'labels' | 'pageSizeOptions' | 'icons'>} */ #pagerOpts;
+  #rowKey;
   /** @type {PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
   #pagerHtml = '';
-  #unbindSearch = () => {};
-  #unbindPager = () => {};
+  /** @type {Row[]} Rows currently shown (after filter, sort and paging), in display order. */
+  #visible = [];
+  #unbindControls = () => {};
   #unbindHeader = () => {};
   #destroyed = false;
 
@@ -68,44 +68,37 @@ export class DataGrid {
     this.#locale = options.locale;
     this.#labels = resolveLabels(options.labels);
     this.#icons = resolveIcons(options.icons);
-    this.#pageSizeOptions = options.pageSizeOptions ?? [];
+    this.#pagerOpts = {
+      labels: this.#labels,
+      pageSizeOptions: options.pageSizeOptions ?? [],
+      icons: this.#icons,
+    };
     if (options.onSortChange) this.#events.on('sortChange', options.onSortChange);
     if (options.onFilterChange) this.#events.on('filterChange', options.onFilterChange);
     if (options.onPageChange) this.#events.on('pageChange', options.onPageChange);
+    if (options.onAction) this.#events.on('action', options.onAction);
 
-    const { maxHeight } = options;
-    container.innerHTML = renderShell({
-      searchable: options.searchable === true,
-      searchLabel: this.#labels.search,
-      clearLabel: this.#labels.clear,
-      icons: this.#icons,
-      striped: options.striped === true,
-      compact: options.density === 'compact',
-      stickyHeader: options.stickyHeader === true,
-      scroll: maxHeight !== undefined,
-    });
-    this.#host = /** @type {HTMLElement} */ (container.querySelector('div.dg-table-wrap'));
-    // Set through the CSSOM (not markup) so an odd value can never inject other styles.
-    if (maxHeight !== undefined) {
-      this.#host.style.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
-    }
-    this.#pagerHost = /** @type {HTMLElement} */ (container.querySelector('div.dg-pager-host'));
-    this.#status = /** @type {HTMLElement} */ (container.querySelector('div.dg-status'));
-    this.#search = /** @type {HTMLInputElement | null} */ (
-      container.querySelector('input.dg-search')
-    );
-    const toolbar = /** @type {HTMLElement | null} */ (container.querySelector('div.dg-toolbar'));
-    if (toolbar && this.#search) {
-      this.#unbindSearch = bindSearchEvents(toolbar, this.#search, {
-        debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
-        onSearch: (search) =>
-          this.#applyFilter({ search, columnFilters: this.#state.get().filter?.columnFilters }),
-      });
-    }
-    this.#unbindPager = bindPagerEvents(this.#pagerHost, {
-      getPage: () => this.getPage(),
-      setPage: (page) => this.setPage(page),
-      setPageSize: (size) => this.setPageSize(size),
+    const shell = mountShell(container, options, this.#labels, this.#icons);
+    this.#host = shell.host;
+    this.#pagerHost = shell.pagerHost;
+    this.#status = shell.status;
+    this.#search = shell.search;
+    this.#rowKey = options.rowKey;
+    this.#unbindControls = bindControls(shell, {
+      debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
+      onSearch: (search) =>
+        this.#applyFilter({ search, columnFilters: this.#state.get().filter?.columnFilters }),
+      pager: {
+        getPage: () => this.getPage(),
+        setPage: (page) => this.setPage(page),
+        setPageSize: (size) => this.setPageSize(size),
+      },
+      actions: {
+        getRows: () => this.#visible,
+        getColumns: () => this.#state.get().columns,
+        rowKey: options.rowKey,
+        emit: (event, payload) => this.#events.emit(event, payload),
+      },
     });
 
     this.#state = createState(
@@ -153,10 +146,7 @@ export class DataGrid {
   setSort(sort) {
     if (this.#destroyed) return;
     const { columns, sort: current } = this.#state.get();
-    const next = normalizeSort(
-      sort,
-      columns.map((c) => c.key),
-    );
+    const next = normalizeSort(sort, dataKeys(columns));
     if (current?.key === next?.key && current?.direction === next?.direction) return;
     this.#state.set({ sort: next, page: 1 });
   }
@@ -227,12 +217,14 @@ export class DataGrid {
     this.#unbindHeader();
     const { rows, paging } = computeView(state, { locale: this.#locale });
     this.#paging = paging;
+    this.#visible = rows;
     this.#host.innerHTML = renderTable(
       state.columns,
       rows,
       state.sort,
       this.#labels.empty,
       this.#icons,
+      this.#rowKey,
     );
     this.#status.textContent = rows.length === 0 ? this.#labels.empty : '';
     this.#unbindHeader = bindHeaderEvents(this.#host, {
@@ -240,21 +232,13 @@ export class DataGrid {
       setSort: (sort) => this.setSort(sort),
     });
     // Only touch the pager when it changed, so focus on it survives unrelated renders.
-    const pagerHtml = paging
-      ? renderPager({
-          paging,
-          labels: this.#labels,
-          pageSizeOptions: this.#pageSizeOptions,
-          icons: this.#icons,
-        })
-      : '';
+    const pagerHtml = paging ? renderPager({ paging, ...this.#pagerOpts }) : '';
     if (pagerHtml !== this.#pagerHtml) this.#pagerHost.innerHTML = this.#pagerHtml = pagerHtml;
   }
 
   destroy() {
     this.#destroyed = true;
-    this.#unbindSearch();
-    this.#unbindPager();
+    this.#unbindControls();
     this.#unsubscribe();
     this.#unbindHeader();
     this.#events.clear();
@@ -265,10 +249,9 @@ export class DataGrid {
   #applyFilter(filter) {
     const next = normalizeFilter(filter);
     const { columns, filter: current } = this.#state.get();
+    const keys = dataKeys(columns);
     for (const key of Object.keys(next?.columnFilters ?? {})) {
-      if (!columns.some((c) => c.key === key)) {
-        throw new RangeError(`DataGrid: unknown column "${key}"`);
-      }
+      if (!keys.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
     }
     if (isSameFilter(current, next)) return;
     this.#state.set({ filter: next, page: 1 });

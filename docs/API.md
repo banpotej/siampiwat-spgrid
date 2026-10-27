@@ -3,8 +3,12 @@
 ## `new DataGrid(container, options)`
 
 - `container: HTMLElement` – จุดที่ใช้ติดตั้ง (mount) ตาราง
-- `options.columns: { key: string, label?: string, sortable?: boolean, align?: 'left' | 'center' | 'right' }[]` –
-  `align` จัดชิดซ้าย/กลาง/ขวาทั้งหัวและเซลล์ (ค่าอื่นถูกเมินเฉย; ตัวเลขใช้ `tabular-nums` ทั้งตาราง)
+- `options.columns: Column[]` – คอลัมน์ ดูรายละเอียดใน [Columns](#columns) (`key`, `label`, `sortable`, `align`,
+  `width`, `ariaLabel`, `render`, `actions`)
+- `options.rowKey?: string` – ชื่อฟิลด์ที่ระบุแถวได้เฉพาะตัว: ใส่ `data-row-id` ที่ `<tr>` และส่งเป็น `rowKey` ใน event
+  `action` (ไม่ตั้ง = `rowKey` เป็น `undefined`; การหาแถวจากการคลิกไม่ใช้ค่านี้ ใช้แถวที่แสดงอยู่ปัจจุบัน)
+- `options.onAction?: (payload: ActionEventPayload) => void` – เรียกเมื่อกดปุ่ม action หรือ element ที่มี
+  `data-cell-action` (เหมือน `on('action', fn)`)
 - `options.rows?: Record<string, unknown>[]`
 - `options.locale?: string` – locale ที่ใช้เรียงสตริง (`Intl.Collator`) และแปลงเป็นตัวพิมพ์เล็กตอนค้นหา (ค่าเริ่มต้น `'th'`)
 - `options.onSortChange?: (sort: SortState) => void` – เรียกทุกครั้งที่การเรียงเปลี่ยน
@@ -42,6 +46,71 @@
 
 ภาษาไทย: `import { DataGrid, thaiLabels } from 'datagrid'` แล้วส่ง `labels: thaiLabels` (แก้บางข้อความได้ด้วย
 `labels: { ...thaiLabels, empty: '…' }`) การเรียงและการค้นหาใช้ locale `'th'` เป็นค่าเริ่มต้นอยู่แล้ว
+
+### Columns
+
+| ฟิลด์       | ชนิด                            | ความหมาย                                                                                             |
+| ----------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `key`       | `string`                        | ฟิลด์ของแถวที่แสดง (ของ action column เป็นแค่ตัวระบุ)                                                |
+| `label`     | `string`                        | ข้อความหัวคอลัมน์ (ค่าเริ่มต้น `key`; action column ค่าเริ่มต้นคือว่าง) ใส่ `\n` เพื่อขึ้นบรรทัดใหม่ |
+| `sortable`  | `boolean`                       | คลิกหัวเพื่อเรียง (action column เรียงไม่ได้เสมอ)                                                    |
+| `align`     | `'left'`, `'center'`, `'right'` | จัดชิดทั้งหัวและเซลล์                                                                                |
+| `width`     | `string`                        | ความกว้างแบบ CSS เช่น `'80px'`, `'20%'` (ค่าที่มี `;` `:` หรือเครื่องหมายคำพูดถูกเมินเฉย)            |
+| `ariaLabel` | `string`                        | `aria-label` ของ `<th>` ใช้กับคอลัมน์ที่ไม่มี label เพื่อไม่ให้ screen reader เจอหัวว่าง             |
+| `render`    | `(value, row) => string`        | HTML ของเซลล์ (ดูคำเตือนด้านล่าง)                                                                    |
+| `actions`   | `ActionDef[]`                   | ทำให้เป็น action column                                                                              |
+
+**Multi-line label:** แต่ละบรรทัดของ `label` ถูก escape แล้วคั่นด้วย `<br>` เช่น `'เลขที่ใบสั่งซื้อ\nPO Number'`
+
+**`render` — ความปลอดภัย:** ค่าที่ `render` คืนถูกใส่เป็น HTML **โดยไม่ escape** ผู้เรียกต้อง escape ข้อมูลผู้ใช้ทุกชิ้นที่แทรกเข้าไปเอง
+(ใช้ `escapeHtml` ที่ export จาก `datagrid`) ถ้าไม่ได้ตั้ง `render` ค่าเซลล์จะถูก `escapeHtml` ให้เสมอ ผลลัพธ์ `null`/`undefined` = เซลล์ว่าง
+
+```js
+import { DataGrid, escapeHtml } from 'datagrid';
+{ key: 'po', render: (v) => `<a href="#" data-cell-action="open">${escapeHtml(v)}</a>` }
+```
+
+#### Action columns
+
+`actions: ActionDef[]` ทำให้คอลัมน์แสดงปุ่มจริง `<button type="button" class="dg-action {className}" data-action="{name}">` ต่อหนึ่งแถว
+(ค่าใน `row[key]` ถูกเมินเฉย) `ActionDef` คือ `{ name, label, className?, title?, visible?(row), disabled?(row) }`
+(`label`, `title`, `className` ถูก escape) `visible(row) === false` = ไม่แสดงปุ่ม, `disabled(row) === true` = ใส่ `disabled`
+
+- action column ไม่เรียงได้ (ไม่มี `tabindex`/`aria-sort`/ไอคอน), ไม่ถูกค้น และใช้ใน `columnFilters`/`setSort` ไม่ได้ (โยน `RangeError`)
+- ใช้ listener `click` ตัวเดียวบนตาราง ไม่ซ้ำเมื่อ render ใหม่ และถูกถอดตอน `destroy()`; ปุ่มที่ `disabled` ไม่ยิง event
+  `<button>` ทำงานกับ Enter/Space เองอยู่แล้ว
+- แถวถูกหาจาก **แถวที่แสดงอยู่ปัจจุบัน** (หลังกรอง/เรียง/แบ่งหน้า) ได้ object แถวเดิม ไม่ใช่สำเนา
+
+#### Events: `action` และ `cellClick`
+
+- `on('action', ({ action, row, key, rowKey }) => …)` – กดปุ่ม action (`action` = `ActionDef.name`) หรือคลิก element ที่ `render()`
+  ใส่ `data-cell-action="…"` ไว้ (`action` = ค่านั้น) `key` คือคอลัมน์ที่คลิก
+- `on('cellClick', ({ key, row, rowKey, originalEvent }) => …)` – ยิงก่อน `action` เมื่อคลิก `[data-cell-action]` ส่ง `originalEvent` มาด้วย
+  เพื่อให้ `preventDefault()` ลิงก์ `href="#"` ได้เอง (ไลบรารีไม่ทำให้)
+
+ชนิด `ActionDef`, `ActionEventPayload`, `CellClickPayload` และ `Column` export จาก `datagrid`
+
+```js
+new DataGrid(el, {
+  rowKey: 'id',
+  columns: [
+    { key: '_view', ariaLabel: 'View', actions: [{ name: 'view', label: 'View' }] },
+    {
+      key: '_cancel',
+      ariaLabel: 'Cancel',
+      actions: [
+        { name: 'cancel', label: 'Cancel', className: 'btn-cancel', visible: (r) => r.canCancel },
+      ],
+    },
+    { key: 'id', label: 'ID', sortable: true },
+  ],
+  rows,
+  onAction: ({ action, row }) => console.log(action, row.id),
+});
+```
+
+ตัวแปร CSS: `--dg-action-bg`, `--dg-action-color`, `--dg-action-radius`, `--dg-action-padding` (ดูตารางด้านล่าง)
+ตั้งบน `.dg-root` หรือบนปุ่มผ่าน `className` ของคุณ (`.dg-action` มี specificity เป็นศูนย์ จึงถูกทับด้วย class ของคุณได้ง่าย)
 
 ### Sorting
 
@@ -154,6 +223,8 @@ new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>
 | `--dg-radius` / `--dg-input-radius`                                                                                                                                | มุมโค้งตาราง / ช่องและปุ่ม                  | `8px` / `6px`                                |
 | `--dg-cell-padding-y` / `--dg-cell-padding-x`                                                                                                                      | ระยะในเซลล์                                 | `12px` / `16px`                              |
 | `--dg-cell-padding-y-compact` / `--dg-cell-padding-x-compact`                                                                                                      | ระยะในเซลล์เมื่อ `density: 'compact'`       | `6px` / `12px`                               |
+| `--dg-action-bg` / `--dg-action-color`                                                                                                                             | ปุ่ม action: พื้นหลัง / สี                  | `--dg-accent` / `--dg-accent-contrast`       |
+| `--dg-action-radius` / `--dg-action-padding`                                                                                                                       | ปุ่ม action: มุมโค้ง / ระยะใน               | `4px` / `0.15em 0.75em`                      |
 | `--dg-toolbar-gap`                                                                                                                                                 | ระยะห่างแถบค้นหา/pager                      | `12px`                                       |
 | `--dg-font-family` / `--dg-font-size` / `--dg-line-height`                                                                                                         | ตัวอักษร                                    | system-ui + ฟอนต์ไทยของระบบ / `14px` / `1.6` |
 | `--dg-pager-gap`, `--dg-pager-border`, `--dg-pager-bg`, `--dg-pager-active-bg`, `--dg-pager-active-color`, `--dg-pager-muted-color`, `--dg-pager-disabled-opacity` | pager (ชื่อเดิม)                            | ตามธีม / `0.5`                               |
@@ -183,6 +254,7 @@ new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>
 - `on('pageChange', fn)` – รับ `{ page, pageSize }` ครั้งเดียวต่อการเปลี่ยน (รวมถึงตอนเปลี่ยนจำนวนแถวต่อหน้า,
   ตอนที่การค้นหา/เรียงรีเซ็ตเป็นหน้า 1 และตอนที่ `setRows()` ทำให้หน้าถูกปรับ; ไม่เรียกถ้าไม่เปลี่ยน
   หรือไม่ได้เปิดการแบ่งหน้า) คืนฟังก์ชัน unsubscribe
+- `on('action', fn)` / `on('cellClick', fn)` – ดู [Events](#events-action-และ-cellclick) คืนฟังก์ชัน unsubscribe
 - `render()` – เรนเดอร์ตารางใหม่ (ช่องค้นหาและ pager ไม่ถูกแตะถ้าเนื้อหาเท่าเดิม)
 - `destroy()` – ถอด event listener (หัวตาราง, ช่องค้นหา, pager), ยกเลิก debounce ที่ค้างอยู่ และล้างเนื้อหาใน container; หลังจากนั้นทุกเมธอดไม่ทำอะไร
 

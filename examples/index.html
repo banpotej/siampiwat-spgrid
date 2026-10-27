@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DataGrid procurement example</title>
+    <title>ตัวอย่าง DataGrid: รายการใบสั่งซื้อ (PO List)</title>
     <style>
       body {
         margin: 0;
@@ -42,8 +42,9 @@
     <main>
       <h1>PO List</h1>
       <p>
-        Mock data. Plain-text cells for now: action buttons, the PO link and status badges wait for
-        <code>column.render</code>.
+        ข้อมูลจำลองทั้งหมด ตอนนี้เซลล์ยังเป็นข้อความธรรมดา ปุ่ม View/Cancel ลิงก์เลขที่ใบสั่งซื้อ
+        และป้ายสถานะ จะเพิ่มด้วย <code>column.actions</code> และ
+        <code>column.render</code> ในขั้นถัดไป
       </p>
       <div id="grid"></div>
     </main>

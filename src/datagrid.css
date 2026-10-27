@@ -2,4 +2,5 @@
 @import './styles/table.css';
 @import './styles/toolbar.css';
 @import './styles/pager.css';
+@import './styles/actions.css';
 @import './styles/a11y.css';

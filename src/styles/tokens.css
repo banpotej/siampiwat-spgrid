@@ -38,6 +38,10 @@
   );
   --dgi-font-size: var(--dg-font-size, 14px);
   --dgi-line-height: var(--dg-line-height, 1.6);
+  --dgi-action-padding: var(--dg-action-padding, 0.15em 0.75em);
+  --dgi-action-radius: var(--dg-action-radius, 4px);
+  --dgi-action-bg: var(--dg-action-bg, var(--dgi-accent));
+  --dgi-action-color: var(--dg-action-color, var(--dgi-on-accent));
   --dgi-transition: 120ms ease;
   color-scheme: light;
 }

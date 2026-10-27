@@ -9,4 +9,5 @@
   - [x] pagination core
   - [x] pagination UI
   - [x] visual polish and icons (Material Symbols, themes)
+  - [x] action columns, custom cell render, multi-line headers
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

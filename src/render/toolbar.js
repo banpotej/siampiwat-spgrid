@@ -43,3 +43,39 @@ export function renderShell({
   const wrap = `dg-table-wrap${scroll ? ' dg-scroll' : ''}`;
   return `<div class="${root}">${toolbar}<div class="${wrap}"></div><div class="dg-pager-host"></div><div class="dg-status" role="status" aria-live="polite"></div></div>`;
 }
+
+/**
+ * Build the shell inside `container` from the grid options and find the elements the grid keeps using.
+ *
+ * @param {HTMLElement} container
+ * @param {import('../types.js').DataGridOptions} options
+ * @param {{ search: string, clear: string }} labels
+ * @param {Record<IconName, string>} icons
+ */
+export function mountShell(container, options, labels, icons) {
+  const { maxHeight } = options;
+  container.innerHTML = renderShell({
+    searchable: options.searchable === true,
+    searchLabel: labels.search,
+    clearLabel: labels.clear,
+    icons,
+    striped: options.striped === true,
+    compact: options.density === 'compact',
+    stickyHeader: options.stickyHeader === true,
+    scroll: maxHeight !== undefined,
+  });
+  /** @param {string} selector */
+  const find = (selector) => /** @type {HTMLElement} */ (container.querySelector(selector));
+  const host = find('div.dg-table-wrap');
+  // Set through the CSSOM (not markup) so an odd value can never inject other styles.
+  if (maxHeight !== undefined) {
+    host.style.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
+  }
+  return {
+    host,
+    pagerHost: find('div.dg-pager-host'),
+    status: find('div.dg-status'),
+    toolbar: /** @type {HTMLElement | null} */ (container.querySelector('div.dg-toolbar')),
+    search: /** @type {HTMLInputElement | null} */ (container.querySelector('input.dg-search')),
+  };
+}

@@ -1,4 +1,5 @@
 // @ts-check
+import { dataKeys } from './columns.js';
 import { filterRows } from './filter.js';
 import { paginate } from './paginate.js';
 import { sortRows } from './sort.js';
@@ -9,7 +10,7 @@ import { sortRows } from './sort.js';
 
 /**
  * The rows a grid shows for `state`: filter -> sort -> paginate. Pure.
- * Global search only looks at the keys of `state.columns`. `paging` is null
+ * Global search only looks at the keys of the data columns (not action columns). `paging` is null
  * (and `rows` is everything) while pagination is off (`pageSize` null).
  *
  * @param {Pick<GridState, 'columns' | 'rows' | 'sort' | 'filter' | 'page' | 'pageSize'>} state
@@ -18,7 +19,7 @@ import { sortRows } from './sort.js';
  */
 export function computeView(state, options = {}) {
   const { columns, rows, sort, filter, page, pageSize } = state;
-  const searchColumns = columns.map((c) => c.key);
+  const searchColumns = dataKeys(columns);
   const filtered = filterRows(rows, { ...filter, columns: searchColumns }, options);
   const sorted = sortRows(filtered, sort, options);
   if (pageSize === null) return { rows: sorted, paging: null };

@@ -37,6 +37,23 @@ describe('createPurchaseOrders', () => {
     }
   });
 
+  it('lists newest first, on business days, with PO numbers falling with the date', () => {
+    const rows = createPurchaseOrders();
+    rows.forEach((r, i) => {
+      expect([0, 6]).not.toContain(r.submittedDate.getUTCDay());
+      if (i === 0) return;
+      expect(r.submittedDate.getTime()).toBeLessThanOrEqual(rows[i - 1].submittedDate.getTime());
+      expect(r.poNumber < rows[i - 1].poNumber).toBe(true);
+    });
+  });
+
+  it('only has a recipient once the delivery is complete', () => {
+    for (const r of createPurchaseOrders()) {
+      expect(r.recipient !== '').toBe(r.deliveryComplete);
+      if (r.deliveryComplete) expect(r.status).toBe('เสร็จสิ้น');
+    }
+  });
+
   it('fills cancelBy only for cancelled rows and covers every status', () => {
     const rows = createPurchaseOrders();
     for (const r of rows) expect(r.cancelBy !== '').toBe(r.status === 'ยกเลิก');

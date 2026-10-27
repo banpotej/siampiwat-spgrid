@@ -10,6 +10,38 @@
  * @property {string} [label] Header text; defaults to `key`.
  * @property {boolean} [sortable] Header click / Enter / Space cycles asc -> desc -> none.
  * @property {'left' | 'center' | 'right'} [align] Text alignment of the header and cells; default 'left'.
+ * @property {string} [width] Any CSS width, e.g. '80px'; ignored if it contains anything but a plain length.
+ * @property {string} [ariaLabel] `aria-label` of the header cell; give it to columns without a label.
+ * @property {(value: unknown, row: Row) => string} [render] Cell HTML. NOT escaped: the caller must escape
+ *   every piece of user data it interpolates (use `escapeHtml`). Default: the escaped value.
+ * @property {ActionDef[]} [actions] Makes this an action column: one button per action in each row. `key` is
+ *   then only an identifier; the column is never sortable, searched or filtered.
+ */
+
+/**
+ * @typedef {object} ActionDef
+ * @property {string} name Value of `data-action`, reported as `action` in the 'action' event.
+ * @property {string} label Button text (escaped).
+ * @property {string} [className] Extra class(es) for styling, e.g. 'btn-cancel'.
+ * @property {string} [title] Tooltip (escaped).
+ * @property {(row: Row) => boolean} [visible] The button is left out when this returns false.
+ * @property {(row: Row) => boolean} [disabled] The button is disabled when this returns true.
+ */
+
+/**
+ * @typedef {object} ActionEventPayload
+ * @property {string} action `ActionDef.name`, or the `data-cell-action` value of a clicked element.
+ * @property {Row} row The original row object (not a copy), resolved from the rows currently shown.
+ * @property {string} key Key of the column the click happened in.
+ * @property {unknown} [rowKey] `row[options.rowKey]`; undefined when `rowKey` is not set.
+ */
+
+/**
+ * @typedef {object} CellClickPayload
+ * @property {string} key Key of the column the click happened in.
+ * @property {Row} row
+ * @property {unknown} [rowKey]
+ * @property {MouseEvent} originalEvent
  */
 
 /**
@@ -59,13 +91,17 @@
 
 /**
  * Payload of each grid event, by name.
- * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState }} GridEvents
+ * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState,
+ *   action: ActionEventPayload, cellClick: CellClickPayload }} GridEvents
  */
 
 /**
  * @typedef {object} DataGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
+ * @property {string} [rowKey] Field that identifies a row; rendered as `data-row-id` and reported as `rowKey`.
+ * @property {(payload: ActionEventPayload) => void} [onAction] Called when an action button or a
+ *   `[data-cell-action]` element is clicked.
  * @property {string} [locale] Locale for sorting strings and lower-casing search text; default 'th'.
  * @property {(sort: SortState) => void} [onSortChange] Called whenever the sort changes.
  * @property {boolean} [searchable] Render a search box above the table.

@@ -11,7 +11,8 @@
   .dg-table-wrap,
   .dg-search,
   .dg-page-btn,
-  .dg-page-size select {
+  .dg-page-size select,
+  .dg-action {
     border-color: CanvasText;
   }
 

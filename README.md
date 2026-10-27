@@ -23,7 +23,8 @@ grid.setRows([{ id: 2, name: 'Grace' }]);
 grid.destroy();
 ```
 
-Cell values are HTML-escaped. See [docs/API.md](docs/API.md) for the full API.
+Cell values are HTML-escaped unless a column sets `render` (then you escape). Columns can also be action columns
+(`actions`) with an `action` event. See [docs/API.md](docs/API.md) for the full API.
 
 ## Commands
 

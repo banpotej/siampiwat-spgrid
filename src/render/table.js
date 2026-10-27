@@ -1,5 +1,7 @@
 // @ts-check
+import { isActionColumn } from '../core/columns.js';
 import { escapeHtml } from '../utils/escape.js';
+import { renderCell, renderLabel, widthAttr } from './cells.js';
 import { renderIcon } from './icons.js';
 
 /** @typedef {import('../types.js').Column} Column */
@@ -29,8 +31,9 @@ const alignClass = (column) =>
 function renderHeaderCell(column, sort, icons) {
   const classes = [alignClass(column)];
   const attrs = [`scope="col"`, `data-key="${escapeHtml(column.key)}"`];
+  if (column.ariaLabel) attrs.push(`aria-label="${escapeHtml(column.ariaLabel)}"`);
   let icon = '';
-  if (column.sortable) {
+  if (column.sortable && !isActionColumn(column)) {
     classes.push('dg-sortable');
     attrs.push('tabindex="0"');
     const direction = sort && sort.key === column.key ? sort.direction : null;
@@ -39,8 +42,10 @@ function renderHeaderCell(column, sort, icons) {
   }
   const cls = classes.filter(Boolean).join(' ');
   if (cls) attrs.push(`class="${cls}"`);
-  const label = `<span class="dg-th-label">${escapeHtml(column.label ?? column.key)}</span>`;
-  return `<th ${attrs.join(' ')}><span class="dg-th">${label}${icon}</span></th>`;
+  // An action column has no header text unless it is given one; `key` is only an identifier there.
+  const text = column.label ?? (isActionColumn(column) ? '' : column.key);
+  const label = `<span class="dg-th-label">${renderLabel(text)}</span>`;
+  return `<th ${attrs.join(' ')}${widthAttr(column)}><span class="dg-th">${label}${icon}</span></th>`;
 }
 
 /**
@@ -51,22 +56,28 @@ function renderHeaderCell(column, sort, icons) {
  * @param {SortState} sort
  * @param {string} emptyText Shown in a single full-width row when there are no rows.
  * @param {Record<IconName, string>} icons
+ * @param {string} [rowKey] Field to expose as `data-row-id`.
  * @returns {string}
  */
-export function renderTable(columns, rows, sort, emptyText, icons) {
+export function renderTable(columns, rows, sort, emptyText, icons, rowKey) {
   const head = columns.map((c) => renderHeaderCell(c, sort, icons)).join('');
   const body =
     rows.length === 0
       ? `<tr class="dg-empty"><td colspan="${Math.max(columns.length, 1)}"><div class="dg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(emptyText)}</span></div></td></tr>`
       : rows
-          .map((row) => {
+          .map((row, index) => {
             const cells = columns
               .map((c) => {
-                const cls = alignClass(c);
-                return `<td${cls ? ` class="${cls}"` : ''}>${escapeHtml(row[c.key])}</td>`;
+                const cls = [alignClass(c), isActionColumn(c) ? 'dg-action-cell' : '']
+                  .filter(Boolean)
+                  .join(' ');
+                return `<td${cls ? ` class="${cls}"` : ''}>${renderCell(c, row)}</td>`;
               })
               .join('');
-            return `<tr>${cells}</tr>`;
+            const id = rowKey !== undefined ? row[rowKey] : undefined;
+            const idAttr =
+              id === undefined || id === null ? '' : ` data-row-id="${escapeHtml(id)}"`;
+            return `<tr data-row-index="${index}"${idAttr}>${cells}</tr>`;
           })
           .join('');
   return `<table class="dg-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;

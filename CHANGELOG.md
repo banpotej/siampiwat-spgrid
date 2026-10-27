@@ -51,6 +51,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example only: `examples/index.html` is now the PO List (mock data from `examples/mock/purchaseOrders.js`); the old four-grid demo moved to `tests/e2e/fixtures/grids.html` for the e2e tests. No `src/` change.
 - `thaiLabels` export: a ready-made Thai set of `labels` (`labels: thaiLabels`).
 
+- Action columns (`column.actions`: `{ name, label, className?, title?, visible?, disabled? }`), custom cells
+  (`column.render(value, row)`, unescaped HTML: the caller escapes), multi-line headers (`\n` in `label` becomes `<br>`),
+  `column.width` / `column.ariaLabel`, `options.rowKey` and `options.onAction`. New events `on('action')` (action
+  buttons and `[data-cell-action]` elements) and `on('cellClick')`, both from one delegated click listener that finds the
+  row among the rows currently shown. Action columns are never sortable, searched or filtered. Types `ActionDef`,
+  `ActionEventPayload`, `CellClickPayload` and `Column` are exported.
+- CSS variables `--dg-action-bg`, `--dg-action-color`, `--dg-action-radius`, `--dg-action-padding`.
+- `tests/e2e/fixtures/actions.html` and `tests/e2e/actions.spec.js`.
+
 ### Changed
 
 - Markup: everything is wrapped in `.dg-root`; header cells hold `<span class="dg-th">` with the label and the sort

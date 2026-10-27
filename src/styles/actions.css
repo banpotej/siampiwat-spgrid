@@ -1,0 +1,41 @@
+/* Action buttons. :where() keeps the base at zero specificity, so a caller's className
+   (e.g. .btn-cancel { --dg-action-bg: #b91c1c }) or any plain rule overrides it. */
+:where(.dg-action) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--dgi-action-padding);
+  border: 1px solid transparent;
+  border-radius: var(--dgi-action-radius);
+  background: var(--dg-action-bg, var(--dgi-action-bg));
+  color: var(--dg-action-color, var(--dgi-action-color));
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter var(--dgi-transition);
+}
+
+:where(.dg-action):hover:not([disabled]) {
+  filter: brightness(0.92);
+}
+
+:where(.dg-action):focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 2px;
+}
+
+:where(.dg-action)[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Action cells hug their buttons instead of stretching them. */
+.dg-table td.dg-action-cell {
+  white-space: nowrap;
+}
+
+.dg-action-cell .dg-action + .dg-action {
+  margin-inline-start: 0.4em;
+}
