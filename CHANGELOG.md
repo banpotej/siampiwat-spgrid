@@ -24,11 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Internal `filterRows()` (`src/core/filter.js`) and `FilterState` type: case-insensitive,
   accent-safe global search (words ANDed) plus per-column filters; exposed through `setFilter()`
   (there is no per-column filter UI yet).
+- Internal `paginate()` and `getPageWindow()` (`src/core/paginate.js`) with `PageState`/`PageResult` types:
+  1-based, clamped paging (an empty list still has one page) and a pager window with ellipsis markers.
+  Not wired into `DataGrid` yet.
 
 ### Changed
 
 - `setRows()` no longer re-renders when given the same array; `render()` still forces a re-render.
 - `setRows()` after `destroy()` no longer renders into the container.
 - `sortRows()` compares `Date` by `getTime()`, booleans as `false < true`, and sorts `NaN` last like `null`.
+- Internal refactor: header and search input event handling moved to `src/render/headerEvents.js` and
+  `src/render/searchEvents.js`; no behaviour change.
 - The search box and table host are rendered once; `render()` now only re-renders the table.
 - `destroy()` also cancels a pending search debounce and makes `render()`, `setSort()` and `on()` listeners inert.

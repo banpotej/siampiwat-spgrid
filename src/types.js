@@ -27,6 +27,21 @@
  */
 
 /**
+ * @typedef {object} PageState
+ * @property {number} page 1-based page number; clamped into range.
+ * @property {number} pageSize Rows per page; a positive integer.
+ */
+
+/**
+ * @typedef {object} PageResult
+ * @property {Row[]} rows Rows on the current page.
+ * @property {number} page Current page after clamping.
+ * @property {number} pageSize
+ * @property {number} totalRows Rows before slicing.
+ * @property {number} totalPages At least 1, even when there are no rows.
+ */
+
+/**
  * @typedef {object} GridState Internal state of a DataGrid.
  * @property {Column[]} columns
  * @property {Row[]} rows
