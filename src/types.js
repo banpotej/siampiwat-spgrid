@@ -9,6 +9,12 @@
  * @property {string} key Property of the row to display.
  * @property {string} [label] Header text; defaults to `key`.
  * @property {boolean} [sortable] Header click / Enter / Space cycles asc -> desc -> none.
+ * @property {'left' | 'center' | 'right'} [align] Text alignment of the header and cells; default 'left'.
+ */
+
+/**
+ * Names of the built-in icons (Material Symbols); see `options.icons`.
+ * @typedef {'arrow_upward' | 'arrow_downward' | 'unfold_more' | 'chevron_left' | 'chevron_right' | 'first_page' | 'last_page' | 'search' | 'close' | 'inbox'} IconName
  */
 
 /**
@@ -69,6 +75,13 @@
  * @property {number} [pageSize] Rows per page; enables pagination. Default: off (show all rows).
  * @property {number[]} [pageSizeOptions] Sizes offered in a "rows per page" select, e.g. [10, 20, 50].
  * @property {(page: PageState) => void} [onPageChange] Called whenever the page or page size changes.
+ * @property {Partial<Record<IconName, string>>} [icons] Replacement SVG markup per icon. Trusted: it is
+ *   inserted as HTML, so pass only markup you control, never user data.
+ * @property {boolean} [striped] Zebra rows; default false.
+ * @property {'compact' | 'comfortable'} [density] Cell padding; default 'comfortable'.
+ * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
+ * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);
+ *   taller tables scroll inside it.
  */
 
 /**
@@ -76,8 +89,11 @@
  * @property {string} [search] aria-label of the search box; default 'Search'.
  * @property {string} [empty] Text shown when there are no rows; default 'No data'.
  * @property {string} [pagination] aria-label of the pager <nav>; default 'Pagination'.
- * @property {string} [prev] Previous button text; default 'Previous'.
- * @property {string} [next] Next button text; default 'Next'.
+ * @property {string} [prev] aria-label of the previous button; default 'Previous'.
+ * @property {string} [next] aria-label of the next button; default 'Next'.
+ * @property {string} [first] aria-label of the first page button; default 'First page'.
+ * @property {string} [last] aria-label of the last page button; default 'Last page'.
+ * @property {string} [clear] aria-label of the clear search button; default 'Clear search'.
  * @property {string} [pageSize] Label of the page size select; default 'Rows per page'.
  * @property {(from: number, to: number, total: number) => string} [summary] Summary text;
  *   default 'Showing 1–10 of 25' (and 'Showing 0 of 0' when empty).

@@ -1,0 +1,125 @@
+.dg-pager-host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dg-pager-gap, 8px) var(--dgi-gap);
+  margin-top: var(--dgi-gap);
+}
+
+.dg-pager-host:empty {
+  display: none;
+}
+
+.dg-summary {
+  margin-inline-end: auto;
+  color: var(--dg-pager-muted-color, var(--dgi-muted));
+}
+
+.dg-page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--dg-pager-muted-color, var(--dgi-muted));
+}
+
+.dg-page-size select {
+  min-height: 2.25em;
+  padding: 0.25em 0.5em;
+  border: 1px solid var(--dg-pager-border, var(--dgi-border-strong));
+  border-radius: var(--dgi-input-radius);
+  background: var(--dgi-bg);
+  color: var(--dgi-text);
+  font: inherit;
+}
+
+.dg-page-size select:focus-visible,
+.dg-pager:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 2px;
+}
+
+.dg-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--dg-pager-gap, 8px) / 2);
+}
+
+.dg-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25em;
+  min-height: 2.25em;
+  padding: 0 0.5em;
+  border: 1px solid var(--dg-pager-border, var(--dgi-border-strong));
+  border-radius: var(--dgi-input-radius);
+  background: var(--dg-pager-bg, var(--dgi-bg));
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--dgi-transition),
+    border-color var(--dgi-transition);
+}
+
+.dg-page-btn:hover:not(:disabled, [aria-current='page']) {
+  background: var(--dgi-sort-hover-bg);
+}
+
+.dg-page-btn:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 2px;
+}
+
+.dg-page-btn[aria-current='page'] {
+  border-color: var(--dg-pager-active-bg, var(--dgi-accent));
+  background: var(--dg-pager-active-bg, var(--dgi-accent));
+  color: var(--dg-pager-active-color, var(--dgi-on-accent));
+  cursor: default;
+}
+
+.dg-page-btn:disabled {
+  opacity: var(--dg-pager-disabled-opacity, 0.5);
+  cursor: not-allowed;
+}
+
+.dg-ellipsis {
+  padding: 0 4px;
+  color: var(--dg-pager-muted-color, var(--dgi-muted));
+}
+
+/* Narrow containers: stack the footer and let the pager use the full width. */
+@container (max-width: 600px) {
+  .dg-pager-host {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dg-summary {
+    margin-inline-end: 0;
+  }
+
+  .dg-pager {
+    justify-content: center;
+  }
+
+  .dg-search-field {
+    max-width: none;
+  }
+}
+
+/* Touch: 44px minimum targets. */
+@media (pointer: coarse) {
+  .dg-page-btn,
+  .dg-page-size select,
+  .dg-search-clear {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .dg-search {
+    min-height: 44px;
+  }
+}

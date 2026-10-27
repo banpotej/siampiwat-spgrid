@@ -27,17 +27,17 @@ describe('enabling pagination', () => {
 });
 
 describe('pager markup', () => {
-  it('is a labelled <nav> with Prev, page buttons and Next', () => {
+  it('is a labelled <nav> with First, Prev, page buttons, Next and Last', () => {
     const { el } = make();
     expect(nav(el).getAttribute('aria-label')).toBe('Pagination');
-    expect(navText(el)).toEqual(['Previous', '1', '2', '3', 'Next']);
-    expect(nav(el).querySelectorAll('button')).toHaveLength(5);
+    expect(navText(el)).toEqual(['First page', 'Previous', '1', '2', '3', 'Next', 'Last page']);
+    expect(nav(el).querySelectorAll('button')).toHaveLength(7);
   });
 
   it('uses and escapes labels.pagination / prev / next', () => {
     const { el } = make({ labels: { pagination: 'หน้า "x"', prev: '<b>ก่อน</b>', next: 'ถัดไป' } });
     expect(nav(el).getAttribute('aria-label')).toBe('หน้า "x"');
-    expect(navText(el)).toEqual(['<b>ก่อน</b>', '1', '2', '3', 'ถัดไป']);
+    expect(navText(el)).toEqual(['First page', '<b>ก่อน</b>', '1', '2', '3', 'ถัดไป', 'Last page']);
     expect(el.querySelector('b')).toBeNull();
   });
 
@@ -63,9 +63,33 @@ describe('pager markup', () => {
 
   it('builds the buttons from getPageWindow (ellipsis for long ranges)', () => {
     const { el, grid } = make({ pageSize: 1 });
-    expect(navText(el)).toEqual(['Previous', '1', '2', '3', '4', '5', '…', '25', 'Next']);
+    expect(navText(el)).toEqual([
+      'First page',
+      'Previous',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '…',
+      '25',
+      'Next',
+      'Last page',
+    ]);
     grid.setPage(13);
-    expect(navText(el)).toEqual(['Previous', '1', '…', '12', '13', '14', '…', '25', 'Next']);
+    expect(navText(el)).toEqual([
+      'First page',
+      'Previous',
+      '1',
+      '…',
+      '12',
+      '13',
+      '14',
+      '…',
+      '25',
+      'Next',
+      'Last page',
+    ]);
   });
 
   it('clicking Prev/Next/page buttons changes the page', () => {
@@ -156,7 +180,7 @@ describe('page state', () => {
     grid.setPage(3);
     grid.setRows([]);
     expect(grid.getPage()).toBe(1);
-    expect(navText(el)).toEqual(['Previous', '1', 'Next']);
+    expect(navText(el)).toEqual(['First page', 'Previous', '1', 'Next', 'Last page']);
   });
 });
 
@@ -194,7 +218,7 @@ describe('page size select', () => {
     expect(grid.getPageSize()).toBe(20);
     expect(grid.getPage()).toBe(1);
     expect(ids(el)).toHaveLength(20);
-    expect(navText(el)).toEqual(['Previous', '1', '2', 'Next']);
+    expect(navText(el)).toEqual(['First page', 'Previous', '1', '2', 'Next', 'Last page']);
     expect(/** @type {HTMLSelectElement} */ (el.querySelector('select')).value).toBe('20');
   });
 });

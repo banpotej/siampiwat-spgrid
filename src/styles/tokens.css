@@ -1,0 +1,87 @@
+/*
+ * Theme tokens. Consumers theme the grid through the public --dg-* variables
+ * (set them on .dg-root or any ancestor); each internal --dgi-* token reads its
+ * --dg-* variable and falls back to the light or dark default below.
+ * Dark applies under prefers-color-scheme, or [data-theme="dark"] on any
+ * ancestor; [data-theme="light"] on an ancestor forces light.
+ */
+.dg-root {
+  --dgi-bg: var(--dg-bg, #fff);
+  --dgi-text: var(--dg-color, #1f2937);
+  --dgi-muted: var(--dg-muted-color, #4b5563);
+  --dgi-border: var(--dg-border-color, #e5e7eb);
+  --dgi-border-strong: var(--dg-input-border, #6b7280);
+  --dgi-header-bg: var(--dg-header-bg, #f3f4f6);
+  --dgi-header-text: var(--dg-header-color, #111827);
+  --dgi-hover-bg: var(--dg-row-hover-bg, #f3f4f6);
+  --dgi-stripe-bg: var(--dg-stripe-bg, #f9fafb);
+  --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #e5e7eb);
+  --dgi-accent: var(--dg-accent, #1d4ed8);
+  --dgi-on-accent: var(--dg-accent-contrast, #fff);
+  --dgi-focus: var(--dg-focus-color, #1d4ed8);
+  --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #4b5563));
+  --dgi-empty: var(--dg-empty-color, var(--dgi-muted));
+  --dgi-radius: var(--dg-radius, 8px);
+  --dgi-input-radius: var(--dg-input-radius, 6px);
+  --dgi-pad-y: var(--dg-cell-padding-y, 12px);
+  --dgi-pad-x: var(--dg-cell-padding-x, 16px);
+  --dgi-gap: var(--dg-toolbar-gap, 12px);
+  --dgi-font: var(
+    --dg-font-family,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    'Noto Sans Thai',
+    'Leelawadee UI',
+    Tahoma,
+    sans-serif
+  );
+  --dgi-font-size: var(--dg-font-size, 14px);
+  --dgi-line-height: var(--dg-line-height, 1.6);
+  --dgi-transition: 120ms ease;
+  color-scheme: light;
+}
+
+.dg-root.dg-compact {
+  --dgi-pad-y: var(--dg-cell-padding-y-compact, 6px);
+  --dgi-pad-x: var(--dg-cell-padding-x-compact, 12px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dg-root:not([data-theme='light'] *, [data-theme='light']) {
+    --dgi-bg: var(--dg-bg, #111827);
+    --dgi-text: var(--dg-color, #e5e7eb);
+    --dgi-muted: var(--dg-muted-color, #9ca3af);
+    --dgi-border: var(--dg-border-color, #374151);
+    --dgi-border-strong: var(--dg-input-border, #6b7280);
+    --dgi-header-bg: var(--dg-header-bg, #1f2937);
+    --dgi-header-text: var(--dg-header-color, #f9fafb);
+    --dgi-hover-bg: var(--dg-row-hover-bg, #1f2937);
+    --dgi-stripe-bg: var(--dg-stripe-bg, #151e2e);
+    --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #374151);
+    --dgi-accent: var(--dg-accent, #60a5fa);
+    --dgi-on-accent: var(--dg-accent-contrast, #0b1220);
+    --dgi-focus: var(--dg-focus-color, #93c5fd);
+    --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #9ca3af));
+    color-scheme: dark;
+  }
+}
+
+[data-theme='dark'] .dg-root,
+.dg-root[data-theme='dark'] {
+  --dgi-bg: var(--dg-bg, #111827);
+  --dgi-text: var(--dg-color, #e5e7eb);
+  --dgi-muted: var(--dg-muted-color, #9ca3af);
+  --dgi-border: var(--dg-border-color, #374151);
+  --dgi-border-strong: var(--dg-input-border, #6b7280);
+  --dgi-header-bg: var(--dg-header-bg, #1f2937);
+  --dgi-header-text: var(--dg-header-color, #f9fafb);
+  --dgi-hover-bg: var(--dg-row-hover-bg, #1f2937);
+  --dgi-stripe-bg: var(--dg-stripe-bg, #151e2e);
+  --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #374151);
+  --dgi-accent: var(--dg-accent, #60a5fa);
+  --dgi-on-accent: var(--dg-accent-contrast, #0b1220);
+  --dgi-focus: var(--dg-focus-color, #93c5fd);
+  --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #9ca3af));
+  color-scheme: dark;
+}

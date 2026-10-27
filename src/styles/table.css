@@ -1,0 +1,167 @@
+.dg-root {
+  container-type: inline-size;
+  box-sizing: border-box;
+  color: var(--dgi-text);
+  font-family: var(--dgi-font);
+  font-size: var(--dgi-font-size);
+  /* >= 1.5 so Thai vowels and tone marks above/below the line are not clipped. */
+  line-height: var(--dgi-line-height);
+}
+
+.dg-root *,
+.dg-root *::before,
+.dg-root *::after {
+  box-sizing: inherit;
+}
+
+.dg-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.dg-icon > svg {
+  display: block;
+}
+
+.dg-table-wrap {
+  /* clip (unlike hidden) keeps the rounded corners without becoming a scroll container,
+     so a sticky header can still stick to the page. */
+  overflow: clip;
+  border: 1px solid var(--dgi-border);
+  border-radius: var(--dgi-radius);
+  background: var(--dgi-bg);
+}
+
+.dg-table-wrap.dg-scroll {
+  overflow: auto;
+}
+
+.dg-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.dg-table th,
+.dg-table td {
+  padding: var(--dgi-pad-y) var(--dgi-pad-x);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.dg-table td {
+  border-bottom: 1px solid var(--dgi-border);
+}
+
+.dg-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dg-table th {
+  border-bottom: 1px solid var(--dgi-border-strong);
+  background: var(--dgi-header-bg);
+  color: var(--dgi-header-text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dg-sticky .dg-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dg-table .dg-align-left {
+  text-align: left;
+}
+
+.dg-table .dg-align-center {
+  text-align: center;
+}
+
+.dg-table .dg-align-right {
+  text-align: right;
+}
+
+.dg-th {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.dg-align-right .dg-th {
+  flex-direction: row-reverse;
+}
+
+.dg-table th.dg-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-table th.dg-sortable:hover {
+  background: var(--dgi-sort-hover-bg);
+}
+
+.dg-table th.dg-sortable:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: -2px;
+}
+
+.dg-sort-icon {
+  color: var(--dgi-icon);
+}
+
+/* The "sortable" hint is only shown on hover / focus; sorted columns always show their arrow. */
+.dg-sortable:not([aria-sort]) .dg-sort-icon {
+  opacity: 0;
+  transition: opacity var(--dgi-transition);
+}
+
+.dg-sortable:not([aria-sort]):hover .dg-sort-icon,
+.dg-sortable:not([aria-sort]):focus-visible .dg-sort-icon {
+  opacity: 0.7;
+}
+
+.dg-table tbody tr {
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-striped .dg-table tbody tr:nth-child(even) {
+  background: var(--dgi-stripe-bg);
+}
+
+.dg-table tbody tr:not(.dg-empty):hover {
+  background: var(--dgi-hover-bg);
+}
+
+.dg-table tr.dg-empty td {
+  padding-block: calc(var(--dgi-pad-y) * 2.5);
+  color: var(--dgi-empty);
+  text-align: center;
+}
+
+.dg-empty-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.dg-empty-content .dg-icon {
+  font-size: 2.5em;
+}
+
+.dg-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -46,4 +46,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `src/render/searchEvents.js`; no behaviour change.
 - `examples/index.html` now shows 25 rows with search, sorting and paging (`pageSize: 5`).
 - The search box, table host and pager host are rendered once; `render()` now only re-renders the table
-  and updates the pager's content when it changed.- `destroy()` also cancels a pending search debounce and makes `render()`, `setSort()` and `on()` listeners inert.
+  and updates the pager's content when it changed.
+- `destroy()` also cancels a pending search debounce and makes `render()`, `setSort()` and `on()` listeners inert.

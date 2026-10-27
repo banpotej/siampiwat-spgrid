@@ -1,0 +1,71 @@
+.dg-toolbar {
+  margin-bottom: var(--dgi-gap);
+}
+
+.dg-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 22em;
+}
+
+.dg-search {
+  width: 100%;
+  min-height: 2.5em;
+  padding: 0.4em 2.5em;
+  border: 1px solid var(--dgi-border-strong);
+  border-radius: var(--dgi-input-radius);
+  background: var(--dgi-bg);
+  color: inherit;
+  font: inherit;
+  transition: border-color var(--dgi-transition);
+}
+
+/* The leading icon and our own clear button replace the browser's. */
+.dg-search::-webkit-search-cancel-button,
+.dg-search::-webkit-search-decoration {
+  display: none;
+  appearance: none;
+}
+
+.dg-search:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 1px;
+}
+
+.dg-search-icon {
+  position: absolute;
+  inset-inline-start: 0.6em;
+  color: var(--dgi-muted);
+  pointer-events: none;
+}
+
+.dg-search-clear {
+  position: absolute;
+  inset-inline-end: 0.25em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2em;
+  min-height: 2em;
+  padding: 0;
+  border: 0;
+  border-radius: var(--dgi-input-radius);
+  background: transparent;
+  color: var(--dgi-muted);
+  cursor: pointer;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-search-clear[hidden] {
+  display: none;
+}
+
+.dg-search-clear:hover {
+  background: var(--dgi-sort-hover-bg);
+}
+
+.dg-search-clear:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 1px;
+}

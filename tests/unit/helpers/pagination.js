@@ -18,7 +18,8 @@ export const ids = (el) =>
 /** @param {HTMLElement} el */
 export const nav = (el) => /** @type {HTMLElement} */ (el.querySelector('nav'));
 /** @param {HTMLElement} el */
-export const navText = (el) => [...nav(el).children].map((c) => c.textContent);
+export const navText = (el) =>
+  [...nav(el).children].map((c) => c.getAttribute('aria-label') ?? c.textContent);
 /** @param {HTMLElement} el @param {string} selector */
 export const btn = (el, selector) =>
   /** @type {HTMLButtonElement} */ (nav(el).querySelector(selector));

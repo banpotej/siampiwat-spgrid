@@ -6,10 +6,11 @@ import { normalizeSort } from './core/sort.js';
 import { createState } from './core/state.js';
 import { computeView } from './core/view.js';
 import { bindHeaderEvents } from './render/headerEvents.js';
+import { resolveIcons } from './render/icons.js';
 import { resolveLabels } from './render/labels.js';
 import { renderPager } from './render/pager.js';
 import { bindPagerEvents } from './render/pagerEvents.js';
-import { bindSearchEvents } from './render/searchEvents.js';
+import { bindSearchEvents, syncClearButton } from './render/searchEvents.js';
 import { renderTable } from './render/table.js';
 import { renderShell } from './render/toolbar.js';
 import './datagrid.css';
@@ -42,6 +43,7 @@ export class DataGrid {
   #events = createEmitter(/** @type {const} */ (['sortChange', 'filterChange', 'pageChange']));
   #locale;
   #labels;
+  #icons;
   #pageSizeOptions;
   /** @type {PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
@@ -65,16 +67,28 @@ export class DataGrid {
     this.#container = container;
     this.#locale = options.locale;
     this.#labels = resolveLabels(options.labels);
+    this.#icons = resolveIcons(options.icons);
     this.#pageSizeOptions = options.pageSizeOptions ?? [];
     if (options.onSortChange) this.#events.on('sortChange', options.onSortChange);
     if (options.onFilterChange) this.#events.on('filterChange', options.onFilterChange);
     if (options.onPageChange) this.#events.on('pageChange', options.onPageChange);
 
+    const { maxHeight } = options;
     container.innerHTML = renderShell({
       searchable: options.searchable === true,
       searchLabel: this.#labels.search,
+      clearLabel: this.#labels.clear,
+      icons: this.#icons,
+      striped: options.striped === true,
+      compact: options.density === 'compact',
+      stickyHeader: options.stickyHeader === true,
+      scroll: maxHeight !== undefined,
     });
     this.#host = /** @type {HTMLElement} */ (container.querySelector('div.dg-table-wrap'));
+    // Set through the CSSOM (not markup) so an odd value can never inject other styles.
+    if (maxHeight !== undefined) {
+      this.#host.style.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
+    }
     this.#pagerHost = /** @type {HTMLElement} */ (container.querySelector('div.dg-pager-host'));
     this.#status = /** @type {HTMLElement} */ (container.querySelector('div.dg-status'));
     this.#search = /** @type {HTMLInputElement | null} */ (
@@ -161,7 +175,10 @@ export class DataGrid {
   setFilter(filter) {
     if (this.#destroyed) return;
     this.#applyFilter(filter);
-    if (this.#search) this.#search.value = this.getFilter()?.search ?? '';
+    if (this.#search) {
+      this.#search.value = this.getFilter()?.search ?? '';
+      syncClearButton(this.#search);
+    }
   }
 
   /** @returns {number} The page being shown (1 while pagination is off). */
@@ -210,7 +227,13 @@ export class DataGrid {
     this.#unbindHeader();
     const { rows, paging } = computeView(state, { locale: this.#locale });
     this.#paging = paging;
-    this.#host.innerHTML = renderTable(state.columns, rows, state.sort, this.#labels.empty);
+    this.#host.innerHTML = renderTable(
+      state.columns,
+      rows,
+      state.sort,
+      this.#labels.empty,
+      this.#icons,
+    );
     this.#status.textContent = rows.length === 0 ? this.#labels.empty : '';
     this.#unbindHeader = bindHeaderEvents(this.#host, {
       getSort: () => this.getSort(),
@@ -218,7 +241,12 @@ export class DataGrid {
     });
     // Only touch the pager when it changed, so focus on it survives unrelated renders.
     const pagerHtml = paging
-      ? renderPager({ paging, labels: this.#labels, pageSizeOptions: this.#pageSizeOptions })
+      ? renderPager({
+          paging,
+          labels: this.#labels,
+          pageSizeOptions: this.#pageSizeOptions,
+          icons: this.#icons,
+        })
       : '';
     if (pagerHtml !== this.#pagerHtml) this.#pagerHost.innerHTML = this.#pagerHtml = pagerHtml;
   }

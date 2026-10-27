@@ -9,6 +9,9 @@ const DEFAULT_LABELS = {
   pagination: 'Pagination',
   prev: 'Previous',
   next: 'Next',
+  first: 'First page',
+  last: 'Last page',
+  clear: 'Clear search',
   pageSize: 'Rows per page',
   summary: (from, to, total) =>
     total === 0 ? 'Showing 0 of 0' : `Showing ${from}–${to} of ${total}`,

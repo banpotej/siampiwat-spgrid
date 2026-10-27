@@ -271,13 +271,13 @@ describe('destroy', () => {
   it('removes the input listener, clears the debounce timer and goes inert', () => {
     const onFilterChange = vi.fn();
     const { el, grid } = make({ onFilterChange });
-    const toolbar = /** @type {HTMLElement} */ (input(el).parentElement);
+    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar'));
     const remove = vi.spyOn(toolbar, 'removeEventListener');
     const box = input(el);
     type(el, 'ada');
     expect(vi.getTimerCount()).toBe(1);
     grid.destroy();
-    expect(remove.mock.calls.map(([t]) => t)).toEqual(['input']);
+    expect(remove.mock.calls.map(([t]) => t)).toEqual(['input', 'click']);
     expect(vi.getTimerCount()).toBe(0);
     expect(el.innerHTML).toBe('');
 

@@ -1,0 +1,60 @@
+@media (prefers-reduced-motion: reduce) {
+  .dg-root *,
+  .dg-root *::before,
+  .dg-root *::after {
+    transition: none !important;
+  }
+}
+
+/* Windows High Contrast: use system colors so borders, focus and state never vanish. */
+@media (forced-colors: active) {
+  .dg-table-wrap,
+  .dg-search,
+  .dg-page-btn,
+  .dg-page-size select {
+    border-color: CanvasText;
+  }
+
+  .dg-table th {
+    border-bottom-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .dg-table td {
+    border-bottom-color: GrayText;
+  }
+
+  .dg-table th.dg-sortable:focus-visible,
+  .dg-search:focus-visible,
+  .dg-search-clear:focus-visible,
+  .dg-page-btn:focus-visible,
+  .dg-page-size select:focus-visible,
+  .dg-pager:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .dg-page-btn[aria-current='page'] {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .dg-page-btn:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+
+  .dg-sort-icon,
+  .dg-search-icon,
+  .dg-search-clear {
+    color: CanvasText;
+  }
+
+  .dg-table tbody tr:not(.dg-empty):hover {
+    outline: 1px solid Highlight;
+    outline-offset: -1px;
+  }
+}
