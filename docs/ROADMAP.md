@@ -1,5 +1,5 @@
 # Roadmap
 
-- **Phase 0 (done):** tooling, basic static table rendering, tests, docs.
-- **Phase 1:** sorting, filtering, pagination.
-- **Later:** column resize/reorder, virtual scrolling, selection, accessibility pass.
+- **Phase 0 (เสร็จแล้ว):** เครื่องมือพัฒนา, การเรนเดอร์ตารางแบบ static พื้นฐาน, การทดสอบ, เอกสาร
+- **Phase 1:** การเรียงลำดับ (sorting), การกรอง (filtering), การแบ่งหน้า (pagination)
+- **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

@@ -2,20 +2,20 @@
 
 ## `new DataGrid(container, options)`
 
-- `container: HTMLElement` – mount point.
+- `container: HTMLElement` – จุดที่ใช้ติดตั้ง (mount) ตาราง
 - `options.columns: { key: string, label?: string }[]`
 - `options.rows?: Record<string, unknown>[]`
 
-Cell values are HTML-escaped.
+ค่าในเซลล์จะถูก HTML-escape
 
 ### Methods
 
-- `setRows(rows)` – replace data and re-render.
-- `render()` – re-render.
-- `destroy()` – clear the container.
+- `setRows(rows)` – แทนที่ข้อมูลทั้งหมดและเรนเดอร์ใหม่
+- `render()` – เรนเดอร์ใหม่
+- `destroy()` – ล้างเนื้อหาใน container
 
 ## `escapeHtml(value)`
 
-Escapes `& < > " '`; `null`/`undefined` become `''`.
+Escape อักขระ `& < > " '`; ค่า `null`/`undefined` จะกลายเป็น `''`
 
-Import styles with `import 'datagrid/style.css'`.
+นำเข้าสไตล์ด้วย `import 'datagrid/style.css'`
