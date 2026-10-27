@@ -20,7 +20,7 @@ for (const { name, colorScheme, width } of shots) {
     await page.locator('#grid-default th', { hasText: 'Name' }).click();
     await page.locator('#grid-default th', { hasText: 'Role' }).hover();
     await page.locator('#grid-default').getByRole('searchbox').fill('user');
-    await expect(page.locator('#grid-default').getByText('Showing 1–5 of 22')).toBeVisible();
+    await expect(page.locator('#grid-default').getByText('แสดง 1–5 จาก 22 รายการ')).toBeVisible();
 
     await page.screenshot({ path: `test-results/visual/${name}.png`, fullPage: true });
   });

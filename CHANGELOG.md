@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--dg-cell-padding-y`, `--dg-cell-padding-x`, `--dg-cell-padding-y-compact`, `--dg-cell-padding-x-compact`,
   `--dg-font-family`, `--dg-font-size`, `--dg-line-height`.
 - Visual e2e (`tests/e2e/visual.spec.js`) writes screenshots to `test-results/visual/`; no snapshot assertions yet.
+- `thaiLabels` export: a ready-made Thai set of `labels` (`labels: thaiLabels`).
 
 ### Changed
 

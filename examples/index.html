@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,24 +42,24 @@
   <body>
     <main>
       <section>
-        <h2>Default</h2>
+        <h2>ค่าเริ่มต้น</h2>
         <div id="grid-default"></div>
       </section>
       <section>
-        <h2>Compact + striped</h2>
+        <h2>แบบกะทัดรัด + แถวสลับสี</h2>
         <div id="grid-compact"></div>
       </section>
       <section>
-        <h2>Sticky header, maxHeight 240</h2>
+        <h2>หัวตารางค้าง, maxHeight 240</h2>
         <div id="grid-sticky"></div>
       </section>
       <section class="panel-dark" data-theme="dark">
-        <h2>Dark panel (data-theme="dark")</h2>
+        <h2>โหมดมืด (data-theme="dark")</h2>
         <div id="grid-dark"></div>
       </section>
     </main>
     <script type="module">
-      import { DataGrid } from '/src/index.js';
+      import { DataGrid, thaiLabels } from '/src/index.js';
 
       const roles = ['Engineer', 'Admiral', 'Tester'];
       // 25 rows: ids 1-3 are fixed (one name needs escaping); the rest are generated.
@@ -78,7 +78,7 @@
         { key: 'name', label: 'Name', sortable: true },
         { key: 'role', label: 'Role', sortable: true },
       ];
-      const pager = { pageSize: 5, pageSizeOptions: [5, 10, 25] };
+      const pager = { pageSize: 5, pageSizeOptions: [5, 10, 25], labels: thaiLabels };
       const grid = (id) => document.getElementById(id);
 
       new DataGrid(grid('grid-default'), { columns, rows, searchable: true, ...pager });
@@ -95,6 +95,7 @@
         rows,
         stickyHeader: true,
         maxHeight: 240,
+        labels: thaiLabels,
       });
       new DataGrid(grid('grid-dark'), { columns, rows, searchable: true, striped: true, ...pager });
     </script>

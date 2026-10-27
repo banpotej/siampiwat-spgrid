@@ -40,6 +40,9 @@
 
 ค่าในเซลล์จะถูก HTML-escape
 
+ภาษาไทย: `import { DataGrid, thaiLabels } from 'datagrid'` แล้วส่ง `labels: thaiLabels` (แก้บางข้อความได้ด้วย
+`labels: { ...thaiLabels, empty: '…' }`) การเรียงและการค้นหาใช้ locale `'th'` เป็นค่าเริ่มต้นอยู่แล้ว
+
 ### Sorting
 
 คอลัมน์ที่ตั้ง `sortable: true` จะคลิกที่หัวคอลัมน์ (หรือกด Enter / Space เมื่อโฟกัสอยู่) เพื่อวนลำดับ
