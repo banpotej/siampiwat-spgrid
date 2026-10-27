@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 import { DataGrid } from '../../src/index.js';
 
 const columns = [{ key: 'id', label: 'ID' }, { key: 'name' }];

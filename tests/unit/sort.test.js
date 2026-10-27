@@ -102,6 +102,58 @@ describe('sortRows', () => {
   });
 });
 
+describe('sortRows value types', () => {
+  it('compares Date objects by getTime()', () => {
+    const rows = [
+      { d: new Date('2024-03-01') },
+      { d: new Date('2023-01-01') },
+      { d: new Date('2024-01-15') },
+    ];
+    /** @param {Record<string, any>[]} out */
+    const times = (out) => out.map((r) => r.d.getTime());
+    const [mar, jan23, jan15] = rows.map((r) => r.d.getTime());
+    expect(times(sortRows(rows, { key: 'd', direction: 'asc' }))).toEqual([jan23, jan15, mar]);
+    expect(times(sortRows(rows, { key: 'd', direction: 'desc' }))).toEqual([mar, jan15, jan23]);
+  });
+
+  it('sorts invalid Dates last', () => {
+    const rows = [{ d: new Date('nope') }, { d: new Date('2024-01-01') }];
+    const out = sortRows(rows, { key: 'd', direction: 'asc' });
+    expect(out.map((r) => Number.isNaN(/** @type {Date} */ (r.d).getTime()))).toEqual([
+      false,
+      true,
+    ]);
+  });
+
+  it('sorts booleans false < true', () => {
+    const rows = [{ b: true }, { b: false }, { b: true }, { b: false }];
+    expect(sortRows(rows, { key: 'b', direction: 'asc' }).map((r) => r.b)).toEqual([
+      false,
+      false,
+      true,
+      true,
+    ]);
+    expect(sortRows(rows, { key: 'b', direction: 'desc' }).map((r) => r.b)).toEqual([
+      true,
+      true,
+      false,
+      false,
+    ]);
+  });
+
+  it('treats NaN like null: last in both directions', () => {
+    const rows = [{ n: NaN }, { n: 2 }, { n: null }, { n: 1 }];
+    const asc = sortRows(rows, { key: 'n', direction: 'asc' }).map((r) => r.n);
+    const desc = sortRows(rows, { key: 'n', direction: 'desc' }).map((r) => r.n);
+    expect(asc.slice(0, 2)).toEqual([1, 2]);
+    expect(desc.slice(0, 2)).toEqual([2, 1]);
+    expect(Number.isNaN(asc[2])).toBe(true);
+    expect(asc[3]).toBe(null);
+    expect(Number.isNaN(desc[2])).toBe(true);
+    expect(desc[3]).toBe(null);
+  });
+});
+
 describe('nextDirection', () => {
   it('cycles null -> asc -> desc -> null', () => {
     expect(nextDirection(null)).toBe('asc');

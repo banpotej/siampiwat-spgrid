@@ -6,14 +6,24 @@
 const DEFAULT_LOCALE = 'th';
 
 /**
+ * Dates compare by timestamp, booleans as false < true; everything else is as-is.
+ *
+ * @param {unknown} v
+ * @returns {unknown}
+ */
+const normalize = (v) => (v instanceof Date ? v.getTime() : typeof v === 'boolean' ? Number(v) : v);
+
+/**
+ * null, undefined and NaN (including invalid Dates) count as "no value".
+ *
  * @param {unknown} v
  * @returns {boolean}
  */
-const isNil = (v) => v === null || v === undefined;
+const isNil = (v) => v === null || v === undefined || (typeof v === 'number' && Number.isNaN(v));
 
 /**
  * Sort rows by one column. Pure: returns a new array, never mutates `rows`.
- * Stable; null/undefined values sort last in both directions.
+ * Stable; null/undefined/NaN values sort last in both directions.
  *
  * @param {Row[]} rows
  * @param {{ key: string, direction?: SortDirection | null } | null} [sort]
@@ -36,8 +46,8 @@ export function sortRows(rows, sort, options = {}) {
 
   // Array.prototype.sort is stable (ES2019), so ties keep original order.
   return out.sort((ra, rb) => {
-    const a = ra[key];
-    const b = rb[key];
+    const a = normalize(ra[key]);
+    const b = normalize(rb[key]);
     const aNil = isNil(a);
     const bNil = isNil(b);
     if (aNil || bNil) return aNil === bNil ? 0 : aNil ? 1 : -1;

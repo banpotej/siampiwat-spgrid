@@ -27,6 +27,7 @@
     "dev": "vite --open /examples/index.html",
     "build": "vite build && tsc -p tsconfig.build.json",
     "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json",

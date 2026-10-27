@@ -1,5 +1,11 @@
 # Roadmap
 
 - **Phase 0 (เสร็จแล้ว):** เครื่องมือพัฒนา, การเรนเดอร์ตารางแบบ static พื้นฐาน, การทดสอบ, เอกสาร
-- **Phase 1:** การเรียงลำดับ (sorting), การกรอง (filtering), การแบ่งหน้า (pagination)
+- **Phase 1:**
+  - [x] sort core
+  - [x] sort UI
+  - [ ] filter core
+  - [ ] filter UI
+  - [ ] pagination core
+  - [ ] pagination UI
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility
