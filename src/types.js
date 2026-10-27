@@ -11,6 +11,14 @@
  */
 
 /**
+ * @typedef {'asc' | 'desc'} SortDirection
+ */
+
+/**
+ * @typedef {{ key: string, direction: SortDirection } | null} SortState
+ */
+
+/**
  * @typedef {object} DataGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
