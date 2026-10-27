@@ -8,4 +8,5 @@
   - [x] filter UI
   - [x] pagination core
   - [x] pagination UI
+  - [x] visual polish and icons (Material Symbols, themes)
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

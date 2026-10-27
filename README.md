@@ -33,4 +33,11 @@ Cell values are HTML-escaped. See [docs/API.md](docs/API.md) for the full API.
 - `npm run test:e2e` – Playwright end-to-end tests
 - `npm run check` – lint, typecheck, unit tests and build
 
+## Icons and theming
+
+Icons are inline SVGs from [Material Symbols](https://github.com/google/material-design-icons) (Apache-2.0),
+bundled in the library: no icon font, no network requests. Override them with `options.icons`. The grid supports
+dark mode (`prefers-color-scheme` or `data-theme="dark"`), `striped`, `density`, `stickyHeader` and CSS
+variables (`--dg-*`); see [docs/API.md](docs/API.md#theming). Attribution is in [NOTICE](NOTICE).
+
 See [docs/ROADMAP.md](docs/ROADMAP.md) for scope.

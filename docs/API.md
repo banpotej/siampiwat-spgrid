@@ -3,7 +3,8 @@
 ## `new DataGrid(container, options)`
 
 - `container: HTMLElement` – จุดที่ใช้ติดตั้ง (mount) ตาราง
-- `options.columns: { key: string, label?: string, sortable?: boolean }[]`
+- `options.columns: { key: string, label?: string, sortable?: boolean, align?: 'left' | 'center' | 'right' }[]` –
+  `align` จัดชิดซ้าย/กลาง/ขวาทั้งหัวและเซลล์ (ค่าอื่นถูกเมินเฉย; ตัวเลขใช้ `tabular-nums` ทั้งตาราง)
 - `options.rows?: Record<string, unknown>[]`
 - `options.locale?: string` – locale ที่ใช้เรียงสตริง (`Intl.Collator`) และแปลงเป็นตัวพิมพ์เล็กตอนค้นหา (ค่าเริ่มต้น `'th'`)
 - `options.onSortChange?: (sort: SortState) => void` – เรียกทุกครั้งที่การเรียงเปลี่ยน
@@ -17,16 +18,25 @@
   (ค่า `pageSize` ปัจจุบันจะถูกเพิ่มเข้ารายการให้ถ้าไม่มีอยู่)
 - `options.onPageChange?: (page: { page: number, pageSize: number }) => void` – เรียกทุกครั้งที่หน้าหรือ
   จำนวนแถวต่อหน้าเปลี่ยน
+- `options.icons?: Partial<Record<IconName, string>>` – แทนไอคอนด้วย SVG ของคุณ (ดู [Icons](#icons))
+- `options.striped?: boolean` – แถวสลับสี (ค่าเริ่มต้น `false`)
+- `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
+- `options.stickyHeader?: boolean` – ให้หัวตารางค้างด้านบนเมื่อเลื่อน
+- `options.maxHeight?: number | string` – ความสูงสูงสุดของพื้นที่ตาราง (ตัวเลข = px หรือความยาว CSS เช่น `'20rem'`)
+  ตารางที่สูงกว่านี้จะเลื่อนภายในกรอบ ใช้คู่กับ `stickyHeader` ถ้าอยากให้หัวตารางค้าง ค่านี้ถูกตั้งผ่าน CSSOM
+  จึงใส่ CSS อื่นแทรกเข้ามาไม่ได้
 - `options.labels?` – ข้อความ UI (ค่าเริ่มต้นเป็นภาษาอังกฤษ):
 
-  | key             | ใช้กับ                         | ค่าเริ่มต้น                                   |
-  | --------------- | ------------------------------ | --------------------------------------------- |
-  | `search`        | `aria-label` ของช่องค้นหา      | `'Search'`                                    |
-  | `empty`         | ข้อความเมื่อไม่มีแถว           | `'No data'`                                   |
-  | `pagination`    | `aria-label` ของ `<nav>` pager | `'Pagination'`                                |
-  | `prev` / `next` | ปุ่มก่อนหน้า / ถัดไป           | `'Previous'` / `'Next'`                       |
-  | `pageSize`      | ป้ายของ select จำนวนแถวต่อหน้า | `'Rows per page'`                             |
-  | `summary`       | `(from, to, total) => string`  | `Showing 1–10 of 25` (ว่าง: `Showing 0 of 0`) |
+  | key              | ใช้กับ                                 | ค่าเริ่มต้น                                   |
+  | ---------------- | -------------------------------------- | --------------------------------------------- |
+  | `search`         | `aria-label` ของช่องค้นหา              | `'Search'`                                    |
+  | `empty`          | ข้อความเมื่อไม่มีแถว                   | `'No data'`                                   |
+  | `pagination`     | `aria-label` ของ `<nav>` pager         | `'Pagination'`                                |
+  | `prev` / `next`  | `aria-label` ปุ่มก่อนหน้า / ถัดไป      | `'Previous'` / `'Next'`                       |
+  | `first` / `last` | `aria-label` ปุ่มหน้าแรก / หน้าสุดท้าย | `'First page'` / `'Last page'`                |
+  | `clear`          | `aria-label` ปุ่มล้างช่องค้นหา         | `'Clear search'`                              |
+  | `pageSize`       | ป้ายของ select จำนวนแถวต่อหน้า         | `'Rows per page'`                             |
+  | `summary`        | `(from, to, total) => string`          | `Showing 1–10 of 25` (ว่าง: `Showing 0 of 0`) |
 
 ค่าในเซลล์จะถูก HTML-escape
 
@@ -42,7 +52,10 @@
 - ตัวบ่งชี้ลูกศรวาดด้วย CSS `::after` ปรับสีได้ด้วย `--dg-sort-indicator-color`
   (และ `--dg-focus-color`, `--dg-sort-hover-bg`)
 
-ตัวแปร CSS อื่น: `--dg-toolbar-gap`, `--dg-input-border`, `--dg-input-radius`, `--dg-empty-color`
+ตัวแปร CSS อื่น: `--dg-toolbar-gap`, `--dg-input-border`, `--dg-input-radius`, `--dg-empty-color` (ดู [Theming](#theming))
+
+ตัวบ่งชี้การเรียงเป็นไอคอน SVG: `arrow_upward` (asc), `arrow_downward` (desc) และ `unfold_more` สำหรับคอลัมน์ที่เรียงได้แต่ยังไม่ถูกเรียง
+(จางและแสดงเมื่อ hover/โฟกัสเท่านั้น) ไอคอนซ่อนจาก screen reader เสมอ — `aria-sort` ยังเป็นแหล่งความจริงด้าน accessibility
 
 `SortState` คือ `{ key: string, direction: 'asc' | 'desc' } | null`
 
@@ -56,7 +69,9 @@
 - ค้นเฉพาะ `key` ใน `options.columns` — ฟิลด์อื่นของแถวที่ไม่ได้แสดงจะไม่ถูกค้น
 - `null`/`undefined` ไม่เคยตรง; ตัวเลข, boolean, `Date` เทียบผ่าน `String()`
 - ลำดับการทำงาน: กรองก่อน แล้วจึงเรียง; `setRows()` คงตัวกรองและการเรียงเดิมไว้
-- ถ้าไม่มีแถวที่แสดง จะมีแถวเดียว `labels.empty` (colspan = จำนวนคอลัมน์) และประกาศผ่าน
+- ช่องค้นหามีไอคอนแว่นขยายนำหน้า และปุ่มล้าง (`close`, `aria-label` = `labels.clear`) ที่แสดงเฉพาะเมื่อมีข้อความ
+  กดแล้วล้างช่องและตัวกรองทันที (ไม่รอ debounce, ผ่าน flow เดียวกับการพิมพ์ จึงยิง `filterChange`) แล้วคืน focus ให้ช่องค้นหา
+- ถ้าไม่มีแถวที่แสดง จะมีแถวเดียว ไอคอน `inbox` + `labels.empty` (colspan = จำนวนคอลัมน์) และประกาศผ่าน
   live region (`role="status"`, `aria-live="polite"`)
 
 `FilterState` คือ `{ search?: string, columnFilters?: Record<string, string> }`
@@ -66,17 +81,83 @@
 
 ตั้ง `pageSize` เพื่อเปิดการแบ่งหน้า ลำดับการทำงานคือ กรอง → เรียง → แบ่งหน้า
 
-- pager เป็น `<nav aria-label="…">` ใต้ตาราง ประกอบด้วยปุ่มก่อนหน้า/ถัดไปและปุ่มเลขหน้า (ตัดด้วย `…`
-  เมื่อมีหลายหน้า) หน้าปัจจุบันมี `aria-current="page"`; ก่อนหน้าถูก `disabled` ที่หน้าแรก และถัดไปที่หน้าสุดท้าย
+- pager เป็น `<nav aria-label="…">` ใต้ตาราง ประกอบด้วยปุ่มไอคอน หน้าแรก / ก่อนหน้า / ถัดไป / หน้าสุดท้าย
+  (`first_page`, `chevron_left`, `chevron_right`, `last_page`; ชื่อมาจาก `aria-label` ของ `labels`) และปุ่มเลขหน้า
+  (ตัดด้วย `…` เมื่อมีหลายหน้า) หน้าปัจจุบันมี `aria-current="page"`; หน้าแรก/ก่อนหน้าถูก `disabled` ที่หน้าแรก
+  และถัดไป/หน้าสุดท้ายที่หน้าสุดท้าย
 - ข้อความสรุป `Showing X–Y of Z` นับเฉพาะแถวที่ผ่านตัวกรอง ถ้าไม่มีผลลัพธ์จะเป็น `Showing 0 of 0` (และยังมี
   pager หน้า 1 จาก 1 พร้อมแถว "No data")
 - เปลี่ยนการค้นหา, ตัวกรอง หรือการเรียง → กลับไปหน้า 1; `setRows()` คงหน้าเดิมไว้แต่ปรับให้อยู่ในช่วง
   (หน้าที่ถูกปรับแล้วจะคงอยู่ ไม่เด้งกลับเมื่อข้อมูลเพิ่มขึ้น)
 - เปลี่ยนจำนวนแถวต่อหน้า → กลับไปหน้า 1
 - pager อยู่นอกตาราง และใช้ listener `click` ตัวเดียว (+ `change` ของ select) บน container ของ pager;
-  หลังคลิก focus จะอยู่ที่ปุ่มเดิม (ปุ่มหน้า, หรือก่อนหน้า/ถัดไปถ้ายังใช้งานได้ ไม่เช่นนั้นย้ายไปที่ `<nav>`)
+  หลังคลิก focus จะอยู่ที่ปุ่มเดิม (ปุ่มหน้า, หรือปุ่มลูกศรถ้ายังใช้งานได้ ไม่เช่นนั้นย้ายไปที่ `<nav>`)
 - ตัวแปร CSS: `--dg-pager-gap`, `--dg-pager-border`, `--dg-pager-bg`, `--dg-pager-active-bg`,
   `--dg-pager-active-color`, `--dg-pager-muted-color`, `--dg-pager-disabled-opacity`
+
+### Icons
+
+ไอคอนเป็น inline SVG ในตัว (Google Material Symbols แบบ outlined, weight 400, 24px; Apache-2.0 ดู `NOTICE`)
+ไม่มี icon font และไม่เรียกเครือข่ายตอนรัน แต่ละอันมี `viewBox="0 -960 960 960"`, `fill="currentColor"`,
+`aria-hidden="true"`, `focusable="false"`, ขนาด `1em` และห่อด้วย
+`<span class="dg-icon" data-icon="ชื่อ" aria-hidden="true">`
+
+| `IconName`                       | ใช้ที่                                  |
+| -------------------------------- | --------------------------------------- |
+| `arrow_upward`                   | หัวคอลัมน์ที่เรียง asc                  |
+| `arrow_downward`                 | หัวคอลัมน์ที่เรียง desc                 |
+| `unfold_more`                    | คอลัมน์ที่เรียงได้แต่ยังไม่เรียง (hint) |
+| `first_page` / `last_page`       | ปุ่มหน้าแรก / หน้าสุดท้าย               |
+| `chevron_left` / `chevron_right` | ปุ่มก่อนหน้า / ถัดไป                    |
+| `search`                         | นำหน้าช่องค้นหา                         |
+| `close`                          | ปุ่มล้างช่องค้นหา                       |
+| `inbox`                          | สถานะไม่มีข้อมูล                        |
+
+`options.icons` แทนไอคอนแต่ละอันด้วยสตริง SVG ของคุณ (ชื่อที่ไม่รู้จักหรือค่าที่ไม่ใช่สตริงถูกเมินเฉย)
+**สตริงนี้ถูกใส่เป็น HTML โดยไม่ escape — ผู้เรียกต้องไว้ใจได้ ห้ามใส่ข้อมูลผู้ใช้** ไอคอนของไลบรารีไม่เคยมีข้อมูลผู้ใช้ปนอยู่:
+ข้อความทั้งหมด (label, ค่าเซลล์) ถูก escape และอยู่นอกไอคอน ชนิด `IconName` export จาก `datagrid`
+
+```js
+new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>' } });
+```
+
+### Theming
+
+ตารางห่อด้วย `.dg-root` ตั้งธีมผ่านตัวแปร `--dg-*` บน `.dg-root` หรือ element บรรพบุรุษใดก็ได้
+ค่าเริ่มต้นเป็นโทนสว่าง และเปลี่ยนเป็นโทนมืดเมื่อ `prefers-color-scheme: dark` หรือมี `data-theme="dark"` บน element บรรพบุรุษ
+(`data-theme="light"` บังคับโทนสว่างแม้ OS เป็นโหมดมืด) ถ้าตั้งตัวแปรเอง ค่านั้นใช้ทั้งสองโทน
+ให้กำหนดแยกใต้ `[data-theme="dark"]` ถ้าต้องการให้ต่างกัน
+
+- รองรับ `forced-colors` (Windows High Contrast) และ `prefers-reduced-motion` (ปิด transition); transition ทั้งหมด ≤ 150ms
+- อุปกรณ์สัมผัส (`pointer: coarse`): ปุ่ม pager และปุ่มล้างสูงอย่างน้อย 44px
+- คอนเทนเนอร์กว้าง ≤ 600px: pager ซ้อนเป็นแนวตั้ง
+- line-height เริ่มต้น 1.6 เพื่อไม่ให้สระ/วรรณยุกต์ไทยถูกตัด
+
+| ตัวแปร                                                                                                                                                             | ความหมาย                                    | สว่าง / มืด                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | -------------------------------------------- |
+| `--dg-bg`                                                                                                                                                          | พื้นหลังตาราง/ช่อง                          | `#fff` / `#111827`                           |
+| `--dg-color`                                                                                                                                                       | สีข้อความ                                   | `#1f2937` / `#e5e7eb`                        |
+| `--dg-muted-color`                                                                                                                                                 | ข้อความรอง, ไอคอน                           | `#4b5563` / `#9ca3af`                        |
+| `--dg-border-color`                                                                                                                                                | เส้นคั่นแถว, กรอบตาราง                      | `#e5e7eb` / `#374151`                        |
+| `--dg-input-border`                                                                                                                                                | ขอบช่องค้นหา, ปุ่ม, select, เส้นใต้หัวตาราง | `#6b7280`                                    |
+| `--dg-header-bg` / `--dg-header-color`                                                                                                                             | หัวตาราง                                    | `#f3f4f6` `#111827` / `#1f2937` `#f9fafb`    |
+| `--dg-row-hover-bg`                                                                                                                                                | แถวเมื่อ hover                              | `#f3f4f6` / `#1f2937`                        |
+| `--dg-stripe-bg`                                                                                                                                                   | แถวคู่เมื่อ `striped`                       | `#f9fafb` / `#151e2e`                        |
+| `--dg-sort-hover-bg`                                                                                                                                               | หัวคอลัมน์/ปุ่มเมื่อ hover                  | `#e5e7eb` / `#374151`                        |
+| `--dg-accent` / `--dg-accent-contrast`                                                                                                                             | หน้าปัจจุบัน                                | `#1d4ed8` `#fff` / `#60a5fa` `#0b1220`       |
+| `--dg-focus-color`                                                                                                                                                 | วงโฟกัส                                     | `#1d4ed8` / `#93c5fd`                        |
+| `--dg-sort-indicator-color`                                                                                                                                        | ไอคอนเรียง                                  | ตาม `--dg-muted-color`                       |
+| `--dg-empty-color`                                                                                                                                                 | ข้อความไม่มีข้อมูล                          | ตาม `--dg-muted-color`                       |
+| `--dg-radius` / `--dg-input-radius`                                                                                                                                | มุมโค้งตาราง / ช่องและปุ่ม                  | `8px` / `6px`                                |
+| `--dg-cell-padding-y` / `--dg-cell-padding-x`                                                                                                                      | ระยะในเซลล์                                 | `12px` / `16px`                              |
+| `--dg-cell-padding-y-compact` / `--dg-cell-padding-x-compact`                                                                                                      | ระยะในเซลล์เมื่อ `density: 'compact'`       | `6px` / `12px`                               |
+| `--dg-toolbar-gap`                                                                                                                                                 | ระยะห่างแถบค้นหา/pager                      | `12px`                                       |
+| `--dg-font-family` / `--dg-font-size` / `--dg-line-height`                                                                                                         | ตัวอักษร                                    | system-ui + ฟอนต์ไทยของระบบ / `14px` / `1.6` |
+| `--dg-pager-gap`, `--dg-pager-border`, `--dg-pager-bg`, `--dg-pager-active-bg`, `--dg-pager-active-color`, `--dg-pager-muted-color`, `--dg-pager-disabled-opacity` | pager (ชื่อเดิม)                            | ตามธีม / `0.5`                               |
+
+ค่าเริ่มต้นผ่านเกณฑ์ contrast: ข้อความ ≥ 4.5:1, ไอคอนและขอบของ control ≥ 3:1 (เส้นคั่นแถวเป็นเส้นตกแต่ง)
+`--dg-input-radius`, `--dg-toolbar-gap`, `--dg-focus-color` และ `--dg-sort-indicator-color` มีค่าเริ่มต้นใหม่
+`npm run test:e2e` เก็บภาพหน้าตัวอย่างไว้ที่ `test-results/visual/` สำหรับตรวจด้วยตา
 
 ### Methods
 

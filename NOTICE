@@ -1,0 +1,20 @@
+DataGrid
+========
+
+This product bundles the following third-party material.
+
+Material Symbols (outlined, weight 400, 24px) - icon path data
+  Copyright Google LLC
+  Source:  https://github.com/google/material-design-icons
+           (symbols/web/<name>/materialsymbolsoutlined/<name>_24px.svg)
+  License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
+  Icons used: arrow_upward, arrow_downward, unfold_more, chevron_left, chevron_right,
+  first_page, last_page, search, close, inbox. They are embedded as inline SVG in
+  src/render/icons.js; the path data is unmodified.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+  these files except in compliance with the License. Unless required by applicable
+  law or agreed to in writing, software distributed under the License is distributed
+  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+  or implied.

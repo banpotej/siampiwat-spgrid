@@ -89,13 +89,19 @@
 }
 
 .dg-th {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.25em;
 }
 
+.dg-align-center .dg-th {
+  justify-content: center;
+}
+
+/* Reversed, so the icon sits on the inner side and flex-start is the right edge. */
 .dg-align-right .dg-th {
   flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 
 .dg-table th.dg-sortable {

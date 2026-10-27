@@ -3,6 +3,7 @@ import { DataGrid } from '../../src/index.js';
 import { ICONS, resolveIcons } from '../../src/render/icons.js';
 import { nav } from './helpers/pagination.js';
 
+/** @type {import('../../src/types.js').Column[]} */
 const columns = [
   { key: 'id', label: 'ID', sortable: true, align: 'right' },
   { key: 'name', label: 'Name', sortable: true },

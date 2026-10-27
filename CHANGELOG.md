@@ -36,9 +36,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--dg-pager-active-color`, `--dg-pager-muted-color`, `--dg-pager-disabled-opacity`.
 - Internal `computeView()` (`src/core/view.js`, filter -> sort -> paginate), `normalizeSort()` and
   `assertPageSize()`; `examples/basic.html` (3 rows) for the smoke/sort/filter e2e tests.
+- Material Symbols icons as inline SVG (`src/render/icons.js`, `NOTICE`; Apache-2.0, no new dependency, no network):
+  sort arrows and unsorted hint, First/Prev/Next/Last pager buttons, search and clear icons, empty-state inbox.
+  `options.icons` overrides any icon (trusted SVG string); `IconName` type exported.
+- Search box clear button (`labels.clear`), `labels.first` / `labels.last` and First/Last page buttons in the pager.
+- Look options `striped`, `density` ('compact' | 'comfortable'), `stickyHeader`, `maxHeight` and `column.align`.
+- Theming: modern default look, dark mode (`prefers-color-scheme` and `[data-theme="dark"]`), `forced-colors` and
+  `prefers-reduced-motion` support, container-query layout (<= 600px) and 44px touch targets. New CSS variables:
+  `--dg-bg`, `--dg-color`, `--dg-muted-color`, `--dg-border-color`, `--dg-header-bg`, `--dg-header-color`,
+  `--dg-row-hover-bg`, `--dg-stripe-bg`, `--dg-accent`, `--dg-accent-contrast`, `--dg-radius`,
+  `--dg-cell-padding-y`, `--dg-cell-padding-x`, `--dg-cell-padding-y-compact`, `--dg-cell-padding-x-compact`,
+  `--dg-font-family`, `--dg-font-size`, `--dg-line-height`.
+- Visual e2e (`tests/e2e/visual.spec.js`) writes screenshots to `test-results/visual/`; no snapshot assertions yet.
 
 ### Changed
 
+- Markup: everything is wrapped in `.dg-root`; header cells hold `<span class="dg-th">` with the label and the sort
+  icon (the CSS `::after` sort glyph is gone); Prev/Next are icon buttons named by `aria-label` (no text);
+  the empty row holds an icon and the text in `.dg-empty-content`.
+- Default look changed (borders, radius, colors, padding); `--dg-input-radius`, `--dg-toolbar-gap`,
+  `--dg-focus-color` and `--dg-sort-indicator-color` have new default values.
+- CSS is split into `src/styles/*.css`, imported by `src/datagrid.css` (still one `datagrid.css` in `dist/`).
+- `NOTICE` is published with the package (`files` in `package.json`).
+- `examples/index.html` shows four grids (default, compact + striped, sticky header, dark panel); the pagination
+  e2e is scoped to `#grid-default`.
 - `setRows()` no longer re-renders when given the same array; `render()` still forces a re-render.
 - `setRows()` after `destroy()` no longer renders into the container.
 - `sortRows()` compares `Date` by `getTime()`, booleans as `false < true`, and sorts `NaN` last like `null`.

@@ -3,10 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>DataGrid example</title>
+    <style>
+      /* Page chrome for the demo only; the grid themes itself. */
+      body {
+        margin: 0;
+        padding: 24px 16px;
+        background: #f3f4f6;
+        color: #111827;
+        font-family: system-ui, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        body:not([data-page-theme='light']) {
+          background: #0b1220;
+          color: #e5e7eb;
+        }
+      }
+      main {
+        display: grid;
+        gap: 40px;
+        max-width: 880px;
+        margin: 0 auto;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .panel-dark {
+        padding: 16px;
+        border-radius: 12px;
+        background: #0b1220;
+        color: #e5e7eb;
+      }
+    </style>
   </head>
   <body>
-    <div id="grid"></div>
+    <main>
+      <section>
+        <h2>Default</h2>
+        <div id="grid-default"></div>
+      </section>
+      <section>
+        <h2>Compact + striped</h2>
+        <div id="grid-compact"></div>
+      </section>
+      <section>
+        <h2>Sticky header, maxHeight 240</h2>
+        <div id="grid-sticky"></div>
+      </section>
+      <section class="panel-dark" data-theme="dark">
+        <h2>Dark panel (data-theme="dark")</h2>
+        <div id="grid-dark"></div>
+      </section>
+    </main>
     <script type="module">
       import { DataGrid } from '/src/index.js';
 
@@ -22,18 +73,30 @@
           role: roles[(i + 3) % roles.length],
         })),
       ];
+      const columns = [
+        { key: 'id', label: 'ID', sortable: true, align: 'right' },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'role', label: 'Role', sortable: true },
+      ];
+      const pager = { pageSize: 5, pageSizeOptions: [5, 10, 25] };
+      const grid = (id) => document.getElementById(id);
 
-      new DataGrid(document.getElementById('grid'), {
-        columns: [
-          { key: 'id', label: 'ID', sortable: true },
-          { key: 'name', label: 'Name', sortable: true },
-          { key: 'role', label: 'Role', sortable: true },
-        ],
+      new DataGrid(grid('grid-default'), { columns, rows, searchable: true, ...pager });
+      new DataGrid(grid('grid-compact'), {
+        columns,
         rows,
         searchable: true,
-        pageSize: 5,
-        pageSizeOptions: [5, 10, 25],
+        density: 'compact',
+        striped: true,
+        ...pager,
       });
+      new DataGrid(grid('grid-sticky'), {
+        columns,
+        rows,
+        stickyHeader: true,
+        maxHeight: 240,
+      });
+      new DataGrid(grid('grid-dark'), { columns, rows, searchable: true, striped: true, ...pager });
     </script>
   </body>
 </html>

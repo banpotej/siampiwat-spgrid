@@ -15,7 +15,8 @@
     "./style.css": "./dist/datagrid.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "engines": {
     "node": ">=22"
