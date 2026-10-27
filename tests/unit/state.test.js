@@ -80,6 +80,17 @@ describe('createState', () => {
     expect(two).toHaveBeenCalledTimes(1);
   });
 
+  it('passes the same new and previous state to every subscriber', () => {
+    const state = createState({ a: 1 });
+    const one = vi.fn();
+    const two = vi.fn();
+    state.subscribe(one);
+    state.subscribe(two);
+    state.set({ a: 2 });
+    expect(one).toHaveBeenCalledWith({ a: 2 }, { a: 1 });
+    expect(two).toHaveBeenCalledWith({ a: 2 }, { a: 1 });
+  });
+
   it('subscribe returns an unsubscribe function', () => {
     const state = createState({ a: 1 });
     const fn = vi.fn();
