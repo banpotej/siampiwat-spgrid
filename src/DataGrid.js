@@ -1,8 +1,10 @@
 // @ts-check
 import { createEmitter } from './core/emitter.js';
 import { filterRows, isSameFilter, normalizeFilter } from './core/filter.js';
-import { nextDirection, sortRows } from './core/sort.js';
+import { sortRows } from './core/sort.js';
 import { createState } from './core/state.js';
+import { bindHeaderEvents } from './render/headerEvents.js';
+import { bindSearchEvents } from './render/searchEvents.js';
 import { renderShell } from './render/toolbar.js';
 import { renderTable } from './render/table.js';
 import './datagrid.css';
@@ -11,14 +13,7 @@ import './datagrid.css';
 /** @typedef {import('./types.js').Row} Row */
 /** @typedef {import('./types.js').SortState} SortState */
 /** @typedef {import('./types.js').FilterState} FilterState */
-/**
- * @typedef {{
- *   columns: DataGridOptions['columns'],
- *   rows: Row[],
- *   sort: SortState,
- *   filter: FilterState | null,
- * }} GridState
- */
+/** @typedef {import('./types.js').GridState} GridState */
 
 const DEFAULT_DEBOUNCE = 200;
 
@@ -31,20 +26,15 @@ export class DataGrid {
   #status;
   /** @type {HTMLInputElement | null} */
   #search;
-  /** @type {HTMLElement | null} */
-  #toolbar;
+  #unbindSearch = () => {};
   /** @type {import('./core/state.js').State<GridState>} */
   #state;
   /** @type {() => void} */
   #unsubscribe;
   #events = createEmitter(/** @type {const} */ (['sortChange', 'filterChange']));
   #locale;
-  #debounce;
   #labels;
-  /** @type {ReturnType<typeof setTimeout> | undefined} */
-  #timer;
-  /** @type {HTMLElement | null} */
-  #thead = null;
+  #unbindHeader = () => {};
   #destroyed = false;
 
   /**
@@ -57,7 +47,6 @@ export class DataGrid {
     }
     this.#container = container;
     this.#locale = options.locale;
-    this.#debounce = options.searchDebounce ?? DEFAULT_DEBOUNCE;
     this.#labels = { search: 'Search', empty: 'No data', ...options.labels };
     if (options.onSortChange) this.#events.on('sortChange', options.onSortChange);
     if (options.onFilterChange) this.#events.on('filterChange', options.onFilterChange);
@@ -66,11 +55,19 @@ export class DataGrid {
       searchable: options.searchable === true,
       searchLabel: this.#labels.search,
     });
-    this.#host = /** @type {HTMLElement} */ (container.querySelector('.dg-table-wrap'));
-    this.#status = /** @type {HTMLElement} */ (container.querySelector('.dg-status'));
-    this.#toolbar = container.querySelector('.dg-toolbar');
-    this.#search = container.querySelector('.dg-search');
-    this.#toolbar?.addEventListener('input', this.#onInput);
+    this.#host = /** @type {HTMLElement} */ (container.querySelector('div.dg-table-wrap'));
+    this.#status = /** @type {HTMLElement} */ (container.querySelector('div.dg-status'));
+    this.#search = /** @type {HTMLInputElement | null} */ (
+      container.querySelector('input.dg-search')
+    );
+    const toolbar = /** @type {HTMLElement | null} */ (container.querySelector('div.dg-toolbar'));
+    if (toolbar && this.#search) {
+      this.#unbindSearch = bindSearchEvents(toolbar, this.#search, {
+        debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
+        onSearch: (search) =>
+          this.#applyFilter({ search, columnFilters: this.#state.get().filter?.columnFilters }),
+      });
+    }
 
     this.#state = createState(
       /** @type {GridState} */ ({
@@ -127,9 +124,7 @@ export class DataGrid {
   }
 
   /**
-   * Also writes `search` into the search box. Global search only looks at the
-   * keys of `options.columns`.
-   *
+   * Also writes `search` into the search box; global search only covers `options.columns`.
    * @param {FilterState | null} filter `{ search, columnFilters }` or null to clear.
    * @throws {RangeError} a `columnFilters` key is not a column
    */
@@ -173,16 +168,17 @@ export class DataGrid {
     );
     this.#host.innerHTML = renderTable(columns, visible, sort, this.#labels.empty);
     this.#status.textContent = visible.length === 0 ? this.#labels.empty : '';
-    this.#bindHeader();
+    this.#unbindHeader = bindHeaderEvents(this.#host, {
+      getSort: () => this.getSort(),
+      setSort: (sort) => this.setSort(sort),
+    });
   }
 
   destroy() {
     this.#destroyed = true;
-    clearTimeout(this.#timer);
-    this.#timer = undefined;
+    this.#unbindSearch();
     this.#unsubscribe();
     this.#unbindHeader();
-    this.#toolbar?.removeEventListener('input', this.#onInput);
     this.#events.clear();
     this.#container.innerHTML = '';
   }
@@ -199,52 +195,4 @@ export class DataGrid {
     if (isSameFilter(current, next)) return;
     this.#state.set({ filter: next });
   }
-
-  // One delegated listener on the static toolbar; the table is never touched
-  // while the user types, only after the debounce.
-  /** @param {Event} e */
-  #onInput = (e) => {
-    if (this.#destroyed || e.target !== this.#search) return;
-    clearTimeout(this.#timer);
-    this.#timer = setTimeout(() => {
-      this.#timer = undefined;
-      const columnFilters = this.#state.get().filter?.columnFilters;
-      this.#applyFilter({ search: this.#search?.value, columnFilters });
-    }, this.#debounce);
-  };
-
-  // The table is rebuilt on every render, so the one delegated listener
-  // pair is re-attached to the fresh <thead> rather than to each <th>.
-  #bindHeader() {
-    this.#thead = this.#host.querySelector('thead');
-    this.#thead?.addEventListener('click', this.#onHeader);
-    this.#thead?.addEventListener('keydown', this.#onHeader);
-  }
-
-  #unbindHeader() {
-    this.#thead?.removeEventListener('click', this.#onHeader);
-    this.#thead?.removeEventListener('keydown', this.#onHeader);
-    this.#thead = null;
-  }
-
-  /** @param {Event} e */
-  #onHeader = (e) => {
-    if (e instanceof KeyboardEvent && e.key !== 'Enter' && e.key !== ' ') return;
-    const th = e.target instanceof Element ? e.target.closest('th.dg-sortable') : null;
-    const key = th instanceof HTMLElement ? th.dataset.key : undefined;
-    if (!th || key === undefined) return;
-    if (e instanceof KeyboardEvent) e.preventDefault(); // Space must not scroll the page
-
-    const hadFocus = document.activeElement === th;
-    const { sort } = this.#state.get();
-    const direction = nextDirection(sort?.key === key ? sort.direction : null);
-    this.setSort(direction && { key, direction });
-
-    // Re-rendering replaced the header; give keyboard users their place back.
-    if (hadFocus) {
-      for (const cell of this.#host.querySelectorAll('th.dg-sortable')) {
-        if (cell instanceof HTMLElement && cell.dataset.key === key) cell.focus();
-      }
-    }
-  };
 }

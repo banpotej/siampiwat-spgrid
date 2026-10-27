@@ -27,6 +27,14 @@
  */
 
 /**
+ * @typedef {object} GridState Internal state of a DataGrid.
+ * @property {Column[]} columns
+ * @property {Row[]} rows
+ * @property {SortState} sort
+ * @property {FilterState | null} filter
+ */
+
+/**
  * @typedef {object} DataGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
