@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filterRows } from '../../src/core/filter.js';
+import { filterRows, isSameFilter, normalizeFilter } from '../../src/core/filter.js';
 
 const rows = [
   { id: 1, name: 'Ada Lovelace', role: 'Engineer', active: true },
@@ -154,5 +154,38 @@ describe('filterRows locale', () => {
     const data = [{ id: 1, n: 'I' }];
     expect(ids(filterRows(data, { search: 'i' }))).toEqual([1]);
     expect(ids(filterRows(data, { search: 'i' }, { locale: 'tr' }))).toEqual([]);
+  });
+});
+
+describe('normalizeFilter', () => {
+  it('returns null when nothing is active', () => {
+    for (const f of [null, undefined, {}, { search: '  ' }, { columnFilters: { a: ' ' } }]) {
+      expect(normalizeFilter(f)).toBeNull();
+    }
+  });
+
+  it('keeps only active parts and drops `columns`', () => {
+    expect(
+      normalizeFilter({ search: 'ada ', columns: ['x'], columnFilters: { a: 'q', b: '' } }),
+    ).toEqual({ search: 'ada ', columnFilters: { a: 'q' } });
+    expect(normalizeFilter({ columnFilters: { a: 'q' } })).toEqual({ columnFilters: { a: 'q' } });
+  });
+
+  it('returns a copy', () => {
+    const columnFilters = { a: 'q' };
+    expect(normalizeFilter({ columnFilters })?.columnFilters).not.toBe(columnFilters);
+  });
+});
+
+describe('isSameFilter', () => {
+  it('compares normalized values', () => {
+    expect(isSameFilter(null, { search: ' ' })).toBe(true);
+    expect(isSameFilter({ search: 'a' }, { search: 'a' })).toBe(true);
+    expect(isSameFilter({ search: 'a' }, { search: 'b' })).toBe(false);
+    expect(isSameFilter({ search: 'a' }, null)).toBe(false);
+    expect(isSameFilter({ columnFilters: { a: 'x' } }, { columnFilters: { a: 'x' } })).toBe(true);
+    expect(isSameFilter({ columnFilters: { a: 'x' } }, { columnFilters: { a: 'y' } })).toBe(false);
+    expect(isSameFilter({ columnFilters: { a: 'x' } }, { columnFilters: { b: 'x' } })).toBe(false);
+    expect(isSameFilter({ columnFilters: { a: 'x' } }, { search: 'x' })).toBe(false);
   });
 });

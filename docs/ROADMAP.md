@@ -5,7 +5,7 @@
   - [x] sort core
   - [x] sort UI
   - [x] filter core
-  - [ ] filter UI
+  - [x] filter UI
   - [ ] pagination core
   - [ ] pagination UI
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

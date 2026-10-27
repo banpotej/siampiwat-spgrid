@@ -1,8 +1,4 @@
 .dg-table {
-  --dg-sort-indicator-color: currentColor;
-  --dg-focus-color: #2563eb;
-  --dg-sort-hover-bg: #ebebeb;
-
   border-collapse: collapse;
   width: 100%;
   font:
@@ -27,18 +23,18 @@
 }
 
 .dg-table th.dg-sortable:hover {
-  background: var(--dg-sort-hover-bg);
+  background: var(--dg-sort-hover-bg, #ebebeb);
 }
 
 .dg-table th.dg-sortable:focus-visible {
-  outline: 2px solid var(--dg-focus-color);
+  outline: 2px solid var(--dg-focus-color, #2563eb);
   outline-offset: -2px;
 }
 
 .dg-table th[aria-sort]::after {
   margin-inline-start: 0.4em;
   font-size: 0.75em;
-  color: var(--dg-sort-indicator-color);
+  color: var(--dg-sort-indicator-color, currentColor);
 }
 
 .dg-table th[aria-sort='ascending']::after {
@@ -47,4 +43,37 @@
 
 .dg-table th[aria-sort='descending']::after {
   content: '\25BC';
+}
+
+.dg-toolbar {
+  margin-bottom: var(--dg-toolbar-gap, 8px);
+}
+
+.dg-search {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 20em;
+  padding: 6px 10px;
+  border: 1px solid var(--dg-input-border, #bbb);
+  border-radius: var(--dg-input-radius, 4px);
+  font: inherit;
+}
+
+.dg-search:focus-visible {
+  outline: 2px solid var(--dg-focus-color, #2563eb);
+  outline-offset: 1px;
+}
+
+.dg-table tr.dg-empty td {
+  color: var(--dg-empty-color, #666);
+  text-align: center;
+}
+
+.dg-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

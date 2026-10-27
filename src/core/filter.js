@@ -37,6 +37,42 @@ const wordHits = (cell, words, locale) => {
 };
 
 /**
+ * Canonical form of a filter: only active parts, copied; null when nothing is active.
+ * `columns` is dropped (it is a grid-level setting, not part of the user's filter).
+ *
+ * @param {FilterState | null | undefined} filter
+ * @returns {FilterState | null}
+ */
+export function normalizeFilter(filter) {
+  if (!filter) return null;
+  /** @type {FilterState} */
+  const out = {};
+  if (typeof filter.search === 'string' && filter.search.trim() !== '') out.search = filter.search;
+  /** @type {Record<string, string>} */
+  const columnFilters = {};
+  for (const [key, text] of Object.entries(filter.columnFilters ?? {})) {
+    if (typeof text === 'string' && text.trim() !== '') columnFilters[key] = text;
+  }
+  if (Object.keys(columnFilters).length > 0) out.columnFilters = columnFilters;
+  return out.search === undefined && !out.columnFilters ? null : out;
+}
+
+/**
+ * @param {FilterState | null | undefined} a
+ * @param {FilterState | null | undefined} b
+ * @returns {boolean} Whether both normalize to the same filter.
+ */
+export function isSameFilter(a, b) {
+  const x = normalizeFilter(a);
+  const y = normalizeFilter(b);
+  if (!x || !y) return x === y;
+  if (x.search !== y.search) return false;
+  const xf = Object.entries(x.columnFilters ?? {});
+  const yf = y.columnFilters ?? {};
+  return xf.length === Object.keys(yf).length && xf.every(([key, text]) => yf[key] === text);
+}
+
+/**
  * Filter rows by a global search and/or per-column filters. Pure: returns a
  * new array of the same row objects and never mutates `rows`.
  *

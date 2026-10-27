@@ -5,8 +5,12 @@
 - `container: HTMLElement` – จุดที่ใช้ติดตั้ง (mount) ตาราง
 - `options.columns: { key: string, label?: string, sortable?: boolean }[]`
 - `options.rows?: Record<string, unknown>[]`
-- `options.locale?: string` – locale ของ `Intl.Collator` ที่ใช้เรียงสตริง (ค่าเริ่มต้น `'th'`)
+- `options.locale?: string` – locale ที่ใช้เรียงสตริง (`Intl.Collator`) และแปลงเป็นตัวพิมพ์เล็กตอนค้นหา (ค่าเริ่มต้น `'th'`)
 - `options.onSortChange?: (sort: SortState) => void` – เรียกทุกครั้งที่การเรียงเปลี่ยน
+- `options.searchable?: boolean` – แสดงช่องค้นหา (`<input type="search">`) เหนือตาราง
+- `options.searchDebounce?: number` – หน่วงเวลา (ms) หลังพิมพ์ก่อนกรอง (ค่าเริ่มต้น `200`)
+- `options.labels?: { search?: string, empty?: string }` – ข้อความ UI: `aria-label` ของช่องค้นหา (`'Search'`) และข้อความเมื่อไม่มีแถว (`'No data'`)
+- `options.onFilterChange?: (filter: FilterState | null) => void` – เรียกทุกครั้งที่ตัวกรองเปลี่ยน
 
 ค่าในเซลล์จะถูก HTML-escape
 
@@ -22,7 +26,25 @@
 - ตัวบ่งชี้ลูกศรวาดด้วย CSS `::after` ปรับสีได้ด้วย `--dg-sort-indicator-color`
   (และ `--dg-focus-color`, `--dg-sort-hover-bg`)
 
+ตัวแปร CSS อื่น: `--dg-toolbar-gap`, `--dg-input-border`, `--dg-input-radius`, `--dg-empty-color`
+
 `SortState` คือ `{ key: string, direction: 'asc' | 'desc' } | null`
+
+### Filtering
+
+เมื่อ `searchable: true` ผู้ใช้พิมพ์ในช่องค้นหาแล้วตารางจะกรองหลังหยุดพิมพ์ตาม `searchDebounce`
+(ช่องว่างจะล้างตัวกรอง) ช่องค้นหาไม่ถูกเรนเดอร์ใหม่ จึงไม่เสีย focus/caret ระหว่างพิมพ์
+
+- ค้นหาแบบ substring ไม่สนตัวพิมพ์ใหญ่/เล็ก และไม่สนรูปแบบการเข้ารหัสของตัวอักษร (NFC)
+- หลายคำคั่นด้วยช่องว่าง = ต้องตรงทุกคำ (AND) โดยแต่ละคำตรงคนละคอลัมน์ได้
+- ค้นเฉพาะ `key` ใน `options.columns` — ฟิลด์อื่นของแถวที่ไม่ได้แสดงจะไม่ถูกค้น
+- `null`/`undefined` ไม่เคยตรง; ตัวเลข, boolean, `Date` เทียบผ่าน `String()`
+- ลำดับการทำงาน: กรองก่อน แล้วจึงเรียง; `setRows()` คงตัวกรองและการเรียงเดิมไว้
+- ถ้าไม่มีแถวที่แสดง จะมีแถวเดียว `labels.empty` (colspan = จำนวนคอลัมน์) และประกาศผ่าน
+  live region (`role="status"`, `aria-live="polite"`)
+
+`FilterState` คือ `{ search?: string, columnFilters?: Record<string, string> }`
+(`columnFilters` กรองตามคอลัมน์ แบบ AND; ยังไม่มี UI ให้ใช้ ต้องเรียกผ่าน `setFilter`)
 
 ### Methods
 
@@ -32,8 +54,13 @@
   ไม่ใช่คอลัมน์ และ `TypeError` ถ้า `direction` ไม่ถูกต้อง
 - `on('sortChange', fn)` – รับเหตุการณ์เมื่อการเรียงเปลี่ยน (ทั้งจากการคลิกและ `setSort`; ไม่เรียกถ้า
   ค่าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
-- `render()` – เรนเดอร์ใหม่
-- `destroy()` – ถอด event listener และล้างเนื้อหาใน container; หลังจากนั้นทุกเมธอดไม่ทำอะไร
+- `getFilter()` – คืน `FilterState` ปัจจุบัน (สำเนา) หรือ `null` เมื่อไม่ได้กรอง
+- `setFilter(filter)` – ตั้งตัวกรองด้วย `{ search, columnFilters }` หรือ `null` เพื่อล้าง และเขียน `search`
+  ลงในช่องค้นหาด้วย; โยน `RangeError` ถ้า key ใน `columnFilters` ไม่ใช่คอลัมน์
+- `on('filterChange', fn)` – รับเหตุการณ์เมื่อตัวกรองเปลี่ยน (ครั้งเดียวต่อการเปลี่ยน ไม่ใช่ทุกตัวอักษร; ไม่เรียกถ้า
+  ค่าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
+- `render()` – เรนเดอร์ตารางใหม่ (ช่องค้นหาไม่ถูกแตะ)
+- `destroy()` – ถอด event listener, ยกเลิก debounce ที่ค้างอยู่ และล้างเนื้อหาใน container; หลังจากนั้นทุกเมธอดไม่ทำอะไร
 
 ## `escapeHtml(value)`
 

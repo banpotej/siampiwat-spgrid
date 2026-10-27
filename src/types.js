@@ -30,8 +30,18 @@
  * @typedef {object} DataGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
- * @property {string} [locale] Collator locale used to sort strings; default 'th'.
+ * @property {string} [locale] Locale for sorting strings and lower-casing search text; default 'th'.
  * @property {(sort: SortState) => void} [onSortChange] Called whenever the sort changes.
+ * @property {boolean} [searchable] Render a search box above the table.
+ * @property {number} [searchDebounce] Milliseconds to wait after typing before filtering; default 200.
+ * @property {Labels} [labels] UI texts.
+ * @property {(filter: FilterState | null) => void} [onFilterChange] Called whenever the filter changes.
+ */
+
+/**
+ * @typedef {object} Labels
+ * @property {string} [search] aria-label of the search box; default 'Search'.
+ * @property {string} [empty] Text shown when there are no rows; default 'No data'.
  */
 
 export {};

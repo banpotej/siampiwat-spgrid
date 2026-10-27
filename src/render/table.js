@@ -27,15 +27,19 @@ function renderHeaderCell(column, sort) {
  * @param {Column[]} columns
  * @param {Row[]} rows Already in display order.
  * @param {SortState} sort
+ * @param {string} emptyText Shown in a single full-width row when there are no rows.
  * @returns {string}
  */
-export function renderTable(columns, rows, sort) {
+export function renderTable(columns, rows, sort, emptyText) {
   const head = columns.map((c) => renderHeaderCell(c, sort)).join('');
-  const body = rows
-    .map((row) => {
-      const cells = columns.map((c) => `<td>${escapeHtml(row[c.key])}</td>`).join('');
-      return `<tr>${cells}</tr>`;
-    })
-    .join('');
+  const body =
+    rows.length === 0
+      ? `<tr class="dg-empty"><td colspan="${Math.max(columns.length, 1)}">${escapeHtml(emptyText)}</td></tr>`
+      : rows
+          .map((row) => {
+            const cells = columns.map((c) => `<td>${escapeHtml(row[c.key])}</td>`).join('');
+            return `<tr>${cells}</tr>`;
+          })
+          .join('');
   return `<table class="dg-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
 }
