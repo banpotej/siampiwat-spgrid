@@ -4,7 +4,7 @@
 - **Phase 1:**
   - [x] sort core
   - [x] sort UI
-  - [ ] filter core
+  - [x] filter core
   - [ ] filter UI
   - [ ] pagination core
   - [ ] pagination UI

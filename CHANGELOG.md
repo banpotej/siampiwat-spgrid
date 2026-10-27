@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`--dg-sort-indicator-color`, `--dg-focus-color`, `--dg-sort-hover-bg`).
 - `getSort()`, `setSort()` and `on('sortChange', fn)` methods; `locale` and `onSortChange` options.
 - `test:watch` npm script.
+- Internal `filterRows()` (`src/core/filter.js`) and `FilterState` type: case-insensitive,
+  accent-safe global search (words ANDed) plus per-column filters. Not wired into `DataGrid` yet.
 
 ### Changed
 

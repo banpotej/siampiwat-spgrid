@@ -20,6 +20,13 @@
  */
 
 /**
+ * @typedef {object} FilterState
+ * @property {string | null} [search] Global search; whitespace-separated words are ANDed.
+ * @property {string[]} [columns] Column keys the global search looks at; default: every key of the row.
+ * @property {Record<string, string | null | undefined>} [columnFilters] Per-column substring filters, ANDed.
+ */
+
+/**
  * @typedef {object} DataGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
