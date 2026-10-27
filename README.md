@@ -27,7 +27,7 @@ Cell values are HTML-escaped. See [docs/API.md](docs/API.md) for the full API.
 
 ## Commands
 
-- `npm run dev` – dev server, example at `/examples/index.html`; PO List demo at `/examples/procurement.html`
+- `npm run dev` – dev server, example at `/examples/index.html`
 - `npm run build` – library bundle and `.d.ts` into `dist/`
 - `npm test` – unit tests
 - `npm run test:e2e` – Playwright end-to-end tests

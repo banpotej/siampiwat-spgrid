@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// examples/index.html, first grid (#grid-default): 25 rows (ids 1-25), pageSize 5, pageSizeOptions [5, 10, 25].
+// tests/e2e/fixtures/grids.html, first grid (#grid-default): 25 rows (ids 1-25), pageSize 5, pageSizeOptions [5, 10, 25].
 // The page shows several grids, so everything is scoped to this one.
 /** @param {import('@playwright/test').Page} page */
 const grid = (page) => page.locator('#grid-default');
@@ -8,7 +8,7 @@ const grid = (page) => page.locator('#grid-default');
 const ids = (page) => grid(page).locator('tbody tr td:first-child');
 
 test('starts on page 1 with the pager and summary', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   await expect(ids(page)).toHaveText(['1', '2', '3', '4', '5']);
   await expect(grid(page).getByRole('navigation', { name: 'การแบ่งหน้า' })).toBeVisible();
   await expect(grid(page).getByText('แสดง 1–5 จาก 25 รายการ')).toBeVisible();
@@ -19,7 +19,7 @@ test('starts on page 1 with the pager and summary', async ({ page }) => {
 test('Next moves through pages; a size of 10 gives rows 11-20 and a last page of 5', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   await grid(page).getByLabel('จำนวนแถวต่อหน้า').selectOption('10');
   await expect(ids(page)).toHaveCount(10);
 
@@ -34,7 +34,7 @@ test('Next moves through pages; a size of 10 gives rows 11-20 and a last page of
 });
 
 test('searching goes back to page 1', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   await grid(page).getByRole('button', { name: '3', exact: true }).click();
   await expect(grid(page).locator('[aria-current="page"]')).toHaveText('3');
 
@@ -49,7 +49,7 @@ test('searching goes back to page 1', async ({ page }) => {
 });
 
 test('sorting goes back to page 1 and sorts across all pages', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   await grid(page).getByRole('button', { name: 'ถัดไป' }).click();
   await expect(ids(page).first()).toHaveText('6');
 
@@ -61,7 +61,7 @@ test('sorting goes back to page 1 and sorts across all pages', async ({ page }) 
 });
 
 test('focus stays on the pager while paging with the keyboard', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   const next = grid(page).getByRole('button', { name: 'ถัดไป' });
   await next.focus();
   await page.keyboard.press('Enter');

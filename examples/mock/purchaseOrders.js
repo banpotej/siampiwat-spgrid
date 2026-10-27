@@ -16,7 +16,8 @@ const VENDORS = [
 ];
 const CREATORS = ['demo01', 'demo02', 'demo03', 'sample07', 'sample12', 'test099'];
 const TYPES = ['Expense', 'Asset'];
-const STATUSES = ['เสร็จสิ้น', 'ไม่อนุมัติ', 'รออนุมัติ'];
+const STATUSES = ['เสร็จสิ้น', 'ไม่อนุมัติ', 'รออนุมัติ', 'ยกเลิก'];
+const CREATION_TYPES = ['จัดซื้อ', 'อัตโนมัติ'];
 const DAY_MS = 86_400_000;
 // A fixed "today" keeps the dates (and so any test) stable.
 const BASE_DATE = Date.UTC(2026, 9, 27, 12);
@@ -35,7 +36,9 @@ function mulberry32(seed) {
 /**
  * @param {number} [count]
  * @returns {{ id: number, rfqNumber: string, poNumber: string, submittedDate: Date, purchasingType: string,
- *   status: string, vendor: string, creator: string, canCancel: boolean }[]}
+ *   status: string, vendor: string, creator: string, deliveryDate: Date, recipient: string, claimer: string,
+ *   cancelBy: string, companyCode: string, deliveryComplete: boolean, creationType: string,
+ *   canCancel: boolean }[]}
  */
 export function createPurchaseOrders(count = 60) {
   const rand = mulberry32(20261027);
@@ -45,15 +48,24 @@ export function createPurchaseOrders(count = 60) {
   return Array.from({ length: count }, (_, i) => {
     const rfqNumber = rand() < 0.4 ? '' : `100/RQ/C${digits(12000 + Math.floor(rand() * 9000))}`;
     const status = pick(STATUSES);
+    const submittedDate = new Date(BASE_DATE - Math.floor(rand() * 60) * DAY_MS);
+    const optional = (/** @type {number} */ chance) => (rand() < chance ? pick(CREATORS) : '');
     return {
       id: i + 1,
       rfqNumber,
       poNumber: `100/PO/C${digits(125423 - i)}`,
-      submittedDate: new Date(BASE_DATE - Math.floor(rand() * 60) * DAY_MS),
+      submittedDate,
       purchasingType: pick(TYPES),
       status,
       vendor: pick(VENDORS),
       creator: pick(CREATORS),
+      deliveryDate: new Date(submittedDate.getTime() + (1 + Math.floor(rand() * 30)) * DAY_MS),
+      recipient: optional(0.6),
+      claimer: optional(0.5),
+      cancelBy: status === 'ยกเลิก' ? pick(CREATORS) : '',
+      companyCode: '100',
+      deliveryComplete: status === 'เสร็จสิ้น' && rand() < 0.5,
+      creationType: pick(CREATION_TYPES),
       canCancel: status === 'เสร็จสิ้น' && rfqNumber === '',
     };
   });

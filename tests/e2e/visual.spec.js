@@ -13,7 +13,7 @@ for (const { name, colorScheme, width } of shots) {
   test(`screenshot: examples page, ${name}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ colorScheme });
-    await page.goto('/examples/index.html');
+    await page.goto('/tests/e2e/fixtures/grids.html');
     await expect(page.locator('.dg-root')).toHaveCount(4);
 
     // Hover a header and open a few states so the shot shows more than the idle look.
@@ -27,7 +27,7 @@ for (const { name, colorScheme, width } of shots) {
 }
 
 test('the empty state screenshot shows the inbox icon', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/tests/e2e/fixtures/grids.html');
   const search = page.locator('#grid-default').getByRole('searchbox');
   await search.fill('zzz');
   await expect(page.locator('#grid-default [data-icon="inbox"]')).toBeVisible();

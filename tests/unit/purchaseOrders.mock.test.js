@@ -27,10 +27,19 @@ describe('createPurchaseOrders', () => {
     expect(rows.some((r) => r.rfqNumber === '')).toBe(true);
   });
 
-  it('uses valid Date objects', () => {
+  it('uses valid Date objects, delivering after submission', () => {
     for (const r of createPurchaseOrders()) {
-      expect(r.submittedDate).toBeInstanceOf(Date);
-      expect(Number.isNaN(r.submittedDate.getTime())).toBe(false);
+      for (const d of [r.submittedDate, r.deliveryDate]) {
+        expect(d).toBeInstanceOf(Date);
+        expect(Number.isNaN(d.getTime())).toBe(false);
+      }
+      expect(r.deliveryDate.getTime()).toBeGreaterThan(r.submittedDate.getTime());
     }
+  });
+
+  it('fills cancelBy only for cancelled rows and covers every status', () => {
+    const rows = createPurchaseOrders();
+    for (const r of rows) expect(r.cancelBy !== '').toBe(r.status === 'ยกเลิก');
+    expect(new Set(rows.map((r) => r.status)).size).toBe(4);
   });
 });

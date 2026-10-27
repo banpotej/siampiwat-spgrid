@@ -3,102 +3,98 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <title>DataGrid example</title>
+    <title>DataGrid procurement example</title>
     <style>
-      /* Page chrome for the demo only; the grid themes itself. */
       body {
         margin: 0;
         padding: 24px 16px;
         background: #f3f4f6;
-        color: #111827;
         font-family: system-ui, sans-serif;
       }
-      @media (prefers-color-scheme: dark) {
-        body:not([data-page-theme='light']) {
-          background: #0b1220;
-          color: #e5e7eb;
-        }
-      }
       main {
-        display: grid;
-        gap: 40px;
-        max-width: 880px;
+        max-width: 900px;
         margin: 0 auto;
       }
-      h2 {
-        margin: 0 0 12px;
-        font-size: 16px;
-        font-weight: 600;
+      h1 {
+        margin: 0 0 8px;
+        font-size: 18px;
       }
-      .panel-dark {
-        padding: 16px;
-        border-radius: 12px;
-        background: #0b1220;
-        color: #e5e7eb;
+      p {
+        margin: 0 0 16px;
+        font-size: 13px;
+        color: #4b5563;
+      }
+      /* The table is wider than the container. The grid's wrapper clips by default (overflow: clip),
+         so this example turns that into horizontal scrolling; the pager stays put. */
+      #grid .dg-table-wrap {
+        overflow-x: auto;
+      }
+      #grid .dg-table {
+        min-width: 1900px;
+      }
+      /* Two-line bilingual headers: the label holds a newline. */
+      #grid .dg-th-label {
+        white-space: pre-line;
       }
     </style>
   </head>
   <body>
     <main>
-      <p><a href="/examples/procurement.html">ตัวอย่าง: PO List (procurement)</a></p>
-      <section>
-        <h2>ค่าเริ่มต้น</h2>
-        <div id="grid-default"></div>
-      </section>
-      <section>
-        <h2>แบบกะทัดรัด + แถวสลับสี</h2>
-        <div id="grid-compact"></div>
-      </section>
-      <section>
-        <h2>หัวตารางค้าง, maxHeight 240</h2>
-        <div id="grid-sticky"></div>
-      </section>
-      <section class="panel-dark" data-theme="dark">
-        <h2>โหมดมืด (data-theme="dark")</h2>
-        <div id="grid-dark"></div>
-      </section>
+      <h1>PO List</h1>
+      <p>
+        Mock data. Plain-text cells for now: action buttons, the PO link and status badges wait for
+        <code>column.render</code>.
+      </p>
+      <div id="grid"></div>
     </main>
     <script type="module">
       import { DataGrid, thaiLabels } from '/src/index.js';
+      import { createPurchaseOrders } from '/examples/mock/purchaseOrders.js';
 
-      const roles = ['Engineer', 'Admiral', 'Tester'];
-      // 25 rows: ids 1-3 are fixed (one name needs escaping); the rest are generated.
-      const rows = [
-        { id: 1, name: 'Ada', role: 'Engineer' },
-        { id: 2, name: 'Grace', role: 'Admiral' },
-        { id: 3, name: '<b>Eve</b>', role: 'Tester' },
-        ...Array.from({ length: 22 }, (_, i) => ({
-          id: i + 4,
-          name: `User ${i + 4}`,
-          role: roles[(i + 3) % roles.length],
-        })),
-      ];
-      const columns = [
-        { key: 'id', label: 'ID', sortable: true, align: 'right' },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'role', label: 'Role', sortable: true },
-      ];
-      const pager = { pageSize: 5, pageSizeOptions: [5, 10, 25], labels: thaiLabels };
-      const grid = (id) => document.getElementById(id);
+      const pad = (n) => String(n).padStart(2, '0');
+      // Cells cannot be rendered yet, so the date is shown as yyyy-MM-dd (sorts chronologically as text).
+      const iso = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+      const rows = createPurchaseOrders().map((po) => ({
+        ...po,
+        submittedDate: iso(po.submittedDate),
+        deliveryDate: iso(po.deliveryDate),
+        deliveryComplete: po.deliveryComplete ? '✓' : '–',
+        rfqNumber: po.rfqNumber || null,
+        recipient: po.recipient || null,
+        claimer: po.claimer || null,
+        cancelBy: po.cancelBy || null,
+      }));
 
-      new DataGrid(grid('grid-default'), { columns, rows, searchable: true, ...pager });
-      new DataGrid(grid('grid-compact'), {
-        columns,
+      new DataGrid(document.getElementById('grid'), {
+        columns: [
+          { key: 'rfqNumber', label: 'เลขที่เอกสาร RFQ\nRFQ Number', sortable: true },
+          { key: 'poNumber', label: 'เลขที่ใบสั่งซื้อ\nPO Number', sortable: true },
+          { key: 'submittedDate', label: 'วันที่จัดส่งเอกสาร\nSubmitted Date', sortable: true },
+          { key: 'purchasingType', label: 'ประเภทจัดซื้อ\nPurchasing Type', sortable: true },
+          { key: 'status', label: 'สถานะ\nStatus', sortable: true },
+          { key: 'vendor', label: 'ชื่อผู้ค้า\nVendor', sortable: true },
+          { key: 'creator', label: 'ผู้สร้างเอกสาร\nCreator Name', sortable: true },
+          { key: 'deliveryDate', label: 'วันที่กำหนดส่งสินค้า\nDelivery Date', sortable: true },
+          { key: 'recipient', label: 'ผู้ตรวจรับ\nRecipient', sortable: true },
+          { key: 'claimer', label: 'ผู้เคลมเอกสาร\nClaimer', sortable: true },
+          { key: 'cancelBy', label: 'ผู้ยกเลิกเอกสาร\nCancel By', sortable: true },
+          { key: 'companyCode', label: 'รหัสบริษัท\nCompany Code', sortable: true },
+          {
+            key: 'deliveryComplete',
+            label: 'ตรวจรับเสร็จสิ้น\nDelivery Complete',
+            align: 'center',
+          },
+          { key: 'creationType', label: 'การสร้างเอกสาร', sortable: true },
+        ],
         rows,
         searchable: true,
-        density: 'compact',
+        searchDebounce: 50,
+        pageSize: 10,
+        pageSizeOptions: [10, 20, 50],
         striped: true,
-        ...pager,
-      });
-      new DataGrid(grid('grid-sticky'), {
-        columns,
-        rows,
-        stickyHeader: true,
-        maxHeight: 240,
+        density: 'compact',
         labels: thaiLabels,
       });
-      new DataGrid(grid('grid-dark'), { columns, rows, searchable: true, striped: true, ...pager });
     </script>
   </body>
 </html>

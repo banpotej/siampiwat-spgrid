@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-// examples/procurement.html: plain-text cells until column.render exists (no buttons or log yet).
+// examples/index.html: plain-text cells until column.render exists (no buttons or log yet).
 test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontally', async ({
   page,
 }) => {
-  await page.goto('/examples/procurement.html');
+  await page.goto('/examples/index.html');
   const rows = page.locator('tbody tr');
   await expect(rows).toHaveCount(10);
 
