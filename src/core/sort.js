@@ -66,3 +66,22 @@ export function nextDirection(current) {
   if (current === 'desc') return null;
   return 'asc';
 }
+
+/**
+ * Validate a user-supplied sort against the available column keys and return
+ * its canonical copy (null for "no sort").
+ *
+ * @param {import('../types.js').SortState} sort
+ * @param {string[]} columnKeys
+ * @returns {import('../types.js').SortState}
+ * @throws {TypeError} direction is not 'asc' or 'desc'
+ * @throws {RangeError} key is not one of `columnKeys`
+ */
+export function normalizeSort(sort, columnKeys) {
+  if (!sort) return null;
+  if (sort.direction !== 'asc' && sort.direction !== 'desc') {
+    throw new TypeError(`invalid sort direction "${sort.direction}"`);
+  }
+  if (!columnKeys.includes(sort.key)) throw new RangeError(`unknown column "${sort.key}"`);
+  return { key: sort.key, direction: sort.direction };
+}

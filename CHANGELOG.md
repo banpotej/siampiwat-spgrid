@@ -26,7 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (there is no per-column filter UI yet).
 - Internal `paginate()` and `getPageWindow()` (`src/core/paginate.js`) with `PageState`/`PageResult` types:
   1-based, clamped paging (an empty list still has one page) and a pager window with ellipsis markers.
-  Not wired into `DataGrid` yet.
+- Pagination UI: `pageSize`, `pageSizeOptions` and `onPageChange` options; `labels.pagination`, `prev`, `next`,
+  `pageSize` and `summary`; `getPage()`, `setPage()`, `getPageSize()`, `setPageSize()` and
+  `on('pageChange', fn)`. Pipeline is filter -> sort -> paginate. The pager is a `<nav>` with Prev/Next, page
+  buttons (`aria-current="page"`), a "Showing X–Y of Z" summary and an optional rows-per-page select.
+  Off by default (all rows, no pager). Searching, filtering or sorting goes back to page 1; `setRows()` keeps
+  the page, clamped into range. Focus stays on the pager after a click.
+- CSS variables `--dg-pager-gap`, `--dg-pager-border`, `--dg-pager-bg`, `--dg-pager-active-bg`,
+  `--dg-pager-active-color`, `--dg-pager-muted-color`, `--dg-pager-disabled-opacity`.
+- Internal `computeView()` (`src/core/view.js`, filter -> sort -> paginate), `normalizeSort()` and
+  `assertPageSize()`; `examples/basic.html` (3 rows) for the smoke/sort/filter e2e tests.
 
 ### Changed
 
@@ -35,5 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `sortRows()` compares `Date` by `getTime()`, booleans as `false < true`, and sorts `NaN` last like `null`.
 - Internal refactor: header and search input event handling moved to `src/render/headerEvents.js` and
   `src/render/searchEvents.js`; no behaviour change.
-- The search box and table host are rendered once; `render()` now only re-renders the table.
-- `destroy()` also cancels a pending search debounce and makes `render()`, `setSort()` and `on()` listeners inert.
+- `examples/index.html` now shows 25 rows with search, sorting and paging (`pageSize: 5`).
+- The search box, table host and pager host are rendered once; `render()` now only re-renders the table
+  and updates the pager's content when it changed.- `destroy()` also cancels a pending search debounce and makes `render()`, `setSort()` and `on()` listeners inert.

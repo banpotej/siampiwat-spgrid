@@ -7,5 +7,5 @@
   - [x] filter core
   - [x] filter UI
   - [x] pagination core
-  - [ ] pagination UI
+  - [x] pagination UI
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

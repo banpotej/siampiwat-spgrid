@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { nextDirection, sortRows } from '../../src/core/sort.js';
+import { nextDirection, normalizeSort, sortRows } from '../../src/core/sort.js';
 
 describe('sortRows', () => {
   it('returns a new array and never mutates the input', () => {
@@ -163,5 +163,28 @@ describe('nextDirection', () => {
 
   it('treats undefined as no sort', () => {
     expect(nextDirection(undefined)).toBe('asc');
+  });
+});
+
+describe('normalizeSort', () => {
+  const keys = ['a', 'b'];
+
+  it('returns null for no sort', () => {
+    expect(normalizeSort(null, keys)).toBeNull();
+  });
+
+  it('returns a copy holding only key and direction', () => {
+    const input = { key: 'a', direction: 'desc', extra: 1 };
+    const out = normalizeSort(/** @type {any} */ (input), keys);
+    expect(out).toEqual({ key: 'a', direction: 'desc' });
+    expect(out).not.toBe(input);
+  });
+
+  it('throws RangeError for an unknown column and TypeError for a bad direction', () => {
+    expect(() => normalizeSort({ key: 'z', direction: 'asc' }, keys)).toThrow(RangeError);
+    expect(() => normalizeSort(/** @type {any} */ ({ key: 'a', direction: 'up' }), keys)).toThrow(
+      TypeError,
+    );
+    expect(() => normalizeSort(/** @type {any} */ ({ key: 'a' }), keys)).toThrow(TypeError);
   });
 });

@@ -10,18 +10,29 @@
     <script type="module">
       import { DataGrid } from '/src/index.js';
 
+      const roles = ['Engineer', 'Admiral', 'Tester'];
+      // 25 rows: ids 1-3 are fixed (one name needs escaping); the rest are generated.
+      const rows = [
+        { id: 1, name: 'Ada', role: 'Engineer' },
+        { id: 2, name: 'Grace', role: 'Admiral' },
+        { id: 3, name: '<b>Eve</b>', role: 'Tester' },
+        ...Array.from({ length: 22 }, (_, i) => ({
+          id: i + 4,
+          name: `User ${i + 4}`,
+          role: roles[(i + 3) % roles.length],
+        })),
+      ];
+
       new DataGrid(document.getElementById('grid'), {
         columns: [
           { key: 'id', label: 'ID', sortable: true },
           { key: 'name', label: 'Name', sortable: true },
           { key: 'role', label: 'Role', sortable: true },
         ],
+        rows,
         searchable: true,
-        rows: [
-          { id: 1, name: 'Ada', role: 'Engineer' },
-          { id: 2, name: 'Grace', role: 'Admiral' },
-          { id: 3, name: '<b>Eve</b>', role: 'Tester' },
-        ],
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 25],
       });
     </script>
   </body>

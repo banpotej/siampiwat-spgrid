@@ -11,6 +11,17 @@
 const isPositiveInteger = (n) => typeof n === 'number' && Number.isInteger(n) && n > 0;
 
 /**
+ * @param {unknown} pageSize
+ * @returns {asserts pageSize is number}
+ * @throws {RangeError} `pageSize` is not a positive integer
+ */
+export function assertPageSize(pageSize) {
+  if (!isPositiveInteger(pageSize)) {
+    throw new RangeError(`pageSize must be a positive integer, got ${String(pageSize)}`);
+  }
+}
+
+/**
  * Clamp a 1-based page into [1, totalPages]. NaN/undefined mean page 1;
  * fractions are truncated; +-Infinity clamp to the ends.
  *
@@ -18,7 +29,7 @@ const isPositiveInteger = (n) => typeof n === 'number' && Number.isInteger(n) &&
  * @param {number} totalPages
  * @returns {number}
  */
-function clampPage(page, totalPages) {
+export function clampPage(page, totalPages) {
   const p = Math.trunc(page ?? 1);
   return Number.isNaN(p) ? 1 : Math.min(Math.max(p, 1), totalPages);
 }
@@ -34,9 +45,7 @@ function clampPage(page, totalPages) {
  * @throws {RangeError} `pageSize` is not a positive integer
  */
 export function paginate(rows, { page, pageSize }) {
-  if (!isPositiveInteger(pageSize)) {
-    throw new RangeError(`paginate: pageSize must be a positive integer, got ${pageSize}`);
-  }
+  assertPageSize(pageSize);
   const totalRows = rows.length;
   const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
   const current = clampPage(page, totalPages);

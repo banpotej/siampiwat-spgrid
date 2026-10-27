@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('clicking a header cycles asc -> desc -> none', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/examples/basic.html');
   const role = page.locator('th', { hasText: 'Role' });
   const names = page.locator('tbody tr td:nth-child(2)');
 
@@ -21,7 +21,7 @@ test('clicking a header cycles asc -> desc -> none', async ({ page }) => {
 });
 
 test('keyboard: Enter on a focused header sorts', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/examples/basic.html');
   const role = page.locator('th', { hasText: 'Role' });
   await role.focus();
   await page.keyboard.press('Enter');

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataGrid basic example</title>
+  </head>
+  <body>
+    <!-- Three rows, sortable + searchable, no pagination. Used by the smoke/sort/filter e2e tests. -->
+    <div id="grid"></div>
+    <script type="module">
+      import { DataGrid } from '/src/index.js';
+
+      new DataGrid(document.getElementById('grid'), {
+        columns: [
+          { key: 'id', label: 'ID', sortable: true },
+          { key: 'name', label: 'Name', sortable: true },
+          { key: 'role', label: 'Role', sortable: true },
+        ],
+        searchable: true,
+        rows: [
+          { id: 1, name: 'Ada', role: 'Engineer' },
+          { id: 2, name: 'Grace', role: 'Admiral' },
+          { id: 3, name: '<b>Eve</b>', role: 'Tester' },
+        ],
+      });
+    </script>
+  </body>
+</html>

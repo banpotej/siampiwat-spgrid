@@ -47,6 +47,13 @@
  * @property {Row[]} rows
  * @property {SortState} sort
  * @property {FilterState | null} filter
+ * @property {number} page Requested 1-based page; the rendered page is clamped into range.
+ * @property {number | null} pageSize Rows per page; null while pagination is off.
+ */
+
+/**
+ * Payload of each grid event, by name.
+ * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState }} GridEvents
  */
 
 /**
@@ -59,12 +66,21 @@
  * @property {number} [searchDebounce] Milliseconds to wait after typing before filtering; default 200.
  * @property {Labels} [labels] UI texts.
  * @property {(filter: FilterState | null) => void} [onFilterChange] Called whenever the filter changes.
+ * @property {number} [pageSize] Rows per page; enables pagination. Default: off (show all rows).
+ * @property {number[]} [pageSizeOptions] Sizes offered in a "rows per page" select, e.g. [10, 20, 50].
+ * @property {(page: PageState) => void} [onPageChange] Called whenever the page or page size changes.
  */
 
 /**
  * @typedef {object} Labels
  * @property {string} [search] aria-label of the search box; default 'Search'.
  * @property {string} [empty] Text shown when there are no rows; default 'No data'.
+ * @property {string} [pagination] aria-label of the pager <nav>; default 'Pagination'.
+ * @property {string} [prev] Previous button text; default 'Previous'.
+ * @property {string} [next] Next button text; default 'Next'.
+ * @property {string} [pageSize] Label of the page size select; default 'Rows per page'.
+ * @property {(from: number, to: number, total: number) => string} [summary] Summary text;
+ *   default 'Showing 1–10 of 25' (and 'Showing 0 of 0' when empty).
  */
 
 export {};
