@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataGrid procurement example</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px 16px;
+        background: #f3f4f6;
+        font-family: system-ui, sans-serif;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      p {
+        margin: 0 0 16px;
+        font-size: 13px;
+        color: #4b5563;
+      }
+      /* The table is wider than the container. The grid's wrapper clips by default (overflow: clip),
+         so this example turns that into horizontal scrolling; the pager stays put. */
+      #grid .dg-table-wrap {
+        overflow-x: auto;
+      }
+      #grid .dg-table {
+        min-width: 1100px;
+      }
+      /* Two-line bilingual headers: the label holds a newline. */
+      #grid .dg-th-label {
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>PO List</h1>
+      <p>
+        Mock data. Plain-text cells for now: action buttons, the PO link and status badges wait for
+        <code>column.render</code>. <a href="/examples/index.html">All examples</a>
+      </p>
+      <div id="grid"></div>
+    </main>
+    <script type="module">
+      import { DataGrid, thaiLabels } from '/src/index.js';
+      import { createPurchaseOrders } from '/examples/mock/purchaseOrders.js';
+
+      const pad = (n) => String(n).padStart(2, '0');
+      // Cells cannot be rendered yet, so the date is shown as yyyy-MM-dd (sorts chronologically as text).
+      const iso = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+      const rows = createPurchaseOrders().map((po) => ({
+        ...po,
+        submittedDate: iso(po.submittedDate),
+        rfqNumber: po.rfqNumber || null,
+      }));
+
+      new DataGrid(document.getElementById('grid'), {
+        columns: [
+          { key: 'rfqNumber', label: 'เลขที่เอกสาร RFQ\nRFQ Number', sortable: true },
+          { key: 'poNumber', label: 'เลขที่ใบสั่งซื้อ\nPO Number', sortable: true },
+          { key: 'submittedDate', label: 'วันที่จัดส่งเอกสาร\nSubmitted Date', sortable: true },
+          { key: 'purchasingType', label: 'ประเภทจัดซื้อ\nPurchasing Type', sortable: true },
+          { key: 'status', label: 'สถานะ\nStatus', sortable: true },
+          { key: 'vendor', label: 'ชื่อผู้ค้า\nVendor', sortable: true },
+          { key: 'creator', label: 'ผู้สร้าง\nCreator', sortable: true },
+        ],
+        rows,
+        searchable: true,
+        searchDebounce: 50,
+        pageSize: 10,
+        pageSizeOptions: [10, 20, 50],
+        striped: true,
+        density: 'compact',
+        labels: thaiLabels,
+      });
+    </script>
+  </body>
+</html>
