@@ -30,11 +30,16 @@
         overflow-x: auto;
       }
       #grid .dg-table {
-        min-width: 1900px;
+        min-width: 2050px;
       }
-      /* Two-line bilingual headers: the label holds a newline. */
-      #grid .dg-th-label {
-        white-space: pre-line;
+      /* Action buttons: View keeps the grid's accent colour, Cancel is red. */
+      .btn-cancel {
+        --dg-action-bg: #b91c1c;
+      }
+      #log {
+        min-height: 1.5em;
+        margin: 12px 0 0;
+        font-size: 13px;
       }
     </style>
   </head>
@@ -42,11 +47,13 @@
     <main>
       <h1>PO List</h1>
       <p>
-        ข้อมูลจำลองทั้งหมด ตอนนี้เซลล์ยังเป็นข้อความธรรมดา ปุ่ม View/Cancel ลิงก์เลขที่ใบสั่งซื้อ
-        และป้ายสถานะ จะเพิ่มด้วย <code>column.actions</code> และ
-        <code>column.render</code> ในขั้นถัดไป
+        ข้อมูลจำลองทั้งหมด มีปุ่ม View และ Cancel (เฉพาะรายการที่ยกเลิกได้) จากคอลัมน์
+        <code>actions</code> ผลการกดจะแสดงใต้ตาราง ส่วนลิงก์เลขที่ใบสั่งซื้อและป้ายสถานะจะเพิ่มด้วย
+        <code>column.render</code>
+        ในขั้นถัดไป
       </p>
       <div id="grid"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
     </main>
     <script type="module">
       import { DataGrid, thaiLabels } from '/src/index.js';
@@ -66,8 +73,27 @@
         cancelBy: po.cancelBy || null,
       }));
 
-      new DataGrid(document.getElementById('grid'), {
+      const log = document.getElementById('log');
+      const grid = new DataGrid(document.getElementById('grid'), {
+        rowKey: 'id',
+        onAction: ({ action, row }) => {
+          if (action === 'cancel' && !window.confirm(`ยกเลิก ${row.poNumber}?`)) return;
+          log.textContent = `${action} ${row.poNumber}`; // textContent: never parsed as HTML
+        },
         columns: [
+          { key: '_view', ariaLabel: 'ดู', actions: [{ name: 'view', label: 'View' }] },
+          {
+            key: '_cancel',
+            ariaLabel: 'ยกเลิก',
+            actions: [
+              {
+                name: 'cancel',
+                label: 'Cancel',
+                className: 'btn-cancel',
+                visible: (r) => r.canCancel,
+              },
+            ],
+          },
           { key: 'rfqNumber', label: 'เลขที่เอกสาร RFQ\nRFQ Number', sortable: true },
           { key: 'poNumber', label: 'เลขที่ใบสั่งซื้อ\nPO Number', sortable: true },
           { key: 'submittedDate', label: 'วันที่จัดส่งเอกสาร\nSubmitted Date', sortable: true },
@@ -96,6 +122,7 @@
         density: 'compact',
         labels: thaiLabels,
       });
+      window.addEventListener('pagehide', () => grid.destroy(), { once: true });
     </script>
   </body>
 </html>
