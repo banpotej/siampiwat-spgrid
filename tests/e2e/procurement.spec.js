@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // examples/index.html: one action column with View and Cancel (cells are plain text; no column.render yet).
-// Columns: 1 Actions, 2 RFQ, 3 PO, 4 Submitted, 5 Type, 6 Status, 7 Vendor, ...
+// Columns: 1 Actions, 2 RFQ, 3 PO, 4 Description, 5 Submitted, 6 Type, 7 Status, 8 Vendor, ...
 test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontally', async ({
   page,
 }) => {
@@ -10,10 +10,13 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   await expect(rows).toHaveCount(10);
 
   const dateHeader = page.getByRole('columnheader', { name: /วันที่จัดส่งเอกสาร/ });
-  await dateHeader.click();
-  await dateHeader.click();
-  const dates = await rows.locator('td:nth-child(4)').allTextContents();
-  expect(dates).toEqual([...dates].sort().reverse());
+  // The example starts sorted by this column, so cycle until it is descending.
+  for (let i = 0; i < 3 && (await dateHeader.getAttribute('aria-sort')) !== 'descending'; i++) {
+    await dateHeader.click();
+  }
+  await expect(dateHeader).toHaveAttribute('aria-sort', 'descending');
+  const dates = (await rows.locator('td:nth-child(5)').allTextContents()).map((d) => Date.parse(d));
+  expect(dates).toEqual([...dates].sort((a, b) => b - a));
 
   const search = page.getByRole('searchbox');
   await search.fill('พรีมาออฟฟิศ');
@@ -24,7 +27,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   // Poll: rows are re-rendered synchronously, but keep the assertion robust against timing.
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
     })
     .toBe(true);
@@ -43,7 +46,7 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   // Cancel is offered exactly for completed orders without an RFQ number.
   for (let i = 0; i < (await rows.count()); i++) {
     const row = rows.nth(i);
-    const completed = (await row.locator('td:nth-child(6)').textContent()) === 'เสร็จสิ้น';
+    const completed = (await row.locator('td:nth-child(7)').textContent()) === 'เสร็จสิ้น';
     const noRfq = ((await row.locator('td:nth-child(2)').textContent()) ?? '').trim() === '';
     await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(
       completed && noRfq ? 1 : 0,
@@ -62,7 +65,7 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
 
   page.once('dialog', (dialog) => dialog.accept());
   const cancel = page.getByRole('button', { name: 'Cancel' }).first();
-  const cancelPo = await cancel.locator('xpath=ancestor::tr/td[4]').textContent();
+  const cancelPo = await cancel.locator('xpath=ancestor::tr/td[3]').textContent();
   await cancel.click();
   await expect(log).toHaveText(`cancel ${cancelPo}`);
 });
@@ -75,7 +78,7 @@ test('Enter in the search box also searches (Search button mode)', async ({ page
   await page.keyboard.press('Enter');
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
     })
     .toBe(true);
@@ -90,7 +93,7 @@ test('Clear search button empties the box and restores all rows', async ({ page 
   await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
     })
     .toBe(true);
@@ -99,7 +102,7 @@ test('Clear search button empties the box and restores all rows', async ({ page 
   await page.getByRole('button', { name: 'ล้างการค้นหา' }).last().click();
   await expect
     .poll(async () =>
-      (await rows.locator('td:nth-child(7)').allTextContents()).some(
+      (await rows.locator('td:nth-child(8)').allTextContents()).some(
         (v) => !v.includes('พรีมาออฟฟิศ'),
       ),
     )
