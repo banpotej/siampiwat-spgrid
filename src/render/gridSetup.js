@@ -6,13 +6,14 @@ import { resolveIcons } from './icons.js';
 import { resolveLabels } from './labels.js';
 import { loadPageSize } from './pageSizeStore.js';
 import { loadSort } from './sortStore.js';
+import { GRID_LINES } from './viewToggles.js';
 import { mountShell } from './toolbar.js';
 
 /**
  * @param {unknown} container
  * @param {import('../types.js').DataGridOptions} options
  * @throws {TypeError} `container` is not an HTMLElement
- * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer
+ * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer, or `gridLines` is unknown
  */
 export function assertOptions(container, options) {
   if (!(container instanceof HTMLElement)) {
@@ -20,6 +21,9 @@ export function assertOptions(container, options) {
   }
   if (options.pageSize !== undefined) assertPageSize(options.pageSize);
   options.pageSizeOptions?.forEach(assertPageSize);
+  if (options.gridLines !== undefined && !GRID_LINES.includes(options.gridLines)) {
+    throw new RangeError(`DataGrid: unknown gridLines "${options.gridLines}"`);
+  }
 }
 
 /**

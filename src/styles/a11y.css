@@ -27,7 +27,9 @@
   }
 
   .dg-bordered .dg-table th,
-  .dg-bordered .dg-table td {
+  .dg-bordered .dg-table td,
+  .dg-lines-vertical .dg-table th,
+  .dg-lines-vertical .dg-table td {
     border-inline-end-color: GrayText;
   }
 

@@ -49,6 +49,14 @@ export function bindGridControls(grid, shell, options, labels, host) {
         display: labels.displaySection,
         stripedRows: labels.stripedRows,
         textWrap: labels.textWrap,
+        gridLines: labels.gridLines,
+        gridLinesOptions: {
+          default: labels.gridLinesDefault,
+          horizontal: labels.gridLinesHorizontal,
+          vertical: labels.gridLinesVertical,
+          both: labels.gridLinesBoth,
+          none: labels.gridLinesNone,
+        },
         reset: labels.resetView,
       },
       getState: () => ({

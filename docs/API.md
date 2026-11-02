@@ -54,7 +54,10 @@
 - `options.textWrapStorageKey?: string` – จำตัวเลือกตัดข้อความไว้ใน `localStorage` ภายใต้ `datagrid:textWrap:<ชื่อ>` ทุกครั้งที่ผู้ใช้กดปุ่ม แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `textWrap` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่ boolean, JSON เสีย หรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.stripedToggle?: boolean` – เพิ่มสวิตช์ "Striped rows" (`<input type="checkbox" role="switch" data-flag="striped">` ข้อความจาก `labels.stripedRows`) ในหัวข้อ "Display" ของ modal ตั้งค่า ให้ผู้ใช้เปิด/ปิดแถวสลับสีเอง มีผลเมื่อกด Apply (ค่าเริ่มต้น `false`)
 - `options.stripedStorageKey?: string` – จำตัวเลือกแถวสลับสีไว้ใน `localStorage` ภายใต้ `datagrid:striped:<ชื่อ>` ทุกครั้งที่ผู้ใช้กดปุ่ม แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `striped` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่ boolean, JSON เสีย หรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย (ใช้ `striped` ตามเดิม) `resetView()` ไม่แตะค่านี้
-- `options.bordered?: boolean` – เส้นขอบรอบทุกเซลล์ (เส้นแนวตั้งระหว่างคอลัมน์ด้วย) ใช้สี `--dg-border-color` (ค่าเริ่มต้น `false`)
+- `options.bordered?: boolean` – เส้นขอบรอบทุกเซลล์ (เส้นแนวตั้งระหว่างคอลัมน์ด้วย) ใช้สี `--dg-border-color` (ค่าเริ่มต้น `false`) เท่ากับ `gridLines: 'both'` (ถ้าตั้งทั้งคู่ `gridLines` ชนะ)
+- `options.gridLines?: 'default' | 'horizontal' | 'vertical' | 'both' | 'none'` – เส้นที่ตารางวาด (ค่าเริ่มต้น `'default'`; ค่าที่ไม่รู้จักโยน `RangeError`) ดู [Grid lines](#grid-lines)
+- `options.gridLinesToggle?: boolean` – เพิ่ม select "Grid lines" (`<select class="dg-settings-lines-select">` ข้อความจาก `labels.gridLines`) ในหัวข้อ "Display" ของ modal Settings เพื่อให้ผู้ใช้เลือกโหมดเอง (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
+- `options.gridLinesStorageKey?: string` – จำโหมดเส้นไว้ใน `localStorage` ภายใต้ `datagrid:gridLines:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `gridLines`/`bordered` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่โหมดหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
 - `options.stickyHeader?: boolean` – ให้หัวตารางค้างด้านบนเมื่อเลื่อน
 - `options.maxHeight?: number | string` – ความสูงสูงสุดของพื้นที่ตาราง (ตัวเลข = px หรือความยาว CSS เช่น `'20rem'`)
@@ -81,6 +84,8 @@
   | `confirmReset`                                                     | ข้อความถามยืนยันของปุ่ม Reset view (`resetButton`)                                   | ข้อความอังกฤษ (ดู `thaiLabels` สำหรับไทย)                                     |
   | `toggleDescription`                                                | ชื่อและ tooltip ของปุ่มซ่อน/แสดง `description`                                       | `'Show or hide description'`                                                  |
   | `stripedRows`                                                      | ข้อความของสวิตช์ `stripedToggle`                                                     | `'Striped rows'`                                                              |
+  | `gridLines`                                                        | ข้อความของ select `gridLinesToggle`                                                  | `'Grid lines'`                                                                |
+  | `gridLinesDefault` / `gridLinesHorizontal` / `gridLinesVertical` / `gridLinesBoth` / `gridLinesNone` | ข้อความของแต่ละโหมดใน select นั้น                          | `'Default'` / `'Horizontal'` / `'Vertical'` / `'Both'` / `'None'`             |
   | `confirmOk`                                                        | ปุ่มยืนยันใน modal ของ Reset view                                                    | `'Reset'`                                                                     |
   | `cancel`                                                           | ปุ่มยกเลิกใน modal ของ Reset view                                                    | `'Cancel'`                                                                    |
   | `removeFilter`                                                     | ฟังก์ชัน `(text) => string` aria-label ของปุ่มลบบนชิปตัวกรอง (`filterSummary`)       | `` `Remove filter ${text}` ``                                                 |
@@ -214,6 +219,33 @@ new DataGrid(el, {
   columns,
   rows,
   onRowActivate: ({ row }) => openDetails(row),
+});
+```
+
+### Grid lines
+
+`gridLines` กำหนดเส้นที่ตารางวาด โดยใส่ class บน `.dg-root`:
+
+| โหมด           | เส้นที่เห็น                                                  | class บน `.dg-root`   |
+| -------------- | ------------------------------------------------------------ | --------------------- |
+| `'default'`    | เส้นแถวตามธีม (ใต้หัวตาราง และระหว่างแถว)                     | (ไม่มี)               |
+| `'horizontal'` | เส้นแถวเท่านั้น (หน้าตาเหมือน `'default'` แต่เลือกชัดเจน)      | `dg-lines-horizontal` |
+| `'vertical'`   | เส้นแนวตั้งระหว่างคอลัมน์เท่านั้น (ไม่มีเส้นใต้หัวตาราง)        | `dg-lines-vertical`   |
+| `'both'`       | เส้นรอบทุกเซลล์ (เหมือน `bordered: true`)                     | `dg-bordered`         |
+| `'none'`       | ไม่มีเส้นเลย (ไม่มีเส้นใต้หัวตารางด้วย)                       | `dg-lines-none`       |
+
+- ชนิด `GridLines` export จาก `datagrid` สไตล์เส้น (ทึบ/ประ) ใช้ `--dg-line-style` ตามเดิม สีใช้ `--dg-border-color`
+- ตั้ง `gridLinesToggle: true` เพื่อให้ผู้ใช้เลือกโหมดใน modal Settings และ `gridLinesStorageKey` เพื่อจำตัวเลือก
+  ข้อความของ select มาจาก `labels.gridLines` และ `labels.gridLinesDefault` / `gridLinesHorizontal` / `gridLinesVertical` / `gridLinesBoth` / `gridLinesNone`
+  (มีภาษาไทยใน `thaiLabels`)
+
+```js
+new DataGrid(el, {
+  columns,
+  rows,
+  gridLines: 'horizontal',
+  gridLinesToggle: true,
+  gridLinesStorageKey: 'orders',
 });
 ```
 

@@ -159,14 +159,25 @@
   opacity: 0.7;
 }
 
-/* bordered: a line between cells too. Every cell but the last of a row gets one on its end side. */
+/* gridLines 'both' (bordered) and 'vertical': a line between cells too. Every cell but the last of a row gets one on its end side. */
 .dg-bordered .dg-table th:not(:last-child),
-.dg-bordered .dg-table td:not(:last-child) {
+.dg-bordered .dg-table td:not(:last-child),
+.dg-lines-vertical .dg-table th:not(:last-child),
+.dg-lines-vertical .dg-table td:not(:last-child) {
   border-inline-end: 1px var(--dgi-line-style) var(--dgi-border);
 }
 
-.dg-bordered .dg-table tr.dg-empty td {
+.dg-bordered .dg-table tr.dg-empty td,
+.dg-lines-vertical .dg-table tr.dg-empty td {
   border-inline-end: 0;
+}
+
+/* gridLines 'vertical' and 'none': no horizontal lines, not even under the header. */
+.dg-lines-vertical .dg-table th,
+.dg-lines-vertical .dg-table td,
+.dg-lines-none .dg-table th,
+.dg-lines-none .dg-table td {
+  border-bottom: 0;
 }
 
 .dg-table tbody tr {

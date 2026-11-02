@@ -13,4 +13,5 @@
   - [x] column visibility picker, remembered in localStorage
   - [x] filter summary with removable chips, reset view button, refresh button
   - [x] row activation (`onRowActivate`: double-click or Enter on a row)
+  - [x] grid lines setting (`gridLines`, `gridLinesToggle`: default, horizontal, vertical, both, none)
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

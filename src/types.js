@@ -75,6 +75,10 @@
  */
 
 /**
+ * @typedef {'default' | 'horizontal' | 'vertical' | 'both' | 'none'} GridLines
+ */
+
+/**
  * @typedef {{ key: string, direction: SortDirection } | null} SortState
  */
 
@@ -205,7 +209,15 @@
  *   zebra rows on or off. Default false.
  * @property {string} [stripedStorageKey] Remember the striped choice in `localStorage` under this name (stored as
  *   `datagrid:striped:<name>`) and restore it next time, ahead of `striped`. Default: not remembered.
- * @property {boolean} [bordered] Draw a border around every cell (vertical lines too); default false.
+ * @property {boolean} [bordered] Draw a border around every cell (vertical lines too); default false. The same as
+ *   `gridLines: 'both'` (`gridLines` wins when both are set).
+ * @property {GridLines} [gridLines] Which lines the table draws: 'default' (the theme's row lines), 'horizontal' (row
+ *   lines), 'vertical' (column lines), 'both' (every cell bordered) or 'none'. Default 'default' (`gridLinesStorageKey`
+ *   can override it). An unknown value throws a `RangeError`.
+ * @property {boolean} [gridLinesToggle] Add a "Grid lines" select to the settings modal so the user can pick the mode.
+ *   Default false.
+ * @property {string} [gridLinesStorageKey] Remember the grid lines choice in `localStorage` under this name (stored as
+ *   `datagrid:gridLines:<name>`) and restore it next time, ahead of `gridLines`/`bordered`. Default: not remembered.
  * @property {'compact' | 'comfortable'} [density] Cell padding; default 'comfortable'.
  * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
  * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);
@@ -238,7 +250,7 @@
  * @property {string} [columns] aria-label and tooltip of the Settings button (see `columnPicker`); default 'Settings'.
  * @property {string} [columnsSection] Heading of the column list in the settings modal; default 'Columns'.
  * @property {string} [sortSection] Heading of the sort selects in the settings modal; default 'Sorting'.
- * @property {string} [displaySection] Heading of the striped / wrap switches in the settings modal; default 'Display'.
+ * @property {string} [displaySection] Heading of the striped / wrap switches and the grid lines select in the settings modal; default 'Display'.
  * @property {string} [columnSettings] Title of the settings modal; default 'Settings'.
  * @property {string} [apply] Apply button of the settings modal; default 'Apply'.
  * @property {string} [sortBy] Label of the sort column select in the settings modal; default 'Sort by'.
@@ -256,6 +268,12 @@
  *   default 'Show or hide description'.
  * @property {string} [stripedRows] Text of the `stripedToggle` switch; default 'Striped rows'.
  * @property {string} [textWrap] Text of the `textWrapToggle` switch; default 'Wrap text'.
+ * @property {string} [gridLines] Label of the `gridLinesToggle` select; default 'Grid lines'.
+ * @property {string} [gridLinesDefault] 'default' option of that select; default 'Default'.
+ * @property {string} [gridLinesHorizontal] 'horizontal' option; default 'Horizontal'.
+ * @property {string} [gridLinesVertical] 'vertical' option; default 'Vertical'.
+ * @property {string} [gridLinesBoth] 'both' option; default 'Both'.
+ * @property {string} [gridLinesNone] 'none' option; default 'None'.
  * @property {(name: string) => string} [resizeColumn] Accessible name of a column's resize handle (`resizableColumns`);
  *   default 'Resize <name>'.
  * @property {string} [confirmOk] Confirm button of the built-in Reset view modal; default 'Reset'.

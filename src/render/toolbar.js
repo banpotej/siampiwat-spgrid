@@ -4,7 +4,14 @@ import { escapeHtml } from '../utils/escape.js';
 import { renderColumnPicker } from './columnPicker.js';
 import { renderIcon } from './icons.js';
 import { renderSearchAlternatives } from './searchValue.js';
-import { createViewSettings, loadFlag, STRIPED_PREFIX, TEXT_WRAP_PREFIX } from './viewToggles.js';
+import {
+  createViewSettings,
+  gridLinesClass,
+  loadFlag,
+  loadGridLines,
+  STRIPED_PREFIX,
+  TEXT_WRAP_PREFIX,
+} from './viewToggles.js';
 
 /** @typedef {import('../types.js').IconName} IconName */
 
@@ -59,7 +66,7 @@ const toolButton = (className, label, icon, icons) =>
  *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, summary: boolean,
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null,
- *   icons: Record<IconName, string>, striped: boolean, bordered: boolean, compact: boolean,
+ *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, compact: boolean,
  *   stickyHeader: boolean, scroll: boolean,
  * }} opts
  * @returns {string}
@@ -86,7 +93,7 @@ export function renderShell({
   settingsLabel,
   icons,
   striped,
-  bordered,
+  gridLines,
   compact,
   stickyHeader,
   scroll,
@@ -129,7 +136,7 @@ export function renderShell({
     striped ? 'dg-striped' : '',
     wrapped ? '' : 'dg-nowrap',
     resizable ? 'dg-resizable' : '',
-    bordered ? 'dg-bordered' : '',
+    gridLinesClass(gridLines),
     stickyHeader ? 'dg-sticky' : '',
   ]
     .filter(Boolean)
@@ -154,7 +161,8 @@ export function mountShell(container, options, labels, icons) {
     pickerColumns !== null ||
     options.resetButton === true ||
     options.stripedToggle === true ||
-    options.textWrapToggle === true;
+    options.textWrapToggle === true ||
+    options.gridLinesToggle === true;
   container.innerHTML = renderShell({
     searchable: options.searchable === true,
     searchLabel: labels.search,
@@ -180,7 +188,10 @@ export function mountShell(container, options, labels, icons) {
     striped: loadFlag(STRIPED_PREFIX, options.stripedStorageKey, options.striped === true),
     wrapped: loadFlag(TEXT_WRAP_PREFIX, options.textWrapStorageKey, options.textWrap !== false),
     resizable: options.resizableColumns === true,
-    bordered: options.bordered === true,
+    gridLines: loadGridLines(
+      options.gridLinesStorageKey,
+      options.gridLines ?? (options.bordered === true ? 'both' : 'default'),
+    ),
     compact: options.density === 'compact',
     stickyHeader: options.stickyHeader === true,
     scroll: maxHeight !== undefined,

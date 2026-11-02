@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Grid lines: `gridLines` (`'default' | 'horizontal' | 'vertical' | 'both' | 'none'`, type `GridLines`) picks which lines the table draws
+  (root classes `dg-lines-horizontal`, `dg-lines-vertical`, `dg-bordered`, `dg-lines-none`); `bordered` is now the same as `gridLines: 'both'`.
+  `gridLinesToggle` adds a "Grid lines" select to the settings modal (under "Display", applied with Apply) and `gridLinesStorageKey` remembers
+  the choice (`datagrid:gridLines:<name>`). New `labels.gridLines`, `gridLinesDefault`, `gridLinesHorizontal`, `gridLinesVertical`,
+  `gridLinesBoth`, `gridLinesNone` (Thai in `thaiLabels`). An unknown `gridLines` throws a `RangeError`.
 - Row activation: `onRowActivate` (and `on('rowActivate')`, payload `RowActivatePayload`: `{ row, rowKey, originalEvent }`) makes the rows
   activatable: a double-click on a row, or Enter while the row has focus. Each row then gets `tabindex="0"` and `.dg-activatable` (pointer
   cursor, `:focus-visible` ring). Buttons, links and form controls inside a row keep their own behaviour. Without the option rows are
