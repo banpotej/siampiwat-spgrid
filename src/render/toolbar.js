@@ -167,7 +167,8 @@ export function mountShell(container, options, labels, icons) {
     options.stripedToggle === true ||
     options.textWrapToggle === true ||
     options.gridLinesToggle === true ||
-    options.lineStyleToggle === true;
+    options.lineStyleToggle === true ||
+    options.groupByToggle === true;
   container.innerHTML = renderShell({
     searchable: options.searchable === true,
     searchLabel: labels.search,
@@ -220,6 +221,7 @@ export function mountShell(container, options, labels, icons) {
     pagerHost: find('div.dg-pager-host'),
     status: find('div.dg-status'),
     pickerColumns,
+    groupColumns: options.groupByToggle === true ? dataColumns(options.columns) : null,
     view: createViewSettings(container.querySelector('.dg-root'), options),
     toolbar: /** @type {HTMLElement | null} */ (container.querySelector('div.dg-toolbar')),
     columnPicker: /** @type {HTMLElement | null} */ (

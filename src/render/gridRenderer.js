@@ -5,6 +5,7 @@ import { computeView } from '../core/view.js';
 import { ColumnResizer } from './columnResize.js';
 import { highlightSearch } from './highlight.js';
 import { bindHeaderEvents } from './headerEvents.js';
+import { bindGroupToggle } from './groupEvents.js';
 import { bindHeaderReorder } from './headerReorder.js';
 import { renderPager } from './pager.js';
 import { renderSummary } from './summary.js';
@@ -28,6 +29,11 @@ export class GridRenderer {
   /** @type {ColumnResizer | null} */ #resizer = null;
   #unbindResize = () => {};
   #pagerHtml = '';
+  /** @type {Set<string>} Ids of the collapsed groups (they stay collapsed while the data or the page changes). */
+  #collapsed = new Set();
+  /** @type {Parameters<GridRenderer['render']> | null} The last render's arguments, to draw again after a group toggles. */
+  #last = null;
+  #unbindGroups;
   #unbindHeader = () => {};
 
   /**
@@ -61,6 +67,7 @@ export class GridRenderer {
       this.#resizer = new ColumnResizer(shell.host, widthStorageKey);
       this.#unbindResize = this.#resizer.bind();
     }
+    this.#unbindGroups = bindGroupToggle(shell.host, (id) => this.#toggleGroup(id));
   }
 
   /**
@@ -72,6 +79,7 @@ export class GridRenderer {
    * @returns {ReturnType<typeof computeView>} The rows and paging shown.
    */
   render(state, { columns, hidden, filter, sort, reorder }) {
+    this.#last = [state, { columns, hidden, filter, sort, reorder }];
     this.#unbindHeader();
     const view = computeView(state, { locale: this.#locale, hidden });
     const { host, status, summary, pagerHost } = this.#shell;
@@ -90,6 +98,7 @@ export class GridRenderer {
         label: this.#labels.resizeColumn,
       },
       reorder !== null,
+      { keys: state.groupBy, collapsed: this.#collapsed, columns: state.columns },
     );
     if (this.#activatable) {
       // Rows are Tab stops that Enter activates (see rowActivate.js); the class gives them the pointer cursor.
@@ -142,5 +151,15 @@ export class GridRenderer {
   destroy() {
     this.#unbindHeader();
     this.#unbindResize();
+    this.#unbindGroups();
+  }
+
+  /** Collapse or expand a group and draw the table again, keeping focus on the group's button. @param {string} id */
+  #toggleGroup(id) {
+    if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
+    if (this.#last) this.render(...this.#last);
+    const rows = this.#shell.host.querySelectorAll('tr.dg-group-row');
+    const row = [...rows].find((r) => r instanceof HTMLElement && r.dataset.groupId === id);
+    row?.querySelector('button')?.focus();
   }
 }

@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Row grouping: `groupBy` (data column keys, outermost first) groups the rows, with a collapsible header row per group (`tr.dg-group-row`,
+  `button.dg-group-toggle` with `aria-expanded`) that shows the column's cell for the value and how many of its rows are on the page. Rows are put
+  in group order before paging (filter, sort, group, paginate); inside a group they keep the sort, and a sort on a group column sets that level's
+  direction. `groupByToggle` adds a "Grouping" section (group by / then by selects) to the settings modal, `groupByStorageKey` remembers the choice
+  (`datagrid:groupBy:<name>`). New `getGroupBy()` / `setGroupBy(keys)`, `groupByChange` event and `onGroupByChange` option, `labels.groupSection`,
+  `groupBy`, `thenBy`, `noGrouping` (Thai in `thaiLabels`). An unknown or repeated `groupBy` column throws a `RangeError`; `resetView()` goes back to
+  the `groupBy` option; Excel export follows the group order.
+
+### Changed
+
+- Settings modal: the "Reset view" button (`.dg-settings-reset`) is now a solid red button (`--dg-danger`) instead of an underlined text button.
+
+### Added
+
+- Settings modal: "Select all" and "Clear all" buttons under the column list (`labels.selectAll`, `labels.clearAll`); Clear all keeps the first column shown.
+
+- Example only: `examples/index.html` has a "Source Code" section (with a copy button) showing `examples/po-list.js`, the script that builds the grid; no `src/` change.
 - Settings modal: a round dark close button hangs off the card's top-right corner (`.dg-modal-x`, aria-label from the new `labels.close`, Thai
   'ปิด' in `thaiLabels`); it closes like Cancel (nothing is applied). The card no longer clips its overflow so the button can sit outside it.
 - Line style: `lineStyle` (`'default' | 'solid' | 'dashed' | 'dotted'`, type `LineStyle`) sets how the grid lines are drawn (root classes

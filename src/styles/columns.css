@@ -75,6 +75,23 @@
   margin-inline: -8px;
 }
 
+.dg-settings-bulk {
+  display: flex;
+  gap: 1em;
+  margin-top: 8px;
+}
+
+.dg-settings-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dgi-accent, currentColor);
+  font: inherit;
+  font-size: 0.9em;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .dg-columns-item {
   display: flex;
   align-items: center;
@@ -263,12 +280,17 @@
   background: color-mix(in srgb, var(--dgi-control-on) 85%, #000);
 }
 
-.dg-settings .dg-settings-reset {
+.dg-settings .dg-modal-btn.dg-settings-reset {
   margin-inline-end: auto;
-  padding-inline: 0.4em;
-  text-decoration: underline;
-  text-decoration-color: var(--dgi-border-strong);
-  text-underline-offset: 0.25em;
+  border-color: var(--dgi-danger);
+  background: var(--dgi-danger);
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+}
+
+.dg-settings .dg-modal-btn.dg-settings-reset:hover {
+  background: color-mix(in srgb, var(--dgi-danger) 85%, #000);
+  color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {

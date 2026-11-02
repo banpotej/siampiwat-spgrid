@@ -1,5 +1,6 @@
 // @ts-check
 import { createEmitter } from '../core/emitter.js';
+import { saveGroupBy } from './groupByStore.js';
 import { savePageSize } from './pageSizeStore.js';
 import { saveSort } from './sortStore.js';
 
@@ -24,6 +25,7 @@ export function createGridEvents(options) {
       'rowActivate',
       'columnsChange',
       'columnOrderChange',
+      'groupByChange',
       'refresh',
     ]),
   );
@@ -35,13 +37,15 @@ export function createGridEvents(options) {
   if (options.onRefresh) events.on('refresh', options.onRefresh);
   if (options.onColumnsChange) events.on('columnsChange', options.onColumnsChange);
   if (options.onColumnOrderChange) events.on('columnOrderChange', options.onColumnOrderChange);
+  if (options.onGroupByChange) events.on('groupByChange', options.onGroupByChange);
+  events.on('groupByChange', (keys) => saveGroupBy(options.groupByStorageKey, keys));
   events.on('pageChange', ({ pageSize }) => savePageSize(options.pageSizeStorageKey, pageSize));
   events.on('sortChange', (sort) => saveSort(options.sortStorageKey, sort));
   return events;
 }
 
 /**
- * Emit `sortChange`, `filterChange` and `pageChange` for what differs between two states.
+ * Emit `sortChange`, `filterChange`, `groupByChange` and `pageChange` for what differs between two states.
  *
  * @param {ReturnType<typeof createGridEvents>} events
  * @param {{ getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null }} grid
@@ -51,6 +55,7 @@ export function createGridEvents(options) {
  */
 export function emitChanges(events, grid, { state, prev, before, after }) {
   if (state.sort !== prev.sort) events.emit('sortChange', grid.getSort());
+  if (state.groupBy !== prev.groupBy) events.emit('groupByChange', [...state.groupBy]);
   const columnChanged = state.searchColumn !== prev.searchColumn && state.filter?.search;
   if (state.filter !== prev.filter || columnChanged) events.emit('filterChange', grid.getFilter());
   if (after && (after.page !== before?.page || after.pageSize !== before?.pageSize)) {

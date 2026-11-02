@@ -1,7 +1,9 @@
 // @ts-check
 import { isActionColumn } from '../core/columns.js';
+import { groupItems } from '../core/group.js';
 import { escapeHtml } from '../utils/escape.js';
 import { renderCell, renderLabel, widthAttr } from './cells.js';
+import { renderGroupHeader } from './groupRows.js';
 import { renderIcon } from './icons.js';
 
 /** @typedef {import('../types.js').Column} Column */
@@ -79,6 +81,7 @@ function renderHeaderCell(column, sort, icons, resize, reorder) {
  * @param {string} [locale] For formatting `date` and `number` cells.
  * @param {ResizeView} [resize]
  * @param {boolean} [reorder] Header cells can be dragged to reorder the columns.
+ * @param {import('./groupRows.js').GroupView} [group] Put a collapsible header row before each group of `rows`.
  * @returns {string}
  */
 export function renderTable(
@@ -91,13 +94,24 @@ export function renderTable(
   locale,
   resize = { enabled: false, widths: null, label: String },
   reorder = false,
+  group = { keys: [], collapsed: new Set(), columns },
 ) {
   const head = columns.map((c) => renderHeaderCell(c, sort, icons, resize, reorder)).join('');
   const body =
     rows.length === 0
       ? `<tr class="dg-empty"><td colspan="${Math.max(columns.length, 1)}"><div class="dg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(labels.empty)}</span></div></td></tr>`
-      : rows
-          .map((row, index) => {
+      : groupItems(rows, group.keys, group.collapsed)
+          .map((item) => {
+            if (item.type === 'group') {
+              return renderGroupHeader(item, {
+                group,
+                span: columns.length,
+                icons,
+                labels,
+                locale,
+              });
+            }
+            const { row, index } = item;
             const cells = columns
               .map((c) => {
                 const cls = [alignClass(c), isActionColumn(c) ? 'dg-action-cell' : '']

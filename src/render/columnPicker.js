@@ -35,6 +35,7 @@ export function syncColumnPicker(picker, hidden) {
  * @param {HTMLElement} picker The toolbar: it holds the button.
  * @param {{
  *   columns: { key: string, label: string, sortable?: boolean }[],
+ *   groupColumns?: { key: string, label: string }[],
  *   labels: DialogLabels,
  *   getState: () => ColumnSettings,
  *   onApply: (settings: ColumnSettings) => void,
@@ -42,7 +43,10 @@ export function syncColumnPicker(picker, hidden) {
  * }} dialog
  * @returns {() => void} Unbind (also dismisses an open modal).
  */
-export function bindColumnPicker(picker, { columns, labels, getState, onApply, onReset }) {
+export function bindColumnPicker(
+  picker,
+  { columns, groupColumns, labels, getState, onApply, onReset },
+) {
   const button = /** @type {HTMLButtonElement} */ (picker.querySelector('.dg-columns-btn'));
   const root = /** @type {HTMLElement} */ (picker.closest('.dg-root') ?? picker);
   /** @type {(() => void) | null} */
@@ -62,6 +66,7 @@ export function bindColumnPicker(picker, { columns, labels, getState, onApply, o
         if (settings) onApply(settings);
       },
       onReset,
+      groupColumns,
     );
   };
 

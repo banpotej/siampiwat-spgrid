@@ -19,8 +19,14 @@
  * @property {string} [exportExcel] Text of the Export button (`exportButton` option); default 'Export Excel'.
  * @property {string} [columns] aria-label and tooltip of the Settings button (see `columnPicker`); default 'Settings'.
  * @property {string} [columnsSection] Heading of the column list in the settings modal; default 'Columns'.
- * @property {string} [sortSection] Heading of the sort selects in the settings modal; default 'Sorting'.
+ * @property {string} [selectAll] Button under the column list that shows every column; default 'Select all'.
+ * @property {string} [clearAll] Button under the column list that hides every column but the first; default 'Clear all'.
+ * @property {string} [sortSection]Heading of the sort selects in the settings modal; default 'Sorting'.
  * @property {string} [displaySection] Heading of the striped / wrap switches and the grid lines select in the settings modal; default 'Display'.
+ * @property {string} [groupSection] Heading of the group selects in the settings modal (`groupByToggle`); default 'Grouping'.
+ * @property {string} [groupBy] Label of the first group select; default 'Group by'.
+ * @property {string} [thenBy] Label of the selects for the inner levels; default 'Then by'.
+ * @property {string} [noGrouping] The empty option of those selects; default 'No grouping'.
  * @property {string} [columnSettings] Title of the settings modal; default 'Settings'.
  * @property {string} [apply] Apply button of the settings modal; default 'Apply'.
  * @property {string} [sortBy] Label of the sort column select in the settings modal; default 'Sort by'.

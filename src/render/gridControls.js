@@ -35,6 +35,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
     },
     columnPicker: {
       columns: shell.pickerColumns ?? [],
+      groupColumns: shell.groupColumns ?? [],
       labels: {
         title: labels.columnSettings,
         apply: labels.apply,
@@ -46,8 +47,14 @@ export function bindGridControls(grid, shell, options, labels, host) {
         ascending: labels.ascending,
         descending: labels.descending,
         columns: labels.columnsSection,
+        selectAll: labels.selectAll,
+        clearAll: labels.clearAll,
         sort: labels.sortSection,
         display: labels.displaySection,
+        groupSection: labels.groupSection,
+        groupBy: labels.groupBy,
+        thenBy: labels.thenBy,
+        noGrouping: labels.noGrouping,
         stripedRows: labels.stripedRows,
         textWrap: labels.textWrap,
         gridLines: labels.gridLines,
@@ -70,11 +77,13 @@ export function bindGridControls(grid, shell, options, labels, host) {
       getState: () => ({
         ...(shell.pickerColumns && { hidden: grid.getHiddenColumns(), sort: grid.getSort() }),
         view: shell.view?.get(),
+        ...(options.groupByToggle === true && { groupBy: grid.getGroupBy() }),
       }),
-      onApply: ({ hidden, sort, view }) => {
+      onApply: ({ hidden, sort, view, groupBy }) => {
         if (view) shell.view?.apply(view);
         if (hidden !== undefined) grid.setHiddenColumns(hidden);
         if (sort !== undefined) grid.setSort(sort);
+        if (groupBy !== undefined) grid.setGroupBy(groupBy);
       },
       onReset:
         options.resetButton === true

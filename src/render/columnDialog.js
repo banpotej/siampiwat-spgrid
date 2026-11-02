@@ -1,5 +1,12 @@
 // @ts-check
 import { escapeHtml } from '../utils/escape.js';
+import {
+  fillGroupSelects,
+  groupSelects,
+  readGroupSelects,
+  renderGroupSection,
+  syncGroupSelects,
+} from './groupSettings.js';
 import { GRID_LINES, LINE_STYLES } from './viewToggles.js';
 
 let seq = 0;
@@ -14,6 +21,7 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {string[]} [hidden] Keys of the hidden columns; left out when the dialog lists no columns.
  * @property {SortState} [sort] The sort; left out when the grid has no sortable column.
  * @property {ViewFlags} [view] The look switches; a switch is shown only when its flag is given.
+ * @property {string[]} [groupBy] The group columns, outermost first; the grouping section is shown only when this is given.
  */
 
 /**
@@ -28,8 +36,14 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {string} ascending
  * @property {string} descending
  * @property {string} columns Heading of the column list.
+ * @property {string} selectAll Text of the button that checks every column.
+ * @property {string} clearAll Text of the button that unchecks every column but the first.
  * @property {string} sort Heading of the sort selects.
  * @property {string} display Heading of the look switches.
+ * @property {string} groupSection Heading of the group selects.
+ * @property {string} groupBy Label of the first group select.
+ * @property {string} thenBy Label of the selects for the inner levels.
+ * @property {string} noGrouping Text of the empty option of those selects.
  * @property {string} stripedRows
  * @property {string} textWrap
  * @property {string} gridLines Label of the grid lines select.
@@ -52,9 +66,18 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @param {DialogLabels} labels
  * @param {(settings: ColumnSettings | null) => void} onClose Called once, with the new settings on Apply and null otherwise.
  * @param {() => void} [onReset]
+ * @param {{ key: string, label: string }[]} [groupColumns] The columns the group selects list; default `columns`.
  * @returns {() => void} Dismiss the dialog (as Cancel).
  */
-export function openColumnDialog(root, columns, current, labels, onClose, onReset) {
+export function openColumnDialog(
+  root,
+  columns,
+  current,
+  labels,
+  onClose,
+  onReset,
+  groupColumns = columns,
+) {
   const id = `dg-settings-${++seq}`;
   /** @param {string} label A multi-line header ("ไทย\nEnglish") reads as one line. */
   const flat = (label) => label.replace(/\s*\n\s*/g, ' / ');
@@ -69,7 +92,9 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
   const columnSection =
     columns.length === 0
       ? ''
-      : `<section>${heading(labels.columns)}<div class="dg-settings-list">${rows}</div></section>`;
+      : `<section>${heading(labels.columns)}<div class="dg-settings-list">${rows}</div>` +
+        `<div class="dg-settings-bulk"><button type="button" class="dg-settings-link" data-bulk="all">${escapeHtml(labels.selectAll)}</button>` +
+        `<button type="button" class="dg-settings-link" data-bulk="none">${escapeHtml(labels.clearAll)}</button></div></section>`;
   /** @param {'striped' | 'wrapped'} flag @param {string} text */
   const switchRow = (flag, text) =>
     current.view?.[flag] === undefined
@@ -105,12 +130,20 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
           `<select class="dg-settings-sort-dir"><option value="asc">${escapeHtml(labels.ascending)}</option><option value="desc">${escapeHtml(labels.descending)}</option></select>`,
         ) +
         `</div></section>`;
+  const groupSection =
+    current.groupBy === undefined
+      ? ''
+      : renderGroupSection(
+          groupColumns.map((c) => ({ key: c.key, label: flat(c.label) })),
+          current.groupBy,
+          labels,
+        );
   const overlay = document.createElement('div');
   overlay.className = 'dg-modal';
   overlay.innerHTML =
     `<div class="dg-modal-box dg-settings" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
     `<h2 class="dg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
-    `<div class="dg-settings-body">${columnSection}${sortSection}${viewSection}</div>` +
+    `<div class="dg-settings-body">${columnSection}${sortSection}${groupSection}${viewSection}</div>` +
     `<div class="dg-modal-actions">` +
     (onReset
       ? `<button type="button" class="dg-modal-btn dg-settings-reset">${escapeHtml(labels.reset)}</button>`
@@ -151,6 +184,8 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
     sortKey.value = inList ? (current.sort?.key ?? '') : '';
     sortDir.value = current.sort?.direction ?? 'asc';
   }
+  const groups = groupSelects(overlay);
+  fillGroupSelects(groups, current.groupBy ?? []);
   const syncLast = () => {
     const shown = boxes.filter((box) => box.checked);
     for (const box of boxes) box.disabled = shown.length === 1 && box.checked;
@@ -176,6 +211,7 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
         ...choices.map((select) => [select.dataset.choice, select.value]),
       ]);
     }
+    if (groups.length > 0) result.groupBy = readGroupSelects(groups);
     if (sortKey && sortDir) {
       result.sort =
         sortKey.value === ''
@@ -209,7 +245,16 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
   overlay.addEventListener('change', () => {
     syncLast();
     syncSort();
+    syncGroupSelects(groups);
   });
+  for (const button of overlay.querySelectorAll('[data-bulk]')) {
+    button.addEventListener('click', () => {
+      const all = /** @type {HTMLElement} */ (button).dataset.bulk === 'all';
+      // Clear all keeps the first column: a grid always shows one.
+      boxes.forEach((box, i) => (box.checked = all || i === 0));
+      syncLast();
+    });
+  }
   overlay.addEventListener('click', (event) => event.target === overlay && close(false));
   overlay.querySelector('.dg-modal-cancel')?.addEventListener('click', () => close(false));
   overlay.querySelector('.dg-modal-x')?.addEventListener('click', () => close(false));

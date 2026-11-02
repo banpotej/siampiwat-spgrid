@@ -48,7 +48,7 @@ function markText(cell, words, locale) {
  */
 export function highlightSearch(host, columns, words, { locale, only, whole = false } = {}) {
   if (words.length === 0) return;
-  for (const row of host.querySelectorAll('tbody tr:not(.dg-empty)')) {
+  for (const row of host.querySelectorAll('tbody tr:not(.dg-empty):not(.dg-group-row)')) {
     columns.forEach((column, i) => {
       if (isActionColumn(column) || (only && column.key !== only)) return;
       const cell = /** @type {HTMLElement | undefined} */ (row.children[i]);

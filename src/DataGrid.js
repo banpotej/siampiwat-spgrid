@@ -3,39 +3,37 @@ import { dataKeys } from './core/columns.js';
 import { normalizeFilter, resolveFilter } from './core/filter.js';
 import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
+import { changedGroupBy } from './core/group.js';
 import { createState } from './core/state.js';
 import { bindGridControls } from './render/gridControls.js';
 import { createGridEvents, emitChanges } from './render/gridEvents.js';
-import { assertOptions, initialState, mountParts } from './render/gridSetup.js';
+import { assertOptions, initialState, initialView, mountParts } from './render/gridSetup.js';
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
 import { exportExcel } from './render/exportExcel.js';
-import { clearedSearch, syncSearchBox } from './render/searchBox.js';
+import { searchColumnChange, syncSearchBox } from './render/searchBox.js';
 import './datagrid.css';
 
-/** @typedef {import('./types.js').DataGridOptions} DataGridOptions */
 /** @typedef {import('./types.js').Row} Row */
 /** @typedef {import('./types.js').SortState} SortState */
 /** @typedef {import('./types.js').FilterState} FilterState */
-/** @typedef {import('./types.js').GridState} GridState */
 /** @typedef {import('./types.js').GridEvents} GridEvents */
-/** @typedef {import('./types.js').PageResult} PageResult */
 
 export class DataGrid {
   /** @type {HTMLElement} */ #container;
   /** @type {ReturnType<typeof import('./render/toolbar.js').mountShell>} The static shell; only `host` and `pagerHost` content is re-rendered. */
   #shell;
-  /** @type {import('./core/state.js').State<GridState>} */ #state;
+  /** @type {import('./core/state.js').State<import('./types.js').GridState>} */ #state;
   /** @type {() => void} */ #unsubscribe;
   /** @type {ReturnType<typeof createGridEvents>} */ #events;
   #locale;
   /** @type {import('./render/gridRenderer.js').GridRenderer} */ #renderer;
-  /** @type {{ pageSize: number | null, sort: SortState }} The `pageSize` and `defaultSort` options, which `resetView()` goes back to. */
+  /** @type {{ pageSize: number | null, sort: SortState, groupBy: string[] }} The `pageSize`, `defaultSort` and `groupBy` options, which `resetView()` goes back to. */
   #initial;
   /** @type {HiddenColumns} */ #hidden;
   /** @type {ColumnOrder} */ #order;
   #reorderable;
-  /** @type {PageResult | null} Last rendered page; null while pagination is off. */
+  /** @type {import('./types.js').PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
   /** @type {Row[]} Rows currently shown (after filter, sort and paging), in display order. */
   #visible = [];
@@ -44,7 +42,7 @@ export class DataGrid {
 
   /**
    * @param {HTMLElement} container
-   * @param {DataGridOptions} options
+   * @param {import('./types.js').DataGridOptions} options
    * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer
    */
   constructor(container, options) {
@@ -53,10 +51,7 @@ export class DataGrid {
     this.#locale = options.locale;
     this.#order = new ColumnOrder(options);
     this.#reorderable = options.reorderableColumns === true;
-    this.#initial = {
-      pageSize: options.pageSize ?? null,
-      sort: normalizeSort(options.defaultSort ?? null, dataKeys(options.columns)),
-    };
+    this.#initial = initialView(options);
     this.#events = createGridEvents(options);
     const { labels, shell, renderer } = mountParts(container, options);
     this.#shell = shell;
@@ -74,7 +69,7 @@ export class DataGrid {
       visible: () => this.#visible,
       emit: (event, payload) => this.#events.emit(event, payload),
     });
-    this.#state = createState(initialState(options, this.#order.columns(), this.#initial.sort));
+    this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
     this.#unsubscribe = this.#state.subscribe((state, prev) => {
       const before = this.#paging;
       this.render();
@@ -130,19 +125,9 @@ export class DataGrid {
    */
   setSearchColumn(key) {
     if (this.#destroyed) return;
-    const state = this.#state.get();
-    if (key !== null && !dataKeys(state.columns).includes(key)) {
-      throw new RangeError(`DataGrid: unknown column "${key}"`);
-    }
-    if (this.#shell.searchColumn) this.#shell.searchColumn.value = key ?? '';
-    if (key === state.searchColumn) return;
-    const cleared = clearedSearch(state, key);
-    this.#state.set({
-      searchColumn: key,
-      page: 1,
-      ...(cleared !== undefined && { filter: cleared }),
-    });
-    if (this.#shell.search && cleared !== undefined) this.#shell.search.value = '';
+    const change = searchColumnChange(this.#shell, this.#state.get(), key);
+    if (!change) return;
+    this.#state.set(change);
     this.#syncSearchBox();
   }
 
@@ -208,6 +193,21 @@ export class DataGrid {
    */
   setHiddenColumns(keys) {
     if (!this.#destroyed) this.#hidden.set(keys);
+  }
+
+  /** @returns {string[]} Keys of the columns the rows are grouped by, outermost first; empty while ungrouped. */
+  getGroupBy() {
+    return [...this.#state.get().groupBy];
+  }
+
+  /**
+   * Group the rows by these data columns, outermost first (`[]` ungroups). Resets to page 1.
+   * @param {string[]} keys
+   * @throws {RangeError} a key is not a data column, or is repeated
+   */
+  setGroupBy(keys) {
+    const next = !this.#destroyed && changedGroupBy(this.#state.get(), keys);
+    if (next) this.#state.set({ groupBy: next, page: 1 });
   }
 
   /** @returns {string[]} The key of every column (action columns too) in display order. */

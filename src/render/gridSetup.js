@@ -1,7 +1,10 @@
 // @ts-check
 import { dataKeys } from '../core/columns.js';
+import { normalizeGroupBy } from '../core/group.js';
 import { assertPageSize } from '../core/paginate.js';
+import { normalizeSort } from '../core/sort.js';
 import { GridRenderer } from './gridRenderer.js';
+import { loadGroupBy } from './groupByStore.js';
 import { resolveIcons } from './icons.js';
 import { resolveLabels } from './labels.js';
 import { loadPageSize } from './pageSizeStore.js';
@@ -55,18 +58,35 @@ export function mountParts(container, options) {
 }
 
 /**
- * The state a new grid starts with: the saved sort and page size (if any) over the options.
+ * What `resetView()` goes back to: the `pageSize`, `defaultSort` and `groupBy` options.
+ *
+ * @param {import('../types.js').DataGridOptions} options
+ * @returns {{ pageSize: number | null, sort: import('../types.js').SortState, groupBy: string[] }}
+ * @throws {TypeError} `defaultSort` has a bad direction, or `groupBy` is not an array of keys
+ * @throws {RangeError} `defaultSort` or `groupBy` names a column that is not a data column, or `groupBy` repeats one
+ */
+export function initialView(options) {
+  return {
+    pageSize: options.pageSize ?? null,
+    sort: normalizeSort(options.defaultSort ?? null, dataKeys(options.columns)),
+    groupBy: normalizeGroupBy(options.columns, options.groupBy ?? []),
+  };
+}
+
+/**
+ * The state a new grid starts with: the saved sort, group columns and page size (if any) over the options.
  *
  * @param {import('../types.js').DataGridOptions} options
  * @param {import('../types.js').Column[]} columns Columns in display order.
- * @param {import('../types.js').SortState} defaultSort
+ * @param {ReturnType<typeof initialView>} initial
  * @returns {import('../types.js').GridState}
  */
-export function initialState(options, columns, defaultSort) {
+export function initialState(options, columns, initial) {
   return {
     columns,
     rows: options.rows ?? [],
-    sort: loadSort(options.sortStorageKey, dataKeys(options.columns), defaultSort),
+    sort: loadSort(options.sortStorageKey, dataKeys(options.columns), initial.sort),
+    groupBy: loadGroupBy(options.groupByStorageKey, columns, initial.groupBy),
     filter: null,
     page: 1,
     pageSize: loadPageSize(options.pageSizeStorageKey, options.pageSize) ?? null,

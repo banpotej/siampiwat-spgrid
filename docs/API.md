@@ -59,6 +59,10 @@
 - `options.lineStyle?: 'default' | 'solid' | 'dashed' | 'dotted'` – ประเภท (ลักษณะ) ของเส้นตาราง (ค่าเริ่มต้น `'default'` = ตามธีม `--dg-line-style` ซึ่งเป็น `dashed`; ค่าที่ไม่รู้จักโยน `RangeError`) ดู [Grid lines](#grid-lines)
 - `options.lineStyleToggle?: boolean` – เพิ่ม select "Line style" (`<select data-choice="lineStyle">` ข้อความจาก `labels.lineStyle`) ในหัวข้อ "Display" ของ modal Settings (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.lineStyleStorageKey?: string` – จำประเภทเส้นไว้ใน `localStorage` ภายใต้ `datagrid:lineStyle:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `lineStyle` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่ประเภทเส้นหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
+- `options.groupBy?: string[]` – key ของคอลัมน์ข้อมูลที่ใช้จัดกลุ่มแถว เรียงจากชั้นนอกเข้าใน เช่น `['department', 'status']` (ค่าเริ่มต้น `[]` = ไม่จัดกลุ่ม; key ที่ไม่ใช่คอลัมน์ข้อมูลหรือซ้ำโยน `RangeError`) ดู [Row grouping](#row-grouping)
+- `options.groupByToggle?: boolean` – เพิ่มส่วน "Grouping" ใน modal Settings ที่มี select "Group by" และ "Then by" (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
+- `options.groupByStorageKey?: string` – จำคอลัมน์ที่จัดกลุ่มไว้ใน `localStorage` ภายใต้ `datagrid:groupBy:<ชื่อ>` แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `groupBy` (การเลือก "ไม่จัดกลุ่ม" ก็ถูกจำ) ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; key ที่ไม่ใช่คอลัมน์แล้วหรือซ้ำจะถูกตัดทิ้ง
+- `options.onGroupByChange?: (groupBy: string[]) => void` – เรียกทุกครั้งที่ชุดคอลัมน์ที่จัดกลุ่มเปลี่ยน (เหมือน `on('groupByChange', fn)`)
 - `options.gridLinesToggle?: boolean` – เพิ่ม select "Grid lines" (`<select class="dg-settings-lines-select">` ข้อความจาก `labels.gridLines`) ในหัวข้อ "Display" ของ modal Settings เพื่อให้ผู้ใช้เลือกโหมดเอง (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.gridLinesStorageKey?: string` – จำโหมดเส้นไว้ใน `localStorage` ภายใต้ `datagrid:gridLines:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `gridLines`/`bordered` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่โหมดหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
@@ -81,6 +85,8 @@
   | `refresh`                                                          | aria-label และ tooltip ของปุ่ม Refresh (`refreshButton`)                             | `'Refresh'`                                                                   |
   | `resetView`                                                        | aria-label และ tooltip ของปุ่ม Reset view (`resetButton`)                            | `'Reset view'`                                                                |
   | `columnSettings`                                                   | หัวข้อของ modal ตั้งค่า (`columnPicker`)                                             | `'Column settings'`                                                           |
+  | `selectAll` / `clearAll`                                          | ปุ่มเลือกทั้งหมด / ล้างทั้งหมด (เหลือคอลัมน์แรกไว้) ใต้รายการคอลัมน์ใน modal ตั้งค่า | `'Select all'` / `'Clear all'` |
+  | `groupSection` / `groupBy` / `thenBy` / `noGrouping`              | หัวข้อส่วนจัดกลุ่ม / ข้อความของ select ชั้นแรก / ชั้นถัดไป / ตัวเลือกว่างใน modal ตั้งค่า (`groupByToggle`) | `'Grouping'` / `'Group by'` / `'Then by'` / `'No grouping'` |
   | `columnsSection` / `sortSection` / `displaySection`                | หัวข้อส่วนรายการคอลัมน์ / ส่วนการเรียง / ส่วนสวิตช์การแสดงผลใน modal ตั้งค่า | `'Columns'` / `'Sorting'` / `'Display'` |
   | `sortBy` / `noSort` / `sortDirection` / `ascending` / `descending` | ข้อความของส่วนการเรียงใน modal ตั้งค่าคอลัมน์                                        | `'Sort by'` / `'No sorting'` / `'Direction'` / `'Ascending'` / `'Descending'` |
   | `apply`                                                            | ปุ่มยืนยันของ modal ตั้งค่าคอลัมน์                                                   | `'Apply'`                                                                     |
@@ -262,6 +268,30 @@ new DataGrid(el, {
   lineStyleStorageKey: 'orders',
 });
 ```
+
+### Row grouping
+
+`groupBy` จัดแถวเป็นกลุ่มตามค่าของคอลัมน์ (หลายชั้นได้) โดยแต่ละกลุ่มมีแถวหัวกลุ่มเต็มความกว้าง (`<tr class="dg-group-row">`) ก่อนแถวของกลุ่ม ในแถวหัวมีปุ่ม (`.dg-group-toggle`, `aria-expanded`) ที่ยุบ/ขยายกลุ่ม ชั้นในจะเยื้องตามระดับ (`--dg-group-level`)
+
+```js
+new DataGrid(el, {
+  columns,
+  rows,
+  groupBy: ['department', 'status'], // แผนก → สถานะ
+  groupByToggle: true, // ให้ผู้ใช้เลือกใน modal Settings
+  groupByStorageKey: 'projects',
+});
+grid.setGroupBy(['status']);
+grid.getGroupBy(); // ['status']
+```
+
+- ค่าในหัวกลุ่มแสดงแบบเดียวกับเซลล์ของคอลัมน์นั้น (คอลัมน์ `badge` แสดงเป็น badge, `date` จัดรูปแบบตาม locale, `render` ของคอลัมน์ก็ถูกใช้) ตามด้วยจำนวนแถวของกลุ่ม **ที่อยู่ในหน้านั้น** `(3)`
+- ลำดับ: จัดกลุ่มตามคอลัมน์ชั้นนอกก่อน (น้อยไปมาก; ค่าว่างอยู่ท้าย) แล้วชั้นในต่อ ภายในกลุ่มแถวเรียงตาม `sort` ถ้า `sort` อยู่บนคอลัมน์ที่จัดกลุ่ม ลำดับของกลุ่มจะตามทิศทางของ `sort`
+- การจัดกลุ่มทำก่อนแบ่งหน้า (filter → sort → group → paginate) จึงมีกลุ่มที่คร่อมหลายหน้าได้ โดยหัวกลุ่มจะถูกวาดซ้ำที่ต้นหน้าถัดไป การส่งออก Excel ใช้ลำดับที่จัดกลุ่มแล้ว (ไม่มีแถวหัวกลุ่ม)
+- คอลัมน์ที่จัดกลุ่มซ่อนได้ (จัดกลุ่มตามคอลัมน์ที่ซ่อนอยู่ได้) การค้นหาไม่ไฮไลต์ในแถวหัวกลุ่ม
+- กลุ่มที่ยุบไว้ยังคงยุบเมื่อข้อมูลหรือหน้าเปลี่ยน (จำไว้ในหน่วยความจำ ไม่บันทึกลง `localStorage`) ยุบกลุ่มชั้นนอกจะซ่อนกลุ่มชั้นในด้วย
+- modal Settings แสดง select ชั้นละหนึ่งตัว (อย่างน้อย 2 ชั้น หรือเท่าจำนวนที่ตั้งจากโค้ด) ชั้นถัดไปใช้ไม่ได้จนกว่าจะเลือกชั้นก่อนหน้า และเลือกคอลัมน์เดียวกันซ้ำไม่ได้
+- `resetView()` กลับเป็น `options.groupBy`
 
 ### Sorting
 
@@ -456,13 +486,16 @@ new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>
 - `on('pageChange', fn)` – รับ `{ page, pageSize }` ครั้งเดียวต่อการเปลี่ยน (รวมถึงตอนเปลี่ยนจำนวนแถวต่อหน้า,
   ตอนที่การค้นหา/เรียงรีเซ็ตเป็นหน้า 1 และตอนที่ `setRows()` ทำให้หน้าถูกปรับ; ไม่เรียกถ้าไม่เปลี่ยน
   หรือไม่ได้เปิดการแบ่งหน้า) คืนฟังก์ชัน unsubscribe
-- `resetView()` – กลับสู่มุมมองเริ่มต้น: ล้างข้อความค้นหาและตัวกรอง (รวมช่องค้นหา), ค้นทุกคอลัมน์, การเรียงกลับเป็น `options.defaultSort` (ไม่เรียงถ้าไม่ได้ตั้งไว้), คอลัมน์ที่ซ่อนกลับเป็น `options.hiddenColumns`, ลำดับคอลัมน์กลับเป็นลำดับของ `options.columns`, จำนวนแถวต่อหน้ากลับเป็น `options.pageSize` (ปิดการแบ่งหน้าถ้าไม่ได้ตั้งไว้) และหน้า 1 แต่ละส่วนที่เปลี่ยนยิง event ของตัวเอง (`sortChange`, `filterChange`, `columnsChange`, `columnOrderChange`, `pageChange`) ไม่ยิงถ้าไม่มีอะไรเปลี่ยน ค่าที่บันทึกไว้ด้วย `columnStorageKey` / `columnOrderStorageKey` / `pageSizeStorageKey` / `sortStorageKey` จะถูกเขียนทับด้วยค่าเริ่มต้นนี้
+- `resetView()` – กลับสู่มุมมองเริ่มต้น: ล้างข้อความค้นหาและตัวกรอง (รวมช่องค้นหา), ค้นทุกคอลัมน์, การเรียงกลับเป็น `options.defaultSort` (ไม่เรียงถ้าไม่ได้ตั้งไว้), คอลัมน์ที่ซ่อนกลับเป็น `options.hiddenColumns`, การจัดกลุ่มกลับเป็น `options.groupBy`, ลำดับคอลัมน์กลับเป็นลำดับของ `options.columns`, จำนวนแถวต่อหน้ากลับเป็น `options.pageSize` (ปิดการแบ่งหน้าถ้าไม่ได้ตั้งไว้) และหน้า 1 แต่ละส่วนที่เปลี่ยนยิง event ของตัวเอง (`sortChange`, `filterChange`, `columnsChange`, `columnOrderChange`, `groupByChange`, `pageChange`) ไม่ยิงถ้าไม่มีอะไรเปลี่ยน ค่าที่บันทึกไว้ด้วย `columnStorageKey` / `columnOrderStorageKey` / `pageSizeStorageKey` / `sortStorageKey` / `groupByStorageKey` จะถูกเขียนทับด้วยค่าเริ่มต้นนี้
 - `on('refresh', fn)` – รับเหตุการณ์เมื่อกดปุ่ม Refresh (ไม่มี payload) คืนฟังก์ชัน unsubscribe
 - `getHiddenColumns()` – key ของคอลัมน์ที่ซ่อนอยู่ เรียงตามลำดับคอลัมน์ (สำเนา)
 - `setHiddenColumns(keys)` – ซ่อน **เฉพาะ** คอลัมน์ข้อมูลใน `keys` (ที่เหลือแสดง) อัปเดตแผงเลือกคอลัมน์ และบันทึกถ้ามี `columnStorageKey`; โยน `RangeError` ถ้า key ไม่ใช่คอลัมน์ข้อมูล (รวมคอลัมน์ action) หรือซ่อนครบทุกคอลัมน์ คอลัมน์ที่ซ่อนจะไม่ถูกค้นหา (ทั้งการค้นทุกคอลัมน์และตัวเลือกใน `searchColumnSelect`) และ `exportExcel()` ส่งออกแถวชุดเดียวกับที่กริดแสดง แต่ยังเรียงด้วยคอลัมน์นั้นได้และอยู่ในไฟล์ที่ส่งออก
 - `getColumnOrder()` – key ของทุกคอลัมน์ (รวมคอลัมน์ action) ตามลำดับที่แสดง
+- `getGroupBy()` – key ของคอลัมน์ที่จัดกลุ่มแถว ชั้นนอกสุดก่อน (สำเนา; `[]` เมื่อไม่จัดกลุ่ม)
+- `setGroupBy(keys)` – จัดกลุ่มแถวตามคอลัมน์ข้อมูลเหล่านี้ (`[]` = เลิกจัดกลุ่ม) และกลับไปหน้า 1 โยน `RangeError` ถ้ามี key ที่ไม่ใช่คอลัมน์ข้อมูลหรือซ้ำ (`TypeError` ถ้าไม่ใช่อาร์เรย์ของสตริง) ยิง `groupByChange` และบันทึกลง `localStorage` ถ้ามี `groupByStorageKey`
 - `setColumnOrder(keys)` – แสดงคอลัมน์ตามลำดับนี้ คอลัมน์ที่ไม่ได้ระบุจะต่อท้ายตามลำดับเดิม โยน `RangeError` ถ้ามี key ที่ไม่ใช่คอลัมน์ บันทึกลง `localStorage` ถ้ามี `columnOrderStorageKey` ลำดับนี้มีผลกับการส่งออก Excel ด้วย
 - `on('columnOrderChange', fn)` – รับ `string[]` (key ทุกคอลัมน์ตามลำดับที่แสดง) ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
+- `on('groupByChange', fn)` – รับ `string[]` (key ที่จัดกลุ่ม ชั้นนอกสุดก่อน) ครั้งเดียวต่อการเปลี่ยน คืนฟังก์ชัน unsubscribe
 - `on('columnsChange', fn)` – รับ `string[]` (key ที่ซ่อน) ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `on('action', fn)` / `on('cellClick', fn)` – ดู [Events](#events-action-และ-cellclick) คืนฟังก์ชัน unsubscribe
 - `on('rowActivate', fn)` – ดู [Row activation](#row-activation) คืนฟังก์ชัน unsubscribe

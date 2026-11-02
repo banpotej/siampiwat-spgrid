@@ -81,3 +81,19 @@ describe('resolveLabels', () => {
     expect(labels.empty).toBe('No data');
   });
 });
+
+describe('computeView with groupBy', () => {
+  it('puts the sorted rows in group order before paging', () => {
+    const data = [
+      { id: 1, g: 'b' },
+      { id: 2, g: 'a' },
+      { id: 3, g: 'b' },
+      { id: 4, g: 'a' },
+    ];
+    const view = computeView(
+      state({ rows: data, groupBy: ['g'], sort: { key: 'id', direction: 'desc' }, pageSize: 3 }),
+    );
+    expect(view.rows.map((r) => r.id)).toEqual([4, 2, 3]);
+    expect(view.paging?.totalRows).toBe(4);
+  });
+});

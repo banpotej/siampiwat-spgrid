@@ -122,12 +122,13 @@
  * @property {number} page Requested 1-based page; the rendered page is clamped into range.
  * @property {number | null} pageSize Rows per page; null while pagination is off.
  * @property {string | null} searchColumn Column the global search is limited to; null searches every data column.
+ * @property {string[]} groupBy Keys of the columns the rows are grouped by, outermost first; empty while ungrouped.
  */
 
 /**
  * Payload of each grid event, by name.
  * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState,
- *   action: ActionEventPayload, cellClick: CellClickPayload, rowActivate: RowActivatePayload, columnsChange: string[], columnOrderChange: string[], refresh: void }} GridEvents
+ *   action: ActionEventPayload, cellClick: CellClickPayload, rowActivate: RowActivatePayload, columnsChange: string[], columnOrderChange: string[], groupByChange: string[], refresh: void }} GridEvents
  */
 
 /**
@@ -225,6 +226,18 @@
  *   Default false.
  * @property {string} [lineStyleStorageKey] Remember the line style in `localStorage` under this name (stored as
  *   `datagrid:lineStyle:<name>`) and restore it next time, ahead of `lineStyle`. Default: not remembered.
+ * @property {string[]} [groupBy] Data column keys to group the rows by, outermost first (e.g. `['department', 'status']`).
+ *   Each group gets a collapsible header row (the column's cell for the group's value, and how many of its rows are on
+ *   the page); inside a group the rows keep the `sort`. Group columns are sorted first (ascending, or as the sort says
+ *   when the sort is on that column). Default none (`groupByStorageKey` can override it). An unknown or repeated
+ *   column throws a `RangeError`.
+ * @property {boolean} [groupByToggle] Add a "Grouping" section to the settings modal with two selects (group by, then
+ *   by) over the data columns, so the user can pick the group columns. Default false.
+ * @property {string} [groupByStorageKey] Remember the group columns in `localStorage` under this name (stored as
+ *   `datagrid:groupBy:<name>`) and restore it next time, ahead of `groupBy`; ungrouping is remembered too. Give each
+ *   grid its own name. Default: not remembered.
+ * @property {(groupBy: string[]) => void} [onGroupByChange] Called whenever the group columns change (same as
+ *   `on('groupByChange', fn)`).
  * @property {boolean} [gridLinesToggle] Add a "Grid lines" select to the settings modal so the user can pick the mode.
  *   Default false.
  * @property {string} [gridLinesStorageKey] Remember the grid lines choice in `localStorage` under this name (stored as
