@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Settings modal: a round dark close button hangs off the card's top-right corner (`.dg-modal-x`, aria-label from the new `labels.close`, Thai
+  'ปิด' in `thaiLabels`); it closes like Cancel (nothing is applied). The card no longer clips its overflow so the button can sit outside it.
 - Line style: `lineStyle` (`'default' | 'solid' | 'dashed' | 'dotted'`, type `LineStyle`) sets how the grid lines are drawn (root classes
   `dg-line-solid`, `dg-line-dashed`, `dg-line-dotted`; `'default'` leaves it to the theme's `--dg-line-style`). `lineStyleToggle` adds a "Line style"
   select to the settings modal (under "Display", applied with Apply) and `lineStyleStorageKey` remembers the choice (`datagrid:lineStyle:<name>`).

@@ -30,7 +30,6 @@
   width: min(100%, 27rem);
   max-height: min(100%, 46rem);
   padding: 0;
-  overflow: hidden;
   border-color: transparent;
   border-radius: calc(var(--dgi-radius) + 6px);
   text-align: start;

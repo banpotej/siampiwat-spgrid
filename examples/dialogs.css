@@ -12,7 +12,6 @@
   padding: 0;
   border: 0;
   border-radius: 16px;
-  overflow: hidden;
   text-align: start;
   box-shadow:
     0 24px 48px -12px rgb(15 23 42 / 0.28),
@@ -24,6 +23,7 @@
   gap: 12px;
   padding: 20px 24px 18px;
   border-bottom: 1px solid var(--dgi-border);
+  border-radius: 16px 16px 0 0;
   background: var(--dgi-header-bg);
 }
 .details .dg-modal-title {
@@ -51,33 +51,10 @@
   font-weight: 400;
   letter-spacing: 0;
 }
-.details-close {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  margin: -4px -8px 0 0;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--dgi-muted);
-  cursor: pointer;
-  transition: background-color 120ms ease;
-}
-.details-close:hover {
-  background: var(--dgi-sort-hover-bg);
-  color: var(--dgi-text);
-}
-.details-close:focus-visible {
-  outline: 2px solid var(--dgi-focus);
-  outline-offset: 1px;
-}
 .details-body {
   overflow: auto;
   padding: 4px 24px 12px;
+  border-radius: 0 0 16px 16px;
 }
 .details-group + .details-group {
   border-top: 1px solid var(--dgi-border);

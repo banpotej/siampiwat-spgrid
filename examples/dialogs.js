@@ -89,7 +89,7 @@ export function showDetails(row, columns) {
   if (tone) sub.append(badge(tone, formatValue(row.status, 'badge')));
   title.append(el('span', 'details-eyebrow', 'รายละเอียด'), row.poNumber, sub);
 
-  const close = el('button', 'details-close');
+  const close = el('button', 'dg-modal-x');
   close.type = 'button';
   close.setAttribute('aria-label', 'ปิด');
   close.innerHTML =
@@ -108,8 +108,8 @@ export function showDetails(row, columns) {
   }
 
   const head = el('div', 'details-head');
-  head.append(title, close);
-  box.append(head, body);
+  head.append(title);
+  box.append(close, head, body); // the button is positioned over the corner; first in tab order
   const closeModal = openModal(box, { labelledBy: 'details-title', focus: close });
   close.addEventListener('click', closeModal);
 }

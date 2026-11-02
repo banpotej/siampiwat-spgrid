@@ -39,6 +39,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
         title: labels.columnSettings,
         apply: labels.apply,
         cancel: labels.cancel,
+        close: labels.close,
         sortBy: labels.sortBy,
         noSort: labels.noSort,
         sortDirection: labels.sortDirection,

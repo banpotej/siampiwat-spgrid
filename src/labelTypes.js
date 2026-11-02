@@ -38,6 +38,7 @@
  *   default 'Show or hide description'.
  * @property {string} [stripedRows] Text of the `stripedToggle` switch; default 'Striped rows'.
  * @property {string} [textWrap] Text of the `textWrapToggle` switch; default 'Wrap text'.
+ * @property {string} [close] aria-label of the round close button on the settings modal's corner; default 'Close'.
  * @property {string} [gridLines] Label of the `gridLinesToggle` select; default 'Grid lines'.
  * @property {string} [gridLinesDefault] 'default' option of that select; default 'Default'.
  * @property {string} [gridLinesHorizontal] 'horizontal' option; default 'Horizontal'.

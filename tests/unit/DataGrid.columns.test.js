@@ -177,13 +177,13 @@ describe('column picker', () => {
     expect(box(el, 'city').disabled).toBe(false);
   });
 
-  it('keeps Tab inside the modal', () => {
+  it('keeps Tab inside the modal, the close button being its last stop', () => {
     const { el } = make();
     open(el);
-    const ok = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok'));
-    ok.focus();
+    const close = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-x'));
+    close.focus();
     const tab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
-    ok.dispatchEvent(tab);
+    close.dispatchEvent(tab);
     expect(tab.defaultPrevented).toBe(true);
     expect(document.activeElement).toBe(box(el, 'name'));
     const back = new KeyboardEvent('keydown', {
@@ -193,7 +193,14 @@ describe('column picker', () => {
       cancelable: true,
     });
     box(el, 'name').dispatchEvent(back);
-    expect(document.activeElement).toBe(ok);
+    expect(back.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(close);
+    // Apply is no longer the end of the ring: Tab from it goes on (natively) to the close button.
+    const ok = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok'));
+    ok.focus();
+    const next = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    ok.dispatchEvent(next);
+    expect(next.defaultPrevented).toBe(false);
   });
 
   it('dismisses an open modal on destroy', () => {

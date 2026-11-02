@@ -77,3 +77,23 @@ test('the Settings modal picks the line style, which is drawn and remembered', a
   await page.locator('.dg-modal-ok').click();
   expect(await rowLine()).toBe('dashed');
 });
+
+test('the Settings modal has a round close button hanging off its top-right corner', async ({
+  page,
+}) => {
+  await page.goto('/examples/index.html');
+  await page.locator('.dg-columns-btn').click();
+  const box = page.locator('.dg-settings');
+  const close = box.getByRole('button', { name: 'ปิด' });
+  await expect(close).toBeVisible();
+  await expect(close).toHaveCSS('border-top-left-radius', '50%');
+  await expect(close).toHaveCSS('cursor', 'pointer');
+  await page.waitForTimeout(250); // the card's entrance animation
+  const [b, c] = await Promise.all([box.boundingBox(), close.boundingBox()]);
+  // The button's centre sits just outside the card's top-right corner.
+  expect((c?.x ?? 0) + (c?.width ?? 0) / 2).toBeGreaterThan((b?.x ?? 0) + (b?.width ?? 0) - 6);
+  expect((c?.y ?? 0) + (c?.height ?? 0) / 2).toBeLessThan((b?.y ?? 0) + 6);
+
+  await close.click();
+  await expect(page.locator('.dg-modal')).toHaveCount(0);
+});

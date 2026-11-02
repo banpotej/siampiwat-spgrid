@@ -21,6 +21,7 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {string} title
  * @property {string} apply
  * @property {string} cancel
+ * @property {string} close aria-label of the round close button on the card's corner (same as Cancel).
  * @property {string} sortBy
  * @property {string} noSort
  * @property {string} sortDirection
@@ -116,7 +117,9 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
       : '') +
     `<button type="button" class="dg-modal-btn dg-modal-cancel">${escapeHtml(labels.cancel)}</button>` +
     `<button type="button" class="dg-modal-btn dg-modal-ok">${escapeHtml(labels.apply)}</button>` +
-    `</div></div>`;
+    `</div>` +
+    `<button type="button" class="dg-modal-x" aria-label="${escapeHtml(labels.close)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` +
+    `</div>`;
 
   const boxes = [...overlay.querySelectorAll('.dg-columns-item input')].map(
     (el) => /** @type {HTMLInputElement} */ (el),
@@ -209,6 +212,7 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
   });
   overlay.addEventListener('click', (event) => event.target === overlay && close(false));
   overlay.querySelector('.dg-modal-cancel')?.addEventListener('click', () => close(false));
+  overlay.querySelector('.dg-modal-x')?.addEventListener('click', () => close(false));
   overlay.querySelector('.dg-modal-ok')?.addEventListener('click', () => close(true));
   overlay.querySelector('.dg-settings-reset')?.addEventListener('click', () => {
     close(false);
