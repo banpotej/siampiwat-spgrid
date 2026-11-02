@@ -172,6 +172,19 @@
   border-inline-end: 0;
 }
 
+/* lineStyle: the root class overrides the theme's --dg-line-style for every row and column line. */
+.dg-line-solid {
+  --dgi-line-style: solid;
+}
+
+.dg-line-dashed {
+  --dgi-line-style: dashed;
+}
+
+.dg-line-dotted {
+  --dgi-line-style: dotted;
+}
+
 /* gridLines 'vertical' and 'none': no horizontal lines, not even under the header. */
 .dg-lines-vertical .dg-table th,
 .dg-lines-vertical .dg-table td,

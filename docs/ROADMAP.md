@@ -14,4 +14,5 @@
   - [x] filter summary with removable chips, reset view button, refresh button
   - [x] row activation (`onRowActivate`: double-click or Enter on a row)
   - [x] grid lines setting (`gridLines`, `gridLinesToggle`: default, horizontal, vertical, both, none)
+  - [x] line style setting (`lineStyle`, `lineStyleToggle`: default, solid, dashed, dotted)
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

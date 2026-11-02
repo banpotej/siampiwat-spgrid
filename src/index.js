@@ -10,4 +10,5 @@ export { escapeHtml } from './utils/escape.js';
 /** @typedef {import('./types.js').CellClickPayload} CellClickPayload */
 /** @typedef {import('./types.js').RowActivatePayload} RowActivatePayload */
 /** @typedef {import('./types.js').GridLines} GridLines */
+/** @typedef {import('./types.js').LineStyle} LineStyle */
 /** @typedef {import('./types.js').ExportOptions} ExportOptions */

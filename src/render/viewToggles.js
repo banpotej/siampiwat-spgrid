@@ -5,8 +5,38 @@ import { readJson, writeJson } from '../utils/storage.js';
 export const STRIPED_PREFIX = 'datagrid:striped:';
 export const TEXT_WRAP_PREFIX = 'datagrid:textWrap:';
 export const GRID_LINES_PREFIX = 'datagrid:gridLines:';
+export const LINE_STYLE_PREFIX = 'datagrid:lineStyle:';
 
 /** @typedef {import('../types.js').GridLines} GridLines */
+/** @typedef {import('../types.js').LineStyle} LineStyle */
+
+/** Every line style, in the order the settings select lists them ('default' follows the theme, `--dg-line-style`). */
+export const LINE_STYLES = /** @type {const} */ (['default', 'solid', 'dashed', 'dotted']);
+
+/** The root class that sets each style ('default' has none, so the theme decides). */
+const STYLE_CLASS = {
+  default: '',
+  solid: 'dg-line-solid',
+  dashed: 'dg-line-dashed',
+  dotted: 'dg-line-dotted',
+};
+
+/** @param {LineStyle} style @returns {string} The class `.dg-root` carries for this style ('' for 'default'). */
+export function lineStyleClass(style) {
+  return STYLE_CLASS[style];
+}
+
+/**
+ * The line style saved under `LINE_STYLE_PREFIX + storageKey`, or `fallback` when nothing usable is saved.
+ *
+ * @param {string | undefined} storageKey
+ * @param {LineStyle} fallback
+ * @returns {LineStyle}
+ */
+export function loadLineStyle(storageKey, fallback) {
+  const saved = storageKey === undefined ? undefined : readJson(LINE_STYLE_PREFIX + storageKey);
+  return LINE_STYLES.find((style) => style === saved) ?? fallback;
+}
 
 /** Every grid lines mode, in the order the settings select lists them. */
 export const GRID_LINES = /** @type {const} */ ([
@@ -62,31 +92,38 @@ export function loadFlag(prefix, storageKey, fallback) {
  * @property {boolean} [striped] Zebra rows.
  * @property {boolean} [wrapped] Long cell text wraps.
  * @property {GridLines} [gridLines] Which lines the table draws.
+ * @property {LineStyle} [lineStyle] How those lines are drawn (solid, dashed, dotted).
  */
 
 /**
  * The striped / wrapped look of one grid: the classes on its root and the choices saved in `localStorage`.
  *
  * @param {Element | null} root The `.dg-root` element.
- * @param {Pick<import('../types.js').DataGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey'>} options
+ * @param {Pick<import('../types.js').DataGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'lineStyleToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey' | 'lineStyleStorageKey'>} options
  * @returns {{ get: () => ViewFlags, apply: (flags: ViewFlags) => void } | null} null when no switch is offered.
  */
 export function createViewSettings(root, options) {
   const offerStriped = options.stripedToggle === true;
   const offerWrapped = options.textWrapToggle === true;
   const offerLines = options.gridLinesToggle === true;
-  if (!root || (!offerStriped && !offerWrapped && !offerLines)) return null;
+  const offerStyle = options.lineStyleToggle === true;
+  if (!root || (!offerStriped && !offerWrapped && !offerLines && !offerStyle)) return null;
   const striped = () => root.classList.contains('dg-striped');
   const wrapped = () => !root.classList.contains('dg-nowrap');
   const lines = () =>
     GRID_LINES.find(
       (mode) => LINES_CLASS[mode] !== '' && root.classList.contains(LINES_CLASS[mode]),
     ) ?? 'default';
+  const style = () =>
+    LINE_STYLES.find(
+      (name) => STYLE_CLASS[name] !== '' && root.classList.contains(STYLE_CLASS[name]),
+    ) ?? 'default';
   return {
     get: () => ({
       ...(offerStriped && { striped: striped() }),
       ...(offerWrapped && { wrapped: wrapped() }),
       ...(offerLines && { gridLines: lines() }),
+      ...(offerStyle && { lineStyle: style() }),
     }),
     apply(flags) {
       if (offerStriped && flags.striped !== undefined && flags.striped !== striped()) {
@@ -107,6 +144,14 @@ export function createViewSettings(root, options) {
         if (LINES_CLASS[flags.gridLines]) root.classList.add(LINES_CLASS[flags.gridLines]);
         if (options.gridLinesStorageKey !== undefined) {
           writeJson(GRID_LINES_PREFIX + options.gridLinesStorageKey, flags.gridLines);
+        }
+      }
+      if (offerStyle && flags.lineStyle !== undefined && flags.lineStyle !== style()) {
+        if (!LINE_STYLES.includes(flags.lineStyle)) return;
+        root.classList.remove(...LINE_STYLES.map((name) => STYLE_CLASS[name]).filter(Boolean));
+        if (STYLE_CLASS[flags.lineStyle]) root.classList.add(STYLE_CLASS[flags.lineStyle]);
+        if (options.lineStyleStorageKey !== undefined) {
+          writeJson(LINE_STYLE_PREFIX + options.lineStyleStorageKey, flags.lineStyle);
         }
       }
     },

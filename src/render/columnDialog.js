@@ -1,6 +1,6 @@
 // @ts-check
 import { escapeHtml } from '../utils/escape.js';
-import { GRID_LINES } from './viewToggles.js';
+import { GRID_LINES, LINE_STYLES } from './viewToggles.js';
 
 let seq = 0;
 
@@ -8,7 +8,6 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
 
 /** @typedef {import('../types.js').SortState} SortState */
 /** @typedef {import('./viewToggles.js').ViewFlags} ViewFlags */
-/** @typedef {import('../types.js').GridLines} GridLines */
 
 /**
  * @typedef {object} ColumnSettings What the dialog edits.
@@ -34,6 +33,8 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {string} textWrap
  * @property {string} gridLines Label of the grid lines select.
  * @property {Record<import('../types.js').GridLines, string>} gridLinesOptions Text of each mode.
+ * @property {string} lineStyle Label of the line style select.
+ * @property {Record<import('../types.js').LineStyle, string>} lineStyleOptions Text of each style.
  * @property {string} reset Text of the reset button (shown when `onReset` is given).
  */
 
@@ -73,15 +74,16 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
     current.view?.[flag] === undefined
       ? ''
       : `<label class="dg-settings-switch"><span>${escapeHtml(text)}</span><input type="checkbox" role="switch" data-flag="${flag}"></label>`;
-  const linesOptions = GRID_LINES.map(
-    (mode) => `<option value="${mode}">${escapeHtml(labels.gridLinesOptions[mode])}</option>`,
-  ).join('');
-  const linesRow =
-    current.view?.gridLines === undefined
+  /** @param {'gridLines' | 'lineStyle'} name @param {string} text @param {readonly string[]} values @param {Record<string, string>} texts */
+  const choiceRow = (name, text, values, texts) =>
+    current.view?.[name] === undefined
       ? ''
-      : `<label class="dg-settings-field dg-settings-lines"><span>${escapeHtml(labels.gridLines)}</span><select class="dg-settings-lines-select">${linesOptions}</select></label>`;
+      : `<label class="dg-settings-field"><span>${escapeHtml(text)}</span><select data-choice="${name}">${values.map((value) => `<option value="${value}">${escapeHtml(texts[value])}</option>`).join('')}</select></label>`;
   const viewRows =
-    switchRow('striped', labels.stripedRows) + switchRow('wrapped', labels.textWrap) + linesRow;
+    switchRow('striped', labels.stripedRows) +
+    switchRow('wrapped', labels.textWrap) +
+    choiceRow('gridLines', labels.gridLines, GRID_LINES, labels.gridLinesOptions) +
+    choiceRow('lineStyle', labels.lineStyle, LINE_STYLES, labels.lineStyleOptions);
   const viewSection = viewRows ? `<section>${heading(labels.display)}${viewRows}</section>` : '';
   const sortable = columns.filter((c) => c.sortable === true);
   /** @param {string} text @param {string} control */
@@ -127,10 +129,13 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
     input.checked =
       current.view?.[/** @type {'striped' | 'wrapped'} */ (input.dataset.flag)] === true;
   }
-  const linesSelect = /** @type {HTMLSelectElement | null} */ (
-    overlay.querySelector('.dg-settings-lines-select')
+  const choices = [...overlay.querySelectorAll('select[data-choice]')].map(
+    (el) => /** @type {HTMLSelectElement} */ (el),
   );
-  if (linesSelect) linesSelect.value = current.view?.gridLines ?? 'default';
+  for (const select of choices) {
+    select.value =
+      current.view?.[/** @type {'gridLines' | 'lineStyle'} */ (select.dataset.choice)] ?? 'default';
+  }
   const sortKey = /** @type {HTMLSelectElement | null} */ (
     overlay.querySelector('.dg-settings-sort-key')
   );
@@ -162,11 +167,11 @@ export function openColumnDialog(root, columns, current, labels, onClose, onRese
     if (boxes.length > 0) {
       result.hidden = boxes.filter((box) => !box.checked).map((box) => box.dataset.key ?? '');
     }
-    if (switches.length > 0 || linesSelect) {
-      result.view = {
-        ...Object.fromEntries(switches.map((input) => [input.dataset.flag, input.checked])),
-        ...(linesSelect && { gridLines: /** @type {GridLines} */ (linesSelect.value) }),
-      };
+    if (switches.length > 0 || choices.length > 0) {
+      result.view = Object.fromEntries([
+        ...switches.map((input) => [input.dataset.flag, input.checked]),
+        ...choices.map((select) => [select.dataset.choice, select.value]),
+      ]);
     }
     if (sortKey && sortDir) {
       result.sort =

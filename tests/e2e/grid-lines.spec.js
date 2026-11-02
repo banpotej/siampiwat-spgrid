@@ -35,7 +35,7 @@ test('the Settings modal picks the grid lines, which are drawn and remembered', 
   for (const { mode, label, ...expected } of MODES) {
     await page.locator('.dg-columns-btn').click();
     const dialog = page.getByRole('dialog');
-    await dialog.getByLabel('เส้นตาราง').selectOption({ label });
+    await dialog.locator('select[data-choice="gridLines"]').selectOption({ label });
     await dialog.locator('.dg-modal-ok').click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     expect(await lines(page), mode).toEqual(expected);
@@ -44,4 +44,36 @@ test('the Settings modal picks the grid lines, which are drawn and remembered', 
   // The last choice ('none') comes back after a reload.
   await page.reload();
   expect(await lines(page)).toEqual({ row: false, column: false, header: false });
+});
+
+test('the Settings modal picks the line style, which is drawn and remembered', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const rowLine = () =>
+    page
+      .locator('tbody tr:nth-child(2) td:nth-child(3)')
+      .evaluate((td) => getComputedStyle(td).borderBottomStyle);
+  expect(await rowLine()).toBe('dashed'); // the theme's default
+
+  for (const [label, style] of [
+    ['เส้นทึบ', 'solid'],
+    ['เส้นจุด', 'dotted'],
+    ['เส้นประ', 'dashed'],
+    ['เส้นทึบ', 'solid'],
+  ]) {
+    await page.locator('.dg-columns-btn').click();
+    const dialog = page.getByRole('dialog');
+    await dialog.locator('select[data-choice="lineStyle"]').selectOption({ label });
+    await dialog.locator('.dg-modal-ok').click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    expect(await rowLine(), style).toBe(style);
+  }
+
+  await page.reload();
+  expect(await rowLine()).toBe('solid');
+
+  // 'ค่าเริ่มต้น' goes back to the theme.
+  await page.locator('.dg-columns-btn').click();
+  await page.locator('select[data-choice="lineStyle"]').selectOption({ label: 'ค่าเริ่มต้น' });
+  await page.locator('.dg-modal-ok').click();
+  expect(await rowLine()).toBe('dashed');
 });

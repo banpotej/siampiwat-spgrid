@@ -15,7 +15,7 @@ const make = (extra = {}) => {
 const open = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
 /** @param {HTMLElement} el */
 const select = (el) =>
-  /** @type {HTMLSelectElement | null} */ (el.querySelector('.dg-settings-lines-select'));
+  /** @type {HTMLSelectElement | null} */ (el.querySelector('select[data-choice="gridLines"]'));
 /** @param {HTMLElement} el */
 const apply = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
 /** @param {HTMLElement} el @param {string} mode */
@@ -124,7 +124,9 @@ describe('gridLinesToggle', () => {
   it('has Thai texts in thaiLabels and can be relabelled', () => {
     const thai = make({ gridLinesToggle: true, labels: thaiLabels });
     open(thai.el);
-    expect(thai.el.querySelector('.dg-settings-lines span')?.textContent).toBe('เส้นตาราง');
+    expect(
+      thai.el.querySelector('label:has(select[data-choice="gridLines"]) span')?.textContent,
+    ).toBe('เส้นตาราง');
     expect([...(select(thai.el)?.options ?? [])].map((o) => o.textContent)).toEqual([
       'ค่าเริ่มต้น',
       'แนวนอน',
@@ -137,7 +139,9 @@ describe('gridLinesToggle', () => {
       labels: { gridLines: 'Lines', gridLinesNone: 'Off' },
     });
     open(custom.el);
-    expect(custom.el.querySelector('.dg-settings-lines span')?.textContent).toBe('Lines');
+    expect(
+      custom.el.querySelector('label:has(select[data-choice="gridLines"]) span')?.textContent,
+    ).toBe('Lines');
     expect(select(custom.el)?.options[4].textContent).toBe('Off');
   });
 });

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Line style: `lineStyle` (`'default' | 'solid' | 'dashed' | 'dotted'`, type `LineStyle`) sets how the grid lines are drawn (root classes
+  `dg-line-solid`, `dg-line-dashed`, `dg-line-dotted`; `'default'` leaves it to the theme's `--dg-line-style`). `lineStyleToggle` adds a "Line style"
+  select to the settings modal (under "Display", applied with Apply) and `lineStyleStorageKey` remembers the choice (`datagrid:lineStyle:<name>`).
+  New `labels.lineStyle`, `lineStyleDefault`, `lineStyleSolid`, `lineStyleDashed`, `lineStyleDotted` (Thai in `thaiLabels`). An unknown
+  `lineStyle` throws a `RangeError`. The settings selects now carry `data-choice="gridLines"` / `"lineStyle"` (the grid lines select lost its `dg-settings-lines*` classes).
 - Grid lines: `gridLines` (`'default' | 'horizontal' | 'vertical' | 'both' | 'none'`, type `GridLines`) picks which lines the table draws
   (root classes `dg-lines-horizontal`, `dg-lines-vertical`, `dg-bordered`, `dg-lines-none`); `bordered` is now the same as `gridLines: 'both'`.
   `gridLinesToggle` adds a "Grid lines" select to the settings modal (under "Display", applied with Apply) and `gridLinesStorageKey` remembers

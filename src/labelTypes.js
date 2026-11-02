@@ -1,0 +1,65 @@
+// @ts-check
+
+/**
+ * @typedef {object} Labels
+ * @property {string} [search] aria-label of the search box; default 'Search'.
+ * @property {string} [empty] Text shown when there are no rows; default 'No data'.
+ * @property {string} [pagination] aria-label of the pager <nav>; default 'Pagination'.
+ * @property {string} [prev] aria-label of the previous button; default 'Previous'.
+ * @property {string} [next] aria-label of the next button; default 'Next'.
+ * @property {string} [first] aria-label of the first page button; default 'First page'.
+ * @property {string} [last] aria-label of the last page button; default 'Last page'.
+ * @property {string} [clear] aria-label of the clear search button; default 'Clear search'.
+ * @property {string} [searchButton] Text of the Search button (`searchButton` option); default 'Search'.
+ * @property {string} [searchColumn] aria-label of the search column select; default 'Search in'.
+ * @property {string} [dateFrom] aria-label of the "from" date box shown for a `date` search column; default 'From'.
+ * @property {string} [dateTo] aria-label of the "to" date box; default 'To'.
+ * @property {string} [allValues] First option of the value select shown for an enum search column; default 'All'.
+ * @property {string} [allColumns] First option of the search column select; default 'All columns'.
+ * @property {string} [exportExcel] Text of the Export button (`exportButton` option); default 'Export Excel'.
+ * @property {string} [columns] aria-label and tooltip of the Settings button (see `columnPicker`); default 'Settings'.
+ * @property {string} [columnsSection] Heading of the column list in the settings modal; default 'Columns'.
+ * @property {string} [sortSection] Heading of the sort selects in the settings modal; default 'Sorting'.
+ * @property {string} [displaySection] Heading of the striped / wrap switches and the grid lines select in the settings modal; default 'Display'.
+ * @property {string} [columnSettings] Title of the settings modal; default 'Settings'.
+ * @property {string} [apply] Apply button of the settings modal; default 'Apply'.
+ * @property {string} [sortBy] Label of the sort column select in the settings modal; default 'Sort by'.
+ * @property {string} [noSort] First option of that select (no sorting); default 'No sorting'.
+ * @property {string} [sortDirection] Label of the sort direction select; default 'Direction'.
+ * @property {string} [ascending] Ascending option of the direction select; default 'Ascending'.
+ * @property {string} [descending] Descending option of the direction select; default 'Descending'.
+ * @property {string} [refresh] aria-label and tooltip of the Refresh button (`refreshButton`); default 'Refresh'.
+ * @property {string} [resetView] Text of the Reset view button and title of its confirm dialog (`resetButton`); default 'Reset view'.
+ * @property {(text: string) => string} [removeFilter] aria-label of a filter chip's remove button, given the chip's
+ *   text (`filterSummary`); default 'Remove filter <text>'.
+ * @property {(shown: number, total: number) => string} [filterSummary] Count shown beside the filter chips
+ *   (`filterSummary`); default 'Found 12 of 250'.
+ * @property {string} [toggleDescription] aria-label and tooltip of the button that hides or shows `description`;
+ *   default 'Show or hide description'.
+ * @property {string} [stripedRows] Text of the `stripedToggle` switch; default 'Striped rows'.
+ * @property {string} [textWrap] Text of the `textWrapToggle` switch; default 'Wrap text'.
+ * @property {string} [gridLines] Label of the `gridLinesToggle` select; default 'Grid lines'.
+ * @property {string} [gridLinesDefault] 'default' option of that select; default 'Default'.
+ * @property {string} [gridLinesHorizontal] 'horizontal' option; default 'Horizontal'.
+ * @property {string} [gridLinesVertical] 'vertical' option; default 'Vertical'.
+ * @property {string} [gridLinesBoth] 'both' option; default 'Both'.
+ * @property {string} [gridLinesNone] 'none' option; default 'None'.
+ * @property {string} [lineStyle] Label of the `lineStyleToggle` select; default 'Line style'.
+ * @property {string} [lineStyleDefault] 'default' option of that select; default 'Default'.
+ * @property {string} [lineStyleSolid] 'solid' option; default 'Solid'.
+ * @property {string} [lineStyleDashed] 'dashed' option; default 'Dashed'.
+ * @property {string} [lineStyleDotted] 'dotted' option; default 'Dotted'.
+ * @property {(name: string) => string} [resizeColumn] Accessible name of a column's resize handle (`resizableColumns`);
+ *   default 'Resize <name>'.
+ * @property {string} [confirmOk] Confirm button of the built-in Reset view modal; default 'Reset'.
+ * @property {string} [cancel] Cancel button of the built-in Reset view modal; default 'Cancel'.
+ * @property {string} [confirmReset] Question asked before the Reset view button resets (`resetButton`); default
+ *   'Reset the view? Search, sorting, hidden columns and rows per page go back to their defaults.'.
+ * @property {string} [yes] Accessible name of a `true` value in a `boolean` column; default 'Yes'.
+ * @property {string} [no] Accessible name of a `false` value in a `boolean` column; default 'No'.
+ * @property {string} [pageSize] Label of the page size select; default 'Rows per page'.
+ * @property {(from: number, to: number, total: number) => string} [summary] Summary text;
+ *   default 'Showing 1–10 of 25' (and 'Showing 0 of 0' when empty).
+ */
+
+export {};

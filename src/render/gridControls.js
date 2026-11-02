@@ -57,6 +57,13 @@ export function bindGridControls(grid, shell, options, labels, host) {
           both: labels.gridLinesBoth,
           none: labels.gridLinesNone,
         },
+        lineStyle: labels.lineStyle,
+        lineStyleOptions: {
+          default: labels.lineStyleDefault,
+          solid: labels.lineStyleSolid,
+          dashed: labels.lineStyleDashed,
+          dotted: labels.lineStyleDotted,
+        },
         reset: labels.resetView,
       },
       getState: () => ({

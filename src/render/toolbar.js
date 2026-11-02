@@ -7,8 +7,10 @@ import { renderSearchAlternatives } from './searchValue.js';
 import {
   createViewSettings,
   gridLinesClass,
+  lineStyleClass,
   loadFlag,
   loadGridLines,
+  loadLineStyle,
   STRIPED_PREFIX,
   TEXT_WRAP_PREFIX,
 } from './viewToggles.js';
@@ -66,7 +68,7 @@ const toolButton = (className, label, icon, icons) =>
  *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, summary: boolean,
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null,
- *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, compact: boolean,
+ *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, lineStyle: import('../types.js').LineStyle, compact: boolean,
  *   stickyHeader: boolean, scroll: boolean,
  * }} opts
  * @returns {string}
@@ -94,6 +96,7 @@ export function renderShell({
   icons,
   striped,
   gridLines,
+  lineStyle,
   compact,
   stickyHeader,
   scroll,
@@ -137,6 +140,7 @@ export function renderShell({
     wrapped ? '' : 'dg-nowrap',
     resizable ? 'dg-resizable' : '',
     gridLinesClass(gridLines),
+    lineStyleClass(lineStyle),
     stickyHeader ? 'dg-sticky' : '',
   ]
     .filter(Boolean)
@@ -162,7 +166,8 @@ export function mountShell(container, options, labels, icons) {
     options.resetButton === true ||
     options.stripedToggle === true ||
     options.textWrapToggle === true ||
-    options.gridLinesToggle === true;
+    options.gridLinesToggle === true ||
+    options.lineStyleToggle === true;
   container.innerHTML = renderShell({
     searchable: options.searchable === true,
     searchLabel: labels.search,
@@ -192,6 +197,7 @@ export function mountShell(container, options, labels, icons) {
       options.gridLinesStorageKey,
       options.gridLines ?? (options.bordered === true ? 'both' : 'default'),
     ),
+    lineStyle: loadLineStyle(options.lineStyleStorageKey, options.lineStyle ?? 'default'),
     compact: options.density === 'compact',
     stickyHeader: options.stickyHeader === true,
     scroll: maxHeight !== undefined,

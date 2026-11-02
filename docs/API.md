@@ -56,6 +56,9 @@
 - `options.stripedStorageKey?: string` – จำตัวเลือกแถวสลับสีไว้ใน `localStorage` ภายใต้ `datagrid:striped:<ชื่อ>` ทุกครั้งที่ผู้ใช้กดปุ่ม แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `striped` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่ boolean, JSON เสีย หรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย (ใช้ `striped` ตามเดิม) `resetView()` ไม่แตะค่านี้
 - `options.bordered?: boolean` – เส้นขอบรอบทุกเซลล์ (เส้นแนวตั้งระหว่างคอลัมน์ด้วย) ใช้สี `--dg-border-color` (ค่าเริ่มต้น `false`) เท่ากับ `gridLines: 'both'` (ถ้าตั้งทั้งคู่ `gridLines` ชนะ)
 - `options.gridLines?: 'default' | 'horizontal' | 'vertical' | 'both' | 'none'` – เส้นที่ตารางวาด (ค่าเริ่มต้น `'default'`; ค่าที่ไม่รู้จักโยน `RangeError`) ดู [Grid lines](#grid-lines)
+- `options.lineStyle?: 'default' | 'solid' | 'dashed' | 'dotted'` – ประเภท (ลักษณะ) ของเส้นตาราง (ค่าเริ่มต้น `'default'` = ตามธีม `--dg-line-style` ซึ่งเป็น `dashed`; ค่าที่ไม่รู้จักโยน `RangeError`) ดู [Grid lines](#grid-lines)
+- `options.lineStyleToggle?: boolean` – เพิ่ม select "Line style" (`<select data-choice="lineStyle">` ข้อความจาก `labels.lineStyle`) ในหัวข้อ "Display" ของ modal Settings (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
+- `options.lineStyleStorageKey?: string` – จำประเภทเส้นไว้ใน `localStorage` ภายใต้ `datagrid:lineStyle:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `lineStyle` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่ประเภทเส้นหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.gridLinesToggle?: boolean` – เพิ่ม select "Grid lines" (`<select class="dg-settings-lines-select">` ข้อความจาก `labels.gridLines`) ในหัวข้อ "Display" ของ modal Settings เพื่อให้ผู้ใช้เลือกโหมดเอง (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.gridLinesStorageKey?: string` – จำโหมดเส้นไว้ใน `localStorage` ภายใต้ `datagrid:gridLines:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `gridLines`/`bordered` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่โหมดหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
@@ -85,6 +88,8 @@
   | `toggleDescription`                                                | ชื่อและ tooltip ของปุ่มซ่อน/แสดง `description`                                       | `'Show or hide description'`                                                  |
   | `stripedRows`                                                      | ข้อความของสวิตช์ `stripedToggle`                                                     | `'Striped rows'`                                                              |
   | `gridLines`                                                        | ข้อความของ select `gridLinesToggle`                                                  | `'Grid lines'`                                                                |
+  | `lineStyle`                                                        | ข้อความของ select `lineStyleToggle`                                                  | `'Line style'`                                                                |
+  | `lineStyleDefault` / `lineStyleSolid` / `lineStyleDashed` / `lineStyleDotted` | ข้อความของแต่ละประเภทใน select นั้น                                              | `'Default'` / `'Solid'` / `'Dashed'` / `'Dotted'`                             |
   | `gridLinesDefault` / `gridLinesHorizontal` / `gridLinesVertical` / `gridLinesBoth` / `gridLinesNone` | ข้อความของแต่ละโหมดใน select นั้น                          | `'Default'` / `'Horizontal'` / `'Vertical'` / `'Both'` / `'None'`             |
   | `confirmOk`                                                        | ปุ่มยืนยันใน modal ของ Reset view                                                    | `'Reset'`                                                                     |
   | `cancel`                                                           | ปุ่มยกเลิกใน modal ของ Reset view                                                    | `'Cancel'`                                                                    |
@@ -234,7 +239,12 @@ new DataGrid(el, {
 | `'both'`       | เส้นรอบทุกเซลล์ (เหมือน `bordered: true`)                     | `dg-bordered`         |
 | `'none'`       | ไม่มีเส้นเลย (ไม่มีเส้นใต้หัวตารางด้วย)                       | `dg-lines-none`       |
 
-- ชนิด `GridLines` export จาก `datagrid` สไตล์เส้น (ทึบ/ประ) ใช้ `--dg-line-style` ตามเดิม สีใช้ `--dg-border-color`
+- ชนิด `GridLines` และ `LineStyle` export จาก `datagrid` สีเส้นใช้ `--dg-border-color`
+- **ประเภทเส้น** (`lineStyle`): `'solid'` (เส้นทึบ) `'dashed'` (เส้นประ) `'dotted'` (เส้นจุด) ใส่ class `dg-line-solid` / `dg-line-dashed` / `dg-line-dotted`
+  บน `.dg-root` ซึ่งตั้งค่า `--dgi-line-style` ของเส้นแถวและเส้นแนวตั้งทั้งหมด; `'default'` ไม่ใส่ class ปล่อยให้ธีมตัดสิน (`--dg-line-style`, ค่าเริ่มต้น `dashed`)
+  เส้นใต้หัวตารางเป็นเส้นทึบเสมอ ใช้ร่วมกับโหมดข้างบนได้ทุกโหมด
+- ตั้ง `lineStyleToggle: true` เพื่อให้ผู้ใช้เลือกประเภทเส้นใน modal Settings และ `lineStyleStorageKey` เพื่อจำตัวเลือก
+  ข้อความมาจาก `labels.lineStyle` และ `labels.lineStyleDefault` / `lineStyleSolid` / `lineStyleDashed` / `lineStyleDotted` (มีภาษาไทยใน `thaiLabels`)
 - ตั้ง `gridLinesToggle: true` เพื่อให้ผู้ใช้เลือกโหมดใน modal Settings และ `gridLinesStorageKey` เพื่อจำตัวเลือก
   ข้อความของ select มาจาก `labels.gridLines` และ `labels.gridLinesDefault` / `gridLinesHorizontal` / `gridLinesVertical` / `gridLinesBoth` / `gridLinesNone`
   (มีภาษาไทยใน `thaiLabels`)
@@ -246,6 +256,9 @@ new DataGrid(el, {
   gridLines: 'horizontal',
   gridLinesToggle: true,
   gridLinesStorageKey: 'orders',
+  lineStyle: 'solid',
+  lineStyleToggle: true,
+  lineStyleStorageKey: 'orders',
 });
 ```
 
