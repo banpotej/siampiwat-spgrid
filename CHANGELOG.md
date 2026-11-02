@@ -17,8 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   With `searchColumnSelect`, choosing such a column as the search column swaps the text box for a select of its values
   (`.dg-search-value`); picking one filters at once on the whole cell value (case-insensitive, not a substring). Changing between an enum and
   a plain search column clears the search text. The matching cells are marked whole (`td.dg-match`) rather than their text (`mark.dg-mark`). New `FilterState.exact` (set by the grid, usable with `filterRows`).
+
 ### Changed
 
+- Date search column: the from / to boxes are tidier: each date lights up on hover and focus, the calendar buttons stay quiet until used, and the frame fits the filter bar.
 - **Breaking:** an action button with an `icon` is now icon-only (`dg-action-icononly`): `ActionDef.label` becomes its `aria-label` and
   tooltip (`title`, unless `ActionDef.title` is set) instead of visible text. New `ActionDef.showLabel: true` keeps the text beside the
   icon. Buttons without an `icon` are unchanged.

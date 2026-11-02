@@ -99,56 +99,8 @@
   border-color: var(--dgi-focus);
 }
 
-/* A date search column: the from / to date boxes sit in one frame that looks like the search box. */
-.dg-search-range {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: 0.5em;
-  min-width: 0;
-  min-height: var(--dgi-control-h);
-  padding-inline: 2.5em 2.2em;
-  border: 1px solid var(--dgi-border-strong);
-  border-radius: var(--dgi-input-radius);
-  background: var(--dgi-bg);
-  color: var(--dgi-muted);
-  font: inherit;
-}
-
-/* Two dates need more room than a word. */
-.dg-input-group:has(.dg-search-range:not([hidden])) {
-  max-width: 52em;
-}
-
-/* Two dates need more room than a word. */
-.dg-search-field:has(.dg-search-range:not([hidden])) {
-  flex-basis: 21em;
-}
-
-.dg-search-range:focus-within {
-  border-color: var(--dgi-focus);
-}
-
-.dg-search-range input {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 0.2em 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--dgi-text);
-  font: inherit;
-  font-size: 0.92em;
-}
-
-.dg-search-range input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.6;
-}
-
 .dg-search[hidden],
-.dg-search-value[hidden],
-.dg-search-range[hidden] {
+.dg-search-value[hidden] {
   display: none;
 }
 
@@ -234,15 +186,10 @@
   background-color: var(--dgi-sort-hover-bg);
 }
 
-/* A column is chosen (not "All columns"): the select takes the accent tint, like a pressed toggle button. */
-.dg-search-column:has(option:checked:not([value=''])) {
-  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
-  background-color: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
-  color: var(--dgi-accent);
-}
-
-.dg-search-column:has(option:checked:not([value=''])):hover {
-  background-color: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
+/* The opened list stays plain, whatever tint the closed select has. */
+.dg-search-column option {
+  background: var(--dgi-bg);
+  color: var(--dgi-text);
 }
 
 .dg-search-column:dir(rtl) {
