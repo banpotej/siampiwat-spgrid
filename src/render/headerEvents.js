@@ -18,6 +18,7 @@ export function bindHeaderEvents(host, { getSort, setSort }) {
   /** @param {Event} e */
   const onHeader = (e) => {
     if (e instanceof KeyboardEvent && e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target instanceof Element && e.target.closest('.dg-resize')) return; // the resize handle is not a sort control
     const th = e.target instanceof Element ? e.target.closest('th.dg-sortable') : null;
     const key = th instanceof HTMLElement ? th.dataset.key : undefined;
     if (!th || key === undefined) return;

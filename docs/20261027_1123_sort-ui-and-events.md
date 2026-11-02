@@ -7,10 +7,10 @@
 งานนี้คือ Phase 1 Task 3 — เชื่อม state และ sort เข้ากับ `DataGrid` (UI + events) แบ่งเป็น 2 ส่วน
 ยังไม่ได้ commit/push (รอผู้ใช้สั่ง)
 
-| ส่วน | ประเภท |
-| --- | --- |
-| Step 0. งานค้าง (leftovers) | Fixed issue / Housekeeping |
-| Steps 1-3. Sort UI + events + API | Implement feature |
+| ส่วน                              | ประเภท                     |
+| --------------------------------- | -------------------------- |
+| Step 0. งานค้าง (leftovers)       | Fixed issue / Housekeeping |
+| Steps 1-3. Sort UI + events + API | Implement feature          |
 
 ผลการตรวจสอบ: `npm run check` ผ่าน (lint, typecheck, unit test 64 รายการ, build) และ
 `npm run test:e2e` ผ่าน 3 รายการ
@@ -29,16 +29,16 @@
 
 ### ไฟล์ที่เพิ่ม/แก้ไข
 
-| ไฟล์ | การเปลี่ยนแปลง |
-| --- | --- |
-| `src/types.js` | เพิ่ม `Column.sortable`, `DataGridOptions.locale`, `DataGridOptions.onSortChange` |
-| `src/render/table.js` (ใหม่) | สร้าง markup ของตาราง (escape ทุกค่า) แยกออกจาก `DataGrid.js` |
-| `src/DataGrid.js` | state เก็บ `{ columns, rows, sort }`, คำนวณแถวที่แสดงด้วย `sortRows()`, listener แบบ delegated, `getSort()`, `setSort()`, `on()` |
-| `src/datagrid.css` | ตัวบ่งชี้การเรียงด้วย `::after` + ตัวแปร `--dg-*` (ไม่ใช้ icon library) |
-| `examples/index.html` | ตั้งทุกคอลัมน์เป็น `sortable: true` |
-| `docs/API.md`, `CHANGELOG.md` | อัปเดตตามการเปลี่ยนแปลง public API |
-| `tests/unit/DataGrid.sort.test.js` (ใหม่) | unit test ของ sort UI และ events |
-| `tests/e2e/sort.spec.js` (ใหม่) | e2e: คลิกหัวคอลัมน์ 3 ครั้งแล้วตรวจลำดับแถว และทดสอบ Enter |
+| ไฟล์                                      | การเปลี่ยนแปลง                                                                                                                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `src/types.js`                            | เพิ่ม `Column.sortable`, `DataGridOptions.locale`, `DataGridOptions.onSortChange`                                                |
+| `src/render/table.js` (ใหม่)              | สร้าง markup ของตาราง (escape ทุกค่า) แยกออกจาก `DataGrid.js`                                                                    |
+| `src/DataGrid.js`                         | state เก็บ `{ columns, rows, sort }`, คำนวณแถวที่แสดงด้วย `sortRows()`, listener แบบ delegated, `getSort()`, `setSort()`, `on()` |
+| `src/datagrid.css`                        | ตัวบ่งชี้การเรียงด้วย `::after` + ตัวแปร `--dg-*` (ไม่ใช้ icon library)                                                          |
+| `examples/index.html`                     | ตั้งทุกคอลัมน์เป็น `sortable: true`                                                                                              |
+| `docs/API.md`, `CHANGELOG.md`             | อัปเดตตามการเปลี่ยนแปลง public API                                                                                               |
+| `tests/unit/DataGrid.sort.test.js` (ใหม่) | unit test ของ sort UI และ events                                                                                                 |
+| `tests/e2e/sort.spec.js` (ใหม่)           | e2e: คลิกหัวคอลัมน์ 3 ครั้งแล้วตรวจลำดับแถว และทดสอบ Enter                                                                       |
 
 ### พฤติกรรมที่ได้
 

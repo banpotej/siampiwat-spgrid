@@ -1,0 +1,80 @@
+/* The filter summary strip under the toolbar: "Found 12 of 250" and one removable chip per active filter. */
+
+.dg-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.9em;
+  padding: 0.6em var(--dgi-gap);
+  border-bottom: 1px solid var(--dgi-border);
+  background: color-mix(in srgb, var(--dgi-accent) 4%, var(--dgi-bg));
+}
+
+.dg-summary[hidden] {
+  display: none;
+}
+
+.dg-summary-count {
+  color: var(--dgi-muted);
+  font-weight: 600;
+}
+
+.dg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  max-width: 100%;
+  padding: 0.15em 0.2em 0.15em 0.75em;
+  border: 1px solid color-mix(in srgb, var(--dgi-accent) 35%, var(--dgi-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dgi-accent) 10%, var(--dgi-bg));
+  line-height: 1.4;
+}
+
+.dg-chip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dg-chip-remove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.6em;
+  height: 1.6em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dgi-muted);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-chip-remove:hover {
+  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
+  color: var(--dgi-text);
+}
+
+.dg-chip-remove:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-chip-remove {
+    transition: none;
+  }
+}

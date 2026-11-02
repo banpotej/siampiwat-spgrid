@@ -6,6 +6,15 @@
   font-size: var(--dgi-font-size);
   /* >= 1.5 so Thai vowels and tone marks above/below the line are not clipped. */
   line-height: var(--dgi-line-height);
+  /* One card: the filter bar, the table and the footer share this border, so they read as one control.
+     clip (unlike hidden) keeps the rounded corners without becoming a scroll container,
+     so a sticky header can still stick to the page. */
+  position: relative;
+  overflow: clip;
+  border: 1px solid var(--dgi-border);
+  border-radius: var(--dgi-radius);
+  background: var(--dgi-bg);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
 }
 
 .dg-root *,
@@ -28,12 +37,7 @@
 }
 
 .dg-table-wrap {
-  /* clip (unlike hidden) keeps the rounded corners without becoming a scroll container,
-     so a sticky header can still stick to the page. */
   overflow: clip;
-  border: 1px solid var(--dgi-border);
-  border-radius: var(--dgi-radius);
-  background: var(--dgi-bg);
 }
 
 .dg-table-wrap.dg-scroll {
@@ -54,19 +58,39 @@
   vertical-align: middle;
 }
 
+/* The outer edges get a little more room so text does not hug the rounded border. */
+.dg-table th:first-child,
+.dg-table td:first-child {
+  padding-inline-start: calc(var(--dgi-pad-x) + 4px);
+}
+
+.dg-table th:last-child,
+.dg-table td:last-child {
+  padding-inline-end: calc(var(--dgi-pad-x) + 4px);
+}
+
+/* textWrap off: cells stay on one line (the table wrapper scrolls, or clips, when it gets wider). */
+.dg-nowrap .dg-table td {
+  white-space: nowrap;
+}
+
 .dg-table td {
-  border-bottom: 1px solid var(--dgi-border);
+  border-bottom: 1px var(--dgi-line-style) var(--dgi-border);
 }
 
 .dg-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
+/* Minimal header: small, quiet text on a faint tint, one thin line below. */
 .dg-table th {
-  border-bottom: 1px solid var(--dgi-border-strong);
-  background: var(--dgi-header-bg);
-  color: var(--dgi-header-text);
+  padding-block: calc(var(--dgi-pad-y) * 0.6);
+  border-bottom: 1px solid var(--dgi-border);
+  background: color-mix(in srgb, var(--dgi-header-bg) 45%, var(--dgi-bg));
+  color: var(--dgi-muted);
+  font-size: 0.857em;
   font-weight: 600;
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
@@ -74,6 +98,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  box-shadow: 0 3px 3px -3px rgb(0 0 0 / 0.15);
 }
 
 .dg-table .dg-align-left {
@@ -134,6 +159,16 @@
   opacity: 0.7;
 }
 
+/* bordered: a line between cells too. Every cell but the last of a row gets one on its end side. */
+.dg-bordered .dg-table th:not(:last-child),
+.dg-bordered .dg-table td:not(:last-child) {
+  border-inline-end: 1px var(--dgi-line-style) var(--dgi-border);
+}
+
+.dg-bordered .dg-table tr.dg-empty td {
+  border-inline-end: 0;
+}
+
 .dg-table tbody tr {
   transition: background-color var(--dgi-transition);
 }
@@ -170,4 +205,109 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* resizableColumns: a handle on each header cell's end edge. The first resize pins every column at a pixel width and
+   fixes the table layout (.dg-fixed); long words then break instead of spilling into the next column. */
+.dg-resizable:not(.dg-sticky) .dg-table th {
+  position: relative;
+}
+
+.dg-resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: -4px;
+  z-index: 2;
+  width: 9px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.dg-resize::after {
+  content: '';
+  position: absolute;
+  inset-block: 25%;
+  inset-inline-start: 4px;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-table th:hover .dg-resize::after {
+  background: var(--dgi-border-strong);
+}
+
+.dg-resize:hover::after,
+.dg-resize.dg-resizing::after,
+.dg-resize:focus-visible::after {
+  background: var(--dgi-accent);
+}
+
+.dg-resize:focus-visible {
+  outline: none;
+}
+
+.dg-table.dg-fixed {
+  table-layout: fixed;
+}
+
+.dg-fixed th,
+.dg-fixed td {
+  overflow-wrap: anywhere;
+}
+
+/* A narrowed column clips its own content (ellipsis) so it never paints over a neighbouring cell. */
+.dg-fixed td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Buttons are never cut to "…": an action cell that is a hair too narrow (rounding, borders, a width saved before the
+   buttons changed) lets them spill over instead. */
+.dg-fixed td.dg-action-cell {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.dg-fixed .dg-th {
+  min-width: 0;
+}
+
+.dg-fixed .dg-th-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-resize::after {
+    transition: none;
+  }
+}
+
+/* reorderableColumns: the header cell being dragged, and the edge where it would land. */
+.dg-table th.dg-dragging {
+  opacity: 0.45;
+}
+
+.dg-root:not(.dg-sticky) .dg-table th.dg-drop-before,
+.dg-root:not(.dg-sticky) .dg-table th.dg-drop-after {
+  position: relative;
+}
+
+.dg-table th.dg-drop-before::before,
+.dg-table th.dg-drop-after::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  width: 2px;
+  background: var(--dgi-accent);
+}
+
+.dg-table th.dg-drop-before::before {
+  inset-inline-start: 0;
+}
+
+.dg-table th.dg-drop-after::before {
+  inset-inline-end: 0;
 }

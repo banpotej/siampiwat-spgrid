@@ -1,0 +1,57 @@
+/* Icon-only neutral toolbar buttons (Refresh, Reset view, Columns): the last parts of the input group, or
+   standing alone in the toolbar when there is no search box; their label is the aria-label and tooltip.
+   Joined corners and the shared border come from the input group rules in toolbar.css. */
+
+.dg-toolbar {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dgi-gap);
+}
+
+.dg-tool-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--dgi-control-h);
+  min-height: var(--dgi-control-h);
+  padding: 0.4em 0.8em;
+  border: 1px solid color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
+  border-radius: 0;
+  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
+  color: var(--dgi-neutral);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--dgi-transition),
+    transform var(--dgi-transition);
+}
+
+.dg-tool-btn .dg-icon {
+  font-size: 1.2em;
+}
+
+.dg-tool-btn:hover {
+  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+}
+
+.dg-tool-btn:active {
+  transform: translateY(1px);
+}
+
+.dg-toolbar > .dg-tool-btn {
+  border-radius: var(--dgi-input-radius);
+}
+
+.dg-tool-btn:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-tool-btn,
+  .dg-tool-btn:active {
+    transition: none;
+    transform: none;
+  }
+}

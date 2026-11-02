@@ -59,4 +59,10 @@ describe('createPurchaseOrders', () => {
     for (const r of rows) expect(r.cancelBy !== '').toBe(r.status === 'ยกเลิก');
     expect(new Set(rows.map((r) => r.status)).size).toBe(4);
   });
+
+  it('describes every order, with assets and expenses worded differently', () => {
+    const rows = createPurchaseOrders();
+    for (const r of rows) expect(r.description.length).toBeGreaterThan(5);
+    expect(new Set(rows.map((r) => r.description)).size).toBeGreaterThan(10);
+  });
 });

@@ -16,6 +16,21 @@ const STEP_ICON = {
 };
 
 /**
+ * The "Showing 1–10 of 60" text with each number wrapped in <span class="dg-num"> so the figures stand out from the words.
+ * Split before escaping, so an entity such as &#39; is never cut up.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+const renderSummaryText = (text) =>
+  text
+    .split(/(\d[\d,.]*)/)
+    .map((part, i) =>
+      i % 2 ? `<span class="dg-num">${escapeHtml(part)}</span>` : escapeHtml(part),
+    )
+    .join('');
+
+/**
  * @param {number[]} options
  * @param {number} pageSize
  * @returns {string}
@@ -56,7 +71,7 @@ export function renderPager({ paging, labels, pageSizeOptions, icons }) {
     ? `<label class="dg-page-size">${escapeHtml(labels.pageSize)} ${renderPageSizeSelect(pageSizeOptions, pageSize)}</label>`
     : '';
   return (
-    `<div class="dg-summary">${escapeHtml(labels.summary(from, to, totalRows))}</div>${select}` +
+    `<div class="dg-summary">${renderSummaryText(labels.summary(from, to, totalRows))}</div>${select}` +
     `<nav class="dg-pager" aria-label="${escapeHtml(labels.pagination)}" tabindex="-1">` +
     `${step('first', page <= 1)}${step('prev', page <= 1)}${pages}` +
     `${step('next', page >= totalPages)}${step('last', page >= totalPages)}</nav>`

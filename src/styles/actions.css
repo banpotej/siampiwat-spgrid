@@ -1,24 +1,63 @@
 /* Action buttons. :where() keeps the base at zero specificity, so a caller's className
-   (e.g. .btn-cancel { --dg-action-bg: #b91c1c }) or any plain rule overrides it. */
+   (e.g. .btn-cancel { --dg-action-bg: #b91c1c; --dg-action-color: #fff }) or any plain rule overrides it.
+   A real button, unlike the tinted pill of a badge: a rounded rectangle on the plain background with a visible
+   border and a faint shadow, its label in one tone (--dgi-action-tone) that tints it on hover. Pick a tone with the
+   .dg-action-danger / -success / -neutral classes or set --dg-action-tone. */
 :where(.dg-action) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2em;
   padding: var(--dgi-action-padding);
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--dgi-action-tone) 35%, var(--dgi-border-strong));
   border-radius: var(--dgi-action-radius);
-  background: var(--dg-action-bg, var(--dgi-action-bg));
-  color: var(--dg-action-color, var(--dgi-action-color));
+  background: var(--dg-action-bg, var(--dgi-bg));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  color: var(--dg-action-color, var(--dgi-action-tone));
   font: inherit;
-  font-size: 0.9em;
+  font-size: 0.875em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1.4;
   white-space: nowrap;
   cursor: pointer;
-  transition: filter var(--dgi-transition);
+  transition:
+    background-color var(--dgi-transition),
+    border-color var(--dgi-transition),
+    box-shadow var(--dgi-transition),
+    transform var(--dgi-transition);
 }
 
+/* Hover lifts the button a little and lets its tone glow softly underneath. */
 :where(.dg-action):hover:not([disabled]) {
-  filter: brightness(0.92);
+  border-color: color-mix(in srgb, var(--dgi-action-tone) 60%, transparent);
+  background: var(
+    --dg-action-hover-bg,
+    color-mix(in srgb, var(--dgi-action-tone) 10%, var(--dgi-bg))
+  );
+  box-shadow: 0 3px 8px -2px color-mix(in srgb, var(--dgi-action-tone) 35%, transparent);
+  transform: translateY(-1px);
+}
+
+:where(.dg-action):active:not([disabled]) {
+  background: var(
+    --dg-action-hover-bg,
+    color-mix(in srgb, var(--dgi-action-tone) 18%, var(--dgi-bg))
+  );
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+:where(.dg-action-danger) {
+  --dgi-action-tone: var(--dgi-danger);
+}
+
+:where(.dg-action-success) {
+  --dgi-action-tone: var(--dgi-success);
+}
+
+:where(.dg-action-neutral) {
+  --dgi-action-tone: var(--dgi-neutral);
 }
 
 :where(.dg-action):focus-visible {
@@ -27,15 +66,56 @@
 }
 
 :where(.dg-action)[disabled] {
-  opacity: 0.5;
+  border-color: transparent;
+  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
+  color: var(--dgi-muted);
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Action cells hug their buttons instead of stretching them. */
+/* An action column is only as wide as its buttons: width 1% makes the auto table layout give it the
+   narrowest width that fits (the nowrap content), so spare table width goes to the other columns.
+   An explicit `Column.width` (inline style on the header) still wins. */
+.dg-table th.dg-action-col,
 .dg-table td.dg-action-cell {
+  width: 1%;
   white-space: nowrap;
 }
 
 .dg-action-cell .dg-action + .dg-action {
   margin-inline-start: 0.4em;
+}
+
+/* Tighter rows get tighter buttons. */
+.dg-compact :where(.dg-action) {
+  min-height: 1.8em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.dg-action) {
+    transition: none;
+  }
+  :where(.dg-action):hover:not([disabled]),
+  :where(.dg-action):active:not([disabled]) {
+    transform: none;
+  }
+}
+
+/* An icon-only button (an action with an icon): a square, the label is its tooltip. */
+.dg-action.dg-action-icononly {
+  min-width: 2.2em;
+  min-height: 2.2em;
+  padding: 0.25em;
+}
+
+.dg-action-icononly .dg-action-icon {
+  margin: 0;
+}
+
+/* An icon before the label; it follows the button's text colour. */
+.dg-action-icon {
+  display: inline-flex;
+  margin-inline-end: 0.35em;
+  margin-inline-start: -0.15em;
+  font-size: 1.25em;
 }

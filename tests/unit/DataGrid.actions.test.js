@@ -290,3 +290,94 @@ describe('column header options', () => {
     expect(b.hasAttribute('aria-label')).toBe(false);
   });
 });
+
+describe('action icons', () => {
+  /** @param {any[]} actions @param {object} [options] */
+  const makeIcons = (actions, options = {}) => {
+    const el = document.createElement('div');
+    new DataGrid(el, {
+      columns: [{ key: '_a', actions }, { key: 'id' }],
+      rows: [{ id: 1 }],
+      ...options,
+    });
+    return el;
+  };
+
+  it('renders a decorative built-in icon; the button is icon-only, named and titled by the label', () => {
+    const el = makeIcons([{ name: 'view', label: 'View', icon: 'visibility' }]);
+    const button = /** @type {HTMLElement} */ (el.querySelector('button.dg-action'));
+    const icon = /** @type {HTMLElement} */ (button.firstElementChild);
+    expect(icon.className).toBe('dg-icon dg-action-icon');
+    expect(icon.getAttribute('data-icon')).toBe('visibility');
+    expect(icon.getAttribute('aria-hidden')).toBe('true');
+    expect(icon.querySelector('svg')).not.toBeNull();
+    expect(button.textContent).toBe('');
+    expect(button.className).toBe('dg-action dg-action-icononly');
+    expect(button.getAttribute('aria-label')).toBe('View');
+    expect(button.title).toBe('View');
+  });
+
+  it('keeps an explicit title as the tooltip, and shows the text too with showLabel', () => {
+    const el = makeIcons([
+      { name: 'a', label: 'A', icon: 'edit', title: 'Edit "it"' },
+      { name: 'b', label: 'B', icon: 'edit', showLabel: true },
+    ]);
+    const [a, b] = /** @type {HTMLElement[]} */ ([...el.querySelectorAll('button.dg-action')]);
+    expect(a.title).toBe('Edit "it"');
+    expect(a.getAttribute('aria-label')).toBe('A');
+    expect(b.textContent).toBe('B');
+    expect(b.className).toBe('dg-action');
+    expect(b.hasAttribute('aria-label')).toBe(false);
+    expect(b.title).toBe('');
+  });
+
+  it('escapes the label in aria-label and title of an icon-only button', () => {
+    const el = makeIcons([{ name: 'x', label: '<b>"x"</b>', icon: 'edit' }]);
+    const button = /** @type {HTMLElement} */ (el.querySelector('button.dg-action'));
+    expect(button.getAttribute('aria-label')).toBe('<b>"x"</b>');
+    expect(button.title).toBe('<b>"x"</b>');
+    expect(button.querySelector('b')).toBeNull();
+  });
+
+  it('renders no icon without `icon` or with an unknown / inherited name', () => {
+    for (const icon of [undefined, 'nope', 'toString', 42]) {
+      const el = makeIcons([{ name: 'view', label: 'View', icon }]);
+      expect(el.querySelector('.dg-action-icon')).toBeNull();
+      expect(el.querySelector('button')?.textContent).toBe('View');
+    }
+  });
+
+  it('uses a replacement from options.icons', () => {
+    const el = makeIcons([{ name: 'view', label: 'View', icon: 'edit' }], {
+      icons: { edit: '<svg data-mine="1"></svg>' },
+    });
+    expect(el.querySelector('.dg-action-icon [data-mine]')).not.toBeNull();
+  });
+
+  it('still reports the action when the icon is clicked', () => {
+    const onAction = vi.fn();
+    const el = makeIcons([{ name: 'view', label: 'View', icon: 'visibility' }], { onAction });
+    el.querySelector('.dg-action-icon svg path')?.dispatchEvent(
+      new MouseEvent('click', { bubbles: true }),
+    );
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onAction.mock.calls[0][0].action).toBe('view');
+  });
+});
+
+describe('action column width', () => {
+  it('marks only the headers of action columns, so CSS can shrink them to their buttons', () => {
+    const el = document.createElement('div');
+    new DataGrid(el, {
+      columns: [
+        { key: 'name', label: 'Name' },
+        { key: 'ops', actions: [{ name: 'view', label: 'View' }] },
+      ],
+      rows: [{ name: 'Ada' }],
+    });
+    expect(
+      [...el.querySelectorAll('th')].map((th) => th.classList.contains('dg-action-col')),
+    ).toEqual([false, true]);
+    expect(el.querySelector('td.dg-action-cell')).not.toBeNull();
+  });
+});

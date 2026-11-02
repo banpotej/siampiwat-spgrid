@@ -6,10 +6,10 @@
 
 งานแบ่งเป็น 2 ส่วน และแยกเป็น 2 commit
 
-| ส่วน | Commit | ประเภท |
-| --- | --- | --- |
-| A. Housekeeping | `ea7009c` `chore: agent docs and backup fix` | Fixed issue + เอกสาร |
-| B. Phase 1 Task 1 | `1ba255e` `feat(core): add state store` | Implement feature |
+| ส่วน              | Commit                                       | ประเภท               |
+| ----------------- | -------------------------------------------- | -------------------- |
+| A. Housekeeping   | `ea7009c` `chore: agent docs and backup fix` | Fixed issue + เอกสาร |
+| B. Phase 1 Task 1 | `1ba255e` `feat(core): add state store`      | Implement feature    |
 
 ## ส่วน A: Housekeeping
 

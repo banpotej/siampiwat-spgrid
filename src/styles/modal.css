@@ -1,0 +1,127 @@
+/* Built-in confirm dialog (Reset view): a centred card over a dimmed backdrop, added inside .dg-root. */
+
+.dg-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(15 23 42 / 0.28);
+  backdrop-filter: blur(2px);
+  animation: dg-modal-fade 140ms ease-out;
+}
+
+.dg-modal-box {
+  width: min(100%, 24rem);
+  padding: 24px 24px 20px;
+  border: 1px solid var(--dgi-border);
+  border-radius: calc(var(--dgi-radius) + 4px);
+  background: var(--dgi-bg);
+  color: var(--dgi-text);
+  font-family: var(--dgi-font);
+  font-size: var(--dgi-font-size);
+  line-height: var(--dgi-line-height);
+  text-align: center;
+  box-shadow:
+    0 20px 40px -12px rgb(15 23 42 / 0.35),
+    0 4px 10px -4px rgb(15 23 42 / 0.2);
+  animation: dg-modal-pop 160ms ease-out;
+}
+
+.dg-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--dgi-warning) 16%, var(--dgi-bg));
+  color: var(--dgi-warning);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dg-modal-title {
+  margin: 0 0 6px;
+  color: var(--dgi-header-text);
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+.dg-modal-text {
+  margin: 0 0 20px;
+  color: var(--dgi-muted);
+}
+
+.dg-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dg-modal-btn {
+  flex: 1;
+  min-height: 2.5em;
+  padding: 0.4em 1em;
+  border: 1px solid var(--dgi-border-strong);
+  border-radius: var(--dgi-input-radius);
+  background: var(--dgi-bg);
+  color: var(--dgi-text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--dgi-transition),
+    transform var(--dgi-transition);
+}
+
+.dg-modal-btn:hover {
+  background: var(--dgi-hover-bg);
+}
+
+.dg-modal-btn:active {
+  transform: translateY(1px);
+}
+
+.dg-modal-ok {
+  border-color: var(--dgi-accent);
+  background: var(--dgi-accent);
+  color: var(--dgi-on-accent);
+}
+
+.dg-modal-ok:hover {
+  background: color-mix(in srgb, var(--dgi-accent) 88%, #000);
+}
+
+.dg-modal-btn:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 2px;
+}
+
+@keyframes dg-modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dg-modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-modal,
+  .dg-modal-box {
+    animation: none;
+  }
+
+  .dg-modal-btn,
+  .dg-modal-btn:active {
+    transition: none;
+    transform: none;
+  }
+}

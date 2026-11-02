@@ -24,3 +24,24 @@ describe('thaiLabels', () => {
     expect(el.querySelector('.dg-summary')?.textContent).toBe('แสดง 1–10 จาก 25 รายการ');
   });
 });
+
+describe('pager summary text', () => {
+  it('wraps each number in <span class="dg-num"> and keeps the words as text', () => {
+    const el = make({});
+    const nums = [...el.querySelectorAll('.dg-pager-host .dg-summary .dg-num')];
+    expect(nums.map((n) => n.textContent)).toEqual(['1', '10', '25']);
+    expect(el.querySelector('.dg-pager-host .dg-summary')?.textContent).toBe('Showing 1–10 of 25');
+  });
+
+  it('escapes a custom summary and never cuts up an entity', () => {
+    const el = make({ summary: (from, to, total) => `<i>'${from}</i> & ${to}/${total}` });
+    const summary = el.querySelector('.dg-pager-host .dg-summary');
+    expect(summary?.querySelector('i')).toBeNull();
+    expect(summary?.textContent).toBe("<i>'1</i> & 10/25");
+    expect([...(summary?.querySelectorAll('.dg-num') ?? [])].map((n) => n.textContent)).toEqual([
+      '1',
+      '10',
+      '25',
+    ]);
+  });
+});

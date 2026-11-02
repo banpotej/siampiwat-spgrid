@@ -43,9 +43,22 @@ describe('built-in icons', () => {
         'chevron_right',
         'first_page',
         'last_page',
+        'download',
+        'calendar_today',
+        'view_column',
+        'restart_alt',
+        'refresh',
         'search',
         'close',
         'inbox',
+        'visibility',
+        'edit',
+        'delete',
+        'cancel',
+        'check',
+        'stripes',
+        'wrap_text',
+        'settings',
       ].sort(),
     );
     for (const svg of Object.values(ICONS)) {
@@ -229,9 +242,17 @@ describe('look options', () => {
     const base = make().el.querySelector('.dg-root');
     expect(base?.className).toBe('dg-root');
 
-    const { el } = make({ striped: true, density: 'compact', stickyHeader: true, maxHeight: 300 });
+    expect(base?.classList.contains('dg-bordered')).toBe(false);
+    const { el } = make({
+      striped: true,
+      bordered: true,
+      density: 'compact',
+      stickyHeader: true,
+      maxHeight: 300,
+    });
     const root = /** @type {HTMLElement} */ (el.querySelector('.dg-root'));
     expect(root.classList.contains('dg-striped')).toBe(true);
+    expect(root.classList.contains('dg-bordered')).toBe(true);
     expect(root.classList.contains('dg-compact')).toBe(true);
     expect(root.classList.contains('dg-sticky')).toBe(true);
     const wrap = /** @type {HTMLElement} */ (el.querySelector('.dg-table-wrap'));

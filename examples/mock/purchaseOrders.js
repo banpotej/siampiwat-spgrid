@@ -15,6 +15,106 @@ const VENDORS = [
   'ห้างหุ้นส่วนจำกัด วัฒนาการช่างและเครื่องมือ',
   'บริษัท ปทุมการพิมพ์ จำกัด',
 ];
+// What each vendor plausibly sells, split by purchasing type, so a PO's description matches its vendor.
+/** @type {Record<string, { Expense: string[], Asset: string[] }>} */
+const CATALOG = {
+  [VENDORS[0]]: {
+    Expense: [
+      'กระดาษถ่ายเอกสาร A4 80 แกรม',
+      'หมึกพิมพ์เลเซอร์ HP 79A',
+      'แฟ้มเอกสารและอุปกรณ์เครื่องเขียนประจำไตรมาส',
+    ],
+    Asset: ['เครื่องถ่ายเอกสารมัลติฟังก์ชัน Ricoh IM C3000', 'เครื่องทำลายเอกสาร ขนาดสำนักงาน'],
+  },
+  [VENDORS[1]]: {
+    Expense: [
+      'ค่าต่ออายุลิขสิทธิ์ Microsoft 365 Business',
+      'เมาส์และคีย์บอร์ดไร้สาย',
+      'สาย LAN CAT6 และอุปกรณ์เชื่อมต่อ',
+    ],
+    Asset: [
+      'เครื่องคอมพิวเตอร์โน้ตบุ๊ก Dell Latitude 5440',
+      'จอมอนิเตอร์ 27 นิ้ว Dell P2723QE',
+      'เครื่องแม่ข่าย Dell PowerEdge R450',
+    ],
+  },
+  [VENDORS[2]]: {
+    Expense: [
+      'น้ำมันหล่อลื่นเครื่องจักร',
+      'อุปกรณ์เซฟตี้ หมวกนิรภัยและถุงมือ',
+      'ลูกปืนและซีลสำหรับบำรุงรักษา',
+    ],
+    Asset: ['ปั๊มน้ำอุตสาหกรรม 5 แรงม้า', 'เครื่องอัดลม 10 แรงม้า'],
+  },
+  [VENDORS[3]]: {
+    Expense: [
+      'ค่าขนส่งสินค้าภายในประเทศ รอบเดือน',
+      'ค่าบริการคลังสินค้าและกระจายสินค้า',
+      'ค่าขนส่งสินค้าด่วนพิเศษ',
+    ],
+    Asset: ['รถยกไฟฟ้า (Electric Pallet Truck) 2 ตัน'],
+  },
+  [VENDORS[4]]: {
+    Expense: [
+      'แผ่นเหล็กชุบสังกะสี 1.2 มม.',
+      'งานตัดพับขึ้นรูปชิ้นส่วนโลหะ',
+      'สลักเกลียวและน็อตสแตนเลส',
+    ],
+    Asset: ['เครื่องเชื่อม MIG 350A', 'โต๊ะทำงานโครงเหล็กสำหรับไลน์ผลิต'],
+  },
+  [VENDORS[5]]: {
+    Expense: [
+      'กล่องกระดาษลูกฟูก 5 ชั้น',
+      'ฟิล์มยืดห่อพาเลท',
+      'ถุงพลาสติกซิปล็อกและบับเบิ้ลกันกระแทก',
+    ],
+    Asset: ['เครื่องรัดกล่องกึ่งอัตโนมัติ'],
+  },
+  [VENDORS[6]]: {
+    Expense: ['ซ่อมแซมและเปลี่ยนผ้าเบาะเก้าอี้สำนักงาน', 'ม่านปรับแสงห้องประชุม'],
+    Asset: [
+      'โต๊ะประชุม 12 ที่นั่ง',
+      'เก้าอี้ผู้บริหารเพื่อสุขภาพ (Ergonomic)',
+      'ตู้เก็บเอกสาร 4 ลิ้นชัก',
+    ],
+  },
+  [VENDORS[7]]: {
+    Expense: [
+      'ค่าบริการอินเทอร์เน็ตวงจรเช่า 500 Mbps',
+      'ค่าบริการโทรศัพท์องค์กรและ SIP Trunk',
+      'ค่าบริการ SMS แจ้งเตือนลูกค้า',
+    ],
+    Asset: ['อุปกรณ์เราเตอร์และสวิตช์ Cisco Catalyst 9200'],
+  },
+  [VENDORS[8]]: {
+    Expense: [
+      'ค่าบริการตรวจสอบและบำรุงรักษาระบบไฟฟ้า',
+      'ค่าที่ปรึกษางานออกแบบระบบปรับอากาศ',
+      'ค่าซ่อมบำรุงเครื่องจักรตามแผน PM',
+    ],
+    Asset: ['ระบบควบคุมอัตโนมัติ PLC สำหรับสายการผลิต', 'เครื่องกำเนิดไฟฟ้าสำรอง 100 kVA'],
+  },
+  [VENDORS[9]]: {
+    Expense: ['ค่าบริการส่งเอกสารและพัสดุด่วน', 'ค่าบริการขนส่งแบบเก็บเงินปลายทาง'],
+    Asset: ['รถกระบะขนส่งสินค้าเพื่อใช้งานภายในบริษัท'],
+  },
+  [VENDORS[10]]: {
+    Expense: [
+      'ชุดเครื่องมือช่างและประแจแรงบิด',
+      'ค่าซ่อมแซมเครื่องมือและสอบเทียบ',
+      'ใบตัดและใบเจียรสำหรับงานช่าง',
+    ],
+    Asset: ['เครื่องเจาะแท่น 16 มม.', 'ชุดเครื่องมือวัดความแม่นยำสูง'],
+  },
+  [VENDORS[11]]: {
+    Expense: [
+      'งานพิมพ์ใบปลิวและโบรชัวร์ 4 สี',
+      'งานพิมพ์นามบัตรพนักงานใหม่',
+      'งานพิมพ์ฉลากสินค้าและสติกเกอร์',
+    ],
+    Asset: ['เครื่องพิมพ์ฉลากอุตสาหกรรม'],
+  },
+};
 const PEOPLE = [
   'Nattapong Srisuk',
   'Kanokwan Chaiyasit',
@@ -44,8 +144,8 @@ const isWeekend = (d) => d.getUTCDay() === 0 || d.getUTCDay() === 6;
 
 /**
  * @param {number} [count]
- * @returns {{ id: number, rfqNumber: string, poNumber: string, submittedDate: Date, purchasingType: string,
- *   status: string, vendor: string, creator: string, deliveryDate: Date, recipient: string, claimer: string,
+ * @returns {{ id: number, rfqNumber: string, poNumber: string, description: string, submittedDate: Date,
+ *   purchasingType: string, status: string, vendor: string, creator: string, deliveryDate: Date, recipient: string, claimer: string,
  *   cancelBy: string, companyCode: string, deliveryComplete: boolean, creationType: string,
  *   canCancel: boolean }[]}
  */
@@ -87,17 +187,21 @@ export function createPurchaseOrders(count = 60) {
     const deliveryDate = new Date(submittedDate.getTime() + (7 + Math.floor(rand() * 39)) * DAY_MS);
     const received = status === 'เสร็จสิ้น' && deliveryDate.getTime() <= BASE_DATE && rand() < 0.8;
     const creator = pickFrequent(PEOPLE);
+    const purchasingType = pickWeighted([
+      ['Expense', 75],
+      ['Asset', 25],
+    ]);
+    const vendor = pickFrequent(VENDORS);
+    const items = CATALOG[vendor][/** @type {'Expense' | 'Asset'} */ (purchasingType)];
     return {
       id: 158663 - i,
       rfqNumber,
       poNumber: `100/PO/C${digits(poSerial)}`,
       submittedDate,
-      purchasingType: pickWeighted([
-        ['Expense', 75],
-        ['Asset', 25],
-      ]),
+      description: pick(items),
+      purchasingType,
       status,
-      vendor: pickFrequent(VENDORS),
+      vendor,
       creator,
       deliveryDate,
       recipient: received ? pick(PEOPLE) : '',

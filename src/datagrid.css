@@ -1,6 +1,12 @@
 @import './styles/tokens.css';
 @import './styles/table.css';
 @import './styles/toolbar.css';
+@import './styles/cells.css';
+@import './styles/export.css';
+@import './styles/toolButtons.css';
+@import './styles/columns.css';
+@import './styles/summary.css';
 @import './styles/pager.css';
 @import './styles/actions.css';
+@import './styles/modal.css';
 @import './styles/a11y.css';

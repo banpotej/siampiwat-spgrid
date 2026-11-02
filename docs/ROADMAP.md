@@ -10,4 +10,6 @@
   - [x] pagination UI
   - [x] visual polish and icons (Material Symbols, themes)
   - [x] action columns, custom cell render, multi-line headers
+  - [x] column visibility picker, remembered in localStorage
+  - [x] filter summary with removable chips, reset view button, refresh button
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

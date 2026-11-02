@@ -19,7 +19,11 @@
       }));
       const grid = new DataGrid(document.getElementById('grid'), {
         columns: [
-          { key: '_view', ariaLabel: 'View', actions: [{ name: 'view', label: 'View' }] },
+          {
+            key: '_view',
+            ariaLabel: 'View',
+            actions: [{ name: 'view', label: 'View', icon: 'visibility' }],
+          },
           {
             key: '_cancel',
             ariaLabel: 'Cancel',
@@ -27,7 +31,8 @@
               {
                 name: 'cancel',
                 label: 'Cancel',
-                className: 'btn-cancel',
+                icon: 'cancel',
+                className: 'dg-action-danger',
                 visible: (r) => r.canCancel,
               },
             ],

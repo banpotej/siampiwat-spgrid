@@ -1,35 +1,74 @@
+/*
+ * The footer: summary on the start side, rows-per-page select and the pager on the end side.
+ * The pager is a soft "segmented" pill: quiet icon and number buttons on a tinted track, the current
+ * page a slightly darker grey chip. The select matches the filter bar's select (tinted, own chevron).
+ */
 .dg-pager-host {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--dg-pager-gap, 8px) var(--dgi-gap);
-  margin-top: var(--dgi-gap);
+  gap: var(--dg-pager-gap, 8px) calc(var(--dgi-gap) * 1.5);
+  padding: calc(var(--dgi-gap) * 0.5) calc(var(--dgi-gap) + 4px);
+  border-top: 1px solid var(--dgi-border);
+  font-size: 0.857em;
 }
 
 .dg-pager-host:empty {
   display: none;
 }
 
-.dg-summary {
+/* "Showing 1–10 of 60": plain muted words with the figures in the text colour. It shares the .dg-summary class with
+   the filter summary strip, so the strip's box (padding, tint, border) is reset here. */
+.dg-pager-host .dg-summary {
+  display: block;
   margin-inline-end: auto;
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--dg-pager-muted-color, var(--dgi-muted));
+  font-variant-numeric: tabular-nums;
+}
+
+.dg-pager-host .dg-num {
+  color: var(--dgi-text);
+  font-weight: 600;
 }
 
 .dg-page-size {
   display: inline-flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 0.6em;
   color: var(--dg-pager-muted-color, var(--dgi-muted));
 }
 
 .dg-page-size select {
-  min-height: 2.25em;
-  padding: 0.25em 0.5em;
-  border: 1px solid var(--dg-pager-border, var(--dgi-border-strong));
+  min-height: 2em;
+  padding: 0.15em 2em 0.15em 0.7em;
+  appearance: none;
+  border: 1px solid transparent;
   border-radius: var(--dgi-input-radius);
-  background: var(--dgi-bg);
+  background-color: transparent;
+  background-image: var(--dgi-chevron);
+  background-position: right 0.6em center;
+  background-size: 1em 1em;
+  background-repeat: no-repeat;
   color: var(--dgi-text);
   font: inherit;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--dgi-transition),
+    border-color var(--dgi-transition);
+}
+
+.dg-page-size select:dir(rtl) {
+  padding: 0.25em 0.8em 0.25em 2em;
+  background-position: left 0.6em center;
+}
+
+.dg-page-size select:hover {
+  background-color: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
 }
 
 .dg-page-size select:focus-visible,
@@ -42,41 +81,46 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: calc(var(--dg-pager-gap, 8px) / 2);
+  gap: 2px;
 }
 
 .dg-page-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.25em;
-  min-height: 2.25em;
-  padding: 0 0.5em;
-  border: 1px solid var(--dg-pager-border, var(--dgi-border-strong));
+  min-width: 2em;
+  min-height: 2em;
+  padding: 0 0.4em;
+  border: 1px solid var(--dg-pager-border, transparent);
   border-radius: var(--dgi-input-radius);
-  background: var(--dg-pager-bg, var(--dgi-bg));
+  background: var(--dg-pager-bg, transparent);
   color: inherit;
   font: inherit;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition:
     background-color var(--dgi-transition),
-    border-color var(--dgi-transition);
+    border-color var(--dgi-transition),
+    box-shadow var(--dgi-transition);
 }
 
 .dg-page-btn:hover:not(:disabled, [aria-current='page']) {
-  background: var(--dgi-sort-hover-bg);
+  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
 }
 
 .dg-page-btn:focus-visible {
   outline: 2px solid var(--dgi-focus);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
 .dg-page-btn[aria-current='page'] {
-  border-color: var(--dg-pager-active-bg, var(--dgi-accent));
-  background: var(--dg-pager-active-bg, var(--dgi-accent));
-  color: var(--dg-pager-active-color, var(--dgi-on-accent));
+  border-color: var(
+    --dg-pager-active-bg,
+    color-mix(in srgb, var(--dgi-neutral) 40%, var(--dgi-bg))
+  );
+  background: var(--dg-pager-active-bg, color-mix(in srgb, var(--dgi-neutral) 12%, var(--dgi-bg)));
+  color: var(--dg-pager-active-color, var(--dgi-text));
+  font-weight: 600;
   cursor: default;
 }
 
@@ -88,6 +132,13 @@
 .dg-ellipsis {
   padding: 0 4px;
   color: var(--dg-pager-muted-color, var(--dgi-muted));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-page-size select,
+  .dg-page-btn {
+    transition: none;
+  }
 }
 
 /* Narrow containers: stack the footer and let the pager use the full width. */
@@ -103,10 +154,6 @@
 
   .dg-pager {
     justify-content: center;
-  }
-
-  .dg-search-field {
-    max-width: none;
   }
 }
 

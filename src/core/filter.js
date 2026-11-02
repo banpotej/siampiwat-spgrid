@@ -1,9 +1,10 @@
 // @ts-check
+import { dayOf, parseDayRange } from './dates.js';
 
 /** @typedef {import('../types.js').Row} Row */
 /** @typedef {import('../types.js').FilterState} FilterState */
 
-const DEFAULT_LOCALE = 'th';
+export const DEFAULT_LOCALE = 'th';
 
 /**
  * Case-fold and canonically compose, so 'É', 'é' and 'é' compare equal.
@@ -12,14 +13,14 @@ const DEFAULT_LOCALE = 'th';
  * @param {string} locale
  * @returns {string}
  */
-const fold = (value, locale) => String(value).toLocaleLowerCase(locale).normalize('NFC');
+export const fold = (value, locale) => String(value).toLocaleLowerCase(locale).normalize('NFC');
 
 /**
  * @param {unknown} text
  * @param {string} locale
  * @returns {string[]} Folded, non-empty words; [] for null/undefined/blank.
  */
-const toWords = (text, locale) =>
+export const toWords = (text, locale) =>
   text === null || text === undefined ? [] : fold(text, locale).split(/\s+/).filter(Boolean);
 
 /**
@@ -73,6 +74,37 @@ export function isSameFilter(a, b) {
 }
 
 /**
+ * A copy of `filter` without one part of it.
+ *
+ * @param {FilterState | null | undefined} filter
+ * @param {{ type: 'search' } | { type: 'column', key: string }} part The global search, or one `columnFilters` entry.
+ * @returns {FilterState | null} Normalized; null when nothing is left.
+ */
+export function removeFilterPart(filter, part) {
+  const next = { ...filter };
+  if (part.type === 'search') delete next.search;
+  else next.columnFilters = { ...next.columnFilters, [part.key]: null };
+  return normalizeFilter(next);
+}
+
+/**
+ * The filter to store when `filter` is applied on top of `current`.
+ *
+ * @param {FilterState | null | undefined} current
+ * @param {FilterState | null | undefined} filter
+ * @param {string[]} keys Column keys `columnFilters` may name.
+ * @returns {FilterState | null | undefined} The normalized filter (null clears), or undefined when nothing changes.
+ * @throws {RangeError} a `columnFilters` key is not in `keys`
+ */
+export function resolveFilter(current, filter, keys) {
+  const next = normalizeFilter(filter);
+  for (const key of Object.keys(next?.columnFilters ?? {})) {
+    if (!keys.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
+  }
+  return isSameFilter(current, next) ? undefined : next;
+}
+
+/**
  * Filter rows by a global search and/or per-column filters. Pure: returns a
  * new array of the same row objects and never mutates `rows`.
  *
@@ -81,6 +113,8 @@ export function isSameFilter(a, b) {
  * - `columns`: keys the global search looks at (default: every key of the row).
  * - `columnFilters`: `{ key: text }`, ANDed across columns; blank values are ignored.
  * - Search and column filters combine with AND.
+ * - `exact`: the search is one value, equal (case-insensitive) to a whole cell of `columns`, not a substring.
+ * - `range`: the search is 'FROM..TO' (days, 'YYYY-MM-DD', either may be empty) and a date cell of `columns` must fall in it.
  *
  * @param {Row[]} rows
  * @param {FilterState} [filter]
@@ -95,6 +129,12 @@ export function filterRows(rows, filter, options = {}) {
     .filter(([, words]) => words.length > 0);
 
   if (searchWords.length === 0 && columnWords.length === 0) return [...rows];
+  const range =
+    filter?.range === true && searchWords.length > 0 ? parseDayRange(filter.search) : null;
+  const exact =
+    filter?.exact === true && searchWords.length > 0
+      ? fold(String(filter.search).trim(), locale)
+      : null;
 
   return rows.filter((row) => {
     for (const [key, words] of columnWords) {
@@ -103,6 +143,16 @@ export function filterRows(rows, filter, options = {}) {
     if (searchWords.length === 0) return true;
 
     const keys = filter?.columns ?? Object.keys(row);
+    if (range) {
+      if (range.from === '' && range.to === '') return true;
+      return keys.some((key) => {
+        const day = dayOf(row[key]);
+        return day !== null && day >= (range.from || day) && day <= (range.to || day);
+      });
+    }
+    if (exact !== null) {
+      return keys.some((key) => row[key] != null && fold(row[key], locale).trim() === exact);
+    }
     const matched = searchWords.map(() => false);
     for (const key of keys) {
       wordHits(row[key], searchWords, locale).forEach((hit, i) => {

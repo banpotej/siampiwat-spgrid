@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-// examples/index.html: View/Cancel action columns (cells are plain text; no column.render yet).
-// Columns: 1 View, 2 Cancel, 3 RFQ, 4 PO, 5 Submitted, 6 Type, 7 Status, 8 Vendor, ...
+// examples/index.html: one action column with View and Cancel (cells are plain text; no column.render yet).
+// Columns: 1 Actions, 2 RFQ, 3 PO, 4 Submitted, 5 Type, 6 Status, 7 Vendor, ...
 test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontally', async ({
   page,
 }) => {
@@ -9,17 +9,22 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   const rows = page.locator('tbody tr');
   await expect(rows).toHaveCount(10);
 
-  const dateHeader = page.getByRole('columnheader', { name: /Submitted Date/ });
+  const dateHeader = page.getByRole('columnheader', { name: /วันที่จัดส่งเอกสาร/ });
   await dateHeader.click();
   await dateHeader.click();
-  const dates = await rows.locator('td:nth-child(5)').allTextContents();
+  const dates = await rows.locator('td:nth-child(4)').allTextContents();
   expect(dates).toEqual([...dates].sort().reverse());
 
-  await page.getByRole('searchbox').fill('พรีมาออฟฟิศ');
-  // Poll: the filter runs after the search debounce, so the old rows are briefly still shown.
+  const search = page.getByRole('searchbox');
+  await search.fill('พรีมาออฟฟิศ');
+  // The page has a Search button: typing alone must not filter.
+  await page.waitForTimeout(400);
+  await expect(rows).toHaveCount(10);
+  await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
+  // Poll: rows are re-rendered synchronously, but keep the assertion robust against timing.
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
     })
     .toBe(true);
@@ -38,24 +43,183 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   // Cancel is offered exactly for completed orders without an RFQ number.
   for (let i = 0; i < (await rows.count()); i++) {
     const row = rows.nth(i);
-    const completed = (await row.locator('td:nth-child(7)').textContent()) === 'เสร็จสิ้น';
-    const noRfq = ((await row.locator('td:nth-child(3)').textContent()) ?? '').trim() === '';
+    const completed = (await row.locator('td:nth-child(6)').textContent()) === 'เสร็จสิ้น';
+    const noRfq = ((await row.locator('td:nth-child(2)').textContent()) ?? '').trim() === '';
     await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(
       completed && noRfq ? 1 : 0,
     );
   }
 
   // After sorting and paging, the button still belongs to the row it is on.
-  await page.getByRole('columnheader', { name: /PO Number/ }).click();
+  await page.getByRole('columnheader', { name: /เลขที่ใบสั่งซื้อ/ }).click();
   await page.getByRole('button', { name: '2', exact: true }).click();
   const third = rows.nth(2);
-  const po = await third.locator('td:nth-child(4)').textContent();
+  const po = await third.locator('td:nth-child(3)').textContent();
   await third.getByRole('button', { name: 'View' }).click();
-  await expect(log).toHaveText(`view ${po}`);
+  await expect(page.locator('.dg-modal')).toContainText(`รายละเอียด ${po?.trim()}`);
+  await expect(log).toHaveText('');
+  await page.keyboard.press('Escape');
 
   page.once('dialog', (dialog) => dialog.accept());
   const cancel = page.getByRole('button', { name: 'Cancel' }).first();
   const cancelPo = await cancel.locator('xpath=ancestor::tr/td[4]').textContent();
   await cancel.click();
   await expect(log).toHaveText(`cancel ${cancelPo}`);
+});
+
+test('Enter in the search box also searches (Search button mode)', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const rows = page.locator('tbody tr');
+  await expect(rows).toHaveCount(10);
+  await page.getByRole('searchbox').fill('พรีมาออฟฟิศ');
+  await page.keyboard.press('Enter');
+  await expect
+    .poll(async () => {
+      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
+      return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
+    })
+    .toBe(true);
+  await expect(page.getByRole('searchbox')).toBeFocused();
+});
+
+test('Clear search button empties the box and restores all rows', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const rows = page.locator('tbody tr');
+  const search = page.getByRole('searchbox');
+  await search.fill('พรีมาออฟฟิศ');
+  await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
+  await expect
+    .poll(async () => {
+      const vendors = await rows.locator('td:nth-child(7)').allTextContents();
+      return vendors.length > 0 && vendors.every((v) => v.includes('พรีมาออฟฟิศ'));
+    })
+    .toBe(true);
+  const filteredCount = await rows.count();
+
+  await page.getByRole('button', { name: 'ล้างการค้นหา' }).last().click();
+  await expect
+    .poll(async () =>
+      (await rows.locator('td:nth-child(7)').allTextContents()).some(
+        (v) => !v.includes('พรีมาออฟฟิศ'),
+      ),
+    )
+    .toBe(true);
+  expect(filteredCount).toBeGreaterThan(0);
+  await expect(search).toHaveValue('');
+  await expect(search).toBeFocused();
+});
+
+test('View opens a modal with the clicked row, closed by the button, Esc or the backdrop', async ({
+  page,
+}) => {
+  await page.goto('/examples/index.html');
+  const row = page.locator('tbody tr').nth(2);
+  const po = (await row.locator('td:nth-child(3)').textContent())?.trim();
+  const modal = page.locator('.dg-modal');
+
+  await row.getByRole('button', { name: 'View' }).click();
+  await expect(modal.getByRole('dialog')).toContainText(`รายละเอียด ${po}`);
+  for (const name of ['รายละเอียด', 'ชื่อผู้ค้า', 'สถานะ']) {
+    await expect(modal.locator('dt', { hasText: name })).toHaveCount(1);
+  }
+  await expect(modal.locator('dd').first()).toBeVisible();
+
+  await modal.getByRole('button', { name: 'ปิด' }).click();
+  await expect(modal).toHaveCount(0);
+
+  await row.getByRole('button', { name: 'View' }).click();
+  await page.keyboard.press('Escape');
+  await expect(modal).toHaveCount(0);
+
+  await row.getByRole('button', { name: 'View' }).click();
+  await modal.click({ position: { x: 5, y: 5 } });
+  await expect(modal).toHaveCount(0);
+});
+
+test('dragging a header edge resizes only that column', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const header = page.getByRole('columnheader', { name: /รายละเอียด/ });
+  const width = async () => (await header.boundingBox())?.width ?? 0;
+  const before = await width();
+  const next = page.getByRole('columnheader', { name: /วันที่จัดส่งเอกสาร/ });
+  const nextBefore = (await next.boundingBox())?.width ?? 0;
+
+  const handle = header.getByRole('separator');
+  const box = /** @type {{ x: number, y: number, width: number, height: number }} */ (
+    await handle.boundingBox()
+  );
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.mouse.move(x + 80, y, { steps: 5 });
+  await page.mouse.up();
+
+  expect(Math.abs((await width()) - (before + 80))).toBeLessThanOrEqual(2);
+  expect(Math.abs(((await next.boundingBox())?.width ?? 0) - nextBefore)).toBeLessThanOrEqual(2);
+  // a drag is not a click on the sortable header
+  await expect(header).not.toHaveAttribute('aria-sort', /.+/);
+
+  // survives a re-render: sort another column
+  await page.getByRole('columnheader', { name: /เลขที่ใบสั่งซื้อ/ }).click();
+  expect(Math.abs((await width()) - (before + 80))).toBeLessThanOrEqual(2);
+});
+
+test('a narrowed column clips its text instead of covering the next cell', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const header = page.getByRole('columnheader', { name: /รายละเอียด/ });
+  const box = /** @type {{ x: number, y: number, width: number, height: number }} */ (
+    await header.getByRole('separator').boundingBox()
+  );
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.mouse.move(x - 200, y, { steps: 5 });
+  await page.mouse.up();
+
+  const overlaps = await page.evaluate(() => {
+    const index = [...document.querySelectorAll('th')].findIndex((th) =>
+      th.textContent?.includes('รายละเอียด'),
+    );
+    const cell = document.querySelector(`tbody tr td:nth-child(${index + 1})`);
+    const next = cell?.nextElementSibling;
+    if (!cell || !next) return null;
+    const range = document.createRange();
+    range.selectNodeContents(cell);
+    const cellBox = cell.getBoundingClientRect();
+    // text is painted only inside the cell's own box
+    return (
+      getComputedStyle(cell).overflow !== 'hidden' &&
+      range.getBoundingClientRect().right > cellBox.right
+    );
+  });
+  expect(overlaps).toBe(false);
+});
+
+test('dragging a header onto another reorders the columns and the order survives a reload', async ({
+  page,
+}) => {
+  await page.goto('/examples/index.html');
+  await page.evaluate(() => localStorage.removeItem('datagrid:columnOrder:purchase-orders'));
+  await page.reload();
+  const labels = async () =>
+    (await page.locator('thead th').allInnerTexts()).map((t) => t.trim().split('\n')[0]);
+  const before = await labels();
+  expect(before.length).toBeGreaterThan(3);
+
+  // drop the third column onto the left half of the first one
+  const last = page.locator('thead th[data-key]').nth(2);
+  const first = page.locator('thead th[data-key]').first();
+  const box = /** @type {{ x: number, y: number, width: number, height: number }} */ (
+    await first.boundingBox()
+  );
+  await last.dragTo(first, { targetPosition: { x: 4, y: box.height / 2 } });
+
+  const after = await labels();
+  expect(after[0]).toBe(before[2]);
+  expect(after[1]).toBe(before[0]);
+
+  await page.reload();
+  expect(await labels()).toEqual(after);
 });

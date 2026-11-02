@@ -1,24 +1,160 @@
+/*
+ * The filter bar (the top strip of the grid card): one input group made of [column select] [search box] [Search] [Clear search].
+ * The select is a tinted "addon", the box is the plain middle, Search and Clear search are quiet neutral (grey)
+ * parts like the tool buttons. Parts are joined edge to edge: only the outer corners
+ * are round, neighbours overlap by one border, and the whole group lights up when any part has focus.
+ */
 .dg-toolbar {
-  margin-bottom: var(--dgi-gap);
+  display: flex;
+  justify-content: flex-end; /* the filter bar sits at the end (right) edge of the grid */
+  align-items: center;
+  padding: calc(var(--dgi-gap) * 0.67) var(--dgi-gap);
+  border-bottom: 1px solid var(--dgi-border);
+}
+
+/* The grid name: the start (left) edge of the toolbar; the rest of the toolbar is pushed to the end. */
+/* The name and, when there is a description, its toggle. */
+.dg-heading {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25em;
+  margin-inline-end: auto;
+}
+
+.dg-title {
+  margin: 0;
+  color: var(--dgi-header-text);
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dg-input-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 46em;
+  border-radius: var(--dgi-input-radius);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  transition: box-shadow var(--dgi-transition);
+}
+
+.dg-input-group:focus-within {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 0 0 3px color-mix(in srgb, var(--dgi-focus) 25%, transparent);
+}
+
+/* Shared by every part of the group. */
+.dg-search,
+.dg-search-value,
+.dg-search-column,
+.dg-search-submit,
+.dg-search-reset {
+  min-height: var(--dgi-control-h);
+  border: 1px solid var(--dgi-border-strong);
+  border-radius: var(--dgi-input-radius);
+  font: inherit;
+  transition:
+    background-color var(--dgi-transition),
+    border-color var(--dgi-transition),
+    transform var(--dgi-transition);
 }
 
 .dg-search-field {
   position: relative;
   display: flex;
+  flex: 1 1 8em;
   align-items: center;
-  max-width: 22em;
+  min-width: 0;
 }
 
 .dg-search {
   width: 100%;
-  min-height: 2.5em;
-  padding: 0.4em 2.5em;
+  padding: 0.45em 2.5em;
+  background: var(--dgi-bg);
+  color: inherit;
+}
+
+/* The value select of an enum search column takes the box's place, so it looks like the box (hidden wins over display). */
+.dg-search-value {
+  width: 100%;
+  padding: 0.45em 2.5em;
+  background: var(--dgi-bg);
+  color: inherit;
+}
+
+.dg-search-value {
+  padding-inline: 2.5em 2.2em;
+  appearance: none;
+  background-image: var(--dgi-chevron);
+  background-position: right 0.7em center;
+  background-size: 1em 1em;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.dg-search-value:focus {
+  border-color: var(--dgi-focus);
+}
+
+/* A date search column: the from / to date boxes sit in one frame that looks like the search box. */
+.dg-search-range {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+  min-height: var(--dgi-control-h);
+  padding-inline: 2.5em 2.2em;
   border: 1px solid var(--dgi-border-strong);
   border-radius: var(--dgi-input-radius);
   background: var(--dgi-bg);
-  color: inherit;
+  color: var(--dgi-muted);
   font: inherit;
-  transition: border-color var(--dgi-transition);
+}
+
+/* Two dates need more room than a word. */
+.dg-input-group:has(.dg-search-range:not([hidden])) {
+  max-width: 52em;
+}
+
+/* Two dates need more room than a word. */
+.dg-search-field:has(.dg-search-range:not([hidden])) {
+  flex-basis: 21em;
+}
+
+.dg-search-range:focus-within {
+  border-color: var(--dgi-focus);
+}
+
+.dg-search-range input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.2em 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--dgi-text);
+  font: inherit;
+  font-size: 0.92em;
+}
+
+.dg-search-range input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.dg-search[hidden],
+.dg-search-value[hidden],
+.dg-search-range[hidden] {
+  display: none;
+}
+
+.dg-search::placeholder {
+  color: var(--dgi-muted);
+  opacity: 0.8;
 }
 
 /* The leading icon and our own clear button replace the browser's. */
@@ -28,21 +164,26 @@
   appearance: none;
 }
 
-.dg-search:focus-visible {
-  outline: 2px solid var(--dgi-focus);
-  outline-offset: 1px;
+.dg-search:focus {
+  border-color: var(--dgi-focus);
 }
 
 .dg-search-icon {
   position: absolute;
-  inset-inline-start: 0.6em;
+  inset-inline-start: 0.75em;
   color: var(--dgi-muted);
   pointer-events: none;
+  transition: color var(--dgi-transition);
 }
 
+.dg-search-field:focus-within .dg-search-icon {
+  color: var(--dgi-focus);
+}
+
+/* The x inside the box: only while there is text. */
 .dg-search-clear {
   position: absolute;
-  inset-inline-end: 0.25em;
+  inset-inline-end: 0.35em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -50,7 +191,7 @@
   min-height: 2em;
   padding: 0;
   border: 0;
-  border-radius: var(--dgi-input-radius);
+  border-radius: 50%;
   background: transparent;
   color: var(--dgi-muted);
   cursor: pointer;
@@ -63,9 +204,245 @@
 
 .dg-search-clear:hover {
   background: var(--dgi-sort-hover-bg);
+  color: var(--dgi-text);
 }
 
 .dg-search-clear:focus-visible {
   outline: 2px solid var(--dgi-focus);
   outline-offset: 1px;
+}
+
+/* The column select: a tinted addon with its own chevron (a stroked SVG chevron from --dgi-chevron,
+   themed light and dark). */
+.dg-search-column {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  padding: 0.4em 2.2em 0.4em 0.9em;
+  appearance: none;
+  background-color: var(--dgi-header-bg);
+  background-image: var(--dgi-chevron);
+  background-position: right 0.7em center;
+  background-size: 1em 1em;
+  background-repeat: no-repeat;
+  color: var(--dgi-header-text);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.dg-search-column:hover {
+  background-color: var(--dgi-sort-hover-bg);
+}
+
+/* A column is chosen (not "All columns"): the select takes the accent tint, like a pressed toggle button. */
+.dg-search-column:has(option:checked:not([value=''])) {
+  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
+  background-color: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
+  color: var(--dgi-accent);
+}
+
+.dg-search-column:has(option:checked:not([value=''])):hover {
+  background-color: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
+}
+
+.dg-search-column:dir(rtl) {
+  padding: 0.4em 0.9em 0.4em 2.2em;
+  background-position: left 0.7em center;
+}
+
+/* Search and Clear search share one neutral (grey) tint, the same look as the action buttons. Both are icon-only: the label is their aria-label and tooltip. */
+.dg-search-submit,
+.dg-search-reset {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--dgi-control-h);
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+}
+
+.dg-search-submit {
+  border-color: color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
+  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
+  color: var(--dgi-neutral);
+}
+
+.dg-search-submit .dg-icon,
+.dg-search-reset .dg-icon {
+  font-size: 1.2em;
+}
+
+.dg-search-reset {
+  border-color: color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
+  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
+  color: var(--dgi-neutral);
+}
+
+.dg-search-submit:hover,
+.dg-search-reset:hover {
+  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+}
+
+.dg-search-submit:active,
+.dg-search-reset:active {
+  transform: translateY(1px);
+}
+
+/* Inside the group the focus ring is drawn inside each part, so a neighbour never covers it. */
+.dg-input-group .dg-search:focus-visible,
+.dg-input-group .dg-search-column:focus-visible,
+.dg-input-group .dg-search-submit:focus-visible,
+.dg-input-group .dg-search-reset:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: -3px;
+}
+
+/* Joining: only the outer corners stay round and neighbours share one border. */
+.dg-input-group > *,
+.dg-input-group .dg-search {
+  border-radius: 0;
+}
+
+.dg-input-group > :first-child,
+.dg-input-group > :first-child .dg-search {
+  border-start-start-radius: var(--dgi-input-radius);
+  border-end-start-radius: var(--dgi-input-radius);
+}
+
+.dg-input-group > :last-child,
+.dg-input-group > :last-child .dg-search {
+  border-start-end-radius: var(--dgi-input-radius);
+  border-end-end-radius: var(--dgi-input-radius);
+}
+
+.dg-input-group > * + * {
+  margin-inline-start: -1px;
+}
+
+/* Raise the active part so its whole border shows above its neighbours. */
+.dg-input-group > :hover,
+.dg-input-group > :focus-within {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-input-group,
+  .dg-search,
+  .dg-search-column,
+  .dg-search-submit,
+  .dg-search-reset,
+  .dg-search-icon,
+  .dg-search-clear {
+    transition: none;
+  }
+
+  .dg-search-submit:active,
+  .dg-search-reset:active {
+    transform: none;
+  }
+}
+
+/* A narrow grid cannot fit the whole group on one line: the search box takes its own row and the
+   rest wraps below it, each part with its own rounded border again. */
+@container (max-width: 520px) {
+  .dg-heading {
+    flex-basis: 100%;
+  }
+
+  .dg-input-group {
+    flex-wrap: wrap;
+    gap: 8px;
+    box-shadow: none;
+  }
+
+  .dg-input-group:focus-within {
+    box-shadow: none;
+  }
+
+  .dg-input-group > *,
+  .dg-input-group .dg-search,
+  .dg-input-group > :first-child,
+  .dg-input-group > :last-child,
+  .dg-input-group > :first-child .dg-search,
+  .dg-input-group > :last-child .dg-search {
+    border-radius: var(--dgi-input-radius);
+  }
+
+  .dg-input-group > * + * {
+    margin-inline-start: 0;
+  }
+
+  .dg-input-group > .dg-search-field {
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  .dg-input-group > .dg-search-column {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+}
+
+/* The description strip and its toggle: the chevron points right when hidden, down when shown. */
+.dg-desc {
+  padding: 0.6em calc(var(--dgi-gap) + 4px);
+  border-bottom: 1px solid var(--dgi-border);
+  color: var(--dgi-muted);
+}
+
+.dg-desc[hidden] {
+  display: none;
+}
+
+.dg-desc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2em;
+  min-height: 2em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dgi-muted);
+  cursor: pointer;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-desc-toggle .dg-icon {
+  transition: transform var(--dgi-transition);
+}
+
+.dg-desc-toggle[aria-expanded='true'] .dg-icon {
+  transform: rotate(90deg);
+}
+
+.dg-desc-toggle:hover {
+  background: var(--dgi-sort-hover-bg);
+  color: var(--dgi-text);
+}
+
+.dg-desc-toggle:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-desc-toggle,
+  .dg-desc-toggle .dg-icon {
+    transition: none;
+  }
+}
+
+/* The toggle buttons (Striped rows, Wrap text) are .dg-tool-btns; pressed (setting on) they take the accent tint. */
+.dg-tool-btn[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
+  background: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
+  color: var(--dgi-accent);
+}
+
+.dg-tool-btn[aria-pressed='true']:hover {
+  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
 }

@@ -1,0 +1,198 @@
+// @ts-check
+import { escapeHtml } from '../utils/escape.js';
+
+let seq = 0;
+
+const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disabled)';
+
+/** @typedef {import('../types.js').SortState} SortState */
+/** @typedef {import('./viewToggles.js').ViewFlags} ViewFlags */
+
+/**
+ * @typedef {object} ColumnSettings What the dialog edits.
+ * @property {string[]} [hidden] Keys of the hidden columns; left out when the dialog lists no columns.
+ * @property {SortState} [sort] The sort; left out when the grid has no sortable column.
+ * @property {ViewFlags} [view] The look switches; a switch is shown only when its flag is given.
+ */
+
+/**
+ * @typedef {object} DialogLabels
+ * @property {string} title
+ * @property {string} apply
+ * @property {string} cancel
+ * @property {string} sortBy
+ * @property {string} noSort
+ * @property {string} sortDirection
+ * @property {string} ascending
+ * @property {string} descending
+ * @property {string} columns Heading of the column list.
+ * @property {string} sort Heading of the sort selects.
+ * @property {string} display Heading of the look switches.
+ * @property {string} stripedRows
+ * @property {string} textWrap
+ * @property {string} reset Text of the reset button (shown when `onReset` is given).
+ */
+
+/**
+ * Open the "settings" modal: one checkbox per data column (shown or hidden), when some column is sortable a
+ * "sort by" column select with a direction select, switches for the look (striped rows, wrapped text) and an
+ * optional reset button, each part only when there is something to show. Nothing changes until Apply; Esc, a
+ * click on the backdrop and Cancel discard it. The last shown column's checkbox is disabled: a grid always
+ * shows a column. The reset button closes the dialog (as Cancel) and calls `onReset`.
+ *
+ * @param {HTMLElement} root Element that carries the theme tokens (`.dg-root`); the dialog is added inside it.
+ * @param {{ key: string, label: string, sortable?: boolean }[]} columns
+ * @param {ColumnSettings} current
+ * @param {DialogLabels} labels
+ * @param {(settings: ColumnSettings | null) => void} onClose Called once, with the new settings on Apply and null otherwise.
+ * @param {() => void} [onReset]
+ * @returns {() => void} Dismiss the dialog (as Cancel).
+ */
+export function openColumnDialog(root, columns, current, labels, onClose, onReset) {
+  const id = `dg-settings-${++seq}`;
+  /** @param {string} label A multi-line header ("ไทย\nEnglish") reads as one line. */
+  const flat = (label) => label.replace(/\s*\n\s*/g, ' / ');
+  const rows = columns
+    .map(({ key, label }) => {
+      const name = flat(label);
+      return `<label class="dg-columns-item"><input type="checkbox" data-key="${escapeHtml(key)}"><span>${escapeHtml(name)}</span></label>`;
+    })
+    .join('');
+  /** @param {string} text */
+  const heading = (text) => `<h3 class="dg-settings-heading">${escapeHtml(text)}</h3>`;
+  const columnSection =
+    columns.length === 0
+      ? ''
+      : `<section>${heading(labels.columns)}<div class="dg-settings-list">${rows}</div></section>`;
+  /** @param {'striped' | 'wrapped'} flag @param {string} text */
+  const switchRow = (flag, text) =>
+    current.view?.[flag] === undefined
+      ? ''
+      : `<label class="dg-settings-switch"><span>${escapeHtml(text)}</span><input type="checkbox" role="switch" data-flag="${flag}"></label>`;
+  const viewRows = switchRow('striped', labels.stripedRows) + switchRow('wrapped', labels.textWrap);
+  const viewSection = viewRows ? `<section>${heading(labels.display)}${viewRows}</section>` : '';
+  const sortable = columns.filter((c) => c.sortable === true);
+  /** @param {string} text @param {string} control */
+  const field = (text, control) =>
+    `<label class="dg-settings-field"><span>${escapeHtml(text)}</span>${control}</label>`;
+  const sortKeyOptions =
+    `<option value="">${escapeHtml(labels.noSort)}</option>` +
+    sortable
+      .map((c) => `<option value="${escapeHtml(c.key)}">${escapeHtml(flat(c.label))}</option>`)
+      .join('');
+  const sortSection =
+    sortable.length === 0
+      ? ''
+      : `<section>${heading(labels.sort)}<div class="dg-settings-sort">` +
+        field(labels.sortBy, `<select class="dg-settings-sort-key">${sortKeyOptions}</select>`) +
+        field(
+          labels.sortDirection,
+          `<select class="dg-settings-sort-dir"><option value="asc">${escapeHtml(labels.ascending)}</option><option value="desc">${escapeHtml(labels.descending)}</option></select>`,
+        ) +
+        `</div></section>`;
+  const overlay = document.createElement('div');
+  overlay.className = 'dg-modal';
+  overlay.innerHTML =
+    `<div class="dg-modal-box dg-settings" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
+    `<h2 class="dg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
+    `<div class="dg-settings-body">${columnSection}${sortSection}${viewSection}</div>` +
+    `<div class="dg-modal-actions">` +
+    (onReset
+      ? `<button type="button" class="dg-modal-btn dg-settings-reset">${escapeHtml(labels.reset)}</button>`
+      : '') +
+    `<button type="button" class="dg-modal-btn dg-modal-cancel">${escapeHtml(labels.cancel)}</button>` +
+    `<button type="button" class="dg-modal-btn dg-modal-ok">${escapeHtml(labels.apply)}</button>` +
+    `</div></div>`;
+
+  const boxes = [...overlay.querySelectorAll('.dg-columns-item input')].map(
+    (el) => /** @type {HTMLInputElement} */ (el),
+  );
+  for (const box of boxes) box.checked = !(current.hidden ?? []).includes(box.dataset.key ?? '');
+  const switches = [...overlay.querySelectorAll('input[data-flag]')].map(
+    (el) => /** @type {HTMLInputElement} */ (el),
+  );
+  for (const input of switches) {
+    input.checked =
+      current.view?.[/** @type {'striped' | 'wrapped'} */ (input.dataset.flag)] === true;
+  }
+  const sortKey = /** @type {HTMLSelectElement | null} */ (
+    overlay.querySelector('.dg-settings-sort-key')
+  );
+  const sortDir = /** @type {HTMLSelectElement | null} */ (
+    overlay.querySelector('.dg-settings-sort-dir')
+  );
+  if (sortKey && sortDir) {
+    // A sort on a column that is not sortable (set from code) cannot be shown, so it shows as no sorting.
+    const inList = sortable.some((c) => c.key === current.sort?.key);
+    sortKey.value = inList ? (current.sort?.key ?? '') : '';
+    sortDir.value = current.sort?.direction ?? 'asc';
+  }
+  const syncLast = () => {
+    const shown = boxes.filter((box) => box.checked);
+    for (const box of boxes) box.disabled = shown.length === 1 && box.checked;
+  };
+  const syncSort = () => {
+    if (sortKey && sortDir) sortDir.disabled = sortKey.value === '';
+  };
+  syncLast();
+  syncSort();
+
+  const opener = /** @type {HTMLElement | null} */ (document.activeElement);
+  /** @param {boolean} apply */
+  const close = (apply) => {
+    if (!overlay.isConnected) return;
+    /** @type {ColumnSettings} */
+    const result = {};
+    if (boxes.length > 0) {
+      result.hidden = boxes.filter((box) => !box.checked).map((box) => box.dataset.key ?? '');
+    }
+    if (switches.length > 0) {
+      result.view = Object.fromEntries(
+        switches.map((input) => [input.dataset.flag, input.checked]),
+      );
+    }
+    if (sortKey && sortDir) {
+      result.sort =
+        sortKey.value === ''
+          ? null
+          : { key: sortKey.value, direction: sortDir.value === 'desc' ? 'desc' : 'asc' };
+    }
+    overlay.remove();
+    opener?.focus?.();
+    onClose(apply ? result : null);
+  };
+  /** @param {KeyboardEvent} event */
+  const onKey = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close(false);
+    } else if (event.key === 'Tab') {
+      // Keep focus inside the dialog.
+      const items = [...overlay.querySelectorAll(FOCUSABLE)];
+      const first = /** @type {HTMLElement} */ (items[0]);
+      const last = /** @type {HTMLElement} */ (items[items.length - 1]);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  };
+  overlay.addEventListener('keydown', onKey);
+  overlay.addEventListener('change', () => {
+    syncLast();
+    syncSort();
+  });
+  overlay.addEventListener('click', (event) => event.target === overlay && close(false));
+  overlay.querySelector('.dg-modal-cancel')?.addEventListener('click', () => close(false));
+  overlay.querySelector('.dg-modal-ok')?.addEventListener('click', () => close(true));
+  overlay.querySelector('.dg-settings-reset')?.addEventListener('click', () => {
+    close(false);
+    onReset?.();
+  });
+  root.append(overlay);
+  /** @type {HTMLElement | undefined} */ (overlay.querySelector(FOCUSABLE) ?? undefined)?.focus();
+  return () => close(false);
+}

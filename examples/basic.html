@@ -3,10 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>DataGrid basic example</title>
+    <style>
+      body {
+        font-family: 'Sarabun', sans-serif;
+        --dg-font-family: 'Sarabun', sans-serif;
+      }
+    </style>
   </head>
   <body>
-    <!-- Three rows, sortable + searchable, no pagination. Used by the smoke/sort/filter e2e tests. -->
+    <!-- Three rows, sortable + searchable with a column select, no pagination. Used by the smoke/sort/filter e2e tests. -->
     <div id="grid"></div>
     <script type="module">
       import { DataGrid } from '/src/index.js';
@@ -18,6 +30,8 @@
           { key: 'role', label: 'Role', sortable: true },
         ],
         searchable: true,
+        searchColumnSelect: true,
+        bordered: true,
         rows: [
           { id: 1, name: 'Ada', role: 'Engineer' },
           { id: 2, name: 'Grace', role: 'Admiral' },

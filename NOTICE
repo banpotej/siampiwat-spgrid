@@ -10,8 +10,11 @@ Material Symbols (outlined, weight 400, 24px) - icon path data
   License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
   Icons used: arrow_upward, arrow_downward, unfold_more, chevron_left, chevron_right,
-  first_page, last_page, search, close, inbox. They are embedded as inline SVG in
+  first_page, last_page, search, close, inbox, visibility, edit, delete, cancel, check,
+  download, calendar_today, view_column, restart_alt, refresh. They are embedded as inline SVG in
   src/render/icons.js; the path data is unmodified.
+
+  The `stripes`, `wrap_text` and `settings` icons are not from Material Symbols: they were drawn for this project.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not use
   these files except in compliance with the License. Unless required by applicable

@@ -277,7 +277,7 @@ describe('destroy', () => {
     type(el, 'ada');
     expect(vi.getTimerCount()).toBe(1);
     grid.destroy();
-    expect(remove.mock.calls.map(([t]) => t)).toEqual(['input', 'click']);
+    expect(remove.mock.calls.map(([t]) => t)).toEqual(['input', 'click', 'change', 'keydown']);
     expect(vi.getTimerCount()).toBe(0);
     expect(el.innerHTML).toBe('');
 
@@ -289,5 +289,58 @@ describe('destroy', () => {
     grid.setRows([]);
     expect(el.innerHTML).toBe('');
     expect(onFilterChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('title', () => {
+  it('shows the escaped grid name first in the toolbar, with or without a search box', () => {
+    for (const searchable of [true, false]) {
+      const el = document.createElement('div');
+      new DataGrid(el, {
+        columns: [{ key: 'a', label: 'A' }],
+        rows: [],
+        searchable,
+        title: '<b>PO</b>',
+      });
+      const title = el.querySelector('.dg-toolbar > .dg-heading > h2.dg-title');
+      expect(title?.textContent).toBe('<b>PO</b>');
+      expect(el.querySelector('.dg-title b')).toBeNull();
+    }
+  });
+
+  it('renders no toolbar without a title or search', () => {
+    const el = document.createElement('div');
+    new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [] });
+    expect(el.querySelector('.dg-toolbar, .dg-title')).toBeNull();
+  });
+});
+
+describe('description', () => {
+  const make = (extra = {}) => {
+    const el = document.createElement('div');
+    new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [], ...extra });
+    return el;
+  };
+
+  it('shows the escaped text below the toolbar, with a toggle that hides and shows it', () => {
+    const el = make({ title: 'PO', description: '<i>about</i>' });
+    const desc = /** @type {HTMLElement} */ (el.querySelector('.dg-root > .dg-desc'));
+    const toggle = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-desc-toggle'));
+    expect(desc.textContent).toBe('<i>about</i>');
+    expect(desc.querySelector('i')).toBeNull();
+    expect(toggle.getAttribute('aria-label')).toBe('Show or hide description');
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(desc.hidden).toBe(false);
+    toggle.click();
+    expect(desc.hidden).toBe(true);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    toggle.click();
+    expect(desc.hidden).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('works without a title and renders nothing when not given', () => {
+    expect(make({ description: 'x' }).querySelector('.dg-heading .dg-desc-toggle')).not.toBeNull();
+    expect(make({ title: 'PO' }).querySelector('.dg-desc, .dg-desc-toggle')).toBeNull();
   });
 });

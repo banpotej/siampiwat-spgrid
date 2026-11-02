@@ -39,3 +39,21 @@ test('filter combines with sort', async ({ page }) => {
   await role.click(); // none -> original order, still filtered
   await expect(names).toHaveText(['Ada', '<b>Eve</b>']);
 });
+
+test('the column select limits the search to one column', async ({ page }) => {
+  await page.goto('/examples/basic.html');
+  const search = page.getByRole('searchbox', { name: 'Search' });
+  const column = page.getByRole('combobox', { name: 'Search in' });
+  const rows = page.locator('tbody tr');
+
+  await search.fill('e'); // Ada (Engineer), Grace, Eve: every row
+  await expect(rows).toHaveCount(3);
+
+  await column.selectOption({ label: 'Name' });
+  await expect(rows).toHaveCount(2); // Ada only matches through its role
+  await expect(rows.first().locator('td').nth(1)).toHaveText('Grace');
+  await expect(search).toHaveValue('e');
+
+  await column.selectOption({ label: 'All columns' });
+  await expect(rows).toHaveCount(3);
+});

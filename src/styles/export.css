@@ -1,0 +1,51 @@
+/* The Export Excel button: an icon-only neutral (grey) button, like the other tool buttons, the last part of the input
+   group (or alone in the toolbar when there is no search box); its label is the aria-label and
+   tooltip. Joined corners and the shared border come from the input group rules in toolbar.css. */
+
+.dg-export {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--dgi-control-h);
+  min-height: var(--dgi-control-h);
+  padding: 0.4em 0.8em;
+  border: 1px solid color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
+  border-radius: 0;
+  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
+  color: var(--dgi-neutral);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--dgi-transition),
+    transform var(--dgi-transition);
+}
+
+.dg-export .dg-icon {
+  font-size: 1.2em;
+}
+
+.dg-export:hover {
+  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+}
+
+.dg-export:active {
+  transform: translateY(1px);
+}
+
+.dg-toolbar > .dg-export {
+  border-radius: var(--dgi-input-radius);
+}
+
+.dg-export:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-export,
+  .dg-export:active {
+    transition: none;
+    transform: none;
+  }
+}
