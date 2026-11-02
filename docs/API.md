@@ -9,6 +9,8 @@
   `action` (ไม่ตั้ง = `rowKey` เป็น `undefined`; การหาแถวจากการคลิกไม่ใช้ค่านี้ ใช้แถวที่แสดงอยู่ปัจจุบัน)
 - `options.onAction?: (payload: ActionEventPayload) => void` – เรียกเมื่อกดปุ่ม action หรือ element ที่มี
   `data-cell-action` (เหมือน `on('action', fn)`)
+- `options.onRowActivate?: (payload: RowActivatePayload) => void` – เปิดให้แถวถูก "เปิด" ได้ และเรียกเมื่อดับเบิลคลิกแถว หรือกด Enter ขณะโฟกัสที่แถว
+  (เหมือน `on('rowActivate', fn)`) ดู [Row activation](#row-activation)
 - `options.rows?: Record<string, unknown>[]`
 - `options.locale?: string` – locale ที่ใช้เรียงสตริง (`Intl.Collator`) และแปลงเป็นตัวพิมพ์เล็กตอนค้นหา (ค่าเริ่มต้น `'th'`)
 - `options.onSortChange?: (sort: SortState) => void` – เรียกทุกครั้งที่การเรียงเปลี่ยน
@@ -166,7 +168,7 @@ import { DataGrid, escapeHtml } from 'datagrid';
 - `on('cellClick', ({ key, row, rowKey, originalEvent }) => …)` – ยิงก่อน `action` เมื่อคลิก `[data-cell-action]` ส่ง `originalEvent` มาด้วย
   เพื่อให้ `preventDefault()` ลิงก์ `href="#"` ได้เอง (ไลบรารีไม่ทำให้)
 
-ชนิด `ActionDef`, `ActionEventPayload`, `CellClickPayload` และ `Column` export จาก `datagrid`
+ชนิด `ActionDef`, `ActionEventPayload`, `CellClickPayload`, `RowActivatePayload` และ `Column` export จาก `datagrid`
 
 ```js
 new DataGrid(el, {
@@ -193,6 +195,27 @@ new DataGrid(el, {
 
 ตัวแปร CSS: `--dg-action-tone`, `--dg-action-bg`, `--dg-action-color`, `--dg-action-hover-bg`, `--dg-action-radius`, `--dg-action-padding`, `--dg-danger`, `--dg-success`, `--dg-neutral` (ดูตารางด้านล่าง)
 ตั้งบน `.dg-root` หรือบนปุ่มผ่าน `className` ของคุณ (`.dg-action` มี specificity เป็นศูนย์ จึงถูกทับด้วย class ของคุณได้ง่าย)
+
+### Row activation
+
+ตั้ง `onRowActivate` เพื่อให้ผู้ใช้ "เปิด" แถวได้โดยไม่ต้องกดปุ่มในแถว (เช่น ดูรายละเอียด):
+
+- ดับเบิลคลิกที่แถว หรือกด **Enter** ขณะที่แถวมีโฟกัส (ไม่ใช่ปุ่มในแถว) → ยิง `rowActivate` ด้วย `{ row, rowKey, originalEvent }`
+  (`row` เป็น object เดิม หาจากแถวที่แสดงอยู่หลังกรอง/เรียง/แบ่งหน้า; `originalEvent` เป็น `MouseEvent` หรือ `KeyboardEvent`)
+- เมื่อตั้ง option นี้ทุก `<tr>` ในตัวตารางจะมี `tabindex="0"` และ class `dg-activatable` (เคอร์เซอร์เป็นมือชี้ และมีกรอบโฟกัส `:focus-visible`)
+  ถ้าไม่ตั้ง แถวจะไม่ interactive และไม่ยิง event
+- ปุ่ม ลิงก์ และ form control ในแถว (รวม `[data-action]`/`[data-cell-action]`) ทำงานของตัวเองตามเดิม ดับเบิลคลิกที่ตัวเหล่านั้นไม่ยิง `rowActivate`
+  ส่วนหัวตารางและแถว "ไม่มีข้อมูล" ไม่ยิง event; ดับเบิลคลิกจะล้างข้อความที่ถูกเลือกจากการดับเบิลคลิก
+- ติดตามเพิ่มได้ด้วย `on('rowActivate', fn)` (คืนฟังก์ชัน unsubscribe); listener ถูกถอดตอน `destroy()`
+
+```js
+new DataGrid(el, {
+  rowKey: 'id',
+  columns,
+  rows,
+  onRowActivate: ({ row }) => openDetails(row),
+});
+```
 
 ### Sorting
 
@@ -396,6 +419,7 @@ new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>
 - `on('columnOrderChange', fn)` – รับ `string[]` (key ทุกคอลัมน์ตามลำดับที่แสดง) ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `on('columnsChange', fn)` – รับ `string[]` (key ที่ซ่อน) ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `on('action', fn)` / `on('cellClick', fn)` – ดู [Events](#events-action-และ-cellclick) คืนฟังก์ชัน unsubscribe
+- `on('rowActivate', fn)` – ดู [Row activation](#row-activation) คืนฟังก์ชัน unsubscribe
 - `exportExcel({ filename, sheetName })` – ดาวน์โหลดไฟล์ `.xlsx` (สร้างในเบราว์เซอร์ ไม่ใช้ไลบรารีเพิ่ม) ของแถวที่ผ่านการค้นหา/กรอง/เรียงปัจจุบัน
   **ทุกหน้า** เฉพาะคอลัมน์ข้อมูล (ไม่รวม action) โดยแถวแรกเป็น `label` ตัวหนา; ค่าเป็นค่าดิบของแถว ไม่ใช่ผลของ `column.render`;
   ตัวเลขและ boolean คงชนิด ส่วนอื่นเป็นข้อความ (จึงไม่ถูกตีความเป็นสูตร) `filename` ค่าเริ่มต้น `export.xlsx`

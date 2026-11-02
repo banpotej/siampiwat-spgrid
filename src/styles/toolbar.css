@@ -86,6 +86,7 @@
 }
 
 .dg-search-value {
+  align-self: stretch;
   padding-inline: 2.5em 2.2em;
   appearance: none;
   background-image: var(--dgi-chevron);
@@ -247,7 +248,8 @@
 
 /* Joining: only the outer corners stay round and neighbours share one border. */
 .dg-input-group > *,
-.dg-input-group .dg-search {
+.dg-input-group .dg-search,
+.dg-input-group .dg-search-value {
   border-radius: 0;
 }
 
@@ -289,107 +291,4 @@
   .dg-search-reset:active {
     transform: none;
   }
-}
-
-/* A narrow grid cannot fit the whole group on one line: the search box takes its own row and the
-   rest wraps below it, each part with its own rounded border again. */
-@container (max-width: 520px) {
-  .dg-heading {
-    flex-basis: 100%;
-  }
-
-  .dg-input-group {
-    flex-wrap: wrap;
-    gap: 8px;
-    box-shadow: none;
-  }
-
-  .dg-input-group:focus-within {
-    box-shadow: none;
-  }
-
-  .dg-input-group > *,
-  .dg-input-group .dg-search,
-  .dg-input-group > :first-child,
-  .dg-input-group > :last-child,
-  .dg-input-group > :first-child .dg-search,
-  .dg-input-group > :last-child .dg-search {
-    border-radius: var(--dgi-input-radius);
-  }
-
-  .dg-input-group > * + * {
-    margin-inline-start: 0;
-  }
-
-  .dg-input-group > .dg-search-field {
-    flex-basis: 100%;
-    order: -1;
-  }
-
-  .dg-input-group > .dg-search-column {
-    flex: 1 1 auto;
-    max-width: 100%;
-  }
-}
-
-/* The description strip and its toggle: the chevron points right when hidden, down when shown. */
-.dg-desc {
-  padding: 0.6em calc(var(--dgi-gap) + 4px);
-  border-bottom: 1px solid var(--dgi-border);
-  color: var(--dgi-muted);
-}
-
-.dg-desc[hidden] {
-  display: none;
-}
-
-.dg-desc-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2em;
-  min-height: 2em;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--dgi-muted);
-  cursor: pointer;
-  transition: background-color var(--dgi-transition);
-}
-
-.dg-desc-toggle .dg-icon {
-  transition: transform var(--dgi-transition);
-}
-
-.dg-desc-toggle[aria-expanded='true'] .dg-icon {
-  transform: rotate(90deg);
-}
-
-.dg-desc-toggle:hover {
-  background: var(--dgi-sort-hover-bg);
-  color: var(--dgi-text);
-}
-
-.dg-desc-toggle:focus-visible {
-  outline: 2px solid var(--dgi-focus);
-  outline-offset: 1px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dg-desc-toggle,
-  .dg-desc-toggle .dg-icon {
-    transition: none;
-  }
-}
-
-/* The toggle buttons (Striped rows, Wrap text) are .dg-tool-btns; pressed (setting on) they take the accent tint. */
-.dg-tool-btn[aria-pressed='true'] {
-  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
-  background: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
-  color: var(--dgi-accent);
-}
-
-.dg-tool-btn[aria-pressed='true']:hover {
-  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
 }

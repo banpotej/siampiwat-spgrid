@@ -1,0 +1,42 @@
+/* The filter bar on a narrow grid (the group wraps). Imported right after toolbar.css so the cascade stays the same. */
+/* A narrow grid cannot fit the whole group on one line: the search box takes its own row and the
+   rest wraps below it, each part with its own rounded border again. */
+@container (max-width: 520px) {
+  .dg-heading {
+    flex-basis: 100%;
+  }
+
+  .dg-input-group {
+    flex-wrap: wrap;
+    gap: 8px;
+    box-shadow: none;
+  }
+
+  .dg-input-group:focus-within {
+    box-shadow: none;
+  }
+
+  .dg-input-group > *,
+  .dg-input-group .dg-search,
+  .dg-input-group .dg-search-value,
+  .dg-input-group > :first-child,
+  .dg-input-group > :last-child,
+  .dg-input-group > :first-child .dg-search,
+  .dg-input-group > :last-child .dg-search {
+    border-radius: var(--dgi-input-radius);
+  }
+
+  .dg-input-group > * + * {
+    margin-inline-start: 0;
+  }
+
+  .dg-input-group > .dg-search-field {
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  .dg-input-group > .dg-search-column {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+}

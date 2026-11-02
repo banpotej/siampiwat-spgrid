@@ -59,14 +59,19 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   const third = rows.nth(2);
   const po = await third.locator('td:nth-child(3)').textContent();
   await third.getByRole('button', { name: 'View' }).click();
-  await expect(page.locator('.dg-modal')).toContainText(`รายละเอียด ${po?.trim()}`);
+  await expect(page.locator('.dg-modal')).toContainText(po?.trim() ?? '');
   await expect(log).toHaveText('');
   await page.keyboard.press('Escape');
 
-  page.once('dialog', (dialog) => dialog.accept());
   const cancel = page.getByRole('button', { name: 'Cancel' }).first();
   const cancelPo = await cancel.locator('xpath=ancestor::tr/td[3]').textContent();
   await cancel.click();
+  const confirm = page.getByRole('alertdialog');
+  await expect(confirm).toContainText(cancelPo?.trim() ?? '');
+  await confirm.getByRole('button', { name: 'ไม่ยกเลิก' }).click(); // the safe answer changes nothing
+  await expect(log).toHaveText('');
+  await cancel.click();
+  await confirm.getByRole('button', { name: 'ยกเลิกเอกสาร' }).click();
   await expect(log).toHaveText(`cancel ${cancelPo}`);
 });
 
@@ -121,8 +126,9 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
   const modal = page.locator('.dg-modal');
 
   await row.getByRole('button', { name: 'View' }).click();
-  await expect(modal.getByRole('dialog')).toContainText(`รายละเอียด ${po}`);
-  for (const name of ['รายละเอียด', 'ชื่อผู้ค้า', 'สถานะ']) {
+  await expect(modal.getByRole('dialog')).toContainText(po ?? '');
+  await expect(modal.locator('.details-head .dg-badge')).toBeVisible(); // the status sits in the header
+  for (const name of ['รายละเอียด', 'ชื่อผู้ค้า']) {
     await expect(modal.locator('dt', { hasText: name })).toHaveCount(1);
   }
   await expect(modal.locator('dd').first()).toBeVisible();
@@ -225,4 +231,42 @@ test('dragging a header onto another reorders the columns and the order survives
 
   await page.reload();
   expect(await labels()).toEqual(after);
+});
+
+test('the details modal keeps Tab inside and gives focus back to the View button', async ({
+  page,
+}) => {
+  await page.goto('/examples/index.html');
+  const view = page.locator('tbody tr').first().getByRole('button', { name: 'View' });
+  await view.click();
+  const modal = page.getByRole('dialog');
+  await expect(modal.getByRole('button', { name: 'ปิด' })).toBeFocused();
+  for (const key of ['Tab', 'Tab', 'Shift+Tab']) {
+    await page.keyboard.press(key);
+    expect(await modal.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+  }
+  await page.keyboard.press('Escape');
+  await expect(view).toBeFocused();
+});
+
+test('a row opens its details on double-click or Enter, and looks clickable', async ({ page }) => {
+  await page.goto('/examples/index.html');
+  const row = page.locator('tbody tr').nth(1);
+  const po = (await row.locator('td:nth-child(3)').textContent())?.trim() ?? '';
+  await expect(row).toHaveCSS('cursor', 'pointer');
+
+  await row.locator('td:nth-child(3)').dblclick();
+  await expect(page.getByRole('dialog')).toContainText(po);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+
+  await row.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog')).toContainText(po);
+  await page.keyboard.press('Escape');
+  await expect(row).toBeFocused(); // focus went back to where it was
+
+  // A double-click on a button is left to the button: no second modal opens on top of the one it opened.
+  await row.getByRole('button', { name: 'View' }).dispatchEvent('dblclick');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
 });

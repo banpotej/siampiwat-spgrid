@@ -1,0 +1,62 @@
+/* The description strip and the pressed state of the toggle buttons. Imported after toolbarNarrow.css. */
+/* The description strip and its toggle: the chevron points right when hidden, down when shown. */
+.dg-desc {
+  padding: 0.6em calc(var(--dgi-gap) + 4px);
+  border-bottom: 1px solid var(--dgi-border);
+  color: var(--dgi-muted);
+}
+
+.dg-desc[hidden] {
+  display: none;
+}
+
+.dg-desc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2em;
+  min-height: 2em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dgi-muted);
+  cursor: pointer;
+  transition: background-color var(--dgi-transition);
+}
+
+.dg-desc-toggle .dg-icon {
+  transition: transform var(--dgi-transition);
+}
+
+.dg-desc-toggle[aria-expanded='true'] .dg-icon {
+  transform: rotate(90deg);
+}
+
+.dg-desc-toggle:hover {
+  background: var(--dgi-sort-hover-bg);
+  color: var(--dgi-text);
+}
+
+.dg-desc-toggle:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-desc-toggle,
+  .dg-desc-toggle .dg-icon {
+    transition: none;
+  }
+}
+
+/* The toggle buttons (Striped rows, Wrap text) are .dg-tool-btns; pressed (setting on) they take the accent tint. */
+.dg-tool-btn[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
+  background: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
+  color: var(--dgi-accent);
+}
+
+.dg-tool-btn[aria-pressed='true']:hover {
+  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
+}

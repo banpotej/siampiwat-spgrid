@@ -51,6 +51,13 @@
  */
 
 /**
+ * @typedef {object} RowActivatePayload
+ * @property {Row} row The original row object (not a copy), resolved from the rows currently shown.
+ * @property {unknown} [rowKey] `row[options.rowKey]`; undefined when `rowKey` is not set.
+ * @property {MouseEvent | KeyboardEvent} originalEvent The double-click, or the Enter key press on the focused row.
+ */
+
+/**
  * @typedef {object} CellClickPayload
  * @property {string} key Key of the column the click happened in.
  * @property {Row} row
@@ -112,7 +119,7 @@
 /**
  * Payload of each grid event, by name.
  * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState,
- *   action: ActionEventPayload, cellClick: CellClickPayload, columnsChange: string[], columnOrderChange: string[], refresh: void }} GridEvents
+ *   action: ActionEventPayload, cellClick: CellClickPayload, rowActivate: RowActivatePayload, columnsChange: string[], columnOrderChange: string[], refresh: void }} GridEvents
  */
 
 /**
@@ -122,6 +129,9 @@
  * @property {string} [rowKey] Field that identifies a row; rendered as `data-row-id` and reported as `rowKey`.
  * @property {(payload: ActionEventPayload) => void} [onAction] Called when an action button or a
  *   `[data-cell-action]` element is clicked.
+ * @property {(payload: RowActivatePayload) => void} [onRowActivate] Makes the rows activatable and is called when one
+ *   is: a double-click on the row, or Enter while the row has focus (each row is then a Tab stop, with a pointer cursor).
+ *   Buttons, links and form controls inside a row keep their own behaviour. Default: rows are not interactive.
  * @property {string} [locale] Locale for sorting strings and lower-casing search text; default 'th'.
  * @property {{ key: string, direction: SortDirection }} [defaultSort] Sort applied when the grid is created (and by
  *   `resetView()`); `key` must be a data column. Default: unsorted.

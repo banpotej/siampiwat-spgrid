@@ -8,7 +8,7 @@ Plain JS with JSDoc types; every file under `src/` starts with `// @ts-check`.
 - `npm run dev` – dev server, example at `/examples/index.html`
 - `npm run build` – library bundle + `.d.ts` into `dist/`
 - `npm test` – unit tests; `npm run test:e2e` – Playwright
-- `npm run check` – lint + typecheck + unit tests + build (must pass before finishing)
+- `npm run check` – lint + typecheck + unit tests + build + Playwright e2e (must pass before finishing)
 
 ## Conventions
 

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Row activation: `onRowActivate` (and `on('rowActivate')`, payload `RowActivatePayload`: `{ row, rowKey, originalEvent }`) makes the rows
+  activatable: a double-click on a row, or Enter while the row has focus. Each row then gets `tabindex="0"` and `.dg-activatable` (pointer
+  cursor, `:focus-visible` ring). Buttons, links and form controls inside a row keep their own behaviour. Without the option rows are
+  unchanged.
 - Date search column: with `searchColumnSelect`, choosing a `type: 'date'` column as the search column swaps the text box for two date
   boxes (from / to, `.dg-search-range`) that filter at once on the calendar day (both ends inclusive, either optional). The search text
   is `FROM..TO` (`YYYY-MM-DD`), also accepted by `setFilter()`; matching cells are marked whole. New `labels.dateFrom` / `labels.dateTo`,
@@ -20,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Date search column: the from / to boxes are tidier: each date lights up on hover and focus, the calendar buttons stay quiet until used, and the frame fits the filter bar.
+- Date search column: the from / to boxes are borderless, so the range reads as one input group with the select and buttons beside it (square frame of the same height, focus ring on the frame); the calendar buttons stay quiet until used. The enum value select is square and as tall as its neighbours, and the column select keeps the neutral grey tone when a column is chosen.
 - **Breaking:** an action button with an `icon` is now icon-only (`dg-action-icononly`): `ActionDef.label` becomes its `aria-label` and
   tooltip (`title`, unless `ActionDef.title` is set) instead of visible text. New `ActionDef.showLabel: true` keeps the text beside the
   icon. Buttons without an `icon` are unchanged.

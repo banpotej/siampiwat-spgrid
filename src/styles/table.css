@@ -207,107 +207,12 @@
   white-space: nowrap;
 }
 
-/* resizableColumns: a handle on each header cell's end edge. The first resize pins every column at a pixel width and
-   fixes the table layout (.dg-fixed); long words then break instead of spilling into the next column. */
-.dg-resizable:not(.dg-sticky) .dg-table th {
-  position: relative;
+/* onRowActivate: rows open on a double-click or Enter, so they look clickable and show where the keyboard is. */
+.dg-table tbody tr.dg-activatable {
+  cursor: pointer;
 }
 
-.dg-resize {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: -4px;
-  z-index: 2;
-  width: 9px;
-  cursor: col-resize;
-  touch-action: none;
-}
-
-.dg-resize::after {
-  content: '';
-  position: absolute;
-  inset-block: 25%;
-  inset-inline-start: 4px;
-  width: 2px;
-  border-radius: 1px;
-  background: transparent;
-  transition: background-color var(--dgi-transition);
-}
-
-.dg-table th:hover .dg-resize::after {
-  background: var(--dgi-border-strong);
-}
-
-.dg-resize:hover::after,
-.dg-resize.dg-resizing::after,
-.dg-resize:focus-visible::after {
-  background: var(--dgi-accent);
-}
-
-.dg-resize:focus-visible {
-  outline: none;
-}
-
-.dg-table.dg-fixed {
-  table-layout: fixed;
-}
-
-.dg-fixed th,
-.dg-fixed td {
-  overflow-wrap: anywhere;
-}
-
-/* A narrowed column clips its own content (ellipsis) so it never paints over a neighbouring cell. */
-.dg-fixed td {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Buttons are never cut to "…": an action cell that is a hair too narrow (rounding, borders, a width saved before the
-   buttons changed) lets them spill over instead. */
-.dg-fixed td.dg-action-cell {
-  overflow: visible;
-  text-overflow: clip;
-}
-
-.dg-fixed .dg-th {
-  min-width: 0;
-}
-
-.dg-fixed .dg-th-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dg-resize::after {
-    transition: none;
-  }
-}
-
-/* reorderableColumns: the header cell being dragged, and the edge where it would land. */
-.dg-table th.dg-dragging {
-  opacity: 0.45;
-}
-
-.dg-root:not(.dg-sticky) .dg-table th.dg-drop-before,
-.dg-root:not(.dg-sticky) .dg-table th.dg-drop-after {
-  position: relative;
-}
-
-.dg-table th.dg-drop-before::before,
-.dg-table th.dg-drop-after::before {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  width: 2px;
-  background: var(--dgi-accent);
-}
-
-.dg-table th.dg-drop-before::before {
-  inset-inline-start: 0;
-}
-
-.dg-table th.dg-drop-after::before {
-  inset-inline-end: 0;
+.dg-table tbody tr.dg-activatable:focus-visible {
+  outline: 2px solid var(--dgi-focus);
+  outline-offset: -2px;
 }

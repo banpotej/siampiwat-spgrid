@@ -21,6 +21,7 @@ export function createGridEvents(options) {
       'pageChange',
       'action',
       'cellClick',
+      'rowActivate',
       'columnsChange',
       'columnOrderChange',
       'refresh',
@@ -30,6 +31,7 @@ export function createGridEvents(options) {
   if (options.onFilterChange) events.on('filterChange', options.onFilterChange);
   if (options.onPageChange) events.on('pageChange', options.onPageChange);
   if (options.onAction) events.on('action', options.onAction);
+  if (options.onRowActivate) events.on('rowActivate', options.onRowActivate);
   if (options.onRefresh) events.on('refresh', options.onRefresh);
   if (options.onColumnsChange) events.on('columnsChange', options.onColumnsChange);
   if (options.onColumnOrderChange) events.on('columnOrderChange', options.onColumnOrderChange);

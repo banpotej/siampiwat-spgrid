@@ -1,6 +1,9 @@
 @import './styles/tokens.css';
 @import './styles/table.css';
+@import './styles/columnLayout.css';
 @import './styles/toolbar.css';
+@import './styles/toolbarNarrow.css';
+@import './styles/description.css';
 @import './styles/cells.css';
 @import './styles/export.css';
 @import './styles/toolButtons.css';

@@ -24,6 +24,7 @@ export class GridRenderer {
   #locale;
   #pageSizeOptions;
   #highlight;
+  #activatable;
   /** @type {ColumnResizer | null} */ #resizer = null;
   #unbindResize = () => {};
   #pagerHtml = '';
@@ -34,7 +35,7 @@ export class GridRenderer {
    *   labels: ReturnType<typeof import('./labels.js').resolveLabels>,
    *   icons: ReturnType<typeof import('./icons.js').resolveIcons>,
    *   rowKey?: string, locale?: string, pageSizeOptions?: number[], highlight?: boolean, resizable?: boolean,
-   *   widthStorageKey?: string }} opts
+   *   widthStorageKey?: string, activatable?: boolean }} opts
    */
   constructor({
     shell,
@@ -46,6 +47,7 @@ export class GridRenderer {
     highlight = true,
     resizable = false,
     widthStorageKey,
+    activatable = false,
   }) {
     this.#shell = shell;
     this.#labels = labels;
@@ -54,6 +56,7 @@ export class GridRenderer {
     this.#locale = locale;
     this.#pageSizeOptions = pageSizeOptions;
     this.#highlight = highlight;
+    this.#activatable = activatable;
     if (resizable) {
       this.#resizer = new ColumnResizer(shell.host, widthStorageKey);
       this.#unbindResize = this.#resizer.bind();
@@ -88,6 +91,13 @@ export class GridRenderer {
       },
       reorder !== null,
     );
+    if (this.#activatable) {
+      // Rows are Tab stops that Enter activates (see rowActivate.js); the class gives them the pointer cursor.
+      for (const tr of host.querySelectorAll('tbody tr[data-row-index]')) {
+        tr.classList.add('dg-activatable');
+        tr.setAttribute('tabindex', '0');
+      }
+    }
     if (this.#highlight && filter?.search) {
       const locale = this.#locale ?? DEFAULT_LOCALE;
       highlightSearch(host, columns, toWords(filter.search, locale), {

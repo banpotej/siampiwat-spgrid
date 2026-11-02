@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <title>ตัวอย่าง DataGrid: รายการใบสั่งซื้อ (PO List)</title>
+    <link rel="stylesheet" href="/examples/dialogs.css" />
     <style>
       body {
         margin: 0;
@@ -30,97 +31,6 @@
       #grid .dg-table {
         min-width: 2050px;
       }
-      /* View details: a quiet sheet. Hairlines instead of boxes, small muted labels over the values. */
-      .dg-modal:has(> .details) {
-        background: rgb(15 23 42 / 0.32);
-        backdrop-filter: blur(4px);
-      }
-      .dg-modal-box.details {
-        display: flex;
-        flex-direction: column;
-        width: min(100%, 38rem);
-        max-height: min(85vh, 40rem);
-        padding: 0;
-        border: 0;
-        border-radius: 16px;
-        text-align: start;
-        box-shadow:
-          0 24px 48px -12px rgb(15 23 42 / 0.28),
-          0 0 0 1px rgb(15 23 42 / 0.05);
-      }
-      .details-head {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 20px 24px 16px;
-        border-bottom: 1px solid var(--dgi-border);
-      }
-      .details .dg-modal-title {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 2px;
-        margin: 0;
-        font-size: 1.35rem;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-      .details-eyebrow {
-        color: var(--dgi-muted);
-        font-size: 0.8rem;
-        font-weight: 500;
-      }
-      .details-close {
-        display: inline-flex;
-        flex: none;
-        align-items: center;
-        justify-content: center;
-        width: 2rem;
-        height: 2rem;
-        margin: -4px -8px 0 0;
-        padding: 0;
-        border: 0;
-        border-radius: 50%;
-        background: transparent;
-        color: var(--dgi-muted);
-        cursor: pointer;
-        transition: background-color 120ms ease;
-      }
-      .details-close:hover {
-        background: var(--dgi-hover-bg);
-        color: var(--dgi-text);
-      }
-      .details-close:focus-visible {
-        outline: 2px solid var(--dgi-focus);
-        outline-offset: 1px;
-      }
-      .details dl {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-        gap: 18px 28px;
-        margin: 0;
-        padding: 20px 24px 24px;
-        overflow: auto;
-      }
-      .details dl > div {
-        min-width: 0;
-      }
-      .details dl > .wide {
-        grid-column: 1 / -1;
-      }
-      .details dt {
-        margin-bottom: 2px;
-        color: var(--dgi-muted);
-        font-size: 0.78rem;
-        font-weight: 500;
-      }
-      .details dd {
-        margin: 0;
-        overflow-wrap: anywhere;
-      }
-      .details dd.empty {
-        color: var(--dgi-muted);
-      }
       #log {
         min-height: 1.5em;
         margin: 12px 0 0;
@@ -136,6 +46,7 @@
     <script type="module">
       import { DataGrid, thaiLabels } from '/src/index.js';
       import { createPurchaseOrders } from '/examples/mock/purchaseOrders.js';
+      import { confirmCancel, showDetails } from '/examples/dialogs.js';
 
       // Dates stay Date objects and deliveryComplete stays a boolean: the column types format them.
       const rows = createPurchaseOrders().map((po) => ({
@@ -210,80 +121,14 @@
 
       const log = document.getElementById('log');
 
-      const formatValue = (value, type) => {
-        if (value === null || value === undefined || value === '') return '-';
-        if (type === 'date') return new Date(value).toLocaleDateString('th-TH');
-        if (type === 'boolean') return value ? 'ใช่' : 'ไม่ใช่';
-        return String(value);
-      };
-
-      // Row details in the grid's own modal look (.dg-modal*); it lives inside .dg-root for the theme tokens.
-      function showDetails(row) {
-        const opener = document.activeElement;
-        const overlay = document.createElement('div');
-        overlay.className = 'dg-modal';
-        const box = document.createElement('div');
-        box.className = 'dg-modal-box details';
-        box.setAttribute('role', 'dialog');
-        box.setAttribute('aria-modal', 'true');
-        box.setAttribute('aria-labelledby', 'details-title');
-
-        const title = document.createElement('h2');
-        title.className = 'dg-modal-title';
-        title.id = 'details-title';
-        const eyebrow = document.createElement('span');
-        eyebrow.className = 'details-eyebrow';
-        eyebrow.textContent = 'รายละเอียด';
-        title.append(eyebrow, ' ', row.poNumber);
-        const close = document.createElement('button');
-        close.type = 'button';
-        close.className = 'details-close';
-        close.setAttribute('aria-label', 'ปิด');
-        close.innerHTML =
-          '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-        const head = document.createElement('div');
-        head.className = 'details-head';
-        head.append(title, close);
-
-        const list = document.createElement('dl');
-        for (const col of columns.filter((c) => !c.actions && c.key !== 'poNumber')) {
-          const text = formatValue(row[col.key], col.type);
-          const item = document.createElement('div');
-          if (col.key === 'description') item.className = 'wide';
-          const dt = document.createElement('dt');
-          dt.textContent = col.label;
-          const dd = document.createElement('dd');
-          const tone = col.type === 'badge' ? col.badges?.[row[col.key]]?.tone : undefined;
-          if (tone) {
-            const badge = document.createElement('span');
-            badge.className = `dg-badge dg-badge-${tone}`;
-            badge.textContent = text;
-            dd.append(badge);
-          } else {
-            dd.textContent = text;
-            if (text === '-') dd.className = 'empty';
-          }
-          item.append(dt, dd);
-          list.append(item);
-        }
-        box.append(head, list);
-        overlay.append(box);
-        const done = () => {
-          overlay.remove();
-          opener?.focus?.();
-        };
-        close.addEventListener('click', done);
-        overlay.addEventListener('click', (e) => e.target === overlay && done());
-        overlay.addEventListener('keydown', (e) => e.key === 'Escape' && done());
-        document.querySelector('#grid .dg-root').append(overlay);
-        close.focus();
-      }
       const grid = new DataGrid(document.getElementById('grid'), {
         rowKey: 'id',
+        // Double-click a row, or Enter on a focused row, shows its details (the same as its eye button).
+        onRowActivate: ({ row }) => showDetails(row, columns),
         title: 'รายการใบสั่งซื้อ',
-        onAction: ({ action, row }) => {
-          if (action === 'view') return showDetails(row);
-          if (!window.confirm(`ยกเลิก ${row.poNumber}?`)) return;
+        onAction: async ({ action, row }) => {
+          if (action === 'view') return showDetails(row, columns);
+          if (!(await confirmCancel(row))) return;
           log.textContent = `${action} ${row.poNumber}`; // textContent: never parsed as HTML
         },
         columns,

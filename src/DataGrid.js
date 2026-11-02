@@ -1,23 +1,16 @@
 // @ts-check
-import { columnOptions, dataKeys, searchKind } from './core/columns.js';
-import { normalizeFilter, removeFilterPart, resolveFilter } from './core/filter.js';
+import { dataKeys } from './core/columns.js';
+import { normalizeFilter, resolveFilter } from './core/filter.js';
 import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
 import { createState } from './core/state.js';
-import { bindControls } from './render/controls.js';
-import { askConfirm } from './render/confirm.js';
+import { bindGridControls } from './render/gridControls.js';
 import { createGridEvents, emitChanges } from './render/gridEvents.js';
-import { GridRenderer } from './render/gridRenderer.js';
+import { assertOptions, initialState, mountParts } from './render/gridSetup.js';
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
-import { loadPageSize } from './render/pageSizeStore.js';
-import { loadSort } from './render/sortStore.js';
 import { exportExcel } from './render/exportExcel.js';
-import { resolveIcons } from './render/icons.js';
-import { resolveLabels } from './render/labels.js';
-import { syncClearButton } from './render/searchEvents.js';
-import { syncSearchValue } from './render/searchValue.js';
-import { mountShell } from './render/toolbar.js';
+import { clearedSearch, syncSearchBox } from './render/searchBox.js';
 import './datagrid.css';
 
 /** @typedef {import('./types.js').DataGridOptions} DataGridOptions */
@@ -28,21 +21,17 @@ import './datagrid.css';
 /** @typedef {import('./types.js').GridEvents} GridEvents */
 /** @typedef {import('./types.js').PageResult} PageResult */
 
-const DEFAULT_DEBOUNCE = 200;
-
 export class DataGrid {
   /** @type {HTMLElement} */ #container;
-  /** @type {ReturnType<typeof mountShell>} The static shell; only `host` and `pagerHost` content is re-rendered. */
+  /** @type {ReturnType<typeof import('./render/toolbar.js').mountShell>} The static shell; only `host` and `pagerHost` content is re-rendered. */
   #shell;
   /** @type {import('./core/state.js').State<GridState>} */ #state;
   /** @type {() => void} */ #unsubscribe;
   /** @type {ReturnType<typeof createGridEvents>} */ #events;
   #locale;
-  /** @type {GridRenderer} */ #renderer;
-  /** @type {number | null} The `pageSize` option, which `resetView()` goes back to. */
-  #initialPageSize;
-  /** @type {SortState} The `defaultSort` option, which `resetView()` goes back to. */
-  #initialSort;
+  /** @type {import('./render/gridRenderer.js').GridRenderer} */ #renderer;
+  /** @type {{ pageSize: number | null, sort: SortState }} The `pageSize` and `defaultSort` options, which `resetView()` goes back to. */
+  #initial;
   /** @type {HiddenColumns} */ #hidden;
   /** @type {ColumnOrder} */ #order;
   #reorderable;
@@ -59,108 +48,33 @@ export class DataGrid {
    * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer
    */
   constructor(container, options) {
-    if (!(container instanceof HTMLElement)) {
-      throw new TypeError('DataGrid: container must be an HTMLElement');
-    }
-    if (options.pageSize !== undefined) assertPageSize(options.pageSize);
-    options.pageSizeOptions?.forEach(assertPageSize);
+    assertOptions(container, options);
     this.#container = container;
     this.#locale = options.locale;
     this.#order = new ColumnOrder(options);
     this.#reorderable = options.reorderableColumns === true;
-    this.#initialPageSize = options.pageSize ?? null;
-    const sortKeys = dataKeys(options.columns);
-    this.#initialSort = normalizeSort(options.defaultSort ?? null, sortKeys);
-    const labels = resolveLabels(options.labels);
-    const icons = resolveIcons(options.icons);
+    this.#initial = {
+      pageSize: options.pageSize ?? null,
+      sort: normalizeSort(options.defaultSort ?? null, dataKeys(options.columns)),
+    };
     this.#events = createGridEvents(options);
-    const shell = (this.#shell = mountShell(container, options, labels, icons));
-    this.#renderer = new GridRenderer({
-      shell,
-      labels,
-      icons,
-      rowKey: options.rowKey,
-      locale: options.locale,
-      pageSizeOptions: options.pageSizeOptions,
-      highlight: options.highlightSearch !== false,
-      resizable: options.resizableColumns === true,
-      widthStorageKey: options.columnWidthStorageKey,
-    });
+    const { labels, shell, renderer } = mountParts(container, options);
+    this.#shell = shell;
+    this.#renderer = renderer;
     this.#hidden = new HiddenColumns(options, shell, (keys) => {
       // A search limited to a column that just got hidden goes back to every visible column.
       if (keys.includes(this.getSearchColumn() ?? '')) this.setSearchColumn(null);
       this.render();
       this.#events.emit('columnsChange', keys);
     });
-    this.#unbindControls = bindControls(shell, {
-      debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
-      submit: options.searchButton === true,
-      onSearch: (search) =>
-        this.#applyFilter({ search, columnFilters: this.#state.get().filter?.columnFilters }),
-      onColumn: (key) => this.setSearchColumn(key),
-      onExport: () => this.exportExcel(),
-      onRefresh: () => this.#events.emit('refresh', undefined),
-      onRemoveFilter: (part) => {
-        this.setFilter(removeFilterPart(this.getFilter(), part));
-        if (part.type === 'search') this.setSearchColumn(null);
-      },
-      columnPicker: {
-        columns: shell.pickerColumns ?? [],
-        labels: {
-          title: labels.columnSettings,
-          apply: labels.apply,
-          cancel: labels.cancel,
-          sortBy: labels.sortBy,
-          noSort: labels.noSort,
-          sortDirection: labels.sortDirection,
-          ascending: labels.ascending,
-          descending: labels.descending,
-          columns: labels.columnsSection,
-          sort: labels.sortSection,
-          display: labels.displaySection,
-          stripedRows: labels.stripedRows,
-          textWrap: labels.textWrap,
-          reset: labels.resetView,
-        },
-        getState: () => ({
-          ...(shell.pickerColumns && { hidden: this.getHiddenColumns(), sort: this.getSort() }),
-          view: shell.view?.get(),
-        }),
-        onApply: ({ hidden, sort, view }) => {
-          if (view) shell.view?.apply(view);
-          if (hidden !== undefined) this.setHiddenColumns(hidden);
-          if (sort !== undefined) this.setSort(sort);
-        },
-        onReset:
-          options.resetButton === true
-            ? () =>
-                askConfirm(options.confirmReset, labels.confirmReset, {
-                  root: shell.host.closest('.dg-root'),
-                  title: labels.resetView,
-                  ok: labels.confirmOk,
-                  cancel: labels.cancel,
-                }).then((ok) => ok && this.resetView())
-            : undefined,
-      },
-      pager: this,
-      actions: {
-        getRows: () => this.#visible,
-        getColumns: () => this.#state.get().columns,
-        rowKey: options.rowKey,
-        emit: (event, payload) => this.#events.emit(event, payload),
-      },
+    this.#unbindControls = bindGridControls(this, shell, options, labels, {
+      applyFilter: (filter) => this.#applyFilter(filter),
+      columnFilters: () => this.#state.get().filter?.columnFilters,
+      columns: () => this.#state.get().columns,
+      visible: () => this.#visible,
+      emit: (event, payload) => this.#events.emit(event, payload),
     });
-    this.#state = createState(
-      /** @type {GridState} */ ({
-        columns: this.#order.columns(),
-        rows: options.rows ?? [],
-        sort: loadSort(options.sortStorageKey, sortKeys, this.#initialSort),
-        filter: null,
-        page: 1,
-        pageSize: loadPageSize(options.pageSizeStorageKey, options.pageSize) ?? null,
-        searchColumn: null,
-      }),
-    );
+    this.#state = createState(initialState(options, this.#order.columns(), this.#initial.sort));
     this.#unsubscribe = this.#state.subscribe((state, prev) => {
       const before = this.#paging;
       this.render();
@@ -216,21 +130,13 @@ export class DataGrid {
    */
   setSearchColumn(key) {
     if (this.#destroyed) return;
-    const { columns, searchColumn, filter } = this.#state.get();
-    if (key !== null && !dataKeys(columns).includes(key)) {
+    const state = this.#state.get();
+    if (key !== null && !dataKeys(state.columns).includes(key)) {
       throw new RangeError(`DataGrid: unknown column "${key}"`);
     }
     if (this.#shell.searchColumn) this.#shell.searchColumn.value = key ?? '';
-    if (key === searchColumn) return;
-    // Text typed for one kind of column means nothing for another (a substring, an enum value, a day range): start over.
-    const swaps = this.#searchKind(key) !== this.#searchKind(searchColumn);
-    const cleared = swaps
-      ? resolveFilter(
-          filter,
-          { search: null, columnFilters: filter?.columnFilters },
-          dataKeys(columns),
-        )
-      : undefined;
+    if (key === state.searchColumn) return;
+    const cleared = clearedSearch(state, key);
     this.#state.set({
       searchColumn: key,
       page: 1,
@@ -240,26 +146,9 @@ export class DataGrid {
     this.#syncSearchBox();
   }
 
-  /** @param {string | null} key @returns {'enum' | 'date' | 'text'} How the search box looks for this column. */
-  #searchKind(key) {
-    return searchKind(this.#state.get().columns.find((c) => c.key === key));
-  }
-
-  /** @param {string | null} key @returns {{ value: string, label: string }[] | null} Values of an enum column. */
-  #enumOptions(key) {
-    return columnOptions(this.#state.get().columns.find((c) => c.key === key));
-  }
-
   /** Swap the search box and the value select for the current search column, and mirror the search into them. */
   #syncSearchBox() {
-    const { search, searchValue, searchRange } = this.#shell;
-    const key = this.#state.get().searchColumn;
-    syncSearchValue(
-      { input: search, select: searchValue, range: searchRange },
-      this.#searchKind(key),
-      this.#enumOptions(key),
-    );
-    if (search) syncClearButton(search);
+    syncSearchBox(this.#shell, this.#state.get().columns, this.#state.get().searchColumn);
   }
 
   /**
@@ -352,7 +241,11 @@ export class DataGrid {
    * @returns {Blob} The generated file.
    */
   exportExcel(options = {}) {
-    return exportExcel(this.#state.get(), { ...this.#viewOptions, ...options });
+    return exportExcel(this.#state.get(), {
+      locale: this.#locale,
+      hidden: this.#hidden.get(),
+      ...options,
+    });
   }
 
   /** Back to the starting view: no search, the `defaultSort` option, the `hiddenColumns` and `pageSize` options, page 1. */
@@ -360,7 +253,7 @@ export class DataGrid {
     if (this.#destroyed) return;
     this.setFilter(null);
     this.setSearchColumn(null);
-    this.#state.set({ sort: this.#initialSort, pageSize: this.#initialPageSize, page: 1 });
+    this.#state.set({ ...this.#initial, page: 1 });
     this.#hidden.reset();
     this.#reorder(() => this.#order.reset());
   }
@@ -388,11 +281,6 @@ export class DataGrid {
     this.#renderer.destroy();
     this.#events.clear();
     this.#container.innerHTML = '';
-  }
-
-  /** Locale and hidden columns: what the view and the export both depend on besides the state. */
-  get #viewOptions() {
-    return { locale: this.#locale, hidden: this.#hidden.get() };
   }
 
   /** @param {() => boolean} change Changes the order; true when it did. */
