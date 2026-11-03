@@ -1,4 +1,4 @@
-# Zips the project to D:\backup\datagrid_yyyymmdd_hhmmss.zip (skips node_modules, dist, test reports).
+# Zips the project to D:\backup\siampiwat-datagrid_yyyymmdd_hhmmss.zip (skips node_modules, dist, test reports).
 param(
     [string]$Source = $PSScriptRoot,
     [string]$Destination = 'D:\backup'
@@ -9,7 +9,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $exclude = @('node_modules', 'dist', 'playwright-report', 'test-results')
 $null = New-Item -ItemType Directory -Force -Path $Destination
-$zipPath = Join-Path $Destination ("datagrid_{0:yyyyMMdd_HHmmss}.zip" -f (Get-Date))
+$zipPath = Join-Path $Destination ("siampiwat-datagrid_{0:yyyyMMdd_HHmmss}.zip" -f (Get-Date))
 
 $root = (Resolve-Path $Source).Path.TrimEnd('\')
 $zip = [System.IO.Compression.ZipFile]::Open($zipPath, 'Create')

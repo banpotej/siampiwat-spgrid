@@ -7,8 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-03
+
 ### Added
 
+- Landing page (`index.html`): separate download buttons for `datagrid-<version>.tgz` and `datagrid-<version>.zip` (both in `release/`, built by
+  `npm run pack:release`); like the `dist/` buttons they are marked and explain the command when the file is missing. The install steps now say that
+  `datagrid` brings its CSS.
+
+### Changed
+
+- The package is named `@siampiwat/datagrid` (was `datagrid`): `npm install @siampiwat/datagrid`, `import … from '@siampiwat/datagrid'` (also `/plain`, `/style.css`,
+  `/agent-guide`). `npm pack` and the release files are now `siampiwat-datagrid-<version>.tgz` / `.zip`. `package.json` gains `repository`, `homepage`, `bugs`,
+  `publishConfig.access: public` and the `jsdelivr` / `unpkg` default file (`dist/datagrid.js`), so `cdn.jsdelivr.net/npm/@siampiwat/datagrid@<version>` works
+  once published; the browser examples in the README and on the landing page use that URL.
+- Install examples use the GitHub Release URL of the tarball (`github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz`) instead of the
+  `your-host` placeholder; it works once the release exists (`gh release create v1.0.1 release/*`).
+- The repository is `banpotej/siampiwat-datagrid` (was `banpotej/datagrid`), matching the package name; GitHub redirects the old URL. `package.json`, the install
+  examples and `backup.ps1` follow.
+- Version 1.0.1 (`package.json`, `package-lock.json`, install examples in the README and the landing page).
+
+### Added
+
+- Packaging: `docs/AGENT_GUIDE.md`, a guide for AI coding agents that use the package (install, React / Next.js recipe, columns, options by job,
+  events, escaping and other rules, a hand-back checklist). It ships in the package (`files`, and `datagrid/agent-guide` in `exports`); `docs/API.md`
+  and `CHANGELOG.md` now ship too. A unit test keeps the guide in step with the public exports.
+- Packaging: `npm run pack:release` (`pack.ps1`, PowerShell) builds `release\datagrid-<version>.tgz` (the npm package) and `release\datagrid-<version>.zip` (the same
+  package unzipped, for use without npm) as two separate files, plus `release\SHA256SUMS.txt`.
+- Packaging: the row details modal is now part of the library as `showDetails(row, columns, options)` (exported from `datagrid`), with its styles in
+  the bundled CSS (`.dg-details*`, moved from the example's `dialogs.css`). `options`: `root`, `title`, `groups`, `wide`, `labels`, `locale`; it returns a
+  function that closes the modal. New `labels.details` (Thai in `thaiLabels`); values are set as text, never HTML; date, boolean and badge columns are
+  formatted like the grid. `examples/dialogs.js` keeps only the example's cancel confirmation.
+- Packaging: the package entry (`datagrid`, `exports["."]`, `main`, `module`) is now `dist/datagrid.styled.js` / `.cjs`, which import `datagrid.css` before
+  re-exporting `datagrid.js`, so a bundler (Vite, webpack, Next.js) includes the stylesheet without `import 'datagrid/style.css'` (still works). Plain
+  JS without the stylesheet: `datagrid/plain`. `dist/datagrid.js` and `dist/datagrid.css` are unchanged, so loading them by URL still works.
+- Freeze columns: `freezeColumns` (a whole number, 0 or more; anything else throws a `RangeError`) keeps the first columns in place while the table
+  scrolls sideways. Their header and body cells get `dg-frozen` (`position: sticky`, offset by the widths before them through `--dgi-freeze-start`)
+  and the last one `dg-frozen-last` for its edge line; one column always stays free, group header rows are left alone, and the offsets are measured
+  again after each render, column resize and table resize. `freezeColumnsToggle` adds a "Frozen columns" select to the settings modal,
+  `freezeColumnsStorageKey` remembers the choice (`datagrid:freezeColumns:<name>`). New `labels.freezeColumns` and `freezeColumnsNone` (Thai in
+  `thaiLabels`); `resetView()` does not touch it. The Purchase Order example offers the select.
 - Example only: the example pages now live in the repo root so the dev server serves them at `/` (intro), `/purchase-order.html` and `/goods-receipt.html` instead of under `/examples/`; scripts, styles and mock data stay in `examples/`. `index.html` is a list of examples, a Goods Receipt example was added, and every page has a shared nav (`examples/nav.js`). No `src/` change.
 - Row grouping: `groupBy` (data column keys, outermost first) groups the rows, with a collapsible header row per group (`tr.dg-group-row`,
   `button.dg-group-toggle` with `aria-expanded`) that shows the column's cell for the value and how many of its rows are on the page. Rows are put

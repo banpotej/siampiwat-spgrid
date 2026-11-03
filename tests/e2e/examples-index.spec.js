@@ -34,34 +34,37 @@ test('the nav is on every example page, marks the current one, and leads home', 
 test('landing page explains how to install the package', async ({ page }) => {
   await page.goto('/index.html');
   const install = page.getByRole('region', { name: 'การติดตั้ง' });
-  await expect(install.locator('code').first()).toHaveText('npm install datagrid');
-  await expect(install).toContainText("import 'datagrid/style.css'");
+  await expect(install.locator('code').first()).toHaveText('npm install @siampiwat/datagrid');
+  await expect(install).toContainText('datagrid/plain');
   await expect(install).toContainText('npm pack');
 });
 
 test('the install section offers the packed tarball for download when it exists', async ({
   page,
 }) => {
-  await page.route('**/datagrid-*.tgz', (route) =>
+  await page.route('**/*datagrid-*.tgz', (route) =>
     route.fulfill({ status: 200, contentType: 'application/gzip', body: 'x' }),
   );
   await page.goto('/index.html');
-  const link = page.getByRole('link', { name: /ดาวน์โหลด datagrid-.*\.tgz/ });
-  await expect(link).toHaveAttribute('href', /^\/datagrid-\d+\.\d+\.\d+.*\.tgz$/);
+  const link = page.getByRole('link', { name: /ดาวน์โหลด siampiwat-datagrid-.*\.tgz/ });
+  await expect(link).toHaveAttribute(
+    'href',
+    /^\/release\/siampiwat-datagrid-\d+\.\d+\.\d+.*\.tgz$/,
+  );
   await expect(link).toHaveAttribute('download', /\.tgz$/);
   await expect(link).not.toHaveAttribute('aria-disabled', 'true');
 });
 
 test('the download link says so when the tarball has not been packed yet', async ({ page }) => {
-  await page.route('**/datagrid-*.tgz', (route) =>
+  await page.route('**/*datagrid-*.tgz', (route) =>
     route.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }),
   );
   await page.goto('/index.html');
-  await expect(page.getByRole('link', { name: /datagrid-.*.tgz/ })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: /siampiwat-datagrid-.*.tgz/ })).toHaveAttribute(
     'aria-disabled',
     'true',
   );
-  await expect(page.locator('.download-note').first()).toContainText('npm pack');
+  await expect(page.locator('.download-note').first()).toContainText('pack:release');
 });
 
 test('dist files can be downloaded, and a missing one is marked', async ({ page }) => {
@@ -81,5 +84,26 @@ test('dist files can be downloaded, and a missing one is marked', async ({ page 
     'aria-disabled',
     'true',
   );
-  await expect(page.locator('.download-note').nth(1)).toContainText('npm run build');
+  await expect(page.locator('.download-note').nth(2)).toContainText('npm run build');
+});
+
+test('the install section offers the zip, and says how to build it when it is missing', async ({
+  page,
+}) => {
+  await page.route('**/release/*datagrid-*.zip', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/zip', body: 'PK' }),
+  );
+  await page.goto('/index.html');
+  const zip = page.getByRole('link', { name: /siampiwat-datagrid-1\.0\.1\.zip/ });
+  await expect(zip).toHaveAttribute('href', '/release/siampiwat-datagrid-1.0.1.zip');
+  await expect(zip).toHaveAttribute('download', 'siampiwat-datagrid-1.0.1.zip');
+  await expect(zip).not.toHaveAttribute('aria-disabled', 'true');
+
+  await page.unroute('**/release/*datagrid-*.zip');
+  await page.route('**/release/*datagrid-*.zip', (route) =>
+    route.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }),
+  );
+  await page.reload();
+  await expect(zip).toHaveAttribute('aria-disabled', 'true');
+  await expect(zip.locator('xpath=..').locator('.download-note')).toContainText('pack:release');
 });

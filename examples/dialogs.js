@@ -44,86 +44,12 @@ export function openModal(box, { role = 'dialog', labelledBy, describedBy, focus
   return close;
 }
 
-const formatValue = (value, type) => {
-  if (value === null || value === undefined || value === '') return '-';
-  if (type === 'date') return new Date(value).toLocaleDateString('th-TH');
-  if (type === 'boolean') return value ? 'ใช่' : 'ไม่ใช่';
-  return String(value);
-};
-
 const el = (tag, className, text) => {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text; // textContent: never parsed as HTML
   return node;
 };
-
-const badge = (tone, text) => el('span', `dg-badge dg-badge-${tone}`, text);
-
-const GROUPS = [
-  ['เอกสาร', ['rfqNumber', 'description', 'purchasingType', 'creationType', 'companyCode']],
-  ['กำหนดการ', ['submittedDate', 'deliveryDate', 'deliveryComplete']],
-  ['ผู้เกี่ยวข้อง', ['vendor', 'creator', 'recipient', 'claimer', 'cancelBy']],
-];
-
-/** One label/value pair of the details sheet. */
-function detailItem(col, row) {
-  const text = formatValue(row[col.key], col.type);
-  const item = el('div', col.key === 'description' ? 'wide' : '');
-  const dd = el('dd', text === '-' ? 'empty' : '');
-  const tone = col.type === 'badge' ? col.badges?.[row[col.key]]?.tone : undefined;
-  if (tone) dd.append(badge(tone, text));
-  else dd.textContent = text;
-  item.append(el('dt', '', col.label), dd);
-  return item;
-}
-
-/**
- * Row details: a tinted header (title + status), then the facts in groups.
- * Defaults describe a PO; other examples pass their own `title` and `groups`.
- *
- * @param {Record<string, any>} row
- * @param {any[]} columns
- * @param {{ title?: (row: any) => string, groups?: [string, string[]][] }} [options]
- */
-export function showDetails(
-  row,
-  columns,
-  { title: titleOf = (r) => r.poNumber, groups = GROUPS } = {},
-) {
-  const box = el('div', 'dg-modal-box details');
-
-  const title = el('h2', 'dg-modal-title');
-  title.id = 'details-title';
-  const sub = el('span', 'details-sub');
-  const tone = columns.find((c) => c.key === 'status')?.badges?.[row.status]?.tone;
-  if (tone) sub.append(badge(tone, formatValue(row.status, 'badge')));
-  title.append(el('span', 'details-eyebrow', 'รายละเอียด'), titleOf(row), sub);
-
-  const close = el('button', 'dg-modal-x');
-  close.type = 'button';
-  close.setAttribute('aria-label', 'ปิด');
-  close.innerHTML =
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-
-  const body = el('div', 'details-body');
-  for (const [heading, keys] of groups) {
-    const list = el('dl');
-    for (const key of keys) {
-      const col = columns.find((c) => c.key === key);
-      if (col) list.append(detailItem(col, row));
-    }
-    const section = el('section', 'details-group');
-    section.append(el('h3', '', heading), list);
-    body.append(section);
-  }
-
-  const head = el('div', 'details-head');
-  head.append(title);
-  box.append(close, head, body); // the button is positioned over the corner; first in tab order
-  const closeModal = openModal(box, { labelledBy: 'details-title', focus: close });
-  close.addEventListener('click', closeModal);
-}
 
 /** Ask before cancelling a PO; resolves true only on the red button. */
 export function confirmCancel(row) {

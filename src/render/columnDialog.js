@@ -22,6 +22,7 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {SortState} [sort] The sort; left out when the grid has no sortable column.
  * @property {ViewFlags} [view] The look switches; a switch is shown only when its flag is given.
  * @property {string[]} [groupBy] The group columns, outermost first; the grouping section is shown only when this is given.
+ * @property {number} [freezeMax] The most columns the frozen columns select offers (one less than the columns); needs `view.freezeColumns`.
  */
 
 /**
@@ -50,6 +51,8 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * @property {Record<import('../types.js').GridLines, string>} gridLinesOptions Text of each mode.
  * @property {string} lineStyle Label of the line style select.
  * @property {Record<import('../types.js').LineStyle, string>} lineStyleOptions Text of each style.
+ * @property {string} freezeColumns Label of the frozen columns select.
+ * @property {string} freezeColumnsNone Text of its 0 option (the others read as the number).
  * @property {string} reset Text of the reset button (shown when `onReset` is given).
  */
 
@@ -100,16 +103,25 @@ export function openColumnDialog(
     current.view?.[flag] === undefined
       ? ''
       : `<label class="dg-settings-switch"><span>${escapeHtml(text)}</span><input type="checkbox" role="switch" data-flag="${flag}"></label>`;
-  /** @param {'gridLines' | 'lineStyle'} name @param {string} text @param {readonly string[]} values @param {Record<string, string>} texts */
+  /** @param {'gridLines' | 'lineStyle' | 'freezeColumns'} name @param {string} text @param {readonly string[]} values @param {Record<string, string>} texts */
   const choiceRow = (name, text, values, texts) =>
     current.view?.[name] === undefined
       ? ''
       : `<label class="dg-settings-field"><span>${escapeHtml(text)}</span><select data-choice="${name}">${values.map((value) => `<option value="${value}">${escapeHtml(texts[value])}</option>`).join('')}</select></label>`;
+  // 0 .. the most columns that can be frozen (the current count too, when it was set higher from code).
+  const freezeValues = Array.from(
+    { length: Math.max(current.freezeMax ?? 0, current.view?.freezeColumns ?? 0) + 1 },
+    (_, i) => String(i),
+  );
+  const freezeTexts = Object.fromEntries(
+    freezeValues.map((value) => [value, value === '0' ? labels.freezeColumnsNone : value]),
+  );
   const viewRows =
     switchRow('striped', labels.stripedRows) +
     switchRow('wrapped', labels.textWrap) +
     choiceRow('gridLines', labels.gridLines, GRID_LINES, labels.gridLinesOptions) +
-    choiceRow('lineStyle', labels.lineStyle, LINE_STYLES, labels.lineStyleOptions);
+    choiceRow('lineStyle', labels.lineStyle, LINE_STYLES, labels.lineStyleOptions) +
+    choiceRow('freezeColumns', labels.freezeColumns, freezeValues, freezeTexts);
   const viewSection = viewRows ? `<section>${heading(labels.display)}${viewRows}</section>` : '';
   const sortable = columns.filter((c) => c.sortable === true);
   /** @param {string} text @param {string} control */
@@ -169,8 +181,8 @@ export function openColumnDialog(
     (el) => /** @type {HTMLSelectElement} */ (el),
   );
   for (const select of choices) {
-    select.value =
-      current.view?.[/** @type {'gridLines' | 'lineStyle'} */ (select.dataset.choice)] ?? 'default';
+    const name = /** @type {'gridLines' | 'lineStyle' | 'freezeColumns'} */ (select.dataset.choice);
+    select.value = String(current.view?.[name] ?? (name === 'freezeColumns' ? 0 : 'default'));
   }
   const sortKey = /** @type {HTMLSelectElement | null} */ (
     overlay.querySelector('.dg-settings-sort-key')
@@ -208,7 +220,10 @@ export function openColumnDialog(
     if (switches.length > 0 || choices.length > 0) {
       result.view = Object.fromEntries([
         ...switches.map((input) => [input.dataset.flag, input.checked]),
-        ...choices.map((select) => [select.dataset.choice, select.value]),
+        ...choices.map((select) => [
+          select.dataset.choice,
+          select.dataset.choice === 'freezeColumns' ? Number(select.value) : select.value,
+        ]),
       ]);
     }
     if (groups.length > 0) result.groupBy = readGroupSelects(groups);

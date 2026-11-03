@@ -1,28 +1,47 @@
 {
-  "name": "datagrid",
-  "version": "0.0.0",
+  "name": "@siampiwat/datagrid",
+  "version": "1.0.1",
   "description": "Reusable vanilla JS DataGrid",
+  "homepage": "https://github.com/banpotej/siampiwat-datagrid#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/banpotej/siampiwat-datagrid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/banpotej/siampiwat-datagrid/issues"
+  },
   "type": "module",
-  "main": "./dist/datagrid.cjs",
-  "module": "./dist/datagrid.js",
+  "main": "./dist/datagrid.styled.cjs",
+  "module": "./dist/datagrid.styled.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
+      "import": "./dist/datagrid.styled.js",
+      "require": "./dist/datagrid.styled.cjs"
+    },
+    "./plain": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/datagrid.js",
       "require": "./dist/datagrid.cjs"
     },
-    "./style.css": "./dist/datagrid.css"
+    "./style.css": "./dist/datagrid.css",
+    "./agent-guide": "./docs/AGENT_GUIDE.md"
   },
   "files": [
     "dist",
+    "docs/API.md",
+    "docs/AGENT_GUIDE.md",
+    "CHANGELOG.md",
     "NOTICE"
   ],
   "engines": {
     "node": ">=22"
   },
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "./dist/datagrid.styled.js",
+    "./dist/datagrid.styled.cjs"
   ],
   "scripts": {
     "dev": "vite --open /",
@@ -33,7 +52,8 @@
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run test:e2e"
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run test:e2e",
+    "pack:release": "powershell -NoProfile -ExecutionPolicy Bypass -File pack.ps1"
   },
   "keywords": [],
   "author": "",
@@ -50,5 +70,10 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "jsdelivr": "dist/datagrid.js",
+  "unpkg": "dist/datagrid.js",
+  "publishConfig": {
+    "access": "public"
   }
 }

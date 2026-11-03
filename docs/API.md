@@ -65,6 +65,9 @@
 - `options.onGroupByChange?: (groupBy: string[]) => void` – เรียกทุกครั้งที่ชุดคอลัมน์ที่จัดกลุ่มเปลี่ยน (เหมือน `on('groupByChange', fn)`)
 - `options.gridLinesToggle?: boolean` – เพิ่ม select "Grid lines" (`<select class="dg-settings-lines-select">` ข้อความจาก `labels.gridLines`) ในหัวข้อ "Display" ของ modal Settings เพื่อให้ผู้ใช้เลือกโหมดเอง (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.gridLinesStorageKey?: string` – จำโหมดเส้นไว้ใน `localStorage` ภายใต้ `datagrid:gridLines:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `gridLines`/`bordered` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่โหมดหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
+- `options.freezeColumns?: number` – จำนวนคอลัมน์ที่ตรึงไว้ นับจากคอลัมน์ซ้ายสุดของคอลัมน์ที่แสดงอยู่ คอลัมน์เหล่านี้ไม่เลื่อนตามเมื่อเลื่อนตารางไปทางข้าง (เซลล์ได้ class `dg-frozen`) พื้นที่ตารางต้องเลื่อนได้ (ตั้ง `maxHeight` หรือให้ `.dg-table-wrap` เป็น `overflow-x: auto`) และจะเหลือคอลัมน์ที่ไม่ตรึงอย่างน้อย 1 คอลัมน์เสมอ (ค่าเริ่มต้น `0`; ค่าที่ไม่ใช่จำนวนเต็มตั้งแต่ 0 ขึ้นไปโยน `RangeError`) ดู [Freeze columns](#freeze-columns)
+- `options.freezeColumnsToggle?: boolean` – เพิ่ม select "Frozen columns" (`<select data-choice="freezeColumns">` ตัวเลือก ไม่ตรึง, 1, 2 … ข้อความจาก `labels.freezeColumns`) ในหัวข้อ "Display" ของ modal Settings (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
+- `options.freezeColumnsStorageKey?: string` – จำจำนวนคอลัมน์ที่ตรึงไว้ใน `localStorage` ภายใต้ `datagrid:freezeColumns:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `freezeColumns` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่จำนวนเต็มตั้งแต่ 0 ขึ้นไปหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
 - `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
 - `options.stickyHeader?: boolean` – ให้หัวตารางค้างด้านบนเมื่อเลื่อน
 - `options.maxHeight?: number | string` – ความสูงสูงสุดของพื้นที่ตาราง (ตัวเลข = px หรือความยาว CSS เช่น `'20rem'`)
@@ -98,6 +101,8 @@
   | `lineStyle`                                                        | ข้อความของ select `lineStyleToggle`                                                  | `'Line style'`                                                                |
   | `lineStyleDefault` / `lineStyleSolid` / `lineStyleDashed` / `lineStyleDotted` | ข้อความของแต่ละประเภทใน select นั้น                                              | `'Default'` / `'Solid'` / `'Dashed'` / `'Dotted'`                             |
   | `gridLinesDefault` / `gridLinesHorizontal` / `gridLinesVertical` / `gridLinesBoth` / `gridLinesNone` | ข้อความของแต่ละโหมดใน select นั้น                          | `'Default'` / `'Horizontal'` / `'Vertical'` / `'Both'` / `'None'`             |
+  | `freezeColumns`                                                    | ข้อความของ select `freezeColumnsToggle`                                              | `'Frozen columns'`                                                            |
+  | `freezeColumnsNone`                                                | ข้อความของตัวเลือก 0 (ไม่ตรึง) ใน select นั้น (ตัวเลือกอื่นเป็นตัวเลข)                | `'None'`                                                                      |
   | `confirmOk`                                                        | ปุ่มยืนยันใน modal ของ Reset view                                                    | `'Reset'`                                                                     |
   | `cancel`                                                           | ปุ่มยกเลิกใน modal ของ Reset view                                                    | `'Cancel'`                                                                    |
   | `removeFilter`                                                     | ฟังก์ชัน `(text) => string` aria-label ของปุ่มลบบนชิปตัวกรอง (`filterSummary`)       | `` `Remove filter ${text}` ``                                                 |
@@ -113,7 +118,7 @@
 
 ค่าในเซลล์จะถูก HTML-escape
 
-ภาษาไทย: `import { DataGrid, thaiLabels } from 'datagrid'` แล้วส่ง `labels: thaiLabels` (แก้บางข้อความได้ด้วย
+ภาษาไทย: `import { DataGrid, thaiLabels } from '@siampiwat/datagrid'` แล้วส่ง `labels: thaiLabels` (แก้บางข้อความได้ด้วย
 `labels: { ...thaiLabels, empty: '…' }`) การเรียงและการค้นหาใช้ locale `'th'` เป็นค่าเริ่มต้นอยู่แล้ว
 
 ### Columns
@@ -139,7 +144,7 @@
 (ใช้ `escapeHtml` ที่ export จาก `datagrid`) ถ้าไม่ได้ตั้ง `render` ค่าเซลล์จะถูก `escapeHtml` ให้เสมอ ผลลัพธ์ `null`/`undefined` = เซลล์ว่าง
 
 ```js
-import { DataGrid, escapeHtml } from 'datagrid';
+import { DataGrid, escapeHtml } from '@siampiwat/datagrid';
 { key: 'po', render: (v) => `<a href="#" data-cell-action="open">${escapeHtml(v)}</a>` }
 ```
 
@@ -266,6 +271,28 @@ new DataGrid(el, {
   lineStyle: 'solid',
   lineStyleToggle: true,
   lineStyleStorageKey: 'orders',
+});
+```
+
+### Freeze columns
+
+`freezeColumns: n` ตรึง `n` คอลัมน์แรก (นับจากซ้ายสุดของคอลัมน์ที่แสดงอยู่ ตามลำดับที่แสดง รวมคอลัมน์ action) ให้อยู่กับที่เมื่อเลื่อนตารางไปทางข้าง
+
+- เซลล์หัวและเซลล์ในแถวของคอลัมน์ที่ตรึงได้ class `dg-frozen` และ `position: sticky` โดยระยะจากขอบเริ่มต้นคือผลรวมความกว้างของคอลัมน์ก่อนหน้า (ตั้งผ่าน CSSOM เป็น `--dgi-freeze-start`) คอลัมน์ที่ตรึงสุดท้ายได้ `dg-frozen-last` เพื่อวาดเส้นขอบด้านขวา แถวหัวกลุ่มของ `groupBy` ไม่ถูกตรึง
+- ระยะคำนวณใหม่ทุกครั้งที่ตารางวาดใหม่ เปลี่ยนความกว้างคอลัมน์ (`resizableColumns`) หรือขนาดตารางเปลี่ยน (ถ้าเบราว์เซอร์มี `ResizeObserver`)
+- พื้นที่ตารางต้องเลื่อนไปทางข้างได้เอง: `.dg-table-wrap` เป็น `overflow: clip` ตามค่าเริ่มต้น ให้ตั้ง `maxHeight` (พื้นที่จะเลื่อนได้) หรือกำหนด `overflow-x: auto` ให้ `.dg-table-wrap`
+- ใส่ได้ไม่เกินจำนวนคอลัมน์ลบ 1: ค่าที่มากกว่านั้นถูกลดลง เพราะต้องเหลือคอลัมน์ที่เลื่อนได้อย่างน้อยหนึ่งคอลัมน์
+- ตั้ง `freezeColumnsToggle: true` เพื่อให้ผู้ใช้เลือกจำนวนใน modal Settings (ตัวเลือก 0 ถึงจำนวนคอลัมน์ลบ 1) และ `freezeColumnsStorageKey` เพื่อจำตัวเลือก
+  ข้อความมาจาก `labels.freezeColumns` และ `labels.freezeColumnsNone` (มีภาษาไทยใน `thaiLabels`)
+
+```js
+new DataGrid(el, {
+  columns,
+  rows,
+  maxHeight: 400,
+  freezeColumns: 1,
+  freezeColumnsToggle: true,
+  freezeColumnsStorageKey: 'orders',
 });
 ```
 
@@ -510,4 +537,30 @@ new DataGrid(el, { columns, icons: { search: '<svg viewBox="0 0 24 24">…</svg>
 
 Escape อักขระ `& < > " '`; ค่า `null`/`undefined` จะกลายเป็น `''`
 
-นำเข้าสไตล์ด้วย `import 'datagrid/style.css'`
+นำเข้าสไตล์: `import { DataGrid } from '@siampiwat/datagrid'` ดึง CSS มาด้วยเองผ่าน bundler (Vite, webpack, Next.js) ส่วน `import '@siampiwat/datagrid/style.css'` ยังใช้ได้ และ `@siampiwat/datagrid/plain` คือ JS ล้วนไม่มี CSS
+(`dist/datagrid.js` กับ `dist/datagrid.css` ที่โหลดผ่าน URL ไม่เปลี่ยน)
+
+## `showDetails(row, columns, options?)`
+
+เปิด modal รายละเอียดของแถว (หัวสีอ่อนแสดงชื่อเรื่องและ badge `status` แล้วตามด้วยข้อมูลเป็นกลุ่ม) ใช้ look เดียวกับ modal อื่นของกริด เรียกจาก `onRowActivate` หรือ `onAction` ค่าทุกตัวถูกใส่เป็นข้อความ ไม่ถูกตีความเป็น HTML คืนฟังก์ชันที่ปิด modal
+
+```js
+import { DataGrid, showDetails } from '@siampiwat/datagrid';
+
+const container = document.querySelector('#app');
+new DataGrid(container, {
+  columns,
+  rows,
+  onRowActivate: ({ row }) => showDetails(row, columns, { root: container, title: (r) => r.poNumber }),
+});
+```
+
+- `row` – แถวข้อมูล; `columns` – คอลัมน์ของกริด (ข้ามคอลัมน์ action)
+- `options.root?: HTMLElement` – container ของกริดหรือ `.dg-root` เพื่อให้ modal ได้ธีมของกริดนั้น (ค่าเริ่มต้น `.dg-root` แรกในหน้า ไม่มีก็ใช้ `document.body`)
+- `options.title?: (row) => string` – หัวเรื่อง (ค่าเริ่มต้น ค่าของคอลัมน์ข้อมูลแรก)
+- `options.groups?: [heading, keys[]][]` – ส่วนต่างๆ เรียงตามลำดับ heading ว่างได้ (ค่าเริ่มต้น ส่วนเดียวที่มีทุกคอลัมน์ข้อมูล) key ที่ไม่มีคอลัมน์จะถูกข้าม
+- `options.wide?: string[]` – key ของคอลัมน์ที่ค่าเต็มบรรทัด (ค่าเริ่มต้น ไม่มี)
+- `options.labels?: Labels` – ข้อความ `details` (หัวเล็กเหนือชื่อเรื่อง), `close`, `yes`, `no` (`thaiLabels` มีภาษาไทย)
+- `options.locale?: string` – locale ของคอลัมน์ `date` (ค่าเริ่มต้นของเบราว์เซอร์)
+- ค่าว่างแสดงเป็น `-`; คอลัมน์ `boolean` แสดง `labels.yes`/`labels.no`; `badge` แสดงเป็น badge ตาม `badges[value]`
+- Esc, คลิกพื้นหลัง และปุ่มปิดจะปิด modal, Tab วนอยู่ใน modal และโฟกัสกลับไปที่เดิม; ชนิด `DetailsOptions` export จาก `datagrid`

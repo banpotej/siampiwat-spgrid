@@ -242,6 +242,14 @@
  *   Default false.
  * @property {string} [gridLinesStorageKey] Remember the grid lines choice in `localStorage` under this name (stored as
  *   `datagrid:gridLines:<name>`) and restore it next time, ahead of `gridLines`/`bordered`. Default: not remembered.
+ * @property {number} [freezeColumns] How many columns, counted from the start (left) edge of the shown columns, stay in
+ *   place while the table scrolls sideways (`dg-frozen`). The table area must scroll: `maxHeight` makes it, or give
+ *   `.dg-table-wrap` `overflow-x: auto`. One column always stays free. Default 0 (`freezeColumnsStorageKey` can
+ *   override it). Anything but a whole number, 0 or more, throws a `RangeError`.
+ * @property {boolean} [freezeColumnsToggle] Add a "Frozen columns" select (0, 1, 2 …) to the settings modal so the user
+ *   can pick how many. Default false.
+ * @property {string} [freezeColumnsStorageKey] Remember the frozen column count in `localStorage` under this name (stored
+ *   as `datagrid:freezeColumns:<name>`) and restore it next time, ahead of `freezeColumns`. Default: not remembered.
  * @property {'compact' | 'comfortable'} [density] Cell padding; default 'comfortable'.
  * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
  * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);

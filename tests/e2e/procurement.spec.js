@@ -127,7 +127,7 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
 
   await row.getByRole('button', { name: 'View' }).click();
   await expect(modal.getByRole('dialog')).toContainText(po ?? '');
-  await expect(modal.locator('.details-head .dg-badge')).toBeVisible(); // the status sits in the header
+  await expect(modal.locator('.dg-details-head .dg-badge')).toBeVisible(); // the status sits in the header
   for (const name of ['รายละเอียด', 'ชื่อผู้ค้า']) {
     await expect(modal.locator('dt', { hasText: name })).toHaveCount(1);
   }

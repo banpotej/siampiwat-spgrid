@@ -103,3 +103,48 @@
 .dg-table th.dg-drop-after::before {
   inset-inline-end: 0;
 }
+
+/* freezeColumns: the first columns stay put while the table scrolls sideways. A sticky cell needs a solid background
+   (the row's stripe or hover tint is layered over the page colour), and sits above the cells that slide under it. */
+.dg-root .dg-table th.dg-frozen,
+.dg-root .dg-table td.dg-frozen {
+  position: sticky;
+  inset-inline-start: var(--dgi-freeze-start, 0);
+  z-index: 1;
+  background-color: var(--dgi-bg);
+}
+
+.dg-root .dg-table th.dg-frozen {
+  z-index: 3; /* above the other header cells (a sticky header) and the body's frozen cells */
+  background-color: color-mix(in srgb, var(--dgi-header-bg) 45%, var(--dgi-bg));
+}
+
+.dg-striped .dg-table tbody tr:nth-child(even) td.dg-frozen {
+  background-image: linear-gradient(var(--dgi-stripe-bg), var(--dgi-stripe-bg));
+}
+
+.dg-table tbody tr:not(.dg-empty):hover td.dg-frozen {
+  background-image: linear-gradient(var(--dgi-hover-bg), var(--dgi-hover-bg));
+}
+
+/* A line on the far edge of the last frozen column, so it reads as the edge of the frozen block. */
+.dg-root .dg-table .dg-frozen-last {
+  box-shadow: 1px 0 0 var(--dgi-border);
+}
+
+.dg-root.dg-sticky .dg-table th.dg-frozen-last {
+  box-shadow:
+    1px 0 0 var(--dgi-border),
+    0 3px 3px -3px rgb(0 0 0 / 0.15);
+}
+
+@media (forced-colors: active) {
+  .dg-root .dg-table th.dg-frozen,
+  .dg-root .dg-table td.dg-frozen {
+    background-color: Canvas;
+  }
+
+  .dg-root .dg-table .dg-frozen-last {
+    box-shadow: 1px 0 0 CanvasText;
+  }
+}

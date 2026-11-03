@@ -7,40 +7,55 @@ Reusable vanilla JS DataGrid. Zero runtime dependencies, ES modules only.
 Requirements: Node.js 22 or newer and a bundler that handles ES modules (Vite, webpack, ...).
 
 ```sh
-npm install datagrid
+npm install @siampiwat/datagrid
 ```
 
 The package is not published to a registry yet. Until it is, install it from a URL or a file:
 
 ```sh
-# a .tgz hosted anywhere (GitHub Releases, S3, ...) - made by `npm run build && npm pack`
-npm install https://your-host/datagrid-0.0.0.tgz
+# the .tgz attached to the GitHub Release (a private repo needs a token) - made by `npm run pack:release`
+npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz
 
 # a git URL: npm runs the `prepare` script, so the package builds itself on install (git required)
-npm install github:banpotej/datagrid
-npm install github:banpotej/datagrid#main   # a branch or tag
+npm install github:banpotej/siampiwat-datagrid
+npm install github:banpotej/siampiwat-datagrid#main   # a branch or tag
 
 # a local tarball
 npm install                # in this repo
 npm run build
-npm pack                   # creates datagrid-0.0.0.tgz
-npm install ../datagrid/datagrid-0.0.0.tgz   # in your project
+npm pack                   # creates siampiwat-datagrid-1.0.1.tgz
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz   # in your project
 ```
 
-Import the stylesheet once (`import 'datagrid/style.css'`). The grid touches the DOM, so create it in the browser
+`import { DataGrid } from '@siampiwat/datagrid'` brings the stylesheet in too (through your bundler); `@siampiwat/datagrid/style.css` is still exported, and
+`@siampiwat/datagrid/plain` is the JS alone. The grid touches the DOM, so create it in the browser
 only: in React or Next.js do it in `useEffect` of a client component and call `grid.destroy()` on unmount.
+
+### Release files (.tgz and .zip)
+
+`npm run pack:release` (PowerShell; runs `npm run check` first, or call `.\pack.ps1 -SkipCheck`) writes three files to `release\`:
+
+- `siampiwat-datagrid-<version>.tgz` – the npm package: `npm install .\release\siampiwat-datagrid-<version>.tgz`
+- `siampiwat-datagrid-<version>.zip` – the same package unzipped, for people without npm: use `dist\datagrid.js` and `dist\datagrid.css`
+- `SHA256SUMS.txt` – checksums of both
+
+### For AI coding agents
+
+[docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) tells an agent how to use the package correctly (setup, React / Next.js, columns, options,
+escaping rules, mistakes to avoid). It ships in the package: `node_modules/@siampiwat/datagrid/docs/AGENT_GUIDE.md`, or `@siampiwat/datagrid/agent-guide`.
+Point your agent at it from `AGENTS.md` / `CLAUDE.md`.
 
 ### From a URL in the browser (no npm)
 
 `dist/datagrid.js` is a self-contained ES module (no imports, no dependencies), so a page can load it from any URL.
-Host `dist/datagrid.js` and `dist/datagrid.css` on a static host or CDN (jsDelivr and unpkg serve npm packages
-once this one is published, e.g. `https://cdn.jsdelivr.net/npm/datagrid@0.0.0/dist/datagrid.js`):
+Once the package is on npm, jsDelivr and unpkg serve it (pin the version, not `@latest`); or host `dist/datagrid.js` and
+`dist/datagrid.css` yourself on any static host:
 
 ```html
-<link rel="stylesheet" href="https://your-host/datagrid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.css" />
 <div id="app"></div>
 <script type="module">
-  import { DataGrid } from 'https://your-host/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',
@@ -56,8 +71,7 @@ once this one is published, e.g. `https://cdn.jsdelivr.net/npm/datagrid@0.0.0/di
 ## Usage
 
 ```js
-import { DataGrid } from 'datagrid';
-import 'datagrid/style.css';
+import { DataGrid } from '@siampiwat/datagrid'; // the stylesheet comes with it
 
 const grid = new DataGrid(document.querySelector('#app'), {
   columns: [{ key: 'id', label: 'ID' }, { key: 'name' }],

@@ -72,15 +72,22 @@ export function bindGridControls(grid, shell, options, labels, host) {
           dashed: labels.lineStyleDashed,
           dotted: labels.lineStyleDotted,
         },
+        freezeColumns: labels.freezeColumns,
+        freezeColumnsNone: labels.freezeColumnsNone,
         reset: labels.resetView,
       },
       getState: () => ({
         ...(shell.pickerColumns && { hidden: grid.getHiddenColumns(), sort: grid.getSort() }),
         view: shell.view?.get(),
         ...(options.groupByToggle === true && { groupBy: grid.getGroupBy() }),
+        ...(options.freezeColumnsToggle === true && {
+          freezeMax: grid.getColumnOrder().length - 1,
+        }),
       }),
       onApply: ({ hidden, sort, view, groupBy }) => {
+        const frozen = shell.view?.get().freezeColumns;
         if (view) shell.view?.apply(view);
+        if (shell.view?.get().freezeColumns !== frozen) grid.render();
         if (hidden !== undefined) grid.setHiddenColumns(hidden);
         if (sort !== undefined) grid.setSort(sort);
         if (groupBy !== undefined) grid.setGroupBy(groupBy);

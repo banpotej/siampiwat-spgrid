@@ -1,6 +1,6 @@
-import { DataGrid, thaiLabels } from '/src/index.js';
+import { DataGrid, showDetails, thaiLabels } from '/src/index.js';
 import { createPurchaseOrders } from '/examples/mock/purchaseOrders.js';
-import { confirmCancel, showDetails } from '/examples/dialogs.js';
+import { confirmCancel } from '/examples/dialogs.js';
 
 // Dates stay Date objects and deliveryComplete stays a boolean: the column types format them.
 const rows = createPurchaseOrders().map((po) => ({
@@ -75,13 +75,27 @@ const columns = [
 
 const log = document.getElementById('log');
 
+// The details sheet (showDetails is part of the library): the title and the sections of the columns it lists.
+const details = {
+  root: document.getElementById('grid'),
+  labels: thaiLabels,
+  locale: 'th-TH',
+  title: (row) => row.poNumber,
+  wide: ['description'],
+  groups: [
+    ['เอกสาร', ['rfqNumber', 'description', 'purchasingType', 'creationType', 'companyCode']],
+    ['กำหนดการ', ['submittedDate', 'deliveryDate', 'deliveryComplete']],
+    ['ผู้เกี่ยวข้อง', ['vendor', 'creator', 'recipient', 'claimer', 'cancelBy']],
+  ],
+};
+
 const grid = new DataGrid(document.getElementById('grid'), {
   rowKey: 'id',
   // Double-click a row, or Enter on a focused row, shows its details (the same as its eye button).
-  onRowActivate: ({ row }) => showDetails(row, columns),
+  onRowActivate: ({ row }) => showDetails(row, columns, details),
   title: 'รายการใบสั่งซื้อ',
   onAction: async ({ action, row }) => {
-    if (action === 'view') return showDetails(row, columns);
+    if (action === 'view') return showDetails(row, columns, details);
     if (!(await confirmCancel(row))) return;
     log.textContent = `${action} ${row.poNumber}`; // textContent: never parsed as HTML
   },
@@ -119,6 +133,8 @@ const grid = new DataGrid(document.getElementById('grid'), {
   groupByStorageKey: 'purchase-orders',
   lineStyleToggle: true,
   lineStyleStorageKey: 'purchase-orders',
+  freezeColumnsToggle: true,
+  freezeColumnsStorageKey: 'purchase-orders',
   density: 'compact',
   labels: thaiLabels,
 });

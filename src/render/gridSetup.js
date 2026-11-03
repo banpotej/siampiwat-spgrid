@@ -3,6 +3,7 @@ import { dataKeys } from '../core/columns.js';
 import { normalizeGroupBy } from '../core/group.js';
 import { assertPageSize } from '../core/paginate.js';
 import { normalizeSort } from '../core/sort.js';
+import { isFreezeCount } from './frozenColumns.js';
 import { GridRenderer } from './gridRenderer.js';
 import { loadGroupBy } from './groupByStore.js';
 import { resolveIcons } from './icons.js';
@@ -16,7 +17,7 @@ import { mountShell } from './toolbar.js';
  * @param {unknown} container
  * @param {import('../types.js').DataGridOptions} options
  * @throws {TypeError} `container` is not an HTMLElement
- * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer, or `gridLines` / `lineStyle` is unknown
+ * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, or `freezeColumns` is not a whole number
  */
 export function assertOptions(container, options) {
   if (!(container instanceof HTMLElement)) {
@@ -29,6 +30,9 @@ export function assertOptions(container, options) {
   }
   if (options.lineStyle !== undefined && !LINE_STYLES.includes(options.lineStyle)) {
     throw new RangeError(`DataGrid: unknown lineStyle "${options.lineStyle}"`);
+  }
+  if (options.freezeColumns !== undefined && !isFreezeCount(options.freezeColumns)) {
+    throw new RangeError(`DataGrid: freezeColumns must be a whole number, 0 or more`);
   }
 }
 

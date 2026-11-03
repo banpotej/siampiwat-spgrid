@@ -1,6 +1,7 @@
 // @ts-check
 export { DataGrid } from './DataGrid.js';
 export { thaiLabels } from './render/labels.js';
+export { showDetails } from './render/detailsModal.js';
 export { escapeHtml } from './utils/escape.js';
 
 /** @typedef {import('./types.js').IconName} IconName */
@@ -12,3 +13,4 @@ export { escapeHtml } from './utils/escape.js';
 /** @typedef {import('./types.js').GridLines} GridLines */
 /** @typedef {import('./types.js').LineStyle} LineStyle */
 /** @typedef {import('./types.js').ExportOptions} ExportOptions */
+/** @typedef {import('./render/detailsModal.js').DetailsOptions} DetailsOptions */

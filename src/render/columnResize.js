@@ -25,6 +25,7 @@ const widthOf = (th) => Math.ceil(th.getBoundingClientRect().width);
 export class ColumnResizer {
   #host;
   #storageKey;
+  #onResize;
   /** @type {Map<string, number> | null} Pixel width per column key; null until the first resize. */
   #widths = null;
   /** @type {{ th: HTMLElement, startX: number, startWidth: number, sign: number } | null} */
@@ -33,10 +34,12 @@ export class ColumnResizer {
   /**
    * @param {HTMLElement} host Element the table is rendered into (it stays, its content is replaced).
    * @param {string} [storageKey] Name to save the widths under; nothing is saved without it.
+   * @param {() => void} [onResize] Called after the widths change, so things placed by them (frozen columns) can move.
    */
-  constructor(host, storageKey) {
+  constructor(host, storageKey, onResize = () => {}) {
     this.#host = host;
     this.#storageKey = storageKey;
+    this.#onResize = onResize;
     const saved = storageKey === undefined ? undefined : readJson(PREFIX + storageKey);
     if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
       const entries = Object.entries(saved).filter(
@@ -102,6 +105,7 @@ export class ColumnResizer {
       total += this.#widths.get(/** @type {HTMLElement} */ (th).dataset.key ?? '') ?? 0;
     }
     table.style.width = `${total}px`;
+    this.#onResize();
   }
 
   /** @param {HTMLElement} th @param {number} px */

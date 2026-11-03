@@ -1,6 +1,5 @@
-import { DataGrid, thaiLabels } from '/src/index.js';
+import { DataGrid, showDetails, thaiLabels } from '/src/index.js';
 import { createGoodsReceipts } from '/examples/mock/goodsReceipts.js';
-import { showDetails } from '/examples/dialogs.js';
 
 // Dates stay Date objects (or null for drafts): the column types format them.
 const rows = createGoodsReceipts();
@@ -47,6 +46,9 @@ const columns = [
 
 // The details sheet: a draft has no GR number yet, so its title falls back to the table id.
 const details = {
+  root: document.getElementById('grid'),
+  labels: thaiLabels,
+  locale: 'th-TH',
   title: (row) => row.grNumber ?? `#${row.id}`,
   groups: [
     ['เอกสาร', ['materialDoc', 'orderNum', 'documentStatus']],

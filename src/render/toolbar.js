@@ -3,6 +3,7 @@ import { isActionColumn } from '../core/columns.js';
 import { escapeHtml } from '../utils/escape.js';
 import { renderColumnPicker } from './columnPicker.js';
 import { renderIcon } from './icons.js';
+import { loadFreezeColumns } from './frozenColumns.js';
 import { renderSearchAlternatives } from './searchValue.js';
 import {
   createViewSettings,
@@ -69,7 +70,7 @@ const toolButton = (className, label, icon, icons) =>
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null,
  *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, lineStyle: import('../types.js').LineStyle, compact: boolean,
- *   stickyHeader: boolean, scroll: boolean,
+ *   stickyHeader: boolean, scroll: boolean, freezeColumns: number,
  * }} opts
  * @returns {string}
  */
@@ -100,6 +101,7 @@ export function renderShell({
   compact,
   stickyHeader,
   scroll,
+  freezeColumns,
 }) {
   const buttons =
     searchButtonLabel === null
@@ -146,7 +148,8 @@ export function renderShell({
     .filter(Boolean)
     .join(' ');
   const wrap = `dg-table-wrap${scroll ? ' dg-scroll' : ''}`;
-  return `<div class="${root}">${toolbar}${desc}${summary ? '<div class="dg-summary" aria-live="polite" hidden></div>' : ''}<div class="${wrap}"></div><div class="dg-pager-host"></div><div class="dg-status" role="status" aria-live="polite"></div></div>`;
+  const freeze = freezeColumns > 0 ? ` data-freeze="${freezeColumns}"` : '';
+  return `<div class="${root}"${freeze}>${toolbar}${desc}${summary ? '<div class="dg-summary" aria-live="polite" hidden></div>' : ''}<div class="${wrap}"></div><div class="dg-pager-host"></div><div class="dg-status" role="status" aria-live="polite"></div></div>`;
 }
 
 /**
@@ -168,6 +171,7 @@ export function mountShell(container, options, labels, icons) {
     options.textWrapToggle === true ||
     options.gridLinesToggle === true ||
     options.lineStyleToggle === true ||
+    options.freezeColumnsToggle === true ||
     options.groupByToggle === true;
   container.innerHTML = renderShell({
     searchable: options.searchable === true,
@@ -202,6 +206,7 @@ export function mountShell(container, options, labels, icons) {
     compact: options.density === 'compact',
     stickyHeader: options.stickyHeader === true,
     scroll: maxHeight !== undefined,
+    freezeColumns: loadFreezeColumns(options.freezeColumnsStorageKey, options.freezeColumns ?? 0),
   });
   /** @param {string} selector */
   const find = (selector) => /** @type {HTMLElement} */ (container.querySelector(selector));

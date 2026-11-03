@@ -210,18 +210,18 @@
           <li>
             <strong>ติดตั้งแพ็กเกจด้วย npm</strong>
             เมื่อเผยแพร่ขึ้น registry แล้วใช้
-            <pre tabindex="0"><code>npm install datagrid</code></pre>
+            <pre tabindex="0"><code>npm install @siampiwat/datagrid</code></pre>
             ตอนนี้ยังไม่ได้เผยแพร่ เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
             <h3>ก. จาก URL ของไฟล์ .tgz</h3>
-            นำไฟล์จาก <code>npm pack</code> ไปไว้บนที่ที่เปิดผ่าน URL ได้ (เช่น GitHub Releases, S3)
-            <pre tabindex="0"><code>npm install https://your-host/datagrid-0.0.0.tgz</code></pre>
+            ไฟล์ .tgz แนบอยู่ที่ GitHub Releases (ถ้า repo เป็น private ต้องมี token) สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
+            <pre tabindex="0"><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
-            <pre tabindex="0"><code>npm install github:banpotej/datagrid
-npm install github:banpotej/datagrid#main   # ระบุ branch หรือ tag</code></pre>
+            <pre tabindex="0"><code>npm install github:banpotej/siampiwat-datagrid
+npm install github:banpotej/siampiwat-datagrid#main   # ระบุ branch หรือ tag</code></pre>
             <h3>ค. จากไฟล์ในเครื่อง</h3>
             ดาวน์โหลดแพ็กเกจที่แพ็กไว้แล้วติดตั้งจากไฟล์ได้เลย
-            <span class="download" data-hint="npm run build แล้ว npm pack">
+            <span class="download" data-hint="npm run pack:release">
               <a class="download-btn" id="download-tgz" download href="#">ดาวน์โหลด</a>
               <span class="download-note" role="status"></span>
             </span>
@@ -229,10 +229,20 @@ npm install github:banpotej/datagrid#main   # ระบุ branch หรือ t
             <pre tabindex="0"><code># ใน repo datagrid
 npm install
 npm run build
-npm pack              # ได้ไฟล์ datagrid-0.0.0.tgz
+npm pack              # ได้ไฟล์ siampiwat-datagrid-1.0.1.tgz
 
 # ในโปรเจกต์ที่จะใช้
-npm install ../datagrid/datagrid-0.0.0.tgz</code></pre>
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz</code></pre>
+          </li>
+          <li>
+            <strong>ดาวน์โหลดเป็นไฟล์ .zip</strong>
+            เนื้อหาเดียวกับแพ็กเกจ npm (<code>dist/</code>, <code>docs/</code> รวมคู่มือสำหรับ AI
+            Agent, README) แต่เป็น .zip สำหรับคนที่ไม่ใช้ npm แตกไฟล์แล้วใช้
+            <code>dist/datagrid.js</code> กับ <code>dist/datagrid.css</code>
+            <span class="download" data-hint="npm run pack:release">
+              <a class="download-btn" id="download-zip" download href="#">ดาวน์โหลด</a>
+              <span class="download-note" role="status"></span>
+            </span>
           </li>
           <li>
             <strong>โหลดผ่าน URL ในหน้าเว็บ (ไม่ใช้ npm)</strong>
@@ -248,10 +258,10 @@ npm install ../datagrid/datagrid-0.0.0.tgz</code></pre>
             </span>
             <pre
               tabindex="0"
-            ><code>&lt;link rel="stylesheet" href="https://your-host/datagrid.css" /&gt;
+            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.css" /&gt;
 &lt;div id="app"&gt;&lt;/div&gt;
 &lt;script type="module"&gt;
-  import { DataGrid } from 'https://your-host/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',
@@ -259,14 +269,15 @@ npm install ../datagrid/datagrid-0.0.0.tgz</code></pre>
     rows: [{ id: 1, name: 'Ada' }],
   });
 &lt;/script&gt;</code></pre>
-            ตัวอย่าง URL บน jsDelivr:
-            <code>https://cdn.jsdelivr.net/npm/datagrid@0.0.0/dist/datagrid.js</code>
+            URL ข้างบนใช้ jsDelivr (เมื่อเผยแพร่ขึ้น npm แล้ว) ควรระบุเวอร์ชันตายตัวแทน
+            <code>@latest</code> หรือจะนำไฟล์ไปไว้บน static host ของตัวเองก็ได้
           </li>
           <li>
             <strong>นำเข้าและสร้างตาราง (เมื่อติดตั้งด้วย npm)</strong>
-            ต้อง import ไฟล์ CSS ด้วย
-            <pre tabindex="0"><code>import { DataGrid } from 'datagrid';
-import 'datagrid/style.css';
+            <code>import</code> จาก <code>datagrid</code> จะดึง CSS มาให้ด้วย (ผ่าน bundler)
+            ถ้าต้องการ JS อย่างเดียวใช้ <code>@siampiwat/datagrid/plain</code> หรือ import
+            <code>@siampiwat/datagrid/style.css</code> เอง
+            <pre tabindex="0"><code>import { DataGrid } from '@siampiwat/datagrid';
 
 const grid = new DataGrid(document.querySelector('#app'), {
   rowKey: 'id',
@@ -296,9 +307,14 @@ const grid = new DataGrid(document.querySelector('#app'), {
       // The tarball (`npm pack`) and dist/ (`npm run build`) are git-ignored build output, so check that
       // each file exists before offering it. The note names the command that creates the missing ones.
       const tgz = document.getElementById('download-tgz');
-      const file = `datagrid-${pkg.version}.tgz`;
-      tgz.href = `/${file}`;
+      const file = `siampiwat-datagrid-${pkg.version}.tgz`;
+      tgz.href = `/release/${file}`;
       tgz.textContent = `ดาวน์โหลด ${file}`;
+      // `npm run pack:release` builds the .tgz and the .zip into release/.
+      const zip = document.getElementById('download-zip');
+      const zipFile = `siampiwat-datagrid-${pkg.version}.zip`;
+      zip.href = `/release/${zipFile}`;
+      zip.textContent = `ดาวน์โหลด ${zipFile}`;
       for (const link of document.querySelectorAll('.download-btn')) {
         link.setAttribute('download', link.getAttribute('href').split('/').pop());
       }

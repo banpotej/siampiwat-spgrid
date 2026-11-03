@@ -15,5 +15,6 @@
   - [x] row activation (`onRowActivate`: double-click or Enter on a row)
   - [x] grid lines setting (`gridLines`, `gridLinesToggle`: default, horizontal, vertical, both, none)
   - [x] line style setting (`lineStyle`, `lineStyleToggle`: default, solid, dashed, dotted)
+  - [x] freeze columns (`freezeColumns`, `freezeColumnsToggle`: the first columns stay put while the table scrolls sideways)
   - [x] row grouping (`groupBy`, `groupByToggle`: multi-level, collapsible group headers)
 - **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility

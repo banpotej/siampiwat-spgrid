@@ -1,5 +1,6 @@
 // @ts-check
 import { readJson, writeJson } from '../utils/storage.js';
+import { FREEZE_PREFIX, isFreezeCount } from './frozenColumns.js';
 
 /** localStorage key prefixes of the remembered view settings. */
 export const STRIPED_PREFIX = 'datagrid:striped:';
@@ -93,13 +94,14 @@ export function loadFlag(prefix, storageKey, fallback) {
  * @property {boolean} [wrapped] Long cell text wraps.
  * @property {GridLines} [gridLines] Which lines the table draws.
  * @property {LineStyle} [lineStyle] How those lines are drawn (solid, dashed, dotted).
+ * @property {number} [freezeColumns] How many leading columns stay in place while the table scrolls sideways.
  */
 
 /**
  * The striped / wrapped look of one grid: the classes on its root and the choices saved in `localStorage`.
  *
  * @param {Element | null} root The `.dg-root` element.
- * @param {Pick<import('../types.js').DataGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'lineStyleToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey' | 'lineStyleStorageKey'>} options
+ * @param {Pick<import('../types.js').DataGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'lineStyleToggle' | 'freezeColumnsToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey' | 'lineStyleStorageKey' | 'freezeColumnsStorageKey'>} options
  * @returns {{ get: () => ViewFlags, apply: (flags: ViewFlags) => void } | null} null when no switch is offered.
  */
 export function createViewSettings(root, options) {
@@ -107,7 +109,10 @@ export function createViewSettings(root, options) {
   const offerWrapped = options.textWrapToggle === true;
   const offerLines = options.gridLinesToggle === true;
   const offerStyle = options.lineStyleToggle === true;
-  if (!root || (!offerStriped && !offerWrapped && !offerLines && !offerStyle)) return null;
+  const offerFreeze = options.freezeColumnsToggle === true;
+  if (!root || (!offerStriped && !offerWrapped && !offerLines && !offerStyle && !offerFreeze)) {
+    return null;
+  }
   const striped = () => root.classList.contains('dg-striped');
   const wrapped = () => !root.classList.contains('dg-nowrap');
   const lines = () =>
@@ -118,12 +123,14 @@ export function createViewSettings(root, options) {
     LINE_STYLES.find(
       (name) => STYLE_CLASS[name] !== '' && root.classList.contains(STYLE_CLASS[name]),
     ) ?? 'default';
+  const frozen = () => Number(root.getAttribute('data-freeze') ?? 0);
   return {
     get: () => ({
       ...(offerStriped && { striped: striped() }),
       ...(offerWrapped && { wrapped: wrapped() }),
       ...(offerLines && { gridLines: lines() }),
       ...(offerStyle && { lineStyle: style() }),
+      ...(offerFreeze && { freezeColumns: frozen() }),
     }),
     apply(flags) {
       if (offerStriped && flags.striped !== undefined && flags.striped !== striped()) {
@@ -152,6 +159,13 @@ export function createViewSettings(root, options) {
         if (STYLE_CLASS[flags.lineStyle]) root.classList.add(STYLE_CLASS[flags.lineStyle]);
         if (options.lineStyleStorageKey !== undefined) {
           writeJson(LINE_STYLE_PREFIX + options.lineStyleStorageKey, flags.lineStyle);
+        }
+      }
+      if (offerFreeze && isFreezeCount(flags.freezeColumns) && flags.freezeColumns !== frozen()) {
+        if (flags.freezeColumns > 0) root.setAttribute('data-freeze', String(flags.freezeColumns));
+        else root.removeAttribute('data-freeze');
+        if (options.freezeColumnsStorageKey !== undefined) {
+          writeJson(FREEZE_PREFIX + options.freezeColumnsStorageKey, flags.freezeColumns);
         }
       }
     },

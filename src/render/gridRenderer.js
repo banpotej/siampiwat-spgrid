@@ -3,6 +3,7 @@ import { searchKind } from '../core/columns.js';
 import { toWords, DEFAULT_LOCALE } from '../core/filter.js';
 import { computeView } from '../core/view.js';
 import { ColumnResizer } from './columnResize.js';
+import { freezeColumns } from './frozenColumns.js';
 import { highlightSearch } from './highlight.js';
 import { bindHeaderEvents } from './headerEvents.js';
 import { bindGroupToggle } from './groupEvents.js';
@@ -35,6 +36,8 @@ export class GridRenderer {
   #last = null;
   #unbindGroups;
   #unbindHeader = () => {};
+  /** @type {ResizeObserver | null} Re-measures the frozen columns when the table's size changes (a window resize, a late font). */
+  #observer = null;
 
   /**
    * @param {{ shell: ReturnType<typeof import('./toolbar.js').mountShell>,
@@ -64,10 +67,12 @@ export class GridRenderer {
     this.#highlight = highlight;
     this.#activatable = activatable;
     if (resizable) {
-      this.#resizer = new ColumnResizer(shell.host, widthStorageKey);
+      this.#resizer = new ColumnResizer(shell.host, widthStorageKey, () => this.#freeze());
       this.#unbindResize = this.#resizer.bind();
     }
     this.#unbindGroups = bindGroupToggle(shell.host, (id) => this.#toggleGroup(id));
+    if (typeof ResizeObserver !== 'undefined')
+      this.#observer = new ResizeObserver(() => this.#freeze());
   }
 
   /**
@@ -107,6 +112,10 @@ export class GridRenderer {
         tr.setAttribute('tabindex', '0');
       }
     }
+    this.#freeze();
+    this.#observer?.disconnect();
+    const table = host.querySelector('table');
+    if (table) this.#observer?.observe(table);
     if (this.#highlight && filter?.search) {
       const locale = this.#locale ?? DEFAULT_LOCALE;
       highlightSearch(host, columns, toWords(filter.search, locale), {
@@ -152,6 +161,13 @@ export class GridRenderer {
     this.#unbindHeader();
     this.#unbindResize();
     this.#unbindGroups();
+    this.#observer?.disconnect();
+  }
+
+  /** Freeze the leading columns the root's `data-freeze` asks for (none when it is absent). */
+  #freeze() {
+    const { host } = this.#shell;
+    freezeColumns(host, Number(host.closest('.dg-root')?.getAttribute('data-freeze') ?? 0));
   }
 
   /** Collapse or expand a group and draw the table again, keeping focus on the group's button. @param {string} id */

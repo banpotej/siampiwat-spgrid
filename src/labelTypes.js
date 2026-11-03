@@ -56,6 +56,9 @@
  * @property {string} [lineStyleSolid] 'solid' option; default 'Solid'.
  * @property {string} [lineStyleDashed] 'dashed' option; default 'Dashed'.
  * @property {string} [lineStyleDotted] 'dotted' option; default 'Dotted'.
+ * @property {string} [details] Small heading above the title of the `showDetails` modal; default 'Details'.
+ * @property {string} [freezeColumns] Label of the frozen columns select (`freezeColumnsToggle`); default 'Frozen columns'.
+ * @property {string} [freezeColumnsNone] 0 option of that select; default 'None'.
  * @property {(name: string) => string} [resizeColumn] Accessible name of a column's resize handle (`resizableColumns`);
  *   default 'Resize <name>'.
  * @property {string} [confirmOk] Confirm button of the built-in Reset view modal; default 'Reset'.
