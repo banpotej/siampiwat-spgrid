@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Hosting: `npm run build:site` (`vite.site.config.js`) builds the landing page and the example pages into `site/` (git-ignored) for static hosting such as Cloudflare Pages: build command `npm run build:site`, output directory `site`. `examples/` and `dist/` are copied next to the pages as plain files (the source viewer fetches them). No `src/` change.
+
 ## [1.0.1] - 2026-11-03
 
 ### Added

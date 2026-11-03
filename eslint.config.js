@@ -3,7 +3,16 @@ import globals from 'globals';
 import prettier from 'eslint-config-prettier';
 
 export default [
-  { ignores: ['dist/', 'node_modules/', 'playwright-report/', 'test-results/', 'nextjs-datagrid-test/'] },
+  {
+    ignores: [
+      'dist/',
+      'site/',
+      'node_modules/',
+      'playwright-report/',
+      'test-results/',
+      'nextjs-datagrid-test/',
+    ],
+  },
   js.configs.recommended,
   {
     languageOptions: { ecmaVersion: 2023, sourceType: 'module', globals: { ...globals.browser } },
