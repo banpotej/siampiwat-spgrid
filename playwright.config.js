@@ -10,7 +10,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npx vite --port 5173',
-    url: 'http://localhost:5173/examples/index.html',
+    url: 'http://localhost:5173/purchase-order.html',
     reuseExistingServer: !process.env.CI,
   },
 });

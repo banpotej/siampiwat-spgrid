@@ -29,7 +29,7 @@ async function lines(page) {
 test('the Settings modal picks the grid lines, which are drawn and remembered', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   expect(await lines(page)).toEqual({ row: true, column: true, header: true }); // the example starts with 'both'
 
   for (const { mode, label, ...expected } of MODES) {
@@ -47,7 +47,7 @@ test('the Settings modal picks the grid lines, which are drawn and remembered', 
 });
 
 test('the Settings modal picks the line style, which is drawn and remembered', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const rowLine = () =>
     page
       .locator('tbody tr:nth-child(2) td:nth-child(3)')
@@ -81,7 +81,7 @@ test('the Settings modal picks the line style, which is drawn and remembered', a
 test('the Settings modal has a round close button hanging off its top-right corner', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await page.locator('.dg-columns-btn').click();
   const box = page.locator('.dg-settings');
   const close = box.getByRole('button', { name: 'ปิด' });

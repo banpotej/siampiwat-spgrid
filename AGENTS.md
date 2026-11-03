@@ -5,7 +5,7 @@ Plain JS with JSDoc types; every file under `src/` starts with `// @ts-check`.
 
 ## Commands
 
-- `npm run dev` – dev server, example at `/examples/index.html`
+- `npm run dev` – dev server, examples at `/` (pages live in the repo root, assets in `examples/`)
 - `npm run build` – library bundle + `.d.ts` into `dist/`
 - `npm test` – unit tests; `npm run test:e2e` – Playwright
 - `npm run check` – lint + typecheck + unit tests + build + Playwright e2e (must pass before finishing)

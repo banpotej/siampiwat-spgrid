@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DataGrid from built files</title>
+    <!-- The "load it from a URL, no npm" recipe: only dist/datagrid.js and dist/datagrid.css. -->
+    <link rel="stylesheet" href="/dist/datagrid.css" />
+  </head>
+  <body>
+    <div id="grid"></div>
+    <script type="module">
+      import { DataGrid } from '/dist/datagrid.js';
+
+      new DataGrid(document.getElementById('grid'), {
+        rowKey: 'id',
+        columns: [
+          { key: 'id', label: 'ID' },
+          { key: 'name', label: 'Name' },
+        ],
+        rows: [{ id: 1, name: 'Ada' }],
+      });
+    </script>
+  </body>
+</html>

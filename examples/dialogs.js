@@ -78,8 +78,19 @@ function detailItem(col, row) {
   return item;
 }
 
-/** Row details: a tinted header (PO number + status), then the facts in groups. */
-export function showDetails(row, columns) {
+/**
+ * Row details: a tinted header (title + status), then the facts in groups.
+ * Defaults describe a PO; other examples pass their own `title` and `groups`.
+ *
+ * @param {Record<string, any>} row
+ * @param {any[]} columns
+ * @param {{ title?: (row: any) => string, groups?: [string, string[]][] }} [options]
+ */
+export function showDetails(
+  row,
+  columns,
+  { title: titleOf = (r) => r.poNumber, groups = GROUPS } = {},
+) {
   const box = el('div', 'dg-modal-box details');
 
   const title = el('h2', 'dg-modal-title');
@@ -87,7 +98,7 @@ export function showDetails(row, columns) {
   const sub = el('span', 'details-sub');
   const tone = columns.find((c) => c.key === 'status')?.badges?.[row.status]?.tone;
   if (tone) sub.append(badge(tone, formatValue(row.status, 'badge')));
-  title.append(el('span', 'details-eyebrow', 'รายละเอียด'), row.poNumber, sub);
+  title.append(el('span', 'details-eyebrow', 'รายละเอียด'), titleOf(row), sub);
 
   const close = el('button', 'dg-modal-x');
   close.type = 'button';
@@ -96,7 +107,7 @@ export function showDetails(row, columns) {
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
   const body = el('div', 'details-body');
-  for (const [heading, keys] of GROUPS) {
+  for (const [heading, keys] of groups) {
     const list = el('dl');
     for (const key of keys) {
       const col = columns.find((c) => c.key === key);

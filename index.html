@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>DataGrid: ตารางข้อมูล vanilla JS</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <style>
+      body {
+        color: #334155;
+      }
+      .hero {
+        margin: 8px 0 32px;
+        padding: 40px 28px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+      }
+      .hero h1 {
+        margin: 0 0 8px;
+        color: #0f172a;
+        font-size: 2rem;
+      }
+      .hero p {
+        max-width: 38rem;
+        margin: 0 0 20px;
+        line-height: 1.6;
+      }
+      .hero .cta {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 8px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .hero .cta:hover {
+        background: #1d4ed8;
+      }
+      .hero .cta:focus-visible {
+        outline: 2px solid #1e3a8a;
+        outline-offset: 2px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        color: #0f172a;
+        font-size: 1.15rem;
+      }
+      section {
+        margin-bottom: 32px;
+      }
+      ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .features li {
+        padding: 14px 16px;
+        border-left: 3px solid #3b82f6;
+        background: #f8fafc;
+        border-radius: 0 8px 8px 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .features strong {
+        display: block;
+        color: #0f172a;
+      }
+      .cards a {
+        display: block;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        color: inherit;
+        text-decoration: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .cards a:hover,
+      .cards a:focus-visible {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+      }
+      .install ol {
+        margin: 0;
+        padding-left: 22px;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .install li {
+        margin-bottom: 12px;
+      }
+      .install li > strong {
+        display: block;
+        color: #0f172a;
+      }
+      .install pre {
+        margin: 6px 0 10px;
+        padding: 12px 14px;
+        overflow: auto;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e2e8f0;
+        font:
+          12.5px/1.6 ui-monospace,
+          'Cascadia Code',
+          Consolas,
+          monospace;
+      }
+      .install h3 {
+        margin: 12px 0 2px;
+        color: #1e3a8a;
+        font-size: 0.9rem;
+      }
+      .download {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0;
+      }
+      .download-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .download-btn:hover {
+        background: #1d4ed8;
+      }
+      .download-btn:focus-visible {
+        outline: 2px solid #1e3a8a;
+        outline-offset: 2px;
+      }
+      .download-btn[aria-disabled='true'] {
+        background: #94a3b8;
+        pointer-events: none;
+      }
+      .download-note {
+        color: #64748b;
+        font-size: 13px;
+      }
+      .install :not(pre) > code {
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: #dbeafe;
+        color: #1e3a8a;
+        font:
+          0.9em ui-monospace,
+          'Cascadia Code',
+          Consolas,
+          monospace;
+      }
+      .cards strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #0f172a;
+      }
+      .cards span {
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="hero">
+        <h1>DataGrid</h1>
+        <p>
+          ตารางข้อมูลแบบ vanilla JS ไม่มี dependency ใช้งานง่าย ค้นหา เรียงลำดับ แบ่งหน้า
+          และปรับแต่งได้ครบ พร้อมป้ายกำกับภาษาไทย ลองดูตัวอย่างด้านล่าง
+        </p>
+        <a class="cta" id="start" href="/purchase-order.html">ดูตัวอย่างแรก</a>
+      </header>
+      <section class="features" aria-labelledby="features-title">
+        <h2 id="features-title">ความสามารถหลัก</h2>
+        <ul>
+          <li>
+            <strong>เรียงลำดับและค้นหา</strong>คลิกหัวคอลัมน์ ค้นหาทุกคอลัมน์หรือเลือกเฉพาะคอลัมน์
+          </li>
+          <li><strong>แบ่งหน้า</strong>เลือกจำนวนแถวต่อหน้า จำค่าที่เลือกไว้ได้</li>
+          <li><strong>จัดคอลัมน์</strong>ซ่อน/แสดง ปรับความกว้าง และลากสลับตำแหน่ง</li>
+          <li><strong>จัดกลุ่มแถว</strong>จัดกลุ่มตามคอลัมน์ พร้อมหัวกลุ่มที่ยุบได้</li>
+          <li><strong>ชนิดคอลัมน์</strong>ข้อความ ตัวเลข วันที่ ใช่/ไม่ใช่ และ badge สถานะ</li>
+          <li><strong>ปรับหน้าตา</strong>ลายแถบ เส้นตาราง ความหนาแน่น และโหมดมืด</li>
+        </ul>
+      </section>
+      <section class="install" aria-labelledby="install-title">
+        <h2 id="install-title">การติดตั้ง</h2>
+        <ol>
+          <li>
+            <strong>ข้อกำหนด</strong>
+            Node.js 22 ขึ้นไป และ bundler ที่รองรับ ES modules (เช่น Vite, webpack) DataGrid ไม่มี
+            runtime dependency
+          </li>
+          <li>
+            <strong>ติดตั้งแพ็กเกจด้วย npm</strong>
+            เมื่อเผยแพร่ขึ้น registry แล้วใช้
+            <pre tabindex="0"><code>npm install datagrid</code></pre>
+            ตอนนี้ยังไม่ได้เผยแพร่ เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
+            <h3>ก. จาก URL ของไฟล์ .tgz</h3>
+            นำไฟล์จาก <code>npm pack</code> ไปไว้บนที่ที่เปิดผ่าน URL ได้ (เช่น GitHub Releases, S3)
+            <pre tabindex="0"><code>npm install https://your-host/datagrid-0.0.0.tgz</code></pre>
+            <h3>ข. จาก git URL</h3>
+            npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
+            <pre tabindex="0"><code>npm install github:banpotej/datagrid
+npm install github:banpotej/datagrid#main   # ระบุ branch หรือ tag</code></pre>
+            <h3>ค. จากไฟล์ในเครื่อง</h3>
+            ดาวน์โหลดแพ็กเกจที่แพ็กไว้แล้วติดตั้งจากไฟล์ได้เลย
+            <span class="download" data-hint="npm run build แล้ว npm pack">
+              <a class="download-btn" id="download-tgz" download href="#">ดาวน์โหลด</a>
+              <span class="download-note" role="status"></span>
+            </span>
+            หรือ build และแพ็กไฟล์เองจาก repo นี้
+            <pre tabindex="0"><code># ใน repo datagrid
+npm install
+npm run build
+npm pack              # ได้ไฟล์ datagrid-0.0.0.tgz
+
+# ในโปรเจกต์ที่จะใช้
+npm install ../datagrid/datagrid-0.0.0.tgz</code></pre>
+          </li>
+          <li>
+            <strong>โหลดผ่าน URL ในหน้าเว็บ (ไม่ใช้ npm)</strong>
+            ไฟล์ใน <code>dist/</code> เป็น ES module ที่ไม่มี dependency ใช้ผ่าน URL ได้โดยตรง นำ
+            <code>dist/datagrid.js</code> และ <code>dist/datagrid.css</code> ไปไว้บน static host
+            หรือ CDN (เช่น jsDelivr / unpkg หลังเผยแพร่ขึ้น npm) หรือดาวน์โหลดไฟล์ที่ build
+            แล้วจากที่นี่
+            <span class="download" data-hint="npm run build">
+              <a class="download-btn" download href="/dist/datagrid.js">ดาวน์โหลด datagrid.js</a>
+              <a class="download-btn" download href="/dist/datagrid.css">ดาวน์โหลด datagrid.css</a>
+              <a class="download-btn" download href="/dist/datagrid.cjs">ดาวน์โหลด datagrid.cjs</a>
+              <span class="download-note" role="status"></span>
+            </span>
+            <pre
+              tabindex="0"
+            ><code>&lt;link rel="stylesheet" href="https://your-host/datagrid.css" /&gt;
+&lt;div id="app"&gt;&lt;/div&gt;
+&lt;script type="module"&gt;
+  import { DataGrid } from 'https://your-host/datagrid.js';
+
+  new DataGrid(document.getElementById('app'), {
+    rowKey: 'id',
+    columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }],
+    rows: [{ id: 1, name: 'Ada' }],
+  });
+&lt;/script&gt;</code></pre>
+            ตัวอย่าง URL บน jsDelivr:
+            <code>https://cdn.jsdelivr.net/npm/datagrid@0.0.0/dist/datagrid.js</code>
+          </li>
+          <li>
+            <strong>นำเข้าและสร้างตาราง (เมื่อติดตั้งด้วย npm)</strong>
+            ต้อง import ไฟล์ CSS ด้วย
+            <pre tabindex="0"><code>import { DataGrid } from 'datagrid';
+import 'datagrid/style.css';
+
+const grid = new DataGrid(document.querySelector('#app'), {
+  rowKey: 'id',
+  columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }],
+  rows: [{ id: 1, name: 'Ada' }],
+});</code></pre>
+          </li>
+          <li>
+            <strong>ใช้กับ framework</strong>
+            DataGrid ทำงานกับ DOM จึงต้องสร้างฝั่งเบราว์เซอร์เท่านั้น เช่น ใน
+            <code>useEffect</code> ของ React / Next.js (client component) แล้วเรียก
+            <code>grid.destroy()</code> ตอน unmount
+          </li>
+        </ol>
+      </section>
+      <section class="cards" aria-labelledby="examples-title">
+        <h2 id="examples-title">ตัวอย่าง</h2>
+        <ul id="examples"></ul>
+      </section>
+    </main>
+    <script type="module">
+      import { EXAMPLES, renderNav } from '/examples/nav.js';
+      import pkg from '/package.json';
+
+      renderNav();
+
+      // The tarball (`npm pack`) and dist/ (`npm run build`) are git-ignored build output, so check that
+      // each file exists before offering it. The note names the command that creates the missing ones.
+      const tgz = document.getElementById('download-tgz');
+      const file = `datagrid-${pkg.version}.tgz`;
+      tgz.href = `/${file}`;
+      tgz.textContent = `ดาวน์โหลด ${file}`;
+      for (const link of document.querySelectorAll('.download-btn')) {
+        link.setAttribute('download', link.getAttribute('href').split('/').pop());
+      }
+
+      async function exists(url) {
+        try {
+          const res = await fetch(url, { method: 'HEAD' });
+          // A dev server answers unknown paths with the page itself, so look at the type too.
+          return res.ok && !(res.headers.get('content-type') ?? '').includes('text/html');
+        } catch {
+          return false;
+        }
+      }
+
+      for (const group of document.querySelectorAll('.download')) {
+        for (const link of group.querySelectorAll('.download-btn')) {
+          exists(link.href).then((found) => {
+            if (found) return;
+            link.setAttribute('aria-disabled', 'true');
+            group.querySelector('.download-note').textContent =
+              `ยังไม่มีไฟล์ — รัน ${group.dataset.hint} ก่อน`;
+          });
+        }
+      }
+      const list = document.getElementById('examples');
+      for (const example of EXAMPLES) {
+        const item = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = example.href;
+        const title = document.createElement('strong');
+        title.textContent = example.title; // textContent: never parsed as HTML
+        const description = document.createElement('span');
+        description.textContent = example.description;
+        a.append(title, description);
+        item.append(a);
+        list.append(item);
+      }
+      document.getElementById('start').href = EXAMPLES[0].href;
+    </script>
+  </body>
+</html>

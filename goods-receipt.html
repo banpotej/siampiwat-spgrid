@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง DataGrid: รายการรับสินค้า (Goods Receipt)</title>
+    <link rel="stylesheet" href="/examples/dialogs.css" />
+    <link rel="stylesheet" href="/examples/page.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง DataGrid: รายการรับสินค้า (Goods Receipt)</h1>
+      </header>
+      <div id="grid"></div>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              ตัวอย่างตารางรายการรับสินค้า (Goods Receipt) จากข้อมูลจริงบางส่วน
+              แสดงสถานะเอกสารทั้งแบบข้อความไทย และ Document Status ด้วย badge ตัวเลข วันที่
+              และค่าว่าง (NULL) ของเอกสารฉบับร่างที่ยังไม่มีเลขที่
+            </p>
+            <ul>
+              <li>คลิกหัวคอลัมน์เพื่อเรียงลำดับ ค้นหาตามคอลัมน์ได้จากกล่องค้นหา</li>
+              <li>ดับเบิลคลิกแถว หรือกด Enter ที่แถวที่โฟกัส เพื่อดูรายละเอียด</li>
+              <li>ค่าที่เป็น NULL จะแสดงเป็น "-"</li>
+              <li>ด้านล่างสุดคือ Source Code ของตัวอย่างนี้ พร้อมปุ่มคัดลอก</li>
+            </ul>
+            <h3>การใช้งานในโค้ด</h3>
+            <pre tabindex="0"><code>import { DataGrid, thaiLabels } from '/src/index.js';
+
+const grid = new DataGrid(document.getElementById('grid'), {
+  rowKey: 'id',
+  rows, // เช่น { id: 177390, grNumber: '100/GR/C036938', materialDoc: null, status: 'รออนุมัติ GR', ... }
+  columns: [
+    { key: 'grNumber', label: 'เลขที่ GR', sortable: true },
+    { key: 'status', label: 'สถานะ', type: 'badge', badges: { ร่าง: { tone: 'neutral' } } },
+    { key: 'orderNum', label: 'Order Num', type: 'number' },
+    { key: 'submittedDate', label: 'วันที่ส่งเอกสาร', type: 'date' },
+  ],
+  searchable: true,
+  searchColumnSelect: true, // เลือกค้นเฉพาะคอลัมน์
+  pageSize: 10,
+  onRowActivate: ({ row }) =&gt; console.log(row), // ดับเบิลคลิก / Enter
+  labels: thaiLabels,
+});</code></pre>
+            <ul>
+              <li>
+                ค่า <code>null</code> ใน <code>rows</code> (เช่น เลข GR ของร่าง) แสดงเป็น "–" เอง
+                ไม่ต้องแปลงเป็นข้อความ
+              </li>
+              <li>
+                วันที่ส่งเป็น <code>Date</code> หรือ <code>null</code> ก็ได้ คอลัมน์
+                <code>type: 'date'</code> จัดรูปแบบให้
+              </li>
+              <li>
+                <code>badges</code> แมปค่าข้อความ (ทั้งไทยและอังกฤษ) เป็นสี <code>tone</code> ของ
+                badge
+              </li>
+              <li>
+                ปรับความละเอียดของรายละเอียดแถวได้ด้วย <code>onRowActivate</code> (ตัวอย่างนี้เปิด
+                modal)
+              </li>
+            </ul>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="goods-receipt.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/goods-receipt.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/goods-receipt.js"></script>
+    <script type="module" src="/examples/nav.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

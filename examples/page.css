@@ -1,0 +1,320 @@
+body {
+  margin: 0;
+  padding: 24px 16px;
+  background: #fff;
+  font-family: 'Sarabun', sans-serif;
+  --dg-font-family: 'Sarabun', sans-serif;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.intro {
+  margin-bottom: 16px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.intro-note {
+  margin: 24px 0 0;
+}
+.intro h1 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: 1.5rem;
+}
+.intro details {
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+.intro summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: #1e3a8a;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.intro summary::-webkit-details-marker {
+  display: none;
+}
+.intro summary::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+.intro details[open] summary::before {
+  transform: rotate(45deg);
+}
+.intro summary::after {
+  content: 'ซ่อน';
+  margin-left: auto;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 400;
+}
+.intro details:not([open]) summary::after {
+  content: 'แสดง';
+}
+.intro summary:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+.intro-body {
+  padding: 0 16px 12px 31px;
+}
+.intro p,
+.intro ul {
+  margin: 0 0 8px;
+}
+.intro ul {
+  padding-left: 20px;
+}
+.intro li::marker {
+  color: #3b82f6;
+}
+#log {
+  min-height: 1.5em;
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+#source {
+  margin-top: 32px;
+}
+.source-card {
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0f172a;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+}
+.source-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+.source-head .dots {
+  display: flex;
+  gap: 6px;
+}
+.source-head .dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+.source-head .dots i:nth-child(2) {
+  background: #f59e0b;
+}
+.source-head .dots i:nth-child(3) {
+  background: #22c55e;
+}
+.source-head .file {
+  margin-right: auto;
+  color: #94a3b8;
+  font:
+    12px/1 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+.source-head button {
+  padding: 4px 12px;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  background: transparent;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.source-head button:hover {
+  background: #334155;
+}
+#source pre {
+  max-height: 28rem;
+  margin: 0;
+  padding: 16px 0;
+  overflow: auto;
+  color: #e2e8f0;
+  font:
+    13px/1.6 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+  counter-reset: line;
+}
+#source pre:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: -2px;
+}
+#source .line {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  padding-right: 16px;
+  white-space: pre;
+}
+#source .line::before {
+  content: counter(line);
+  counter-increment: line;
+  display: inline-block;
+  width: 3.5ch;
+  margin-right: 16px;
+  padding-left: 16px;
+  box-sizing: content-box;
+  color: #64748b;
+  text-align: right;
+  user-select: none;
+}
+.tok-comment {
+  color: #64748b;
+  font-style: italic;
+}
+.tok-string {
+  color: #a5d6a7;
+}
+.tok-keyword {
+  color: #c4a7ff;
+}
+.tok-number {
+  color: #fbbf77;
+}
+.tok-call {
+  color: #7dd3fc;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.site-nav a {
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 14px;
+  text-decoration: none;
+}
+.site-nav a:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.site-nav a:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 1px;
+}
+.site-nav a[aria-current='page'] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+.site-nav .brand {
+  margin-right: 8px;
+  padding-left: 0;
+  color: #0f172a;
+  font-weight: 700;
+}
+.site-nav .brand:hover {
+  background: none;
+}
+
+.intro h3 {
+  margin: 16px 0 8px;
+  color: #1e3a8a;
+  font-size: 0.95rem;
+}
+.intro pre {
+  margin: 0 0 8px;
+  padding: 12px 14px;
+  overflow: auto;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font:
+    12.5px/1.6 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+.intro :not(pre) > code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1e3a8a;
+  font:
+    0.9em ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+
+.source-toggle {
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #0f172a;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+.source-toggle summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: #0f172a;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.source-toggle summary::-webkit-details-marker {
+  display: none;
+}
+.source-toggle summary::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+.source-toggle[open] summary::before {
+  transform: rotate(45deg);
+}
+.source-toggle summary::after {
+  content: 'แสดง';
+  margin-left: auto;
+  color: #475569;
+  font-size: 12px;
+}
+.source-toggle[open] summary::after {
+  content: 'ซ่อน';
+}
+.source-toggle summary:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+.source-toggle h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.source-toggle .source-card {
+  margin: 0 12px 12px;
+}

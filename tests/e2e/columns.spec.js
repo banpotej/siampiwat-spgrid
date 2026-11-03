@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-// examples/index.html: columnPicker on, columnStorageKey 'purchase-orders'.
+// purchase-order.html: columnPicker on, columnStorageKey 'purchase-orders'.
 const STORAGE_KEY = 'datagrid:columns:purchase-orders';
 
 test('hidden columns are remembered across a reload and can be shown again', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
   await page.reload();
 
@@ -36,7 +36,7 @@ test('hidden columns are remembered across a reload and can be shown again', asy
 test('Escape closes the modal without applying and returns focus to the button', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const button = page.locator('.dg-columns-btn');
   await button.click();
   await expect(button).toHaveAttribute('aria-expanded', 'true');

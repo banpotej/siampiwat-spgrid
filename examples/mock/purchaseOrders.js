@@ -1,4 +1,4 @@
-// Fictional procurement data for examples/index.html. Deterministic: same output every call.
+// Fictional procurement data for purchase-order.html. Deterministic: same output every call.
 // Shaped like real PO lists: newest first, business days only, mostly completed orders, a few repeat vendors.
 
 const VENDORS = [

@@ -13,7 +13,7 @@ async function group(page, labels) {
 test('the Settings modal groups the rows by a column, and the groups collapse', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await expect(page.locator('.dg-group-row')).toHaveCount(0);
 
   await group(page, ['สถานะ']);
@@ -37,7 +37,7 @@ test('the Settings modal groups the rows by a column, and the groups collapse', 
 });
 
 test('two levels nest, the choice is remembered, and "ไม่จัดกลุ่ม" ungroups', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await group(page, ['สถานะ', 'ประเภทจัดซื้อ']);
   await expect(page.locator('tr.dg-group-row[data-level="0"]').first()).toBeVisible();
   await expect(page.locator('tr.dg-group-row[data-level="1"]').first()).toBeVisible();
@@ -59,7 +59,7 @@ test('two levels nest, the choice is remembered, and "ไม่จัดกล�
 });
 
 test('the Reset view button ungroups', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await group(page, ['สถานะ']);
   await expect(page.locator('.dg-group-row').first()).toBeVisible();
   await page.locator('.dg-columns-btn').click();

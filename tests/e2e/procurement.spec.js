@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-// examples/index.html: one action column with View and Cancel (cells are plain text; no column.render yet).
+// examples/purchase-order.html: one action column with View and Cancel (cells are plain text; no column.render yet).
 // Columns: 1 Actions, 2 RFQ, 3 PO, 4 Description, 5 Submitted, 6 Type, 7 Status, 8 Vendor, ...
 test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontally', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   await expect(rows).toHaveCount(10);
 
@@ -39,7 +39,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
 });
 
 test('View and Cancel report the clicked row; Cancel only where allowed', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   const log = page.locator('#log');
 
@@ -76,7 +76,7 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
 });
 
 test('Enter in the search box also searches (Search button mode)', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   await expect(rows).toHaveCount(10);
   await page.getByRole('searchbox').fill('พรีมาออฟฟิศ');
@@ -91,7 +91,7 @@ test('Enter in the search box also searches (Search button mode)', async ({ page
 });
 
 test('Clear search button empties the box and restores all rows', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   const search = page.getByRole('searchbox');
   await search.fill('พรีมาออฟฟิศ');
@@ -120,7 +120,7 @@ test('Clear search button empties the box and restores all rows', async ({ page 
 test('View opens a modal with the clicked row, closed by the button, Esc or the backdrop', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const row = page.locator('tbody tr').nth(2);
   const po = (await row.locator('td:nth-child(3)').textContent())?.trim();
   const modal = page.locator('.dg-modal');
@@ -146,7 +146,7 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
 });
 
 test('dragging a header edge resizes only that column', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const header = page.getByRole('columnheader', { name: /รายละเอียด/ });
   const width = async () => (await header.boundingBox())?.width ?? 0;
   const before = await width();
@@ -175,7 +175,7 @@ test('dragging a header edge resizes only that column', async ({ page }) => {
 });
 
 test('a narrowed column clips its text instead of covering the next cell', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const header = page.getByRole('columnheader', { name: /รายละเอียด/ });
   const box = /** @type {{ x: number, y: number, width: number, height: number }} */ (
     await header.getByRole('separator').boundingBox()
@@ -209,7 +209,7 @@ test('a narrowed column clips its text instead of covering the next cell', async
 test('dragging a header onto another reorders the columns and the order survives a reload', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   await page.evaluate(() => localStorage.removeItem('datagrid:columnOrder:purchase-orders'));
   await page.reload();
   const labels = async () =>
@@ -236,7 +236,7 @@ test('dragging a header onto another reorders the columns and the order survives
 test('the details modal keeps Tab inside and gives focus back to the View button', async ({
   page,
 }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const view = page.locator('tbody tr').first().getByRole('button', { name: 'View' });
   await view.click();
   const modal = page.getByRole('dialog');
@@ -250,7 +250,7 @@ test('the details modal keeps Tab inside and gives focus back to the View button
 });
 
 test('a row opens its details on double-click or Enter, and looks clickable', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const row = page.locator('tbody tr').nth(1);
   const po = (await row.locator('td:nth-child(3)').textContent())?.trim() ?? '';
   await expect(row).toHaveCSS('cursor', 'pointer');

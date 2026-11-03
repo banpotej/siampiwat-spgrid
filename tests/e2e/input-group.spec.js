@@ -9,7 +9,7 @@ const KINDS = [
 
 for (const { name, label } of KINDS) {
   test(`the filter bar is one input group with a ${name} search box`, async ({ page }) => {
-    await page.goto('/examples/index.html');
+    await page.goto('/purchase-order.html');
     if (label) {
       await page.getByRole('combobox', { name: 'ค้นหาใน' }).selectOption({ label });
     }
@@ -39,7 +39,7 @@ for (const { name, label } of KINDS) {
 }
 
 test('the column select keeps the neutral tone when a column is chosen', async ({ page }) => {
-  await page.goto('/examples/index.html');
+  await page.goto('/purchase-order.html');
   const select = page.getByRole('combobox', { name: 'ค้นหาใน' });
   const rest = await select.evaluate((el) => getComputedStyle(el).backgroundColor);
   await select.selectOption({ label: 'สถานะ' });

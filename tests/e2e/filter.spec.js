@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('typing filters rows, clearing restores them', async ({ page }) => {
-  await page.goto('/examples/basic.html');
+  await page.goto('/basic.html');
   const search = page.getByRole('searchbox', { name: 'Search' });
   const rows = page.locator('tbody tr');
 
@@ -15,7 +15,7 @@ test('typing filters rows, clearing restores them', async ({ page }) => {
 });
 
 test('keeps focus and shows "No data" when nothing matches', async ({ page }) => {
-  await page.goto('/examples/basic.html');
+  await page.goto('/basic.html');
   const search = page.getByRole('searchbox', { name: 'Search' });
   await search.click();
   await page.keyboard.type('zzz');
@@ -26,7 +26,7 @@ test('keeps focus and shows "No data" when nothing matches', async ({ page }) =>
 });
 
 test('filter combines with sort', async ({ page }) => {
-  await page.goto('/examples/basic.html');
+  await page.goto('/basic.html');
   const role = page.locator('th', { hasText: 'Role' });
   const names = page.locator('tbody tr td:nth-child(2)');
 
@@ -41,7 +41,7 @@ test('filter combines with sort', async ({ page }) => {
 });
 
 test('the column select limits the search to one column', async ({ page }) => {
-  await page.goto('/examples/basic.html');
+  await page.goto('/basic.html');
   const search = page.getByRole('searchbox', { name: 'Search' });
   const column = page.getByRole('combobox', { name: 'Search in' });
   const rows = page.locator('tbody tr');

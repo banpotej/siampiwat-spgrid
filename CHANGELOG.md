@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Example only: the example pages now live in the repo root so the dev server serves them at `/` (intro), `/purchase-order.html` and `/goods-receipt.html` instead of under `/examples/`; scripts, styles and mock data stay in `examples/`. `index.html` is a list of examples, a Goods Receipt example was added, and every page has a shared nav (`examples/nav.js`). No `src/` change.
 - Row grouping: `groupBy` (data column keys, outermost first) groups the rows, with a collapsible header row per group (`tr.dg-group-row`,
   `button.dg-group-toggle` with `aria-expanded`) that shows the column's cell for the value and how many of its rows are on the page. Rows are put
   in group order before paging (filter, sort, group, paginate); inside a group they keep the sort, and a sort on a group column sets that level's
