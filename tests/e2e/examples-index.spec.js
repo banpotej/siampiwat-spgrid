@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siampiwat DataGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat DataGrid');
   const cards = page.locator('#examples');
   await expect(cards.getByRole('link')).toHaveCount(2);
   await cards.getByRole('link', { name: /Goods Receipt/ }).click();
@@ -11,7 +11,7 @@ test('landing page lists each example as a card', async ({ page }) => {
 
 test('the landing page carries the new name and the package version', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/^Siampiwat DataGrid/);
+  await expect(page).toHaveTitle(/^Siam Piwat DataGrid/);
   await expect(page.locator('#version')).toHaveText(/^v\d+\.\d+\.\d+$/);
   await expect(page.getByRole('link', { name: 'ดูตัวอย่างแรก' })).toBeVisible();
 });
@@ -49,9 +49,9 @@ test('the nav is on every example page, marks the current one, and leads home', 
     'page',
   );
 
-  await nav.getByRole('link', { name: 'Siampiwat DataGrid' }).click();
+  await nav.getByRole('link', { name: 'Siam Piwat DataGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siampiwat DataGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat DataGrid');
 });
 
 test('landing page explains how to install the package', async ({ page }) => {

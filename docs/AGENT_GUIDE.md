@@ -1,4 +1,4 @@
-# DataGrid – guide for AI coding agents
+# Siam Piwat DataGrid – guide for AI coding agents
 
 This file is for an agent that **uses** the `datagrid` package inside someone's app (it ships in the package:
 `node_modules/@siampiwat/datagrid/docs/AGENT_GUIDE.md`). The full reference is `docs/API.md` (Thai); read it for any option not

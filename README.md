@@ -1,6 +1,6 @@
-# DataGrid
+# Siam Piwat DataGrid
 
-DataGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
+Siam Piwat DataGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
 
 ## การติดตั้ง
 

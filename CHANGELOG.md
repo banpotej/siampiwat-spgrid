@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `your-host` placeholder; it works once the release exists (`gh release create v1.0.1 release/*`).
 - The repository is `banpotej/siampiwat-datagrid` (was `banpotej/datagrid`), matching the package name; GitHub redirects the old URL. `package.json`, the install
   examples and `backup.ps1` follow.
-- Landing page (`index.html`, example only, no `src/` change): named "Siampiwat DataGrid" (title, heading, nav brand, footer; the nav brand is shared by the example pages),
+- Landing page (`index.html`, example only, no `src/` change): named "Siam Piwat DataGrid" (title, heading, nav brand, footer; the nav brand is shared by the example pages),
   restyled in the Siam Piwat colours (purple, gold, magenta, ultramarine, aqua, teal, sherpa blue) in the new `examples/landing.css` instead of inline styles, with a hero
   showing the package name and version, a second call to action, and a footer. The example pages keep `examples/page.css`.
 - Version 1.0.1 (`package.json`, `package-lock.json`, install examples in the README and the landing page).
