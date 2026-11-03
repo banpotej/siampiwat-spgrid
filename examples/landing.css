@@ -1,0 +1,434 @@
+/* Landing page (index.html) in the Siam Piwat corporate colours. The example pages keep examples/page.css only. */
+:root {
+  --sp-purple: #3a2d4b; /* SIAM PIWAT PURPLE */
+  --sp-gold: #a28448; /* SIAM PIWAT SOLID GOLD */
+  --sp-magenta: #a12fc3;
+  --sp-ultramarine: #2c2e98;
+  --sp-aqua: #70c9ec;
+  --sp-teal: #45b084;
+  --sp-sherpa: #185b7c;
+  /* Tints of the brand colours: text on the dark hero, quiet surfaces, muted text (all >= 4.5:1 where used as text). */
+  --sp-gold-light: #e3d3a6;
+  --sp-ink: #2a2037;
+  --sp-muted: #6b5f78;
+  --sp-surface: color-mix(in srgb, var(--sp-purple) 5%, #fff);
+  --sp-line: color-mix(in srgb, var(--sp-purple) 14%, #fff);
+}
+
+body {
+  background: #fff;
+  color: var(--sp-ink);
+}
+
+main {
+  max-width: 960px;
+}
+
+a {
+  color: var(--sp-ultramarine);
+}
+
+/* Top bar */
+.site-nav {
+  margin-bottom: 24px;
+  border-bottom-color: var(--sp-line);
+}
+
+.site-nav a {
+  color: var(--sp-muted);
+}
+
+.site-nav a:hover {
+  background: var(--sp-surface);
+  color: var(--sp-purple);
+}
+
+.site-nav a:focus-visible {
+  outline-color: var(--sp-ultramarine);
+}
+
+.site-nav a[aria-current='page'] {
+  background: var(--sp-surface);
+  color: var(--sp-purple);
+}
+
+.site-nav .brand {
+  color: var(--sp-purple);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.site-nav .brand::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 2px;
+  background: var(--sp-gold);
+  transform: rotate(45deg);
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin: 8px 0 40px;
+  padding: 56px 40px 48px;
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      color-mix(in srgb, var(--sp-magenta) 38%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 12% 110%,
+      color-mix(in srgb, var(--sp-aqua) 26%, transparent),
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      var(--sp-purple),
+      color-mix(in srgb, var(--sp-purple) 55%, var(--sp-ultramarine))
+    );
+  color: #fff;
+  box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--sp-purple) 70%, transparent);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 40px 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, var(--sp-gold), var(--sp-gold-light) 40%, transparent);
+}
+
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-chips li {
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--sp-gold-light) 55%, transparent);
+  border-radius: 999px;
+  color: var(--sp-gold-light);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hero-chips code {
+  font: inherit;
+}
+
+.hero h1 {
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.hero p {
+  max-width: 38rem;
+  margin: 0 0 28px;
+  color: color-mix(in srgb, #fff 88%, var(--sp-purple));
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cta {
+  display: inline-block;
+  padding: 11px 24px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.cta.primary {
+  background: var(--sp-gold-light);
+  color: var(--sp-purple);
+}
+
+.cta.primary:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.cta.ghost {
+  border-color: color-mix(in srgb, #fff 45%, transparent);
+  color: #fff;
+}
+
+.cta.ghost:hover {
+  border-color: #fff;
+  background: color-mix(in srgb, #fff 12%, transparent);
+}
+
+.cta:focus-visible {
+  outline: 3px solid var(--sp-aqua);
+  outline-offset: 3px;
+}
+
+/* Section headings carry a short gold bar */
+h2 {
+  position: relative;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  color: var(--sp-purple);
+  font-size: 1.3rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 36px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--sp-gold);
+}
+
+section {
+  margin-bottom: 44px;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Features: each card takes the next brand colour */
+.features li {
+  padding: 16px 18px;
+  border: 1px solid var(--sp-line);
+  border-left: 4px solid var(--sp-gold);
+  border-radius: 4px 12px 12px 4px;
+  background: var(--sp-surface);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.features li:nth-child(6n + 2) {
+  border-left-color: var(--sp-magenta);
+}
+
+.features li:nth-child(6n + 3) {
+  border-left-color: var(--sp-ultramarine);
+}
+
+.features li:nth-child(6n + 4) {
+  border-left-color: var(--sp-aqua);
+}
+
+.features li:nth-child(6n + 5) {
+  border-left-color: var(--sp-teal);
+}
+
+.features li:nth-child(6n + 6) {
+  border-left-color: var(--sp-sherpa);
+}
+
+.features strong,
+.cards strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--sp-purple);
+}
+
+/* Example cards */
+.cards a {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 18px;
+  border: 1px solid var(--sp-line);
+  border-radius: 14px;
+  color: var(--sp-ink);
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+
+.cards a:hover,
+.cards a:focus-visible {
+  border-color: var(--sp-magenta);
+  box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--sp-purple) 45%, transparent);
+  transform: translateY(-2px);
+}
+
+.cards a:focus-visible {
+  outline: 2px solid var(--sp-ultramarine);
+  outline-offset: 2px;
+}
+
+.cards span {
+  color: var(--sp-muted);
+  font-size: 13px;
+}
+
+/* Install steps */
+.install ol {
+  margin: 0;
+  padding-left: 24px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.install li {
+  margin-bottom: 14px;
+  padding-left: 4px;
+}
+
+.install li::marker {
+  color: var(--sp-gold);
+  font-weight: 700;
+}
+
+.install li > strong {
+  display: block;
+  color: var(--sp-purple);
+}
+
+.install h3 {
+  margin: 14px 0 2px;
+  color: var(--sp-sherpa);
+  font-size: 0.92rem;
+}
+
+.install pre {
+  margin: 6px 0 10px;
+  padding: 13px 16px;
+  overflow: auto;
+  border-left: 3px solid var(--sp-gold);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sp-purple) 88%, #000);
+  color: #efe9f5;
+  font:
+    12.5px/1.6 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+
+.install pre:focus-visible {
+  outline: 2px solid var(--sp-aqua);
+  outline-offset: 2px;
+}
+
+.install :not(pre) > code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--sp-gold) 16%, #fff);
+  color: var(--sp-purple);
+  font:
+    0.9em ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+
+/* Download buttons */
+.download {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.download-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: var(--sp-purple);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.download-btn:hover {
+  background: var(--sp-ultramarine);
+}
+
+.download-btn:focus-visible {
+  outline: 2px solid var(--sp-ultramarine);
+  outline-offset: 2px;
+}
+
+.download-btn[aria-disabled='true'] {
+  background: var(--sp-line);
+  color: var(--sp-muted);
+  pointer-events: none;
+}
+
+.download-note {
+  color: var(--sp-muted);
+  font-size: 13px;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--sp-line);
+  color: var(--sp-muted);
+  font-size: 13px;
+}
+
+.site-footer a {
+  color: var(--sp-sherpa);
+}
+
+@media (max-width: 520px) {
+  .hero {
+    padding: 36px 22px 34px;
+  }
+
+  .hero::after {
+    inset-inline: 22px;
+  }
+
+  .cta {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .cards a,
+  .download-btn {
+    transition: none;
+  }
+
+  .cta.primary:hover,
+  .cards a:hover,
+  .cards a:focus-visible {
+    transform: none;
+  }
+}

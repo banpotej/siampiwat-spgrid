@@ -2,11 +2,34 @@ import { expect, test } from '@playwright/test';
 
 test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('DataGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siampiwat DataGrid');
   const cards = page.locator('#examples');
   await expect(cards.getByRole('link')).toHaveCount(2);
   await cards.getByRole('link', { name: /Goods Receipt/ }).click();
   await expect(page).toHaveURL(/\/goods-receipt\.html$/);
+});
+
+test('the landing page carries the new name and the package version', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveTitle(/^Siampiwat DataGrid/);
+  await expect(page.locator('#version')).toHaveText(/^v\d+\.\d+\.\d+$/);
+  await expect(page.getByRole('link', { name: 'ดูตัวอย่างแรก' })).toBeVisible();
+});
+
+test('the landing page uses the Siam Piwat purple and gold', async ({ page }) => {
+  await page.goto('/');
+  const hero = page.locator('.hero');
+  expect(await hero.evaluate((el) => getComputedStyle(el).backgroundImage)).toContain(
+    'rgb(58, 45, 75)',
+  );
+  await expect(page.locator('.download-btn').first()).toHaveCSS(
+    'background-color',
+    'rgb(58, 45, 75)',
+  );
+  await expect(page.locator('.features li').first()).toHaveCSS(
+    'border-left-color',
+    'rgb(162, 132, 72)',
+  );
 });
 
 test('the nav is on every example page, marks the current one, and leads home', async ({
@@ -26,9 +49,9 @@ test('the nav is on every example page, marks the current one, and leads home', 
     'page',
   );
 
-  await nav.getByRole('link', { name: 'DataGrid' }).click();
+  await nav.getByRole('link', { name: 'Siampiwat DataGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('DataGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siampiwat DataGrid');
 });
 
 test('landing page explains how to install the package', async ({ page }) => {

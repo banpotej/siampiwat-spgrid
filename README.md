@@ -1,55 +1,55 @@
 # DataGrid
 
-Reusable vanilla JS DataGrid. Zero runtime dependencies, ES modules only.
+DataGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
 
-## Install
+## การติดตั้ง
 
-Requirements: Node.js 22 or newer and a bundler that handles ES modules (Vite, webpack, ...).
+ข้อกำหนด: Node.js 22 ขึ้นไป และ bundler ที่รองรับ ES modules (Vite, webpack, ...)
 
 ```sh
 npm install @siampiwat/datagrid
 ```
 
-The package is not published to a registry yet. Until it is, install it from a URL or a file:
+ตอนนี้แพ็กเกจยังไม่ได้เผยแพร่ขึ้น registry จนกว่าจะเผยแพร่ ให้ติดตั้งจาก URL หรือไฟล์แทน:
 
 ```sh
-# the .tgz attached to the GitHub Release (a private repo needs a token) - made by `npm run pack:release`
+# ไฟล์ .tgz ที่แนบกับ GitHub Release (repo แบบ private ต้องใช้ token) - สร้างด้วย `npm run pack:release`
 npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz
 
-# a git URL: npm runs the `prepare` script, so the package builds itself on install (git required)
+# git URL: npm จะรันสคริปต์ `prepare` ทำให้แพ็กเกจ build ตัวเองตอนติดตั้ง (ต้องมี git)
 npm install github:banpotej/siampiwat-datagrid
-npm install github:banpotej/siampiwat-datagrid#main   # a branch or tag
+npm install github:banpotej/siampiwat-datagrid#main   # branch หรือ tag
 
-# a local tarball
-npm install                # in this repo
+# tarball ในเครื่อง
+npm install                # ใน repo นี้
 npm run build
-npm pack                   # creates siampiwat-datagrid-1.0.1.tgz
-npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz   # in your project
+npm pack                   # สร้าง siampiwat-datagrid-1.0.1.tgz
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz   # ในโปรเจกต์ของคุณ
 ```
 
-`import { DataGrid } from '@siampiwat/datagrid'` brings the stylesheet in too (through your bundler); `@siampiwat/datagrid/style.css` is still exported, and
-`@siampiwat/datagrid/plain` is the JS alone. The grid touches the DOM, so create it in the browser
-only: in React or Next.js do it in `useEffect` of a client component and call `grid.destroy()` on unmount.
+`import { DataGrid } from '@siampiwat/datagrid'` จะนำ stylesheet เข้ามาด้วย (ผ่าน bundler ของคุณ) ส่วน `@siampiwat/datagrid/style.css` ยังคง export อยู่ และ
+`@siampiwat/datagrid/plain` คือ JS อย่างเดียว grid เข้าถึง DOM จึงต้องสร้างในเบราว์เซอร์เท่านั้น:
+ใน React หรือ Next.js ให้สร้างใน `useEffect` ของ client component และเรียก `grid.destroy()` ตอน unmount
 
-### Release files (.tgz and .zip)
+### ไฟล์ Release (.tgz และ .zip)
 
-`npm run pack:release` (PowerShell; runs `npm run check` first, or call `.\pack.ps1 -SkipCheck`) writes three files to `release\`:
+`npm run pack:release` (PowerShell; รัน `npm run check` ก่อน หรือเรียก `.\pack.ps1 -SkipCheck`) จะเขียนไฟล์สามไฟล์ลงใน `release\`:
 
-- `siampiwat-datagrid-<version>.tgz` – the npm package: `npm install .\release\siampiwat-datagrid-<version>.tgz`
-- `siampiwat-datagrid-<version>.zip` – the same package unzipped, for people without npm: use `dist\datagrid.js` and `dist\datagrid.css`
-- `SHA256SUMS.txt` – checksums of both
+- `siampiwat-datagrid-<version>.tgz` – แพ็กเกจ npm: `npm install .\release\siampiwat-datagrid-<version>.tgz`
+- `siampiwat-datagrid-<version>.zip` – แพ็กเกจเดียวกันที่แตกไฟล์แล้ว สำหรับผู้ที่ไม่ใช้ npm: ใช้ `dist\datagrid.js` และ `dist\datagrid.css`
+- `SHA256SUMS.txt` – checksum ของทั้งสองไฟล์
 
-### For AI coding agents
+### สำหรับ AI coding agent
 
-[docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) tells an agent how to use the package correctly (setup, React / Next.js, columns, options,
-escaping rules, mistakes to avoid). It ships in the package: `node_modules/@siampiwat/datagrid/docs/AGENT_GUIDE.md`, or `@siampiwat/datagrid/agent-guide`.
-Point your agent at it from `AGENTS.md` / `CLAUDE.md`.
+[docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) บอก agent ว่าจะใช้แพ็กเกจนี้อย่างถูกต้องได้อย่างไร (การตั้งค่า, React / Next.js, columns, options,
+กฎการ escape, ข้อผิดพลาดที่ควรหลีกเลี่ยง) ไฟล์นี้แถมมาในแพ็กเกจ: `node_modules/@siampiwat/datagrid/docs/AGENT_GUIDE.md` หรือ `@siampiwat/datagrid/agent-guide`
+ให้ชี้ agent ของคุณมาที่ไฟล์นี้จาก `AGENTS.md` / `CLAUDE.md`
 
-### From a URL in the browser (no npm)
+### จาก URL ในเบราว์เซอร์ (ไม่ใช้ npm)
 
-`dist/datagrid.js` is a self-contained ES module (no imports, no dependencies), so a page can load it from any URL.
-Once the package is on npm, jsDelivr and unpkg serve it (pin the version, not `@latest`); or host `dist/datagrid.js` and
-`dist/datagrid.css` yourself on any static host:
+`dist/datagrid.js` เป็น ES module ที่ครบในตัว (ไม่มี import ไม่มี dependency) หน้าเว็บจึงโหลดจาก URL ใดก็ได้
+เมื่อแพ็กเกจอยู่บน npm แล้ว jsDelivr และ unpkg จะให้บริการ (ระบุเวอร์ชันให้ชัดเจน ไม่ใช้ `@latest`) หรือจะโฮสต์
+`dist/datagrid.js` และ `dist/datagrid.css` เองบน static host ใดก็ได้:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.css" />
@@ -68,10 +68,10 @@ Once the package is on npm, jsDelivr and unpkg serve it (pin the version, not `@
 </script>
 ```
 
-## Usage
+## การใช้งาน
 
 ```js
-import { DataGrid } from '@siampiwat/datagrid'; // the stylesheet comes with it
+import { DataGrid } from '@siampiwat/datagrid'; // stylesheet มาพร้อมกัน
 
 const grid = new DataGrid(document.querySelector('#app'), {
   columns: [{ key: 'id', label: 'ID' }, { key: 'name' }],
@@ -82,22 +82,22 @@ grid.setRows([{ id: 2, name: 'Grace' }]);
 grid.destroy();
 ```
 
-Cell values are HTML-escaped unless a column sets `render` (then you escape). Columns can also be action columns
-(`actions`) with an `action` event. See [docs/API.md](docs/API.md) for the full API.
+ค่าในเซลล์จะถูก escape HTML ให้อัตโนมัติ เว้นแต่คอลัมน์กำหนด `render` (กรณีนั้นคุณต้อง escape เอง) คอลัมน์ยังเป็นคอลัมน์ action
+(`actions`) ที่ส่ง event `action` ได้ ดู API ทั้งหมดที่ [docs/API.md](docs/API.md)
 
-## Commands
+## คำสั่ง
 
-- `npm run dev` – dev server, example at `/`
-- `npm run build` – library bundle and `.d.ts` into `dist/`
-- `npm test` – unit tests
-- `npm run test:e2e` – Playwright end-to-end tests
-- `npm run check` – lint, typecheck, unit tests and build
+- `npm run dev` – dev server ตัวอย่างอยู่ที่ `/`
+- `npm run build` – สร้าง library bundle และ `.d.ts` ลงใน `dist/`
+- `npm test` – unit test
+- `npm run test:e2e` – Playwright end-to-end test
+- `npm run check` – lint, typecheck, unit test และ build
 
-## Icons and theming
+## ไอคอนและธีม
 
-Icons are inline SVGs from [Material Symbols](https://github.com/google/material-design-icons) (Apache-2.0),
-bundled in the library: no icon font, no network requests. Override them with `options.icons`. The grid supports
-dark mode (`prefers-color-scheme` or `data-theme="dark"`), `striped`, `density`, `stickyHeader` and CSS
-variables (`--dg-*`); see [docs/API.md](docs/API.md#theming). Attribution is in [NOTICE](NOTICE).
+ไอคอนเป็น inline SVG จาก [Material Symbols](https://github.com/google/material-design-icons) (Apache-2.0)
+รวมอยู่ในไลบรารีแล้ว: ไม่ใช้ icon font และไม่มี network request สามารถแทนที่ได้ด้วย `options.icons` grid รองรับ
+dark mode (`prefers-color-scheme` หรือ `data-theme="dark"`), `striped`, `density`, `stickyHeader` และ CSS
+variable (`--dg-*`) ดู [docs/API.md](docs/API.md#theming) การอ้างอิงแหล่งที่มาอยู่ใน [NOTICE](NOTICE)
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for scope.
+ดูขอบเขตงานที่ [docs/ROADMAP.md](docs/ROADMAP.md)

@@ -33,7 +33,7 @@ export function renderNav() {
   nav.className = 'site-nav';
   nav.setAttribute('aria-label', 'เมนูตัวอย่าง');
   nav.replaceChildren(
-    link(HOME, 'DataGrid', 'brand'),
+    link(HOME, 'Siampiwat DataGrid', 'brand'),
     ...EXAMPLES.map((example) => link(example.href, example.nav)),
   );
 }

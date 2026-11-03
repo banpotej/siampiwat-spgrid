@@ -9,182 +9,29 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>DataGrid: ตารางข้อมูล vanilla JS</title>
+    <title>Siampiwat DataGrid: ตารางข้อมูล vanilla JS</title>
     <link rel="stylesheet" href="/examples/page.css" />
-    <style>
-      body {
-        color: #334155;
-      }
-      .hero {
-        margin: 8px 0 32px;
-        padding: 40px 28px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, #eff6ff, #e0e7ff);
-      }
-      .hero h1 {
-        margin: 0 0 8px;
-        color: #0f172a;
-        font-size: 2rem;
-      }
-      .hero p {
-        max-width: 38rem;
-        margin: 0 0 20px;
-        line-height: 1.6;
-      }
-      .hero .cta {
-        display: inline-block;
-        padding: 10px 20px;
-        border-radius: 8px;
-        background: #2563eb;
-        color: #fff;
-        font-weight: 600;
-        text-decoration: none;
-      }
-      .hero .cta:hover {
-        background: #1d4ed8;
-      }
-      .hero .cta:focus-visible {
-        outline: 2px solid #1e3a8a;
-        outline-offset: 2px;
-      }
-      h2 {
-        margin: 0 0 12px;
-        color: #0f172a;
-        font-size: 1.15rem;
-      }
-      section {
-        margin-bottom: 32px;
-      }
-      ul {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 16px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-      .features li {
-        padding: 14px 16px;
-        border-left: 3px solid #3b82f6;
-        background: #f8fafc;
-        border-radius: 0 8px 8px 0;
-        font-size: 14px;
-        line-height: 1.5;
-      }
-      .features strong {
-        display: block;
-        color: #0f172a;
-      }
-      .cards a {
-        display: block;
-        height: 100%;
-        box-sizing: border-box;
-        padding: 16px;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        color: inherit;
-        text-decoration: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-      }
-      .cards a:hover,
-      .cards a:focus-visible {
-        border-color: #3b82f6;
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
-      }
-      .install ol {
-        margin: 0;
-        padding-left: 22px;
-        font-size: 14px;
-        line-height: 1.7;
-      }
-      .install li {
-        margin-bottom: 12px;
-      }
-      .install li > strong {
-        display: block;
-        color: #0f172a;
-      }
-      .install pre {
-        margin: 6px 0 10px;
-        padding: 12px 14px;
-        overflow: auto;
-        border-radius: 8px;
-        background: #0f172a;
-        color: #e2e8f0;
-        font:
-          12.5px/1.6 ui-monospace,
-          'Cascadia Code',
-          Consolas,
-          monospace;
-      }
-      .install h3 {
-        margin: 12px 0 2px;
-        color: #1e3a8a;
-        font-size: 0.9rem;
-      }
-      .download {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-        margin: 8px 0;
-      }
-      .download-btn {
-        padding: 8px 16px;
-        border-radius: 8px;
-        background: #2563eb;
-        color: #fff;
-        font-weight: 600;
-        text-decoration: none;
-      }
-      .download-btn:hover {
-        background: #1d4ed8;
-      }
-      .download-btn:focus-visible {
-        outline: 2px solid #1e3a8a;
-        outline-offset: 2px;
-      }
-      .download-btn[aria-disabled='true'] {
-        background: #94a3b8;
-        pointer-events: none;
-      }
-      .download-note {
-        color: #64748b;
-        font-size: 13px;
-      }
-      .install :not(pre) > code {
-        padding: 1px 5px;
-        border-radius: 4px;
-        background: #dbeafe;
-        color: #1e3a8a;
-        font:
-          0.9em ui-monospace,
-          'Cascadia Code',
-          Consolas,
-          monospace;
-      }
-      .cards strong {
-        display: block;
-        margin-bottom: 4px;
-        color: #0f172a;
-      }
-      .cards span {
-        font-size: 13px;
-      }
-    </style>
+    <link rel="stylesheet" href="/examples/landing.css" />
   </head>
   <body>
     <main>
       <nav id="site-nav"></nav>
       <header class="hero">
-        <h1>DataGrid</h1>
+        <ul class="hero-chips" aria-label="จุดเด่น">
+          <li><code>@siampiwat/datagrid</code> <span id="version"></span></li>
+          <li>Vanilla JS</li>
+          <li>ไม่มี dependency</li>
+          <li>รองรับภาษาไทย</li>
+        </ul>
+        <h1>Siampiwat DataGrid</h1>
         <p>
           ตารางข้อมูลแบบ vanilla JS ไม่มี dependency ใช้งานง่าย ค้นหา เรียงลำดับ แบ่งหน้า
           และปรับแต่งได้ครบ พร้อมป้ายกำกับภาษาไทย ลองดูตัวอย่างด้านล่าง
         </p>
-        <a class="cta" id="start" href="/purchase-order.html">ดูตัวอย่างแรก</a>
+        <div class="hero-actions">
+          <a class="cta primary" id="start" href="/purchase-order.html">ดูตัวอย่างแรก</a>
+          <a class="cta ghost" href="#install-title">การติดตั้ง</a>
+        </div>
       </header>
       <section class="features" aria-labelledby="features-title">
         <h2 id="features-title">ความสามารถหลัก</h2>
@@ -213,8 +60,11 @@
             <pre tabindex="0"><code>npm install @siampiwat/datagrid</code></pre>
             ตอนนี้ยังไม่ได้เผยแพร่ เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
             <h3>ก. จาก URL ของไฟล์ .tgz</h3>
-            ไฟล์ .tgz แนบอยู่ที่ GitHub Releases (ถ้า repo เป็น private ต้องมี token) สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
-            <pre tabindex="0"><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz</code></pre>
+            ไฟล์ .tgz แนบอยู่ที่ GitHub Releases (ถ้า repo เป็น private ต้องมี token)
+            สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
+            <pre
+              tabindex="0"
+            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
             <pre tabindex="0"><code>npm install github:banpotej/siampiwat-datagrid
@@ -297,12 +147,18 @@ const grid = new DataGrid(document.querySelector('#app'), {
         <h2 id="examples-title">ตัวอย่าง</h2>
         <ul id="examples"></ul>
       </section>
+      <footer class="site-footer">
+        Siampiwat DataGrid · <code>@siampiwat/datagrid</code> <span id="footer-version"></span>
+      </footer>
     </main>
     <script type="module">
       import { EXAMPLES, renderNav } from '/examples/nav.js';
       import pkg from '/package.json';
 
       renderNav();
+      for (const id of ['version', 'footer-version']) {
+        document.getElementById(id).textContent = `v${pkg.version}`;
+      }
 
       // The tarball (`npm pack`) and dist/ (`npm run build`) are git-ignored build output, so check that
       // each file exists before offering it. The note names the command that creates the missing ones.
