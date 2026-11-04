@@ -16,6 +16,27 @@ test('the landing page carries the new name and the package version', async ({ p
   await expect(page.getByRole('link', { name: 'ดูตัวอย่างแรก' })).toBeVisible();
 });
 
+test('the landing page shows the latest version published on npm', async ({ page }) => {
+  await page.route('https://registry.npmjs.org/@siampiwat/datagrid/latest', (route) =>
+    route.fulfill({ json: { name: '@siampiwat/datagrid', version: '9.8.7' } }),
+  );
+  await page.goto('/');
+  await expect(page.locator('#version')).toHaveText('v9.8.7');
+  await expect(page.locator('#footer-version')).toHaveText('v9.8.7');
+  await expect(page.locator('.npm-version').first()).toHaveText('9.8.7');
+  // Files built from this checkout keep the repo version.
+  await expect(page.locator('#download-tgz')).not.toContainText('9.8.7');
+});
+
+test('the landing page keeps the package.json version when npm cannot be reached', async ({
+  page,
+}) => {
+  await page.route('https://registry.npmjs.org/**', (route) => route.abort());
+  await page.goto('/');
+  await expect(page.locator('#version')).toHaveText(/^v\d+\.\d+\.\d+$/);
+  await expect(page.locator('#version')).not.toHaveText('v9.8.7');
+});
+
 test('the landing page uses the Siam Piwat purple and gold', async ({ page }) => {
   // Pretend the tarball exists so the button is enabled; a missing file (as on CI) greys it out.
   await page.route('**/*datagrid-*.tgz', (route) =>

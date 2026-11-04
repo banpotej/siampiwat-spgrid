@@ -58,7 +58,8 @@
             <strong>ติดตั้งแพ็กเกจด้วย npm</strong>
             เผยแพร่บน npm แล้ว ติดตั้งได้ด้วย
             <pre tabindex="0"><code>npm install @siampiwat/datagrid</code></pre>
-            หากติดตั้งผ่าน registry ไม่ได้ (เช่น ใช้ registry ภายใน) เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
+            หากติดตั้งผ่าน registry ไม่ได้ (เช่น ใช้ registry ภายใน) เลือกติดตั้งจาก URL หรือไฟล์ได้
+            3 แบบ
             <h3>ก. จาก URL ของไฟล์ .tgz</h3>
             ไฟล์ .tgz แนบอยู่ที่ GitHub Releases (ถ้า repo เป็น private ต้องมี token)
             สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
@@ -108,10 +109,10 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.2.tgz</code></pre>
             </span>
             <pre
               tabindex="0"
-            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.css" /&gt;
+            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@<span class="npm-version">1.0.3</span>/dist/datagrid.css" /&gt;
 &lt;div id="app"&gt;&lt;/div&gt;
 &lt;script type="module"&gt;
-  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@<span class="npm-version">1.0.3</span>/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',
@@ -156,9 +157,21 @@ const grid = new DataGrid(document.querySelector('#app'), {
       import pkg from '/package.json';
 
       renderNav();
-      for (const id of ['version', 'footer-version']) {
-        document.getElementById(id).textContent = `v${pkg.version}`;
+      // Show the repo version at once, then swap in the latest one on npm. The download links below
+      // keep the repo version: they point at files built from this checkout.
+      function showNpmVersion(version) {
+        for (const id of ['version', 'footer-version']) {
+          document.getElementById(id).textContent = `v${version}`;
+        }
+        for (const el of document.querySelectorAll('.npm-version')) el.textContent = version;
       }
+      showNpmVersion(pkg.version);
+      fetch('https://registry.npmjs.org/@siampiwat/datagrid/latest')
+        .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+        .then((latest) => {
+          if (/^\d+\.\d+\.\d+/.test(latest.version)) showNpmVersion(latest.version);
+        })
+        .catch(() => {}); // offline or not published yet: keep the package.json version
 
       // The tarball (`npm pack`) and dist/ (`npm run build`) are git-ignored build output, so check that
       // each file exists before offering it. The note names the command that creates the missing ones.

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The landing page shows the latest version published on npm (fetched from the registry, falling back to the `package.json` version when offline), including the jsDelivr example URLs. Download links still use the repo version. No `src/` change.
+
 ## [1.0.3] - 2026-11-04
 
 ### Changed
