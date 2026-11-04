@@ -121,9 +121,9 @@ test('the install section offers the zip, and says how to build it when it is mi
     route.fulfill({ status: 200, contentType: 'application/zip', body: 'PK' }),
   );
   await page.goto('/index.html');
-  const zip = page.getByRole('link', { name: /siampiwat-datagrid-1\.0\.1\.zip/ });
-  await expect(zip).toHaveAttribute('href', '/release/siampiwat-datagrid-1.0.1.zip');
-  await expect(zip).toHaveAttribute('download', 'siampiwat-datagrid-1.0.1.zip');
+  const zip = page.getByRole('link', { name: /siampiwat-datagrid-\d+\.\d+\.\d+\.zip/ });
+  await expect(zip).toHaveAttribute('href', /^\/release\/siampiwat-datagrid-\d+\.\d+\.\d+\.zip$/);
+  await expect(zip).toHaveAttribute('download', /^siampiwat-datagrid-\d+\.\d+\.\d+\.zip$/);
   await expect(zip).not.toHaveAttribute('aria-disabled', 'true');
 
   await page.unroute('**/release/*datagrid-*.zip');

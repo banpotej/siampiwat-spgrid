@@ -29,9 +29,9 @@ test('the install section documents npm, tarball URL, git URL, file and plain UR
   const install = page.getByRole('region', { name: 'การติดตั้ง' });
   for (const text of [
     'npm install @siampiwat/datagrid',
-    'npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz',
+    'npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.2/siampiwat-datagrid-1.0.2.tgz',
     'npm install github:banpotej/siampiwat-datagrid',
-    "import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.js'",
+    "import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.js'",
   ]) {
     await expect(install).toContainText(text);
   }

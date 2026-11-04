@@ -56,15 +56,15 @@
           </li>
           <li>
             <strong>ติดตั้งแพ็กเกจด้วย npm</strong>
-            เมื่อเผยแพร่ขึ้น registry แล้วใช้
+            เผยแพร่บน npm แล้ว ติดตั้งได้ด้วย
             <pre tabindex="0"><code>npm install @siampiwat/datagrid</code></pre>
-            ตอนนี้ยังไม่ได้เผยแพร่ เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
+            หากติดตั้งผ่าน registry ไม่ได้ (เช่น ใช้ registry ภายใน) เลือกติดตั้งจาก URL หรือไฟล์ได้ 3 แบบ
             <h3>ก. จาก URL ของไฟล์ .tgz</h3>
             ไฟล์ .tgz แนบอยู่ที่ GitHub Releases (ถ้า repo เป็น private ต้องมี token)
             สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
             <pre
               tabindex="0"
-            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz</code></pre>
+            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.2/siampiwat-datagrid-1.0.2.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
             <pre tabindex="0"><code>npm install github:banpotej/siampiwat-datagrid
@@ -79,10 +79,10 @@ npm install github:banpotej/siampiwat-datagrid#main   # ระบุ branch ห�
             <pre tabindex="0"><code># ใน repo datagrid
 npm install
 npm run build
-npm pack              # ได้ไฟล์ siampiwat-datagrid-1.0.1.tgz
+npm pack              # ได้ไฟล์ siampiwat-datagrid-1.0.2.tgz
 
 # ในโปรเจกต์ที่จะใช้
-npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz</code></pre>
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.2.tgz</code></pre>
           </li>
           <li>
             <strong>ดาวน์โหลดเป็นไฟล์ .zip</strong>
@@ -108,10 +108,10 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz</code></pre>
             </span>
             <pre
               tabindex="0"
-            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.css" /&gt;
+            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.css" /&gt;
 &lt;div id="app"&gt;&lt;/div&gt;
 &lt;script type="module"&gt;
-  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',

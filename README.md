@@ -10,11 +10,11 @@ Siam Piwat DataGrid แบบ vanilla JS ที่นำกลับมาใช
 npm install @siampiwat/datagrid
 ```
 
-ตอนนี้แพ็กเกจยังไม่ได้เผยแพร่ขึ้น registry จนกว่าจะเผยแพร่ ให้ติดตั้งจาก URL หรือไฟล์แทน:
+แพ็กเกจเผยแพร่บน npm แล้ว หากติดตั้งผ่าน registry ไม่ได้ (เช่น ใช้ registry ภายใน) ให้ติดตั้งจาก URL หรือไฟล์แทน:
 
 ```sh
 # ไฟล์ .tgz ที่แนบกับ GitHub Release (repo แบบ private ต้องใช้ token) - สร้างด้วย `npm run pack:release`
-npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.1/siampiwat-datagrid-1.0.1.tgz
+npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.2/siampiwat-datagrid-1.0.2.tgz
 
 # git URL: npm จะรันสคริปต์ `prepare` ทำให้แพ็กเกจ build ตัวเองตอนติดตั้ง (ต้องมี git)
 npm install github:banpotej/siampiwat-datagrid
@@ -23,8 +23,8 @@ npm install github:banpotej/siampiwat-datagrid#main   # branch หรือ tag
 # tarball ในเครื่อง
 npm install                # ใน repo นี้
 npm run build
-npm pack                   # สร้าง siampiwat-datagrid-1.0.1.tgz
-npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz   # ในโปรเจกต์ของคุณ
+npm pack                   # สร้าง siampiwat-datagrid-1.0.2.tgz
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.2.tgz   # ในโปรเจกต์ของคุณ
 ```
 
 `import { DataGrid } from '@siampiwat/datagrid'` จะนำ stylesheet เข้ามาด้วย (ผ่าน bundler ของคุณ) ส่วน `@siampiwat/datagrid/style.css` ยังคง export อยู่ และ
@@ -52,10 +52,10 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.1.tgz   # ในโป�
 `dist/datagrid.js` และ `dist/datagrid.css` เองบน static host ใดก็ได้:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.css" />
 <div id="app"></div>
 <script type="module">
-  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.1/dist/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',

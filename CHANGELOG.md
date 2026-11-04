@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Hosting: `npm run build:site` (`vite.site.config.js`) builds the landing page and the example pages into `site/` (git-ignored) for static hosting such as Cloudflare Pages: build command `npm run build:site`, output directory `site`. `examples/` and `dist/` are copied next to the pages as plain files (the source viewer fetches them). No `src/` change.
 
+## [1.0.2] - 2026-11-04
+
+### Changed
+
+- The package is now published on npm as `@siampiwat/datagrid`; the README and the landing page install steps no longer say it is unpublished (the URL and file installs remain as alternatives).
+- Landing page e2e tests no longer hard-code the package version, and the colour test no longer depends on `release/` existing. No `src/` change.
+
 ## [1.0.1] - 2026-11-03
 
 ### Added
