@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Example data: RFQ numbers use a new pattern and running numbers (`RFQ26-043592`), the company code is `SPW-01`, and the RFQ column is headed "เลขที่เอกสารขอเสนอราคา"; the goods receipt number column is headed "เลขที่ใบรับสินค้า". No `src/` change.
+- `release.ps1` checks CHANGELOG.md before bumping the version, and keeps the version spelled out in `README.md` and `index.html` in step with `package.json`. The install section e2e test no longer depends on the npm registry. No `src/` change.
+
 ## [1.0.4] - 2026-11-04
 
 ### Changed

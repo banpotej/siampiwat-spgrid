@@ -20,6 +20,11 @@ function Invoke-Step {
 $branch = (git rev-parse --abbrev-ref HEAD).Trim()
 if ($branch -ne 'main') { throw "Release from main only (current: $branch)." }
 
+# Fail before anything changes: a release needs entries under [Unreleased].
+if ((Get-Content CHANGELOG.md -Raw) -notmatch '## \[Unreleased\]\s+###') {
+    throw 'CHANGELOG.md has no entries under [Unreleased]; add them before releasing.'
+}
+
 if (-not $SkipCheck) { Invoke-Step npm run check }
 
 # Commit and push pending work through gcm.ps1.
@@ -39,9 +44,6 @@ foreach ($file in 'README.md', 'index.html') {
 
 # Turn [Unreleased] into the new version section.
 $changelog = Get-Content CHANGELOG.md -Raw
-if ($changelog -notmatch '## \[Unreleased\]\s+###') {
-    throw 'CHANGELOG.md has no entries under [Unreleased]; add them before releasing.'
-}
 $heading = "## [Unreleased]`n`n## [$version] - {0:yyyy-MM-dd}" -f (Get-Date)
 $changelog = $changelog -replace '## \[Unreleased\]', $heading
 [IO.File]::WriteAllText("$PSScriptRoot\CHANGELOG.md", $changelog, (New-Object Text.UTF8Encoding($false)))
