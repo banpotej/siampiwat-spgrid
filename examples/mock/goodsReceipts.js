@@ -1,6 +1,8 @@
 // Sample goods receipts for goods-receipt.html, taken from a real GoodsReceipt table export.
 // Columns: [GoodsReceiptTableId, GoodsReceiptNumber, MaterialDoc, Status, DocumentStatus, OrderNum, SubmittedDate, EndDate].
 // Empty text means NULL. EndDate is the same moment as SubmittedDate unless it is '-' (NULL).
+// The GR number and the material document are masked on the way out (see mask.js): only the last 4 digits show.
+import { maskNumber } from './mask.js';
 
 /** @type {[number, string, string, string, string, number, string, string?][]} */
 const SAMPLE = [
@@ -61,8 +63,8 @@ export function createGoodsReceipts() {
   return SAMPLE.map(
     ([id, grNumber, materialDoc, status, documentStatus, orderNum, submitted, end]) => ({
       id,
-      grNumber: grNumber || null,
-      materialDoc: materialDoc || null,
+      grNumber: maskNumber(grNumber || null),
+      materialDoc: maskNumber(materialDoc || null),
       status,
       documentStatus,
       orderNum,
