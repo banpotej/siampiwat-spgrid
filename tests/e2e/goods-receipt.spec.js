@@ -6,7 +6,7 @@ test('goods receipt example shows badges, dashes for NULL, and its own source co
   await page.goto('/goods-receipt.html');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Goods Receipt');
   await expect(page.locator('#grid tbody tr')).toHaveCount(10);
-  // Newest first: the draft (177391) has no GR number or dates.
+  // Newest first: the draft (240518) has no GR number or dates.
   const draft = page.locator('#grid tbody tr').first();
   await expect(page.getByRole('columnheader', { name: 'GoodsReceiptTableId' })).toHaveCount(0);
   await expect(draft).toContainText('ร่าง');
@@ -19,5 +19,5 @@ test('goods receipt example shows badges, dashes for NULL, and its own source co
 test('goods receipt row opens its details on double-click', async ({ page }) => {
   await page.goto('/goods-receipt.html');
   await page.locator('#grid tbody tr').nth(1).dblclick();
-  await expect(page.getByRole('dialog')).toContainText('100/GR/C008800');
+  await expect(page.getByRole('dialog')).toContainText('700/GR/C031205');
 });

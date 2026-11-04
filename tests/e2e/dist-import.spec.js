@@ -25,13 +25,14 @@ test('the package entry pulls the stylesheet in with the JS, while datagrid.js s
 test('the install section documents npm, tarball URL, git URL, file and plain URL', async ({
   page,
 }) => {
+  const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
   await page.goto('/index.html');
   const install = page.getByRole('region', { name: 'การติดตั้ง' });
   for (const text of [
     'npm install @siampiwat/datagrid',
-    'npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.2/siampiwat-datagrid-1.0.2.tgz',
+    `npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v${version}/siampiwat-datagrid-${version}.tgz`,
     'npm install github:banpotej/siampiwat-datagrid',
-    "import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.2/dist/datagrid.js'",
+    `import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@${version}/dist/datagrid.js'`,
   ]) {
     await expect(install).toContainText(text);
   }

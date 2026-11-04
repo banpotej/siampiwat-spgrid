@@ -16,7 +16,7 @@ describe('createPurchaseOrders', () => {
   it('has unique, well-formed PO numbers', () => {
     const pos = createPurchaseOrders().map((r) => r.poNumber);
     expect(new Set(pos).size).toBe(pos.length);
-    for (const po of pos) expect(po).toMatch(/^100\/PO\/C\d{6}$/);
+    for (const po of pos) expect(po).toMatch(/^700\/PO\/C\d{6}$/);
   });
 
   it('allows cancel only for completed rows without an RFQ', () => {

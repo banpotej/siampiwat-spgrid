@@ -19,7 +19,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   expect(dates).toEqual([...dates].sort((a, b) => b - a));
 
   const search = page.getByRole('searchbox');
-  await search.fill('พรีมา');
+  await search.fill('ลานนา');
   // The page has a Search button: typing alone must not filter.
   await page.waitForTimeout(400);
   await expect(rows).toHaveCount(10);
@@ -28,7 +28,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   await expect
     .poll(async () => {
       const vendors = await rows.locator('td:nth-child(8)').allTextContents();
-      return vendors.length > 0 && vendors.every((v) => v.includes('พรีมา'));
+      return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
 
@@ -79,12 +79,12 @@ test('Enter in the search box also searches (Search button mode)', async ({ page
   await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   await expect(rows).toHaveCount(10);
-  await page.getByRole('searchbox').fill('พรีมา');
+  await page.getByRole('searchbox').fill('ลานนา');
   await page.keyboard.press('Enter');
   await expect
     .poll(async () => {
       const vendors = await rows.locator('td:nth-child(8)').allTextContents();
-      return vendors.length > 0 && vendors.every((v) => v.includes('พรีมา'));
+      return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
   await expect(page.getByRole('searchbox')).toBeFocused();
@@ -94,12 +94,12 @@ test('Clear search button empties the box and restores all rows', async ({ page 
   await page.goto('/purchase-order.html');
   const rows = page.locator('tbody tr');
   const search = page.getByRole('searchbox');
-  await search.fill('พรีมา');
+  await search.fill('ลานนา');
   await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
   await expect
     .poll(async () => {
       const vendors = await rows.locator('td:nth-child(8)').allTextContents();
-      return vendors.length > 0 && vendors.every((v) => v.includes('พรีมา'));
+      return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
   const filteredCount = await rows.count();
@@ -107,7 +107,7 @@ test('Clear search button empties the box and restores all rows', async ({ page 
   await page.getByRole('button', { name: 'ล้างการค้นหา' }).last().click();
   await expect
     .poll(async () =>
-      (await rows.locator('td:nth-child(8)').allTextContents()).some((v) => !v.includes('พรีมา')),
+      (await rows.locator('td:nth-child(8)').allTextContents()).some((v) => !v.includes('ลานนา')),
     )
     .toBe(true);
   expect(filteredCount).toBeGreaterThan(0);
