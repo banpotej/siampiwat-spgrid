@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-11-04
+
 ### Changed
 
-- Example data: RFQ numbers use a new pattern and running numbers (`RFQ26-043592`), the company code is `SPW-01`, and the RFQ column is headed "เลขที่เอกสารขอเสนอราคา"; the goods receipt number column is headed "เลขที่ใบรับสินค้า". No `src/` change.
+- Example data: RFQ numbers use a new pattern and running numbers (`RFQ26-043592`), the company code is `SPW-01`, and the RFQ column is headed "เน€เธฅเธเธ—เธตเนเน€เธญเธเธชเธฒเธฃเธเธญเน€เธชเธเธญเธฃเธฒเธเธฒ"; the goods receipt number column is headed "เน€เธฅเธเธ—เธตเนเนเธเธฃเธฑเธเธชเธดเธเธเนเธฒ". No `src/` change.
 - `release.ps1` checks CHANGELOG.md before bumping the version, and keeps the version spelled out in `README.md` and `index.html` in step with `package.json`. The install section e2e test no longer depends on the npm registry. No `src/` change.
 
 ## [1.0.4] - 2026-11-04
@@ -46,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The package is named `@siampiwat/datagrid` (was `datagrid`): `npm install @siampiwat/datagrid`, `import โ€ฆ from '@siampiwat/datagrid'` (also `/plain`, `/style.css`,
+- The package is named `@siampiwat/datagrid` (was `datagrid`): `npm install @siampiwat/datagrid`, `import เนโฌเธ from '@siampiwat/datagrid'` (also `/plain`, `/style.css`,
   `/agent-guide`). `npm pack` and the release files are now `siampiwat-datagrid-<version>.tgz` / `.zip`. `package.json` gains `repository`, `homepage`, `bugs`,
   `publishConfig.access: public` and the `jsdelivr` / `unpkg` default file (`dist/datagrid.js`), so `cdn.jsdelivr.net/npm/@siampiwat/datagrid@<version>` works
   once published; the browser examples in the README and on the landing page use that URL.
@@ -98,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Example only: `examples/index.html` has a "Source Code" section (with a copy button) showing `examples/po-list.js`, the script that builds the grid; no `src/` change.
 - Settings modal: a round dark close button hangs off the card's top-right corner (`.dg-modal-x`, aria-label from the new `labels.close`, Thai
-  'เธเธดเธ”' in `thaiLabels`); it closes like Cancel (nothing is applied). The card no longer clips its overflow so the button can sit outside it.
+  'เน€เธยเน€เธเธ”เน€เธโ€' in `thaiLabels`); it closes like Cancel (nothing is applied). The card no longer clips its overflow so the button can sit outside it.
 - Line style: `lineStyle` (`'default' | 'solid' | 'dashed' | 'dotted'`, type `LineStyle`) sets how the grid lines are drawn (root classes
   `dg-line-solid`, `dg-line-dashed`, `dg-line-dotted`; `'default'` leaves it to the theme's `--dg-line-style`). `lineStyleToggle` adds a "Line style"
   select to the settings modal (under "Display", applied with Apply) and `lineStyleStorageKey` remembers the choice (`datagrid:lineStyle:<name>`).
@@ -259,7 +261,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pagination UI: `pageSize`, `pageSizeOptions` and `onPageChange` options; `labels.pagination`, `prev`, `next`,
   `pageSize` and `summary`; `getPage()`, `setPage()`, `getPageSize()`, `setPageSize()` and
   `on('pageChange', fn)`. Pipeline is filter -> sort -> paginate. The pager is a `<nav>` with Prev/Next, page
-  buttons (`aria-current="page"`), a "Showing Xโ€“Y of Z" summary and an optional rows-per-page select.
+  buttons (`aria-current="page"`), a "Showing Xเนโฌโ€Y of Z" summary and an optional rows-per-page select.
   Off by default (all rows, no pager). Searching, filtering or sorting goes back to page 1; `setRows()` keeps
   the page, clamped into range. Focus stays on the pager after a click.
 - CSS variables `--dg-pager-gap`, `--dg-pager-border`, `--dg-pager-bg`, `--dg-pager-active-bg`,
