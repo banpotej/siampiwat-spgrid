@@ -29,6 +29,14 @@ if ($Message) { & "$PSScriptRoot\gcm.ps1" $Message } else { & "$PSScriptRoot\gcm
 Invoke-Step npm version $Bump --no-git-tag-version
 $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
 
+# The install examples in README.md and index.html spell out the version; keep them on the new one.
+foreach ($file in 'README.md', 'index.html') {
+    $text = Get-Content "$PSScriptRoot\$file" -Raw -Encoding UTF8
+    $text = $text -replace '(download/v|siampiwat-datagrid-)\d+\.\d+\.\d+', "`${1}$version"
+    $text = $text -replace '(datagrid@(?:<span class="npm-version">)?)\d+\.\d+\.\d+', "`${1}$version"
+    [IO.File]::WriteAllText("$PSScriptRoot\$file", $text, (New-Object Text.UTF8Encoding($false)))
+}
+
 # Turn [Unreleased] into the new version section.
 $changelog = Get-Content CHANGELOG.md -Raw
 if ($changelog -notmatch '## \[Unreleased\]\s+###') {
@@ -38,7 +46,7 @@ $heading = "## [Unreleased]`n`n## [$version] - {0:yyyy-MM-dd}" -f (Get-Date)
 $changelog = $changelog -replace '## \[Unreleased\]', $heading
 [IO.File]::WriteAllText("$PSScriptRoot\CHANGELOG.md", $changelog, (New-Object Text.UTF8Encoding($false)))
 
-Invoke-Step git add package.json package-lock.json CHANGELOG.md
+Invoke-Step git add package.json package-lock.json CHANGELOG.md README.md index.html
 Invoke-Step git commit -m $version
 Invoke-Step git tag "v$version"
 

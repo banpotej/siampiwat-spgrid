@@ -26,6 +26,8 @@ test('the install section documents npm, tarball URL, git URL, file and plain UR
   page,
 }) => {
   const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
+  // The page swaps in the latest version on npm, which is older than package.json until a release is published.
+  await page.route('https://registry.npmjs.org/**', (route) => route.abort());
   await page.goto('/index.html');
   const install = page.getByRole('region', { name: 'การติดตั้ง' });
   for (const text of [
