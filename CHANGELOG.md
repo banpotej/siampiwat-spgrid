@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-11-04
+
 ### Changed
 
 - Example data is now fictional Thai data shown whole: people are Thai full names, document numbers are no longer masked, and the goods receipt sample no longer reuses real numbers. `examples/mock/mask.js` is removed. No `src/` change.
