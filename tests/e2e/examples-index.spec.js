@@ -17,6 +17,10 @@ test('the landing page carries the new name and the package version', async ({ p
 });
 
 test('the landing page uses the Siam Piwat purple and gold', async ({ page }) => {
+  // Pretend the tarball exists so the button is enabled; a missing file (as on CI) greys it out.
+  await page.route('**/*datagrid-*.tgz', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/gzip', body: 'x' }),
+  );
   await page.goto('/');
   const hero = page.locator('.hero');
   expect(await hero.evaluate((el) => getComputedStyle(el).backgroundImage)).toContain(
