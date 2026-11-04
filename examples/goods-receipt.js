@@ -10,7 +10,7 @@ const columns = [
     ariaLabel: 'การดำเนินการ',
     actions: [{ name: 'view', label: 'View', icon: 'visibility' }],
   },
-  { key: 'grNumber', label: 'เลขที่ GR', sortable: true },
+  { key: 'grNumber', label: 'เลขที่ใบรับสินค้า', sortable: true },
   { key: 'materialDoc', label: 'เลขที่เอกสารวัสดุ', sortable: true },
   {
     key: 'status',

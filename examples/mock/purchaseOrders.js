@@ -167,7 +167,7 @@ export function createPurchaseOrders(count = 60) {
   }).sort((a, b) => b.getTime() - a.getTime());
 
   let poSerial = 318706;
-  let rfqSerial = 27418;
+  let rfqSerial = 43592;
   return dates.map((submittedDate, i) => {
     // Numbers fall with the date, with the odd gap (documents that were never issued).
     poSerial -= i === 0 ? 0 : 1 + (rand() < 0.2 ? Math.floor(rand() * 4) : 0);
@@ -179,7 +179,7 @@ export function createPurchaseOrders(count = 60) {
       ['ไม่อนุมัติ', 8],
       ['ยกเลิก', 10],
     ]);
-    const rfqNumber = hasRfq ? `700/RQ/C${digits(rfqSerial)}` : '';
+    const rfqNumber = hasRfq ? `RFQ26-${digits(rfqSerial)}` : '';
     const deliveryDate = new Date(submittedDate.getTime() + (7 + Math.floor(rand() * 39)) * DAY_MS);
     const received = status === 'เสร็จสิ้น' && deliveryDate.getTime() <= BASE_DATE && rand() < 0.8;
     const creator = pickFrequent(PEOPLE);
@@ -203,7 +203,7 @@ export function createPurchaseOrders(count = 60) {
       recipient: received ? pick(PEOPLE) : '',
       claimer: status === 'เสร็จสิ้น' && rand() < 0.3 ? pick(PEOPLE) : '',
       cancelBy: status === 'ยกเลิก' ? pick(PEOPLE) : '',
-      companyCode: '700',
+      companyCode: 'SPW-01',
       deliveryComplete: received,
       creationType: pickWeighted([
         ['จัดซื้อ', 85],

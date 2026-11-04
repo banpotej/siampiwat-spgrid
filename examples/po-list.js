@@ -25,7 +25,7 @@ const columns = [
       },
     ],
   },
-  { key: 'rfqNumber', label: 'เลขที่เอกสาร RFQ', sortable: true },
+  { key: 'rfqNumber', label: 'เลขที่เอกสารขอเสนอราคา', sortable: true },
   { key: 'poNumber', label: 'เลขที่ใบสั่งซื้อ', sortable: true },
   { key: 'description', label: 'รายละเอียด', sortable: true },
   {
