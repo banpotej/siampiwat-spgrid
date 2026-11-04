@@ -16,7 +16,7 @@ describe('createPurchaseOrders', () => {
   it('has unique, well-formed PO numbers', () => {
     const pos = createPurchaseOrders().map((r) => r.poNumber);
     expect(new Set(pos).size).toBe(pos.length);
-    for (const po of pos) expect(po).toMatch(/^700\/PO\/C\d{6}$/);
+    for (const po of pos) expect(po).toMatch(/^PO26-\d{6}$/);
   });
 
   it('allows cancel only for completed rows without an RFQ', () => {
@@ -84,8 +84,8 @@ describe('createGoodsReceipts', () => {
   it('shows document numbers whole, leaving NULL as null', () => {
     const rows = createGoodsReceipts();
     for (const r of rows) {
-      if (r.grNumber) expect(r.grNumber).toMatch(/^\d{3}\/GR\/C\d{6}$/);
-      if (r.materialDoc) expect(r.materialDoc).toMatch(/^\d{10}$/);
+      if (r.grNumber) expect(r.grNumber).toMatch(/^GR\d{2}-\d{6}$/);
+      if (r.materialDoc) expect(r.materialDoc).toMatch(/^MD\d{2}-\d{6}$/);
     }
     expect(rows.some((r) => r.grNumber === null)).toBe(true);
     expect(rows.some((r) => r.materialDoc === null)).toBe(true);

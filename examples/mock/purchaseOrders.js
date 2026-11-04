@@ -192,7 +192,7 @@ export function createPurchaseOrders(count = 60) {
     return {
       id: 204815 - i,
       rfqNumber: rfqNumber,
-      poNumber: `700/PO/C${digits(poSerial)}`,
+      poNumber: `PO26-${digits(poSerial)}`,
       submittedDate,
       description: pick(items),
       purchasingType,

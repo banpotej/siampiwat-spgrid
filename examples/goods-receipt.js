@@ -11,7 +11,7 @@ const columns = [
     actions: [{ name: 'view', label: 'View', icon: 'visibility' }],
   },
   { key: 'grNumber', label: 'เลขที่ GR', sortable: true },
-  { key: 'materialDoc', label: 'Material Doc', sortable: true },
+  { key: 'materialDoc', label: 'เลขที่เอกสารวัสดุ', sortable: true },
   {
     key: 'status',
     label: 'สถานะ',
@@ -28,7 +28,7 @@ const columns = [
   },
   {
     key: 'documentStatus',
-    label: 'Document Status',
+    label: 'สถานะเอกสาร',
     type: 'badge',
     badges: {
       Draft: { tone: 'neutral' },
@@ -39,7 +39,7 @@ const columns = [
     },
     sortable: true,
   },
-  { key: 'orderNum', label: 'Order Num', type: 'number', sortable: true },
+  { key: 'orderNum', label: 'จำนวนรายการ', type: 'number', sortable: true },
   { key: 'submittedDate', label: 'วันที่ส่งเอกสาร', type: 'date', sortable: true },
   { key: 'endDate', label: 'วันที่สิ้นสุด', type: 'date', sortable: true },
 ];

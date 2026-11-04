@@ -335,6 +335,35 @@ ul {
     monospace;
 }
 
+.code-block {
+  position: relative;
+}
+
+.code-block pre {
+  padding-right: 84px;
+}
+
+.code-copy {
+  position: absolute;
+  top: 12px;
+  right: 8px;
+  padding: 3px 10px;
+  border: 1px solid #ffffff40;
+  border-radius: 6px;
+  background: #ffffff1a;
+  color: #efe9f5;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  background: #ffffff33;
+}
+
+.code-copy:focus-visible {
+  outline: 2px solid var(--sp-aqua);
+}
+
 .install pre:focus-visible {
   outline: 2px solid var(--sp-aqua);
   outline-offset: 2px;

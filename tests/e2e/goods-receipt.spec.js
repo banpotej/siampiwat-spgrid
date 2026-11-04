@@ -19,5 +19,5 @@ test('goods receipt example shows badges, dashes for NULL, and its own source co
 test('goods receipt row opens its details on double-click', async ({ page }) => {
   await page.goto('/goods-receipt.html');
   await page.locator('#grid tbody tr').nth(1).dblclick();
-  await expect(page.getByRole('dialog')).toContainText('700/GR/C031205');
+  await expect(page.getByRole('dialog')).toContainText('GR26-031205');
 });

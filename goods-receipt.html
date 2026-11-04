@@ -26,7 +26,7 @@
           <div class="intro-body">
             <p>
               ตัวอย่างตารางรายการรับสินค้า (Goods Receipt) จากข้อมูลสมมติ
-              แสดงสถานะเอกสารทั้งแบบข้อความไทย และ Document Status ด้วย badge ตัวเลข วันที่
+              แสดงสถานะเอกสารทั้งแบบข้อความไทย และสถานะเอกสารภาษาอังกฤษด้วย badge ตัวเลข วันที่
               และค่าว่าง (NULL) ของเอกสารฉบับร่างที่ยังไม่มีเลขที่
             </p>
             <ul>
@@ -40,11 +40,11 @@
 
 const grid = new DataGrid(document.getElementById('grid'), {
   rowKey: 'id',
-  rows, // เช่น { id: 240517, grNumber: '700/GR/C031205', materialDoc: null, status: 'รออนุมัติ GR', ... }
+  rows, // เช่น { id: 240517, grNumber: 'GR26-031205', materialDoc: null, status: 'รออนุมัติ GR', ... }
   columns: [
     { key: 'grNumber', label: 'เลขที่ GR', sortable: true },
     { key: 'status', label: 'สถานะ', type: 'badge', badges: { ร่าง: { tone: 'neutral' } } },
-    { key: 'orderNum', label: 'Order Num', type: 'number' },
+    { key: 'orderNum', label: 'จำนวนรายการ', type: 'number' },
     { key: 'submittedDate', label: 'วันที่ส่งเอกสาร', type: 'date' },
   ],
   searchable: true,

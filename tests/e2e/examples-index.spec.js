@@ -155,3 +155,17 @@ test('the install section offers the zip, and says how to build it when it is mi
   await expect(zip).toHaveAttribute('aria-disabled', 'true');
   await expect(zip.locator('xpath=..').locator('.download-note')).toContainText('pack:release');
 });
+
+test('each code block on the landing page has a copy button', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/');
+  const block = page.locator('.code-block').first();
+  await block.getByRole('button', { name: 'คัดลอก' }).click();
+  await expect(block.getByRole('button')).toHaveText('คัดลอกแล้ว');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    'npm install @siampiwat/datagrid',
+  );
+  expect(await page.locator('.install pre').count()).toBe(
+    await page.locator('.code-block').count(),
+  );
+});

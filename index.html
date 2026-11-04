@@ -154,9 +154,11 @@ const grid = new DataGrid(document.querySelector('#app'), {
     </main>
     <script type="module">
       import { EXAMPLES, renderNav } from '/examples/nav.js';
+      import { addCopyButtons } from '/examples/copy-code.js';
       import pkg from '/package.json';
 
       renderNav();
+      addCopyButtons(document.querySelector('.install'));
       // Show the repo version at once, then swap in the latest one on npm. The download links below
       // keep the repo version: they point at files built from this checkout.
       function showNpmVersion(version) {
