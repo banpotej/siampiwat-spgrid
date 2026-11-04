@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Example data is now fictional Thai data shown whole: people are Thai full names, document numbers are no longer masked, and the goods receipt sample no longer reuses real numbers. `examples/mock/mask.js` is removed. No `src/` change.
+
 ### Added
 
 - Hosting: `npm run build:site` (`vite.site.config.js`) builds the landing page and the example pages into `site/` (git-ignored) for static hosting such as Cloudflare Pages: build command `npm run build:site`, output directory `site`. `examples/` and `dist/` are copied next to the pages as plain files (the source viewer fetches them). No `src/` change.

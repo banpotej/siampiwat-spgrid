@@ -25,7 +25,7 @@
           <summary>คำอธิบายตัวอย่าง</summary>
           <div class="intro-body">
             <p>
-              ตัวอย่างตารางรายการรับสินค้า (Goods Receipt) จากข้อมูลจริงบางส่วน
+              ตัวอย่างตารางรายการรับสินค้า (Goods Receipt) จากข้อมูลสมมติ
               แสดงสถานะเอกสารทั้งแบบข้อความไทย และ Document Status ด้วย badge ตัวเลข วันที่
               และค่าว่าง (NULL) ของเอกสารฉบับร่างที่ยังไม่มีเลขที่
             </p>
@@ -40,7 +40,7 @@
 
 const grid = new DataGrid(document.getElementById('grid'), {
   rowKey: 'id',
-  rows, // เช่น { id: 177390, grNumber: '100/GR/C036938', materialDoc: null, status: 'รออนุมัติ GR', ... }
+  rows, // เช่น { id: 177390, grNumber: '100/GR/C008800', materialDoc: null, status: 'รออนุมัติ GR', ... }
   columns: [
     { key: 'grNumber', label: 'เลขที่ GR', sortable: true },
     { key: 'status', label: 'สถานะ', type: 'badge', badges: { ร่าง: { tone: 'neutral' } } },

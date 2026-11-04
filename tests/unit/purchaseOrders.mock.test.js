@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { createGoodsReceipts } from '../../examples/mock/goodsReceipts.js';
 import { createPurchaseOrders } from '../../examples/mock/purchaseOrders.js';
 
 describe('createPurchaseOrders', () => {
@@ -15,7 +16,7 @@ describe('createPurchaseOrders', () => {
   it('has unique, well-formed PO numbers', () => {
     const pos = createPurchaseOrders().map((r) => r.poNumber);
     expect(new Set(pos).size).toBe(pos.length);
-    for (const po of pos) expect(po).toMatch(/^100\/PO\/C\*{2}\d{4}$/);
+    for (const po of pos) expect(po).toMatch(/^100\/PO\/C\d{6}$/);
   });
 
   it('allows cancel only for completed rows without an RFQ', () => {
@@ -64,5 +65,29 @@ describe('createPurchaseOrders', () => {
     const rows = createPurchaseOrders();
     for (const r of rows) expect(r.description.length).toBeGreaterThan(5);
     expect(new Set(rows.map((r) => r.description)).size).toBeGreaterThan(10);
+  });
+
+  it('shows people and vendors whole, in Thai', () => {
+    const rows = createPurchaseOrders();
+    for (const r of rows) {
+      for (const name of [r.creator, r.recipient, r.claimer, r.cancelBy]) {
+        if (name) expect(name).toMatch(/^[฀-๿]+( [฀-๿]+)+$/);
+      }
+      expect(r.vendor).not.toContain('*');
+      expect(r.vendor).toMatch(/[฀-๿]/);
+    }
+    expect(new Set(rows.map((r) => r.vendor)).size).toBeGreaterThan(5);
+  });
+});
+
+describe('createGoodsReceipts', () => {
+  it('shows document numbers whole, leaving NULL as null', () => {
+    const rows = createGoodsReceipts();
+    for (const r of rows) {
+      if (r.grNumber) expect(r.grNumber).toMatch(/^\d{3}\/GR\/C\d{6}$/);
+      if (r.materialDoc) expect(r.materialDoc).toMatch(/^\d{10}$/);
+    }
+    expect(rows.some((r) => r.grNumber === null)).toBe(true);
+    expect(rows.some((r) => r.materialDoc === null)).toBe(true);
   });
 });

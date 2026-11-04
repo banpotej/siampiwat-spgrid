@@ -1,8 +1,6 @@
 // Fictional procurement data for purchase-order.html. Deterministic: same output every call.
 // Shaped like real PO lists: newest first, business days only, mostly completed orders, a few repeat vendors.
-import { maskNumber, maskPerson, maskVendor } from './mask.js';
 
-// Names and document numbers are masked on the way out (see mask.js); the data below stays whole so the descriptions still match their vendor.
 const VENDORS = [
   'บริษัท พรีมาออฟฟิศ โซลูชั่นส์ จำกัด',
   'บริษัท เนกซ์เจน ไอทีเซ็นเตอร์ จำกัด (มหาชน)',
@@ -118,12 +116,12 @@ const CATALOG = {
   },
 };
 const PEOPLE = [
-  'Nattapong Srisuk',
-  'Kanokwan Chaiyasit',
-  'Piyawat Boonmee',
-  'Supaporn Wongsawat',
-  'Thanakrit Jaidee',
-  'Ornicha Prasert',
+  'ณัฐพงษ์ ศรีสุข',
+  'กนกวรรณ ชัยสิทธิ์',
+  'ปิยะวัฒน์ บุญมี',
+  'สุภาพร วงศ์สวัสดิ์',
+  'ธนกฤต ใจดี',
+  'อรนิชา ประเสริฐ',
 ];
 const DAY_MS = 86_400_000;
 // A fixed "today" (Tue 2026-10-27) keeps the dates, and so any test, stable.
@@ -197,18 +195,18 @@ export function createPurchaseOrders(count = 60) {
     const items = CATALOG[vendor][/** @type {'Expense' | 'Asset'} */ (purchasingType)];
     return {
       id: 158663 - i,
-      rfqNumber: maskNumber(rfqNumber),
-      poNumber: maskNumber(`100/PO/C${digits(poSerial)}`),
+      rfqNumber: rfqNumber,
+      poNumber: `100/PO/C${digits(poSerial)}`,
       submittedDate,
       description: pick(items),
       purchasingType,
       status,
-      vendor: maskVendor(vendor),
-      creator: maskPerson(creator),
+      vendor: vendor,
+      creator: creator,
       deliveryDate,
-      recipient: maskPerson(received ? pick(PEOPLE) : ''),
-      claimer: maskPerson(status === 'เสร็จสิ้น' && rand() < 0.3 ? pick(PEOPLE) : ''),
-      cancelBy: maskPerson(status === 'ยกเลิก' ? pick(PEOPLE) : ''),
+      recipient: received ? pick(PEOPLE) : '',
+      claimer: status === 'เสร็จสิ้น' && rand() < 0.3 ? pick(PEOPLE) : '',
+      cancelBy: status === 'ยกเลิก' ? pick(PEOPLE) : '',
       companyCode: '100',
       deliveryComplete: received,
       creationType: pickWeighted([

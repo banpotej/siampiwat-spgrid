@@ -12,7 +12,7 @@ export const EXAMPLES = [
     href: '/goods-receipt.html',
     title: 'รายการรับสินค้า (Goods Receipt)',
     nav: 'Goods Receipt',
-    description: 'ตารางจากข้อมูล GoodsReceipt จริง: badge สถานะ ค่า NULL วันที่ และตัวเลข',
+    description: 'ตารางข้อมูล GoodsReceipt สมมติ: badge สถานะ ค่า NULL วันที่ และตัวเลข',
   },
 ];
 
