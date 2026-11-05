@@ -62,7 +62,7 @@ test('the nav is on every example page, marks the current one, and leads home', 
 }) => {
   await page.goto('/purchase-order.html');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await expect(nav.getByRole('link', { name: 'Purchase Order' })).toHaveAttribute(
+  await expect(nav.getByRole('link', { name: 'ตัวอย่าง DataGrid' })).toHaveAttribute(
     'aria-current',
     'page',
   );

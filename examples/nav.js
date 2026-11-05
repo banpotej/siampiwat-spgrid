@@ -6,7 +6,7 @@ export const EXAMPLES = [
   {
     href: '/purchase-order.html',
     title: 'รายการใบสั่งซื้อ (Purchase Order)',
-    nav: 'Purchase Order',
+    nav: 'ตัวอย่าง DataGrid',
     description: 'ตารางเต็มรูปแบบ: เรียงลำดับ ค้นหา แบ่งหน้า จัดกลุ่ม และปุ่มดำเนินการต่อแถว',
   },
 ];
