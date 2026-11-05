@@ -2,6 +2,78 @@
 
 Siam Piwat DataGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
 
+## Quick Start
+
+ทำตามทีละขั้นเพื่อติดตั้งและแสดงตารางแรกให้ได้ภายในไม่กี่นาที (ใช้ Vite เป็นตัวอย่าง)
+
+**ขั้นที่ 1 – เตรียมโปรเจกต์** (ข้ามได้ถ้ามีโปรเจกต์อยู่แล้ว; ต้องใช้ Node.js 22 ขึ้นไป)
+
+```sh
+npm create vite@latest my-app -- --template vanilla
+cd my-app
+```
+
+**ขั้นที่ 2 – ติดตั้งแพ็กเกจ**
+
+```sh
+npm install @siampiwat/datagrid
+```
+
+**ขั้นที่ 3 – เตรียม element สำหรับวางตาราง** ใน `index.html`
+
+```html
+<div id="app"></div>
+```
+
+**ขั้นที่ 4 – สร้างตาราง** ใน `main.js` (stylesheet มากับ import นี้แล้ว ไม่ต้อง import CSS เพิ่ม)
+
+```js
+import { DataGrid } from '@siampiwat/datagrid';
+
+const rows = [
+  { id: 1, name: 'Ada', status: 'open' },
+  { id: 2, name: 'Grace', status: 'closed' },
+  { id: 3, name: 'Linus', status: 'open' },
+];
+
+const grid = new DataGrid(document.querySelector('#app'), {
+  rowKey: 'id',
+  columns: [
+    { key: 'id', label: 'ID', sortable: true },
+    { key: 'name', label: 'Name', sortable: true },
+    { key: 'status', label: 'Status', type: 'badge', badges: { open: { tone: 'success' } } },
+  ],
+  rows,
+  searchable: true,
+  pageSize: 10,
+});
+```
+
+**ขั้นที่ 5 – รันและเปิดดู**
+
+```sh
+npm run dev
+```
+
+เปิด URL ที่ Vite แสดง (ปกติ `http://localhost:5173`) จะเห็นตารางที่เรียงลำดับ ค้นหา และแบ่งหน้าได้
+
+**ขั้นที่ 6 – รับ event และเปลี่ยนข้อมูล**
+
+```js
+// ฟัง event (คืนค่าฟังก์ชัน unsubscribe)
+grid.on('sortChange', ({ key, direction }) => console.log(key, direction));
+
+// เปลี่ยนข้อมูล: คง sort / filter / หน้าปัจจุบันไว้
+grid.setRows([...rows, { id: 4, name: 'Margaret', status: 'open' }]);
+
+// เมื่อ element ถูกถอดออก (เปลี่ยนหน้า, React unmount) ให้เรียกทุกครั้ง
+grid.destroy();
+```
+
+> **ไม่ใช้ npm / bundler?** ดู [จาก URL ในเบราว์เซอร์](#จาก-url-ในเบราว์เซอร์-ไม่ใช้-npm) ·
+> **React / Next.js?** สร้าง grid ใน `useEffect` ของ client component (ดู [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)) ·
+> ตัวเลือกและ method ทั้งหมดอยู่ที่ [docs/API.md](docs/API.md)
+
 ## การติดตั้ง
 
 ข้อกำหนด: Node.js 22 ขึ้นไป และ bundler ที่รองรับ ES modules (Vite, webpack, ...)

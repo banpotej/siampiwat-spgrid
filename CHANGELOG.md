@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- README: step-by-step Quick Start (install, first grid, run, events). Docs only, no `src/` change.
+
 ## [1.0.7] - 2026-11-05
 
 ### Changed
