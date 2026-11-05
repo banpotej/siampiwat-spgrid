@@ -202,3 +202,26 @@ test('the top nav looks the same on the landing page and the example pages', asy
   expect(looks[1]).toBe(looks[0]);
   expect(looks[2]).toBe(looks[0]);
 });
+
+test('the Next.js quick start has its own page, reachable from the landing page and the nav', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.getByRole('region', { name: 'Quick Start (Next.js)' })).toHaveCount(0);
+  await page.getByRole('link', { name: 'Quick Start (Next.js)' }).click();
+  await expect(page).toHaveURL(/\/quick-start\.html$/);
+
+  const quickstart = page.getByRole('region', { name: 'Quick Start (Next.js)' });
+  await expect(quickstart).toContainText('create-next-app');
+  await expect(quickstart).toContainText("'use client'");
+  await expect(quickstart).toContainText("import('@siampiwat/datagrid')");
+  await expect(quickstart.locator('.code-block')).toHaveCount(3);
+
+  const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
+  await expect(nav.getByRole('link', { name: 'Quick Start' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await nav.getByRole('link', { name: 'Siam Piwat DataGrid' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat DataGrid');
+});

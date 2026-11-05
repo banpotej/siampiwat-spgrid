@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - README: Quick Start for Next.js (App Router, client component). Docs only, no `src/` change.
+- Quick Start (Next.js) page (`/quick-start.html`) with copyable code, linked from the landing page and the top nav. No `src/` change.
 
 ## [1.0.9] - 2026-11-05
 

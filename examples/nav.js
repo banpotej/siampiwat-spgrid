@@ -1,5 +1,6 @@
 // Shared by every example page: the list of examples (one place to add a new one) and the top nav.
 export const HOME = '/';
+export const QUICK_START = '/quick-start.html';
 
 export const EXAMPLES = [
   {
@@ -34,6 +35,7 @@ export function renderNav() {
   nav.setAttribute('aria-label', 'เมนูตัวอย่าง');
   nav.replaceChildren(
     link(HOME, 'Siam Piwat DataGrid', 'brand'),
+    link(QUICK_START, 'Quick Start'),
     ...EXAMPLES.map((example) => link(example.href, example.nav)),
   );
 }

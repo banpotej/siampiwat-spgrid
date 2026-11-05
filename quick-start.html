@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Quick Start (Next.js) | Siam Piwat DataGrid</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/landing.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <section class="install quickstart" aria-labelledby="quickstart-title">
+        <h2 id="quickstart-title">Quick Start (Next.js)</h2>
+        <ol>
+          <li>
+            <strong>สร้างโปรเจกต์และติดตั้งแพ็กเกจ</strong>
+            ต้องใช้ Node.js 22 ขึ้นไป (ข้ามขั้นสร้างโปรเจกต์ได้ถ้ามีอยู่แล้ว)
+            <pre tabindex="0"><code>npx create-next-app@latest my-app --ts --app
+cd my-app
+npm install @siampiwat/datagrid</code></pre>
+          </li>
+          <li>
+            <strong>สร้าง client component</strong>
+            ที่ <code>app/Grid.tsx</code> DataGrid ทำงานกับ DOM จึงห้าม import บน server ให้ import
+            แบบ dynamic ใน <code>useEffect</code> และเรียก <code>destroy()</code>
+            ตอน unmount
+            <pre tabindex="0"><code>'use client';
+
+import { useEffect, useRef } from 'react';
+
+type Row = { id: number; name: string; status: string };
+
+export default function Grid({ rows }: { rows: Row[] }) {
+  const el = useRef&lt;HTMLDivElement&gt;(null);
+  const grid = useRef&lt;{ setRows(rows: Row[]): void; destroy(): void } | null&gt;(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    import('@siampiwat/datagrid').then(({ DataGrid }) =&gt; {
+      if (cancelled || !el.current) return;
+      grid.current = new DataGrid(el.current, {
+        rowKey: 'id',
+        columns: [
+          { key: 'id', label: 'ID', sortable: true },
+          { key: 'name', label: 'Name', sortable: true },
+          { key: 'status', label: 'Status', type: 'badge', badges: { open: { tone: 'success' } } },
+        ],
+        rows,
+        searchable: true,
+        pageSize: 10,
+      });
+    });
+    return () =&gt; {
+      cancelled = true;
+      grid.current?.destroy();
+      grid.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() =&gt; {
+    grid.current?.setRows(rows); // คง sort / filter / หน้าปัจจุบันไว้
+  }, [rows]);
+
+  return &lt;div ref={el} /&gt;;
+}</code></pre>
+          </li>
+          <li>
+            <strong>เรียกใช้ใน page แล้วรัน</strong>
+            ที่ <code>app/page.tsx</code> จากนั้นรัน <code>npm run dev</code> และเปิด
+            <code>http://localhost:3000</code>
+            <pre tabindex="0"><code>import Grid from './Grid';
+
+const rows = [
+  { id: 1, name: 'Ada', status: 'open' },
+  { id: 2, name: 'Grace', status: 'closed' },
+  { id: 3, name: 'Linus', status: 'open' },
+];
+
+export default function Home() {
+  return &lt;Grid rows={rows} /&gt;;
+}</code></pre>
+          </li>
+        </ol>
+      </section>
+      <footer class="site-footer">Siam Piwat DataGrid · <a href="/">กลับหน้าหลัก</a></footer>
+    </main>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      import { addCopyButtons } from '/examples/copy-code.js';
+
+      renderNav();
+      addCopyButtons(document.querySelector('.install'));
+    </script>
+  </body>
+</html>

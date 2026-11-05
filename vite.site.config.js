@@ -25,9 +25,13 @@ export default defineConfig({
     outDir: 'site',
     emptyOutDir: true,
     rollupOptions: {
-      input: ['index.html', 'basic.html', 'goods-receipt.html', 'purchase-order.html'].map((f) =>
-        resolve(f),
-      ),
+      input: [
+        'index.html',
+        'quick-start.html',
+        'basic.html',
+        'goods-receipt.html',
+        'purchase-order.html',
+      ].map((f) => resolve(f)),
     },
   },
 });
