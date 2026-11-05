@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat SPGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
   const cards = page.locator('#examples');
   await expect(cards.getByRole('link')).toHaveCount(1);
   await cards.getByRole('link', { name: /Purchase Order/ }).click();
@@ -11,7 +11,7 @@ test('landing page lists each example as a card', async ({ page }) => {
 
 test('the landing page carries the new name and the package version', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/^Siam Piwat SPGrid/);
+  await expect(page).toHaveTitle(/^SPGrid/);
   await expect(page.locator('#version')).toHaveText(/^v\d+\.\d+\.\d+$/);
   await expect(page.getByRole('link', { name: 'ดูตัวอย่างแรก' })).toBeVisible();
 });
@@ -62,14 +62,14 @@ test('the nav is on every example page, marks the current one, and leads home', 
 }) => {
   await page.goto('/purchase-order.html');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await expect(nav.getByRole('link', { name: 'ตัวอย่าง SPGrid' })).toHaveAttribute(
+  await expect(nav.getByRole('link', { name: 'ตัวอย่าง' })).toHaveAttribute(
     'aria-current',
     'page',
   );
 
-  await nav.getByRole('link', { name: 'Siam Piwat SPGrid' }).click();
+  await nav.getByRole('link', { name: 'SPGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat SPGrid');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
 });
 
 test('landing page explains how to install the package', async ({ page }) => {
@@ -211,6 +211,6 @@ test('the Next.js quick start has its own page, reachable from the landing page 
     'aria-current',
     'page',
   );
-  await nav.getByRole('link', { name: 'Siam Piwat SPGrid' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat SPGrid');
+  await nav.getByRole('link', { name: 'SPGrid' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
 });

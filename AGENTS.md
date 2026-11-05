@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Reusable vanilla JS Siam Piwat SPGrid. Vite library mode, Vitest (jsdom), Playwright, ESLint, Prettier.
+Reusable vanilla JS SPGrid. Vite library mode, Vitest (jsdom), Playwright, ESLint, Prettier.
 Plain JS with JSDoc types; every file under `src/` starts with `// @ts-check`.
 
 ## Commands

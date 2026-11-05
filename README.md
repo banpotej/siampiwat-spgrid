@@ -1,6 +1,6 @@
-# Siam Piwat SPGrid
+# SPGrid
 
-Siam Piwat SPGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
+SPGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
 
 ## Quick Start
 

@@ -6,7 +6,7 @@ export const EXAMPLES = [
   {
     href: '/purchase-order.html',
     title: 'รายการใบสั่งซื้อ (Purchase Order)',
-    nav: 'ตัวอย่าง SPGrid',
+    nav: 'ตัวอย่าง',
     description: 'ตารางเต็มรูปแบบ: เรียงลำดับ ค้นหา แบ่งหน้า จัดกลุ่ม และปุ่มดำเนินการต่อแถว',
   },
 ];
@@ -28,7 +28,7 @@ export function renderNav() {
   nav.className = 'site-nav';
   nav.setAttribute('aria-label', 'เมนูตัวอย่าง');
   nav.replaceChildren(
-    link(HOME, 'Siam Piwat SPGrid', 'brand'),
+    link(HOME, 'SPGrid', 'brand'),
     link(QUICK_START, 'Quick Start'),
     ...EXAMPLES.map((example) => link(example.href, example.nav)),
   );

@@ -1,4 +1,4 @@
-# Siam Piwat SPGrid – guide for AI coding agents
+# SPGrid – guide for AI coding agents
 
 This file is for an agent that **uses** the `spgrid` package inside someone's app (it ships in the package:
 `node_modules/@siampiwat/spgrid/docs/AGENT_GUIDE.md`). The full reference is `docs/API.md` (Thai); read it for any option not
