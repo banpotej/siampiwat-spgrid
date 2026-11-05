@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- README: Quick Start for Next.js (App Router, client component). Docs only, no `src/` change.
+
 ## [1.0.9] - 2026-11-05
 
 ### Changed

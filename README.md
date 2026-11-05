@@ -71,8 +71,98 @@ grid.destroy();
 ```
 
 > **ไม่ใช้ npm / bundler?** ดู [จาก URL ในเบราว์เซอร์](#จาก-url-ในเบราว์เซอร์-ไม่ใช้-npm) ·
-> **React / Next.js?** สร้าง grid ใน `useEffect` ของ client component (ดู [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)) ·
+> **Next.js?** ดู [Quick Start (Next.js)](#quick-start-nextjs) · **React อื่น ๆ?** สร้าง grid ใน `useEffect` ของ client component (ดู [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)) ·
 > ตัวเลือกและ method ทั้งหมดอยู่ที่ [docs/API.md](docs/API.md)
+
+## Quick Start (Next.js)
+
+ใช้กับ Next.js (App Router) ต้องใช้ Node.js 22 ขึ้นไป แพ็กเกจนี้ทำงานกับ DOM จึง **ห้าม import บน server** — สร้าง grid ใน `useEffect` ของ client component และ import แบบ dynamic ตามตัวอย่างด้านล่าง
+
+**ขั้นที่ 1 – เตรียมโปรเจกต์** (ข้ามได้ถ้ามีโปรเจกต์อยู่แล้ว)
+
+```sh
+npx create-next-app@latest my-app --ts --app
+cd my-app
+```
+
+**ขั้นที่ 2 – ติดตั้งแพ็กเกจ**
+
+```sh
+npm install @siampiwat/datagrid
+```
+
+**ขั้นที่ 3 – สร้าง client component** ที่ `app/Grid.tsx` (stylesheet มากับ import นี้แล้ว ไม่ต้อง import CSS เพิ่ม)
+
+```tsx
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+type Row = { id: number; name: string; status: string };
+
+export default function Grid({ rows }: { rows: Row[] }) {
+  const el = useRef<HTMLDivElement>(null);
+  const grid = useRef<{ setRows(rows: Row[]): void; destroy(): void } | null>(null);
+
+  // สร้างครั้งเดียว
+  useEffect(() => {
+    let cancelled = false;
+    import('@siampiwat/datagrid').then(({ DataGrid }) => {
+      if (cancelled || !el.current) return;
+      grid.current = new DataGrid(el.current, {
+        rowKey: 'id',
+        columns: [
+          { key: 'id', label: 'ID', sortable: true },
+          { key: 'name', label: 'Name', sortable: true },
+          { key: 'status', label: 'Status', type: 'badge', badges: { open: { tone: 'success' } } },
+        ],
+        rows,
+        searchable: true,
+        pageSize: 10,
+      });
+    });
+    return () => {
+      cancelled = true;
+      grid.current?.destroy(); // ทุกครั้งที่ component ถูกถอดออก
+      grid.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ข้อมูลเปลี่ยน: ส่งเฉพาะข้อมูลใหม่ (คง sort / filter / หน้าปัจจุบันไว้)
+  useEffect(() => {
+    grid.current?.setRows(rows);
+  }, [rows]);
+
+  return <div ref={el} />;
+}
+```
+
+**ขั้นที่ 4 – เรียกใช้ใน page** ที่ `app/page.tsx`
+
+```tsx
+import Grid from './Grid';
+
+const rows = [
+  { id: 1, name: 'Ada', status: 'open' },
+  { id: 2, name: 'Grace', status: 'closed' },
+  { id: 3, name: 'Linus', status: 'open' },
+];
+
+export default function Home() {
+  return <Grid rows={rows} />;
+}
+```
+
+**ขั้นที่ 5 – รันและเปิดดู**
+
+```sh
+npm run dev
+```
+
+เปิด `http://localhost:3000` จะเห็นตารางที่เรียงลำดับ ค้นหา และแบ่งหน้าได้
+
+> ถ้าข้อมูลมาจาก API ให้ดึงใน server component หรือ `fetch` ใน client แล้วส่งเป็น prop `rows` — `setRows` จะอัปเดตตารางให้โดยไม่รีเซ็ต sort / filter
 
 ## การติดตั้ง
 

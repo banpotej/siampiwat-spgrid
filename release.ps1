@@ -20,6 +20,28 @@ function Invoke-Step {
 $branch = (git rev-parse --abbrev-ref HEAD).Trim()
 if ($branch -ne 'main') { throw "Release from main only (current: $branch)." }
 
+# Log in up front so a missing npm session doesn't fail after the check/bump.
+npm whoami *> $null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host 'Not logged in to npm; running npm login.' -ForegroundColor Yellow
+    Invoke-Step npm login
+}
+
+# Resume: a previous run tagged this version but publish failed (e.g. not logged in to npm).
+# Publish and push it instead of bumping again.
+$pkg = Get-Content package.json -Raw | ConvertFrom-Json
+$current = $pkg.version
+if (git tag --list "v$current") {
+    $published = try { (npm view "$($pkg.name)@$current" version 2>$null) } catch { $null }
+    if (-not $published) {
+        Write-Host "v$current is tagged but not on npm; resuming publish." -ForegroundColor Yellow
+        Invoke-Step npm publish --access public
+        Invoke-Step git push --follow-tags
+        Write-Host "Released v$current" -ForegroundColor Green
+        return
+    }
+}
+
 # Fail before anything changes: a release needs entries under [Unreleased].
 if ((Get-Content CHANGELOG.md -Raw) -notmatch '## \[Unreleased\]\s+###') {
     throw 'CHANGELOG.md has no entries under [Unreleased]; add them before releasing.'
