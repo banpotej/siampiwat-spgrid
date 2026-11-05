@@ -28,47 +28,6 @@ a {
   color: var(--sp-ultramarine);
 }
 
-/* Top bar */
-.site-nav {
-  margin-bottom: 24px;
-  border-bottom-color: var(--sp-line);
-}
-
-.site-nav a {
-  color: var(--sp-muted);
-}
-
-.site-nav a:hover {
-  background: var(--sp-surface);
-  color: var(--sp-purple);
-}
-
-.site-nav a:focus-visible {
-  outline-color: var(--sp-ultramarine);
-}
-
-.site-nav a[aria-current='page'] {
-  background: var(--sp-surface);
-  color: var(--sp-purple);
-}
-
-.site-nav .brand {
-  color: var(--sp-purple);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
-.site-nav .brand::before {
-  content: '';
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin-right: 8px;
-  border-radius: 2px;
-  background: var(--sp-gold);
-  transform: rotate(45deg);
-}
-
 /* Hero */
 .hero {
   position: relative;

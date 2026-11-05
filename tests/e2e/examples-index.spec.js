@@ -169,3 +169,36 @@ test('each code block on the landing page has a copy button', async ({ page, con
     await page.locator('.code-block').count(),
   );
 });
+
+test('the top nav looks the same on the landing page and the example pages', async ({ page }) => {
+  const looks = [];
+  for (const path of ['/', '/purchase-order.html', '/goods-receipt.html']) {
+    await page.goto(path);
+    looks.push(
+      await page.evaluate(() => {
+        /** @param {Element} el @param {string[]} props */
+        const css = (el, props) =>
+          props
+            .map(
+              (p) =>
+                /** @type {Record<string, string>} */ (
+                  /** @type {unknown} */ (getComputedStyle(el))
+                )[p],
+            )
+            .join('|');
+        const nav = /** @type {Element} */ (document.querySelector('.site-nav'));
+        const brand = /** @type {Element} */ (nav.querySelector('.brand'));
+        const other = /** @type {Element} */ (
+          nav.querySelector('a:not(.brand):not([aria-current])')
+        );
+        return [
+          css(nav, ['borderBottomColor', 'marginBottom']),
+          css(brand, ['color', 'fontWeight']),
+          css(other, ['color', 'fontSize']),
+        ].join('||');
+      }),
+    );
+  }
+  expect(looks[1]).toBe(looks[0]);
+  expect(looks[2]).toBe(looks[0]);
+});

@@ -196,42 +196,50 @@ main {
   color: #7dd3fc;
 }
 
+/* Top bar: shared by every page (landing included) so it looks identical everywhere. */
 .site-nav {
+  --nav-purple: #3a2d4b; /* SIAM PIWAT PURPLE */
+  --nav-blue: #2c2e98;
+  --nav-muted: #6b5f78;
+  --nav-surface: color-mix(in srgb, var(--nav-purple) 5%, #fff);
+  --nav-line: color-mix(in srgb, var(--nav-purple) 14%, #fff);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--nav-line);
 }
 .site-nav a {
   padding: 6px 12px;
   border-radius: 8px;
-  color: #475569;
+  color: var(--nav-muted);
   font-size: 14px;
   text-decoration: none;
 }
 .site-nav a:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--nav-surface);
+  color: var(--nav-purple);
 }
 .site-nav a:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--nav-blue);
   outline-offset: 1px;
 }
 .site-nav a[aria-current='page'] {
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: var(--nav-surface);
+  color: var(--nav-purple);
   font-weight: 600;
 }
-.site-nav .brand {
+.site-nav a.brand {
   margin-right: 8px;
   padding-left: 0;
-  color: #0f172a;
+  color: var(--nav-purple);
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
-.site-nav .brand:hover {
+.site-nav a.brand:hover,
+.site-nav a.brand[aria-current='page'] {
   background: none;
 }
 

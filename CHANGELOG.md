@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The top nav is styled once in `examples/page.css` and looks the same on the landing page and every example page (Siam Piwat colours, plain app name without an icon); `landing.css` no longer overrides it. No `src/` change.
+
 ## [1.0.6] - 2026-11-05
 
 ### Changed
