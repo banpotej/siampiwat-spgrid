@@ -14,7 +14,7 @@ npm install @siampiwat/datagrid
 
 ```sh
 # ไฟล์ .tgz ที่แนบกับ GitHub Release (repo แบบ private ต้องใช้ token) - สร้างด้วย `npm run pack:release`
-npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.6/siampiwat-datagrid-1.0.6.tgz
+npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.7/siampiwat-datagrid-1.0.7.tgz
 
 # git URL: npm จะรันสคริปต์ `prepare` ทำให้แพ็กเกจ build ตัวเองตอนติดตั้ง (ต้องมี git)
 npm install github:banpotej/siampiwat-datagrid
@@ -23,8 +23,8 @@ npm install github:banpotej/siampiwat-datagrid#main   # branch หรือ tag
 # tarball ในเครื่อง
 npm install                # ใน repo นี้
 npm run build
-npm pack                   # สร้าง siampiwat-datagrid-1.0.6.tgz
-npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.6.tgz   # ในโปรเจกต์ของคุณ
+npm pack                   # สร้าง siampiwat-datagrid-1.0.7.tgz
+npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.7.tgz   # ในโปรเจกต์ของคุณ
 ```
 
 `import { DataGrid } from '@siampiwat/datagrid'` จะนำ stylesheet เข้ามาด้วย (ผ่าน bundler ของคุณ) ส่วน `@siampiwat/datagrid/style.css` ยังคง export อยู่ และ
@@ -52,10 +52,10 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.6.tgz   # ในโป�
 `dist/datagrid.js` และ `dist/datagrid.css` เองบน static host ใดก็ได้:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.6/dist/datagrid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.7/dist/datagrid.css" />
 <div id="app"></div>
 <script type="module">
-  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.6/dist/datagrid.js';
+  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@1.0.7/dist/datagrid.js';
 
   new DataGrid(document.getElementById('app'), {
     rowKey: 'id',
