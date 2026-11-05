@@ -13,7 +13,7 @@
 export function normalizeOrder(columns, keys) {
   const all = columns.map((c) => c.key);
   for (const key of keys) {
-    if (!all.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
+    if (!all.includes(key)) throw new RangeError(`SPGrid: unknown column "${key}"`);
   }
   const listed = keys.filter((key, i) => keys.indexOf(key) === i);
   return [...listed, ...all.filter((key) => !listed.includes(key))];

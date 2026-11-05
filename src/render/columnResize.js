@@ -1,7 +1,7 @@
 // @ts-check
 import { readJson, writeJson } from '../utils/storage.js';
 
-const PREFIX = 'datagrid:columnWidths:';
+const PREFIX = 'spgrid:columnWidths:';
 const MIN_WIDTH = 48;
 const KEY_STEP = 10;
 const KEY_STEP_BIG = 40;
@@ -15,9 +15,9 @@ const KEY_STEP_BIG = 40;
 const widthOf = (th) => Math.ceil(th.getBoundingClientRect().width);
 
 /**
- * Column resizing: drag the handle (`.dg-resize`) on a header cell's edge, or focus it and press the left or right
+ * Column resizing: drag the handle (`.spg-resize`) on a header cell's edge, or focus it and press the left or right
  * arrow (Shift for bigger steps). The first resize freezes every column at its current pixel width and switches
- * the table to a fixed layout (`dg-fixed`); after that only the dragged column and the table's width change, so the
+ * the table to a fixed layout (`spg-fixed`); after that only the dragged column and the table's width change, so the
  * other columns keep their size and a table wider than its wrapper scrolls. The widths are kept here, and the
  * renderer puts them back after each render. With a storage key the widths are also saved in localStorage when a
  * resize ends, and read back on creation (so the table starts out pinned).
@@ -73,7 +73,7 @@ export class ColumnResizer {
 
   /** @param {Event} event @returns {{ handle: HTMLElement, th: HTMLElement } | null} */
   #target(event) {
-    const handle = event.target instanceof Element ? event.target.closest('.dg-resize') : null;
+    const handle = event.target instanceof Element ? event.target.closest('.spg-resize') : null;
     const th = handle?.closest('th');
     return handle instanceof HTMLElement && th instanceof HTMLElement && th.dataset.key
       ? { handle, th }
@@ -92,7 +92,7 @@ export class ColumnResizer {
       this.#widths?.set(/** @type {string} */ (th.dataset.key), measured[i]);
       th.style.width = `${measured[i]}px`;
     });
-    this.#host.querySelector('table')?.classList.add('dg-fixed');
+    this.#host.querySelector('table')?.classList.add('spg-fixed');
     this.#fitTable();
   }
 
@@ -130,7 +130,7 @@ export class ColumnResizer {
       startWidth: this.#widths?.get(/** @type {string} */ (th.dataset.key)) ?? widthOf(th),
       sign: rtl ? -1 : 1,
     };
-    handle.classList.add('dg-resizing');
+    handle.classList.add('spg-resizing');
     handle.setPointerCapture?.(/** @type {PointerEvent} */ (event).pointerId);
 
     /** @param {Event} e */
@@ -143,7 +143,7 @@ export class ColumnResizer {
     const end = () => {
       this.#drag = null;
       this.#save();
-      handle.classList.remove('dg-resizing');
+      handle.classList.remove('spg-resizing');
       handle.removeEventListener('pointermove', move);
       handle.removeEventListener('pointerup', end);
       handle.removeEventListener('pointercancel', end);

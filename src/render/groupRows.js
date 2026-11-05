@@ -31,9 +31,9 @@ export function renderGroupHeader(header, { group, span, icons, labels, locale }
     : escapeHtml(header.first[header.column]);
   const open = !group.collapsed.has(header.id);
   return (
-    `<tr class="dg-group-row" data-group-id="${escapeHtml(header.id)}" data-level="${header.level}" style="--dg-group-level:${header.level}">` +
-    `<td colspan="${Math.max(span, 1)}"><button type="button" class="dg-group-toggle" aria-expanded="${open}">` +
-    `${renderIcon(icons, 'chevron_right', 'dg-group-icon')}<span class="dg-group-value">${value}</span>` +
-    ` <span class="dg-group-count">(${header.count})</span></button></td></tr>`
+    `<tr class="spg-group-row" data-group-id="${escapeHtml(header.id)}" data-level="${header.level}" style="--spg-group-level:${header.level}">` +
+    `<td colspan="${Math.max(span, 1)}"><button type="button" class="spg-group-toggle" aria-expanded="${open}">` +
+    `${renderIcon(icons, 'chevron_right', 'spg-group-icon')}<span class="spg-group-value">${value}</span>` +
+    ` <span class="spg-group-count">(${header.count})</span></button></td></tr>`
   );
 }

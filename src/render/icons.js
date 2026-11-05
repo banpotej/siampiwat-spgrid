@@ -81,9 +81,9 @@ export function resolveIcons(overrides) {
  *
  * @param {Record<IconName, string>} icons
  * @param {IconName} name
- * @param {string} [className] Extra class, e.g. 'dg-sort-icon'.
+ * @param {string} [className] Extra class, e.g. 'spg-sort-icon'.
  * @returns {string}
  */
 export function renderIcon(icons, name, className = '') {
-  return `<span class="dg-icon${className ? ` ${className}` : ''}" data-icon="${name}" aria-hidden="true">${icons[name]}</span>`;
+  return `<span class="spg-icon${className ? ` ${className}` : ''}" data-icon="${name}" aria-hidden="true">${icons[name]}</span>`;
 }

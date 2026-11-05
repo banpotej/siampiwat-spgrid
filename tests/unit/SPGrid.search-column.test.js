@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 import { computeView } from '../../src/core/view.js';
 
 const columns = [
@@ -20,7 +20,7 @@ afterEach(() => vi.useRealTimers());
 /** @param {object} [options] */
 const make = (options = {}) => {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns,
     rows,
     searchable: true,
@@ -31,7 +31,7 @@ const make = (options = {}) => {
 };
 /** @param {HTMLElement} el */
 const select = (el) =>
-  /** @type {HTMLSelectElement} */ (el.querySelector('select.dg-search-column'));
+  /** @type {HTMLSelectElement} */ (el.querySelector('select.spg-search-column'));
 /** @param {HTMLElement} el @param {string} value */
 const type = (el, value) => {
   const input = /** @type {HTMLInputElement} */ (el.querySelector('input[type="search"]'));
@@ -46,7 +46,7 @@ const choose = (el, value) => {
 };
 /** @param {HTMLElement} el */
 const names = (el) =>
-  [...el.querySelectorAll('tbody tr:not(.dg-empty)')].map(
+  [...el.querySelectorAll('tbody tr:not(.spg-empty)')].map(
     (tr) => tr.querySelectorAll('td')[1].textContent,
   );
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => localStorage.clear());
 
@@ -7,7 +7,7 @@ beforeEach(() => localStorage.clear());
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns: [
       { key: 'a', label: 'A' },
       { key: 'b', label: 'B' },
@@ -17,7 +17,7 @@ const make = (extra = {}) => {
     columnPicker: true,
     ...extra,
   });
-  /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click();
   return { el, grid };
 };
 /** @param {HTMLElement} el @param {'all' | 'none'} which */
@@ -25,14 +25,14 @@ const bulk = (el, which) =>
   /** @type {HTMLButtonElement} */ (el.querySelector(`[data-bulk="${which}"]`)).click();
 /** @param {HTMLElement} el */
 const checked = (el) =>
-  [...el.querySelectorAll('.dg-columns-item input')].map((i) => /** @type {any} */ (i).checked);
+  [...el.querySelectorAll('.spg-columns-item input')].map((i) => /** @type {any} */ (i).checked);
 
 describe('select all / clear all in the settings modal', () => {
   it('Clear all keeps the first column and Apply hides the rest', () => {
     const { el, grid } = make();
     bulk(el, 'none');
     expect(checked(el)).toEqual([true, false, false]);
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
     expect(grid.getHiddenColumns()).toEqual(['b', 'c']);
   });
 

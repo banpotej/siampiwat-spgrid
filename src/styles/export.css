@@ -2,49 +2,49 @@
    group (or alone in the toolbar when there is no search box); its label is the aria-label and
    tooltip. Joined corners and the shared border come from the input group rules in toolbar.css. */
 
-.dg-export {
+.spg-export {
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  min-width: var(--dgi-control-h);
-  min-height: var(--dgi-control-h);
+  min-width: var(--spgi-control-h);
+  min-height: var(--spgi-control-h);
   padding: 0.4em 0.8em;
-  border: 1px solid color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
+  border: 1px solid color-mix(in srgb, var(--spgi-neutral) 35%, var(--spgi-border-strong));
   border-radius: 0;
-  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
-  color: var(--dgi-neutral);
+  background: color-mix(in srgb, var(--spgi-neutral) 5%, var(--spgi-bg));
+  color: var(--spgi-neutral);
   font: inherit;
   cursor: pointer;
   transition:
-    background-color var(--dgi-transition),
-    transform var(--dgi-transition);
+    background-color var(--spgi-transition),
+    transform var(--spgi-transition);
 }
 
-.dg-export .dg-icon {
+.spg-export .spg-icon {
   font-size: 1.2em;
 }
 
-.dg-export:hover {
-  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+.spg-export:hover {
+  background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
 }
 
-.dg-export:active {
+.spg-export:active {
   transform: translateY(1px);
 }
 
-.dg-toolbar > .dg-export {
-  border-radius: var(--dgi-input-radius);
+.spg-toolbar > .spg-export {
+  border-radius: var(--spgi-input-radius);
 }
 
-.dg-export:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-export:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: -3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-export,
-  .dg-export:active {
+  .spg-export,
+  .spg-export:active {
     transition: none;
     transform: none;
   }

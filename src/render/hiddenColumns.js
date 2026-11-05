@@ -20,7 +20,7 @@ export class HiddenColumns {
   /** @type {string[]} */ #initial;
 
   /**
-   * @param {Pick<import('../types.js').DataGridOptions, 'columns' | 'hiddenColumns' | 'columnStorageKey'>} options
+   * @param {Pick<import('../types.js').SPGridOptions, 'columns' | 'hiddenColumns' | 'columnStorageKey'>} options
    *   `hiddenColumns` is used when nothing usable is saved under `columnStorageKey`.
    * @param {{ columnPicker: HTMLElement | null, searchColumn: HTMLSelectElement | null }} shell
    * @param {(hidden: string[]) => void} onChange Called with the new hidden keys after each change.

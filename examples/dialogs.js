@@ -2,17 +2,17 @@ const FOCUSABLE =
   'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled)';
 
 /**
- * Open `box` as a modal in the grid's own look (.dg-modal*); it lives inside .dg-root for the theme tokens.
+ * Open `box` as a modal in the grid's own look (.spg-modal*); it lives inside .spg-root for the theme tokens.
  * Esc and a click on the backdrop close it, Tab stays inside it, and focus goes back to where it was.
  *
- * @param {HTMLElement} box The `.dg-modal-box` with its content.
+ * @param {HTMLElement} box The `.spg-modal-box` with its content.
  * @param {{ role?: string, labelledBy: string, describedBy?: string, focus: HTMLElement, onClose?: () => void }} options
  * @returns {() => void} Closes the modal.
  */
 export function openModal(box, { role = 'dialog', labelledBy, describedBy, focus, onClose }) {
   const opener = document.activeElement;
   const overlay = document.createElement('div');
-  overlay.className = 'dg-modal';
+  overlay.className = 'spg-modal';
   box.setAttribute('role', role);
   box.setAttribute('aria-modal', 'true');
   box.setAttribute('aria-labelledby', labelledBy);
@@ -39,7 +39,7 @@ export function openModal(box, { role = 'dialog', labelledBy, describedBy, focus
       first.focus();
     }
   });
-  document.querySelector('#grid .dg-root').append(overlay);
+  document.querySelector('#grid .spg-root').append(overlay);
   focus.focus();
   return close;
 }
@@ -54,18 +54,18 @@ const el = (tag, className, text) => {
 /** Ask before cancelling a PO; resolves true only on the red button. */
 export function confirmCancel(row) {
   return new Promise((resolve) => {
-    const box = el('div', 'dg-modal-box confirm-cancel');
-    const icon = el('div', 'dg-modal-icon', '!');
+    const box = el('div', 'spg-modal-box confirm-cancel');
+    const icon = el('div', 'spg-modal-icon', '!');
     icon.setAttribute('aria-hidden', 'true');
-    const title = el('h2', 'dg-modal-title', 'ยกเลิกใบสั่งซื้อ');
+    const title = el('h2', 'spg-modal-title', 'ยกเลิกใบสั่งซื้อ');
     title.id = 'cancel-title';
-    const text = el('p', 'dg-modal-text', 'ต้องการยกเลิกเอกสาร ');
+    const text = el('p', 'spg-modal-text', 'ต้องการยกเลิกเอกสาร ');
     text.id = 'cancel-text';
     text.append(el('strong', '', row.poNumber), ' ใช่หรือไม่');
-    const no = el('button', 'dg-modal-btn dg-modal-cancel', 'ไม่ยกเลิก');
-    const yes = el('button', 'dg-modal-btn dg-modal-ok', 'ยกเลิกเอกสาร');
+    const no = el('button', 'spg-modal-btn spg-modal-cancel', 'ไม่ยกเลิก');
+    const yes = el('button', 'spg-modal-btn spg-modal-ok', 'ยกเลิกเอกสาร');
     no.type = yes.type = 'button';
-    const actions = el('div', 'dg-modal-actions');
+    const actions = el('div', 'spg-modal-actions');
     actions.append(no, yes);
     box.append(icon, title, text, actions);
 

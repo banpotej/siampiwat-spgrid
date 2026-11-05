@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 import { columnOptions } from '../../src/core/columns.js';
 import { filterRows } from '../../src/core/filter.js';
 
@@ -27,16 +27,16 @@ const rows = [
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns,
     rows,
     searchable: true,
     searchColumnSelect: true,
     ...extra,
   });
-  const input = /** @type {HTMLInputElement} */ (el.querySelector('.dg-search'));
-  const value = /** @type {HTMLSelectElement} */ (el.querySelector('.dg-search-value'));
-  const column = /** @type {HTMLSelectElement} */ (el.querySelector('.dg-search-column'));
+  const input = /** @type {HTMLInputElement} */ (el.querySelector('.spg-search'));
+  const value = /** @type {HTMLSelectElement} */ (el.querySelector('.spg-search-value'));
+  const column = /** @type {HTMLSelectElement} */ (el.querySelector('.spg-search-column'));
   return { el, grid, input, value, column };
 };
 /** @param {HTMLSelectElement} select @param {string} v */
@@ -112,7 +112,7 @@ describe('enum search column', () => {
     const { el, value, column } = make();
     choose(column, 'tier');
     expect(value.options[2].textContent).toBe('Silver <b>');
-    expect(el.querySelector('.dg-search-value b')).toBeNull();
+    expect(el.querySelector('.spg-search-value b')).toBeNull();
     choose(value, 'silver');
     expect(names(el)).toEqual(['B', 'C']);
   });
@@ -134,7 +134,7 @@ describe('enum search column', () => {
     grid.setFilter({ search: 'approved' });
     expect(value.value).toBe('Approved');
     expect(names(el)).toEqual(['A', 'C']);
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-clear')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-clear')).click();
     expect(value.value).toBe('');
     expect(grid.getFilter()).toBeNull();
     expect(column.value).toBe('status');
@@ -160,21 +160,21 @@ describe('enum search column', () => {
     const { el, value, column } = make();
     choose(column, 'status');
     choose(value, 'Not Approved');
-    const cells = el.querySelectorAll('td.dg-match');
+    const cells = el.querySelectorAll('td.spg-match');
     expect(cells).toHaveLength(1);
     expect(cells[0].textContent).toContain('Rejected');
-    expect(el.querySelector('mark.dg-mark')).toBeNull();
+    expect(el.querySelector('mark.spg-mark')).toBeNull();
     choose(column, 'name');
-    expect(el.querySelector('td.dg-match')).toBeNull();
+    expect(el.querySelector('td.spg-match')).toBeNull();
     const off = make({ highlightSearch: false });
     choose(off.column, 'status');
     choose(off.value, 'Approved');
-    expect(off.el.querySelector('td.dg-match')).toBeNull();
+    expect(off.el.querySelector('td.spg-match')).toBeNull();
   });
 
   it('has no clear icon in the field while the value select is shown', () => {
     const { el, grid, column, value } = make();
-    const clear = /** @type {HTMLElement} */ (el.querySelector('.dg-search-clear'));
+    const clear = /** @type {HTMLElement} */ (el.querySelector('.spg-search-clear'));
     grid.setFilter({ search: 'x' });
     expect(clear.hidden).toBe(false);
     choose(column, 'status');

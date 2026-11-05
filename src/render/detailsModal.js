@@ -12,7 +12,7 @@ let seq = 0;
 /**
  * @typedef {object} DetailsOptions
  * @property {HTMLElement} [root] Element inside the grid that carries the theme tokens: the grid's container or its
- *   `.dg-root`. The modal is added to the `.dg-root` found there; default the first `.dg-root` on the page, else `document.body`.
+ *   `.spg-root`. The modal is added to the `.spg-root` found there; default the first `.spg-root` on the page, else `document.body`.
  * @property {(row: Record<string, any>) => string} [title] The heading; default the first data column's value.
  * @property {[string, string[]][]} [groups] Sections: a heading (empty for none) and the keys of the columns it lists, in
  *   order. Default one section with every data column.
@@ -35,17 +35,17 @@ function el(tag, className, text) {
 }
 
 /**
- * Open `box` as a modal in the grid's own look (`.dg-modal*`) inside `root`. Esc and a click on the backdrop close
+ * Open `box` as a modal in the grid's own look (`.spg-modal*`) inside `root`. Esc and a click on the backdrop close
  * it, Tab stays inside it, and focus goes back to where it was.
  *
  * @param {HTMLElement} root
- * @param {HTMLElement} box The `.dg-modal-box` with its content.
+ * @param {HTMLElement} box The `.spg-modal-box` with its content.
  * @param {{ labelledBy: string, focus: HTMLElement }} options
  * @returns {() => void} Closes the modal.
  */
 function openModal(root, box, { labelledBy, focus }) {
   const opener = /** @type {HTMLElement | null} */ (document.activeElement);
-  const overlay = el('div', 'dg-modal');
+  const overlay = el('div', 'spg-modal');
   box.setAttribute('role', 'dialog');
   box.setAttribute('aria-modal', 'true');
   box.setAttribute('aria-labelledby', labelledBy);
@@ -92,9 +92,9 @@ export function showDetails(row, columns, options = {}) {
   const { title: titleOf = (r) => String(r[data[0]?.key] ?? ''), wide = [] } = options;
   const groups = options.groups ?? [['', data.map((c) => c.key)]];
   const root =
-    options.root?.closest('.dg-root') ??
-    options.root?.querySelector('.dg-root') ??
-    document.querySelector('.dg-root') ??
+    options.root?.closest('.spg-root') ??
+    options.root?.querySelector('.spg-root') ??
+    document.querySelector('.spg-root') ??
     document.body;
   /** @param {Column} col @param {unknown} value */
   const text = (col, value) => {
@@ -110,44 +110,44 @@ export function showDetails(row, columns, options = {}) {
   const toneOf = (col) =>
     col.type === 'badge' ? col.badges?.[String(row[col.key])]?.tone : undefined;
   /** @param {Column} col @param {string} value */
-  const badge = (col, value) => el('span', `dg-badge dg-badge-${toneOf(col)}`, value);
+  const badge = (col, value) => el('span', `spg-badge spg-badge-${toneOf(col)}`, value);
 
-  const id = `dg-details-${++seq}`;
-  const title = el('h2', 'dg-modal-title');
+  const id = `spg-details-${++seq}`;
+  const title = el('h2', 'spg-modal-title');
   title.id = id;
-  const sub = el('span', 'dg-details-sub');
+  const sub = el('span', 'spg-details-sub');
   const status = data.find((c) => c.key === 'status');
   if (status && toneOf(status)) sub.append(badge(status, text(status, row.status)));
-  title.append(el('span', 'dg-details-eyebrow', labels.details), titleOf(row), sub);
+  title.append(el('span', 'spg-details-eyebrow', labels.details), titleOf(row), sub);
 
-  const close = el('button', 'dg-modal-x');
+  const close = el('button', 'spg-modal-x');
   close.setAttribute('type', 'button');
   close.setAttribute('aria-label', labels.close);
   close.innerHTML =
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
-  const body = el('div', 'dg-details-body');
+  const body = el('div', 'spg-details-body');
   for (const [heading, keys] of groups) {
     const list = el('dl');
     for (const col of keys.map((key) => data.find((c) => c.key === key))) {
       if (!col) continue;
       const value = text(col, row[col.key]);
-      const item = el('div', wide.includes(col.key) ? 'dg-details-wide' : '');
-      const dd = el('dd', value === '-' ? 'dg-details-empty' : '');
+      const item = el('div', wide.includes(col.key) ? 'spg-details-wide' : '');
+      const dd = el('dd', value === '-' ? 'spg-details-empty' : '');
       if (toneOf(col) && value !== '-') dd.append(badge(col, value));
       else dd.textContent = value;
       item.append(el('dt', '', (col.label ?? col.key).replace(/\s*\n\s*/g, ' / ')), dd);
       list.append(item);
     }
-    const section = el('section', 'dg-details-group');
+    const section = el('section', 'spg-details-group');
     if (heading) section.append(el('h3', '', heading));
     section.append(list);
     body.append(section);
   }
 
-  const head = el('div', 'dg-details-head');
+  const head = el('div', 'spg-details-head');
   head.append(title);
-  const box = el('div', 'dg-modal-box dg-details');
+  const box = el('div', 'spg-modal-box spg-details');
   box.append(close, head, body); // the button is positioned over the corner; first in tab order
   const closeModal = openModal(/** @type {HTMLElement} */ (root), box, {
     labelledBy: id,

@@ -1,6 +1,6 @@
-/* Built-in confirm dialog (Reset view): a centred card over a dimmed backdrop, added inside .dg-root. */
+/* Built-in confirm dialog (Reset view): a centred card over a dimmed backdrop, added inside .spg-root. */
 
-.dg-modal {
+.spg-modal {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -10,29 +10,29 @@
   padding: 16px;
   background: rgb(15 23 42 / 0.28);
   backdrop-filter: blur(2px);
-  animation: dg-modal-fade 140ms ease-out;
+  animation: spg-modal-fade 140ms ease-out;
 }
 
-.dg-modal-box {
+.spg-modal-box {
   position: relative; /* the close button hangs off its top corner */
   width: min(100%, 24rem);
   padding: 24px 24px 20px;
-  border: 1px solid var(--dgi-border);
-  border-radius: calc(var(--dgi-radius) + 4px);
-  background: var(--dgi-bg);
-  color: var(--dgi-text);
-  font-family: var(--dgi-font);
-  font-size: var(--dgi-font-size);
-  line-height: var(--dgi-line-height);
+  border: 1px solid var(--spgi-border);
+  border-radius: calc(var(--spgi-radius) + 4px);
+  background: var(--spgi-bg);
+  color: var(--spgi-text);
+  font-family: var(--spgi-font);
+  font-size: var(--spgi-font-size);
+  line-height: var(--spgi-line-height);
   text-align: center;
   box-shadow:
     0 20px 40px -12px rgb(15 23 42 / 0.35),
     0 4px 10px -4px rgb(15 23 42 / 0.2);
-  animation: dg-modal-pop 160ms ease-out;
+  animation: spg-modal-pop 160ms ease-out;
 }
 
-/* A dark round close button hanging off the card's top-right corner, over the backdrop (the settings modal, `dg-modal-x`). */
-.dg-modal-x {
+/* A dark round close button hanging off the card's top-right corner, over the backdrop (the settings modal, `spg-modal-x`). */
+.spg-modal-x {
   position: absolute;
   z-index: 1;
   inset-block-start: -14px;
@@ -50,21 +50,21 @@
   box-shadow: 0 2px 8px rgb(15 23 42 / 0.35);
   cursor: pointer;
   transition:
-    background-color var(--dgi-transition),
-    transform var(--dgi-transition);
+    background-color var(--spgi-transition),
+    transform var(--spgi-transition);
 }
 
-.dg-modal-x:hover {
+.spg-modal-x:hover {
   background: light-dark(#334155, #cbd5e1);
   transform: scale(1.06);
 }
 
-.dg-modal-x:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-modal-x:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: 2px;
 }
 
-.dg-modal-icon {
+.spg-modal-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,75 +72,75 @@
   height: 3rem;
   margin: 0 auto 12px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--dgi-warning) 16%, var(--dgi-bg));
-  color: var(--dgi-warning);
+  background: color-mix(in srgb, var(--spgi-warning) 16%, var(--spgi-bg));
+  color: var(--spgi-warning);
   font-size: 1.5rem;
   font-weight: 700;
 }
 
-.dg-modal-title {
+.spg-modal-title {
   margin: 0 0 6px;
-  color: var(--dgi-header-text);
+  color: var(--spgi-header-text);
   font-size: 1.15em;
   font-weight: 600;
 }
 
-.dg-modal-text {
+.spg-modal-text {
   margin: 0 0 20px;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
 }
 
-.dg-modal-actions {
+.spg-modal-actions {
   display: flex;
   gap: 10px;
 }
 
-.dg-modal-btn {
+.spg-modal-btn {
   flex: 1;
   min-height: 2.5em;
   padding: 0.4em 1em;
-  border: 1px solid var(--dgi-border-strong);
-  border-radius: var(--dgi-input-radius);
-  background: var(--dgi-bg);
-  color: var(--dgi-text);
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
+  background: var(--spgi-bg);
+  color: var(--spgi-text);
   font: inherit;
   font-weight: 500;
   cursor: pointer;
   transition:
-    background-color var(--dgi-transition),
-    transform var(--dgi-transition);
+    background-color var(--spgi-transition),
+    transform var(--spgi-transition);
 }
 
-.dg-modal-btn:hover {
-  background: var(--dgi-hover-bg);
+.spg-modal-btn:hover {
+  background: var(--spgi-hover-bg);
 }
 
-.dg-modal-btn:active {
+.spg-modal-btn:active {
   transform: translateY(1px);
 }
 
-.dg-modal-ok {
-  border-color: var(--dgi-accent);
-  background: var(--dgi-accent);
-  color: var(--dgi-on-accent);
+.spg-modal-ok {
+  border-color: var(--spgi-accent);
+  background: var(--spgi-accent);
+  color: var(--spgi-on-accent);
 }
 
-.dg-modal-ok:hover {
-  background: color-mix(in srgb, var(--dgi-accent) 88%, #000);
+.spg-modal-ok:hover {
+  background: color-mix(in srgb, var(--spgi-accent) 88%, #000);
 }
 
-.dg-modal-btn:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-modal-btn:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: 2px;
 }
 
-@keyframes dg-modal-fade {
+@keyframes spg-modal-fade {
   from {
     opacity: 0;
   }
 }
 
-@keyframes dg-modal-pop {
+@keyframes spg-modal-pop {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.97);
@@ -148,15 +148,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-modal,
-  .dg-modal-box {
+  .spg-modal,
+  .spg-modal-box {
     animation: none;
   }
 
-  .dg-modal-x,
-  .dg-modal-x:hover,
-  .dg-modal-btn,
-  .dg-modal-btn:active {
+  .spg-modal-x,
+  .spg-modal-x:hover,
+  .spg-modal-btn,
+  .spg-modal-btn:active {
     transition: none;
     transform: none;
   }

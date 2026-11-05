@@ -32,7 +32,7 @@ const renderColumnSelect = (columns, label, allLabel) => {
       return `<option value="${escapeHtml(key)}">${escapeHtml(flat)}</option>`;
     })
     .join('');
-  return `<select class="dg-search-column" aria-label="${escapeHtml(label)}"><option value="">${escapeHtml(allLabel)}</option>${options}</select>`;
+  return `<select class="spg-search-column" aria-label="${escapeHtml(label)}"><option value="">${escapeHtml(allLabel)}</option>${options}</select>`;
 };
 
 /**
@@ -106,57 +106,57 @@ export function renderShell({
   const buttons =
     searchButtonLabel === null
       ? ''
-      : `<button type="button" class="dg-search-submit" aria-label="${escapeHtml(searchButtonLabel)}" title="${escapeHtml(searchButtonLabel)}">${renderIcon(icons, 'search')}</button>` +
-        `<button type="button" class="dg-search-reset" aria-label="${escapeHtml(clearLabel)}" title="${escapeHtml(clearLabel)}">${renderIcon(icons, 'close')}</button>`;
+      : `<button type="button" class="spg-search-submit" aria-label="${escapeHtml(searchButtonLabel)}" title="${escapeHtml(searchButtonLabel)}">${renderIcon(icons, 'search')}</button>` +
+        `<button type="button" class="spg-search-reset" aria-label="${escapeHtml(clearLabel)}" title="${escapeHtml(clearLabel)}">${renderIcon(icons, 'close')}</button>`;
   // Right of the search box: [Refresh] [Export] [Settings], each only when turned on.
   const tools =
-    toolButton('dg-tool-btn dg-refresh', refreshLabel, 'refresh', icons) +
-    toolButton('dg-export', exportLabel, 'download', icons);
+    toolButton('spg-tool-btn spg-refresh', refreshLabel, 'refresh', icons) +
+    toolButton('spg-export', exportLabel, 'download', icons);
   // One input group: [column select] [search box] [Search] [Clear search] [tools], joined edge to edge.
   // Without a search box the tools stand alone in the toolbar.
   const pickerButton = settingsLabel ? renderColumnPicker(settingsLabel, icons) : '';
   const group = searchable
-    ? `<div class="dg-input-group">` +
+    ? `<div class="spg-input-group">` +
       `${searchColumns ? renderColumnSelect(searchColumns, searchColumnLabel, allColumnsLabel) : ''}` +
-      `<div class="dg-search-field">${renderIcon(icons, 'search', 'dg-search-icon')}` +
-      `<input type="search" class="dg-search" aria-label="${escapeHtml(searchLabel)}" placeholder="${escapeHtml(searchLabel)}…">` +
+      `<div class="spg-search-field">${renderIcon(icons, 'search', 'spg-search-icon')}` +
+      `<input type="search" class="spg-search" aria-label="${escapeHtml(searchLabel)}" placeholder="${escapeHtml(searchLabel)}…">` +
       `${searchColumns ? renderSearchAlternatives({ label: searchLabel, all: allValuesLabel, from: dateFromLabel, to: dateToLabel }) : ''}` +
-      `<button type="button" class="dg-search-clear" aria-label="${escapeHtml(clearLabel)}" hidden>${renderIcon(icons, 'close')}</button></div>` +
+      `<button type="button" class="spg-search-clear" aria-label="${escapeHtml(clearLabel)}" hidden>${renderIcon(icons, 'close')}</button></div>` +
       `${buttons}${tools}${pickerButton}</div>`
     : tools + pickerButton;
   // The grid name sits at the start (left) edge of the toolbar, the filter bar at the end.
   // A description can be hidden or shown again with the toggle next to the name.
   const toggle = description
-    ? `<button type="button" class="dg-desc-toggle" aria-expanded="true" aria-label="${escapeHtml(toggleLabel)}" title="${escapeHtml(toggleLabel)}">${renderIcon(icons, 'chevron_right')}</button>`
+    ? `<button type="button" class="spg-desc-toggle" aria-expanded="true" aria-label="${escapeHtml(toggleLabel)}" title="${escapeHtml(toggleLabel)}">${renderIcon(icons, 'chevron_right')}</button>`
     : '';
   const heading =
     title || description
-      ? `<div class="dg-heading">${title ? `<h2 class="dg-title">${escapeHtml(title)}</h2>` : ''}${toggle}</div>`
+      ? `<div class="spg-heading">${title ? `<h2 class="spg-title">${escapeHtml(title)}</h2>` : ''}${toggle}</div>`
       : '';
-  const desc = description ? `<div class="dg-desc">${escapeHtml(description)}</div>` : '';
-  const toolbar = group || heading ? `<div class="dg-toolbar">${heading}${group}</div>` : '';
+  const desc = description ? `<div class="spg-desc">${escapeHtml(description)}</div>` : '';
+  const toolbar = group || heading ? `<div class="spg-toolbar">${heading}${group}</div>` : '';
   const root = [
-    'dg-root',
-    compact ? 'dg-compact' : '',
-    striped ? 'dg-striped' : '',
-    wrapped ? '' : 'dg-nowrap',
-    resizable ? 'dg-resizable' : '',
+    'spg-root',
+    compact ? 'spg-compact' : '',
+    striped ? 'spg-striped' : '',
+    wrapped ? '' : 'spg-nowrap',
+    resizable ? 'spg-resizable' : '',
     gridLinesClass(gridLines),
     lineStyleClass(lineStyle),
-    stickyHeader ? 'dg-sticky' : '',
+    stickyHeader ? 'spg-sticky' : '',
   ]
     .filter(Boolean)
     .join(' ');
-  const wrap = `dg-table-wrap${scroll ? ' dg-scroll' : ''}`;
+  const wrap = `spg-table-wrap${scroll ? ' spg-scroll' : ''}`;
   const freeze = freezeColumns > 0 ? ` data-freeze="${freezeColumns}"` : '';
-  return `<div class="${root}"${freeze}>${toolbar}${desc}${summary ? '<div class="dg-summary" aria-live="polite" hidden></div>' : ''}<div class="${wrap}"></div><div class="dg-pager-host"></div><div class="dg-status" role="status" aria-live="polite"></div></div>`;
+  return `<div class="${root}"${freeze}>${toolbar}${desc}${summary ? '<div class="spg-summary" aria-live="polite" hidden></div>' : ''}<div class="${wrap}"></div><div class="spg-pager-host"></div><div class="spg-status" role="status" aria-live="polite"></div></div>`;
 }
 
 /**
  * Build the shell inside `container` from the grid options and find the elements the grid keeps using.
  *
  * @param {HTMLElement} container
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, toggleDescription: string }} labels
  * @param {Record<IconName, string>} icons
  */
@@ -210,42 +210,42 @@ export function mountShell(container, options, labels, icons) {
   });
   /** @param {string} selector */
   const find = (selector) => /** @type {HTMLElement} */ (container.querySelector(selector));
-  const host = find('div.dg-table-wrap');
+  const host = find('div.spg-table-wrap');
   // Set through the CSSOM (not markup) so an odd value can never inject other styles.
   if (maxHeight !== undefined) {
     host.style.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
   }
-  const toggle = container.querySelector('button.dg-desc-toggle');
+  const toggle = container.querySelector('button.spg-desc-toggle');
   toggle?.addEventListener('click', () => {
     const open = toggle.getAttribute('aria-expanded') !== 'true';
     toggle.setAttribute('aria-expanded', String(open));
-    container.querySelector('.dg-desc')?.toggleAttribute('hidden', !open);
+    container.querySelector('.spg-desc')?.toggleAttribute('hidden', !open);
   });
   return {
     host,
-    pagerHost: find('div.dg-pager-host'),
-    status: find('div.dg-status'),
+    pagerHost: find('div.spg-pager-host'),
+    status: find('div.spg-status'),
     pickerColumns,
     groupColumns: options.groupByToggle === true ? dataColumns(options.columns) : null,
-    view: createViewSettings(container.querySelector('.dg-root'), options),
-    toolbar: /** @type {HTMLElement | null} */ (container.querySelector('div.dg-toolbar')),
+    view: createViewSettings(container.querySelector('.spg-root'), options),
+    toolbar: /** @type {HTMLElement | null} */ (container.querySelector('div.spg-toolbar')),
     columnPicker: /** @type {HTMLElement | null} */ (
-      container.querySelector('div.dg-toolbar:has(.dg-columns-btn)')
+      container.querySelector('div.spg-toolbar:has(.spg-columns-btn)')
     ),
-    summary: /** @type {HTMLElement | null} */ (container.querySelector('div.dg-summary')),
+    summary: /** @type {HTMLElement | null} */ (container.querySelector('div.spg-summary')),
     refreshButton: /** @type {HTMLButtonElement | null} */ (
-      container.querySelector('button.dg-refresh')
+      container.querySelector('button.spg-refresh')
     ),
     exportButton: /** @type {HTMLButtonElement | null} */ (
-      container.querySelector('button.dg-export')
+      container.querySelector('button.spg-export')
     ),
-    search: /** @type {HTMLInputElement | null} */ (container.querySelector('input.dg-search')),
+    search: /** @type {HTMLInputElement | null} */ (container.querySelector('input.spg-search')),
     searchColumn: /** @type {HTMLSelectElement | null} */ (
-      container.querySelector('select.dg-search-column')
+      container.querySelector('select.spg-search-column')
     ),
     searchValue: /** @type {HTMLSelectElement | null} */ (
-      container.querySelector('select.dg-search-value')
+      container.querySelector('select.spg-search-value')
     ),
-    searchRange: /** @type {HTMLElement | null} */ (container.querySelector('.dg-search-range')),
+    searchRange: /** @type {HTMLElement | null} */ (container.querySelector('.spg-search-range')),
   };
 }

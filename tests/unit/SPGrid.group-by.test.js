@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => localStorage.clear());
 
@@ -21,12 +21,12 @@ const rows = [
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, rowKey: 'id', ...extra });
+  const grid = new SPGrid(el, { columns, rows, rowKey: 'id', ...extra });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
 const headers = (el) =>
-  [...el.querySelectorAll('tr.dg-group-row')].map((tr) => ({
+  [...el.querySelectorAll('tr.spg-group-row')].map((tr) => ({
     level: Number(/** @type {HTMLElement} */ (tr).dataset.level),
     text: tr.textContent?.replace(/\s+/g, ' ').trim(),
   }));
@@ -35,12 +35,12 @@ const names = (el) =>
   [...el.querySelectorAll('tbody tr[data-row-index] td:first-child')].map((td) => td.textContent);
 /** @param {HTMLElement} el @param {number} i */
 const toggle = (el, i) =>
-  /** @type {HTMLButtonElement} */ (el.querySelectorAll('.dg-group-toggle')[i]);
+  /** @type {HTMLButtonElement} */ (el.querySelectorAll('.spg-group-toggle')[i]);
 
 describe('groupBy option', () => {
   it('draws no group rows by default', () => {
     const { el, grid } = make();
-    expect(el.querySelector('.dg-group-row')).toBeNull();
+    expect(el.querySelector('.spg-group-row')).toBeNull();
     expect(grid.getGroupBy()).toEqual([]);
   });
 
@@ -56,8 +56,8 @@ describe('groupBy option', () => {
 
   it('escapes the value and shows a badge column the way its cells show it', () => {
     const { el } = make({ groupBy: ['status'] });
-    expect(el.querySelector('tr.dg-group-row .dg-badge')?.textContent).toBe('On track');
-    expect(make({ groupBy: ['dept'] }).el.querySelector('tr.dg-group-row i')).toBeNull();
+    expect(el.querySelector('tr.spg-group-row .spg-badge')?.textContent).toBe('On track');
+    expect(make({ groupBy: ['dept'] }).el.querySelector('tr.spg-group-row i')).toBeNull();
   });
 
   it('nests a second level inside the first', () => {
@@ -90,7 +90,7 @@ describe('groupBy option', () => {
 
   it('spans the header row over every column', () => {
     const { el } = make({ groupBy: ['dept'] });
-    expect(el.querySelector('tr.dg-group-row td')?.getAttribute('colspan')).toBe('3');
+    expect(el.querySelector('tr.spg-group-row td')?.getAttribute('colspan')).toBe('3');
   });
 
   it('throws for an unknown, repeated or non-array groupBy', () => {
@@ -134,7 +134,7 @@ describe('collapsing a group', () => {
     const row = /** @type {HTMLElement} */ (el.querySelector('tbody tr[data-row-index]'));
     row.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
     expect(onRowActivate.mock.calls[0][0].row.name).toBe('Mobile');
-    expect(el.querySelector('tr.dg-group-row')?.hasAttribute('tabindex')).toBe(false);
+    expect(el.querySelector('tr.spg-group-row')?.hasAttribute('tabindex')).toBe(false);
   });
 
   it('is not triggered by a click elsewhere in the table', () => {
@@ -153,7 +153,7 @@ describe('getGroupBy and setGroupBy', () => {
     grid.getGroupBy().push('x');
     expect(grid.getGroupBy()).toEqual(['status', 'dept']);
     grid.setGroupBy([]);
-    expect(el.querySelector('.dg-group-row')).toBeNull();
+    expect(el.querySelector('.spg-group-row')).toBeNull();
   });
 
   it('validates, and a failed call changes nothing', () => {
@@ -203,7 +203,7 @@ describe('groupByChange event', () => {
 describe('groupByStorageKey', () => {
   it('saves the columns, restores them over the option, and remembers ungrouping', () => {
     make({ groupByStorageKey: 'k' }).grid.setGroupBy(['status']);
-    expect(localStorage.getItem('datagrid:groupBy:k')).toBe('["status"]');
+    expect(localStorage.getItem('spgrid:groupBy:k')).toBe('["status"]');
     const restored = make({ groupByStorageKey: 'k', groupBy: ['dept'] });
     expect(restored.grid.getGroupBy()).toEqual(['status']);
     restored.grid.setGroupBy([]);
@@ -211,9 +211,9 @@ describe('groupByStorageKey', () => {
   });
 
   it('drops saved columns that are gone and ignores bad data', () => {
-    localStorage.setItem('datagrid:groupBy:k', '["gone","dept","dept"]');
+    localStorage.setItem('spgrid:groupBy:k', '["gone","dept","dept"]');
     expect(make({ groupByStorageKey: 'k' }).grid.getGroupBy()).toEqual(['dept']);
-    localStorage.setItem('datagrid:groupBy:k', '"dept"');
+    localStorage.setItem('spgrid:groupBy:k', '"dept"');
     const bad = make({ groupByStorageKey: 'k', groupBy: ['status'] });
     expect(bad.grid.getGroupBy()).toEqual(['status']);
   });
@@ -233,7 +233,7 @@ describe('search in a grouped grid', () => {
     const { grid, el } = make({ groupBy: ['dept'] });
     grid.setFilter({ search: 'Product' });
     expect(el.querySelector('tbody tr[data-row-index] mark')).not.toBeNull();
-    expect(el.querySelector('tr.dg-group-row mark')).toBeNull();
+    expect(el.querySelector('tr.spg-group-row mark')).toBeNull();
     expect(headers(el).map((h) => h.text)).toEqual(['Product (2)']);
   });
 });
@@ -241,12 +241,13 @@ describe('search in a grouped grid', () => {
 describe('groupByToggle', () => {
   /** @param {HTMLElement} el */
   const open = (el) =>
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click();
   /** @param {HTMLElement} el */
   const selects = (el) =>
     /** @type {HTMLSelectElement[]} */ ([...el.querySelectorAll('select[data-group]')]);
   /** @param {HTMLElement} el */
-  const apply = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
+  const apply = (el) =>
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
   /** @param {HTMLSelectElement} select @param {string} value */
   const pick = (select, value) => {
     select.value = value;
@@ -256,7 +257,7 @@ describe('groupByToggle', () => {
   it('turns the Settings button on and adds the section; without it there is none', () => {
     const { el } = make({ groupByToggle: true });
     open(el);
-    expect(el.querySelector('.dg-settings-heading')?.textContent).toBe('Grouping');
+    expect(el.querySelector('.spg-settings-heading')?.textContent).toBe('Grouping');
     expect(selects(el)).toHaveLength(2);
     expect([...selects(el)[0].options].map((o) => o.textContent)).toEqual([
       'No grouping',
@@ -284,7 +285,7 @@ describe('groupByToggle', () => {
     open(el);
     pick(selects(el)[0], 'dept');
     pick(selects(el)[1], 'status');
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-cancel')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-cancel')).click();
     expect(grid.getGroupBy()).toEqual([]);
     open(el);
     pick(selects(el)[0], 'dept');
@@ -315,7 +316,7 @@ describe('groupByToggle', () => {
   it('uses the Thai labels', () => {
     const { el } = make({ groupByToggle: true, labels: thaiLabels });
     open(el);
-    expect(el.querySelector('.dg-settings-heading')?.textContent).toBe('การจัดกลุ่ม');
+    expect(el.querySelector('.spg-settings-heading')?.textContent).toBe('การจัดกลุ่ม');
     expect(selects(el)[0].options[0].textContent).toBe('ไม่จัดกลุ่ม');
   });
 });

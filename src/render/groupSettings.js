@@ -24,10 +24,10 @@ export function renderGroupSection(columns, keys, labels) {
   const selects = Array.from(
     { length: levels },
     (_, level) =>
-      `<label class="dg-settings-field"><span>${escapeHtml(level === 0 ? labels.groupBy : labels.thenBy)}</span>` +
+      `<label class="spg-settings-field"><span>${escapeHtml(level === 0 ? labels.groupBy : labels.thenBy)}</span>` +
       `<select data-group="${level}">${options}</select></label>`,
   ).join('');
-  return `<section><h3 class="dg-settings-heading">${escapeHtml(labels.groupSection)}</h3>${selects}</section>`;
+  return `<section><h3 class="spg-settings-heading">${escapeHtml(labels.groupSection)}</h3>${selects}</section>`;
 }
 
 /**

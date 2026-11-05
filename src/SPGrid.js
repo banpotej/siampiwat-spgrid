@@ -12,14 +12,14 @@ import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
 import { exportExcel } from './render/exportExcel.js';
 import { searchColumnChange, syncSearchBox } from './render/searchBox.js';
-import './datagrid.css';
+import './spgrid.css';
 
 /** @typedef {import('./types.js').Row} Row */
 /** @typedef {import('./types.js').SortState} SortState */
 /** @typedef {import('./types.js').FilterState} FilterState */
 /** @typedef {import('./types.js').GridEvents} GridEvents */
 
-export class DataGrid {
+export class SPGrid {
   /** @type {HTMLElement} */ #container;
   /** @type {ReturnType<typeof import('./render/toolbar.js').mountShell>} The static shell; only `host` and `pagerHost` content is re-rendered. */
   #shell;
@@ -42,7 +42,7 @@ export class DataGrid {
 
   /**
    * @param {HTMLElement} container
-   * @param {import('./types.js').DataGridOptions} options
+   * @param {import('./types.js').SPGridOptions} options
    * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer
    */
   constructor(container, options) {

@@ -4,7 +4,7 @@ import { readJson, writeJson } from '../utils/storage.js';
 
 /** @typedef {import('../types.js').Column} Column */
 
-const PREFIX = 'datagrid:columnOrder:';
+const PREFIX = 'spgrid:columnOrder:';
 
 /**
  * The order the columns are shown in: validates changes and remembers them in localStorage (when a storage
@@ -15,7 +15,7 @@ export class ColumnOrder {
   #storageKey;
   /** @type {string[]} */ #keys;
 
-  /** @param {Pick<import('../types.js').DataGridOptions, 'columns' | 'columnOrderStorageKey'>} options */
+  /** @param {Pick<import('../types.js').SPGridOptions, 'columns' | 'columnOrderStorageKey'>} options */
   constructor({ columns, columnOrderStorageKey: storageKey }) {
     this.#columns = columns;
     this.#storageKey = storageKey;

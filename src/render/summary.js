@@ -46,12 +46,12 @@ export function renderSummary({ filter, columns, shown, total, labels, icons }) 
     .map(({ text, attrs }) => {
       const name = escapeHtml(labels.removeFilter(text));
       return (
-        `<li class="dg-chip"><span class="dg-chip-text">${escapeHtml(text)}</span>` +
-        `<button type="button" class="dg-chip-remove" ${attrs} aria-label="${name}" title="${name}">${renderIcon(icons, 'close')}</button></li>`
+        `<li class="spg-chip"><span class="spg-chip-text">${escapeHtml(text)}</span>` +
+        `<button type="button" class="spg-chip-remove" ${attrs} aria-label="${name}" title="${name}">${renderIcon(icons, 'close')}</button></li>`
       );
     })
     .join('');
-  return `<span class="dg-summary-count">${escapeHtml(labels.filterSummary(shown, total))}</span><ul class="dg-chips">${items}</ul>`;
+  return `<span class="spg-summary-count">${escapeHtml(labels.filterSummary(shown, total))}</span><ul class="spg-chips">${items}</ul>`;
 }
 
 /**
@@ -64,7 +64,7 @@ export function renderSummary({ filter, columns, shown, total, labels, icons }) 
 export function bindSummaryEvents(host, onRemove) {
   /** @param {Event} e */
   const onClick = (e) => {
-    const button = e.target instanceof Element ? e.target.closest('.dg-chip-remove') : null;
+    const button = e.target instanceof Element ? e.target.closest('.spg-chip-remove') : null;
     if (!(button instanceof HTMLElement) || !host.contains(button)) return;
     onRemove(
       button.dataset.remove === 'column'

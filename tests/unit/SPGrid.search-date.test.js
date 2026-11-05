@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 import { dayOf, parseDayRange } from '../../src/core/dates.js';
 import { searchKind } from '../../src/core/columns.js';
 import { filterRows } from '../../src/core/filter.js';
@@ -23,18 +23,18 @@ const rows = [
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns,
     rows,
     searchable: true,
     searchColumnSelect: true,
     ...extra,
   });
-  const input = /** @type {HTMLInputElement} */ (el.querySelector('.dg-search'));
-  const column = /** @type {HTMLSelectElement} */ (el.querySelector('.dg-search-column'));
-  const range = /** @type {HTMLElement} */ (el.querySelector('.dg-search-range'));
-  const from = /** @type {HTMLInputElement} */ (el.querySelector('.dg-date-from'));
-  const to = /** @type {HTMLInputElement} */ (el.querySelector('.dg-date-to'));
+  const input = /** @type {HTMLInputElement} */ (el.querySelector('.spg-search'));
+  const column = /** @type {HTMLSelectElement} */ (el.querySelector('.spg-search-column'));
+  const range = /** @type {HTMLElement} */ (el.querySelector('.spg-search-range'));
+  const from = /** @type {HTMLInputElement} */ (el.querySelector('.spg-date-from'));
+  const to = /** @type {HTMLInputElement} */ (el.querySelector('.spg-date-to'));
   return { el, grid, input, column, range, from, to };
 };
 /** @param {HTMLInputElement | HTMLSelectElement} control @param {string} v */
@@ -118,13 +118,13 @@ describe('date search column', () => {
 
   it('marks the whole cell and shows the clear icon while a range is set', () => {
     const { el, column, from } = make();
-    const clear = /** @type {HTMLElement} */ (el.querySelector('.dg-search-clear'));
+    const clear = /** @type {HTMLElement} */ (el.querySelector('.spg-search-clear'));
     set(column, 'due');
     expect(clear.hidden).toBe(true);
     set(from, '2026-10-10');
     expect(clear.hidden).toBe(false);
-    expect(el.querySelectorAll('td.dg-match')).toHaveLength(2);
-    expect(el.querySelector('mark.dg-mark')).toBeNull();
+    expect(el.querySelectorAll('td.spg-match')).toHaveLength(2);
+    expect(el.querySelector('mark.spg-mark')).toBeNull();
   });
 
   it('is cleared by the clear icon, and mirrored from setFilter', () => {
@@ -133,7 +133,7 @@ describe('date search column', () => {
     grid.setFilter({ search: '2026-10-01..2026-10-15' });
     expect([from.value, to.value]).toEqual(['2026-10-01', '2026-10-15']);
     expect(names(el)).toEqual(['A', 'B']);
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-clear')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-clear')).click();
     expect([from.value, to.value]).toEqual(['', '']);
     expect(grid.getFilter()).toBeNull();
     expect(column.value).toBe('due');

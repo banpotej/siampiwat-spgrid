@@ -1,4 +1,4 @@
-# Builds the two release files into .\release\ : siampiwat-datagrid-<version>.tgz (for npm) and siampiwat-datagrid-<version>.zip (the same
+# Builds the two release files into .\release\ : siampiwat-spgrid-<version>.tgz (for npm) and siampiwat-spgrid-<version>.zip (the same
 # package unzipped, for people without npm), plus SHA256SUMS.txt.
 # Usage: .\pack.ps1              runs `npm run check` first (lint, types, tests, build, e2e), then packs
 #        .\pack.ps1 -SkipCheck   only builds and packs
@@ -17,13 +17,13 @@ function Invoke-Native {
 }
 
 $version = (Get-Content -Raw -LiteralPath 'package.json' | ConvertFrom-Json).version
-$tgzName = "siampiwat-datagrid-$version.tgz"
-$zipName = "siampiwat-datagrid-$version.zip"
+$tgzName = "siampiwat-spgrid-$version.tgz"
+$zipName = "siampiwat-spgrid-$version.zip"
 
 if ($SkipCheck) { Invoke-Native npm.cmd run build } else { Invoke-Native npm.cmd run check }
 
 $null = New-Item -ItemType Directory -Force -Path $OutDir
-$stage = Join-Path ([IO.Path]::GetTempPath()) ("datagrid-pack-" + [guid]::NewGuid().ToString('N'))
+$stage = Join-Path ([IO.Path]::GetTempPath()) ("spgrid-pack-" + [guid]::NewGuid().ToString('N'))
 $null = New-Item -ItemType Directory -Force -Path $stage
 try {
     # 1. the npm tarball (what `npm install <file>` takes)
@@ -31,12 +31,12 @@ try {
     $tgz = Join-Path $OutDir $tgzName
     if (-not (Test-Path -LiteralPath $tgz)) { throw "npm pack did not make $tgzName" }
 
-    # 2. the same files as a zip: dist\ (datagrid.js, datagrid.css, ...), docs\, README.md, package.json ...
+    # 2. the same files as a zip: dist\ (spgrid.js, spgrid.css, ...), docs\, README.md, package.json ...
     Invoke-Native tar.exe -xzf $tgz -C $stage
-    Rename-Item -LiteralPath (Join-Path $stage 'package') -NewName "datagrid-$version"
+    Rename-Item -LiteralPath (Join-Path $stage 'package') -NewName "spgrid-$version"
     $zip = Join-Path $OutDir $zipName
     if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
-    Compress-Archive -Path (Join-Path $stage "datagrid-$version") -DestinationPath $zip -CompressionLevel Optimal
+    Compress-Archive -Path (Join-Path $stage "spgrid-$version") -DestinationPath $zip -CompressionLevel Optimal
 
     $sums = foreach ($file in $tgz, $zip) {
         "{0}  {1}" -f (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLower(), (Split-Path $file -Leaf)

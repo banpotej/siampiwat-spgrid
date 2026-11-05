@@ -127,7 +127,7 @@ describe('delegation, focus and destroy', () => {
       spy.mock.calls.filter(
         ([t], i) =>
           t === type &&
-          /** @type {any} */ (spy.mock.contexts[i]).classList?.contains('dg-pager-host'),
+          /** @type {any} */ (spy.mock.contexts[i]).classList?.contains('spg-pager-host'),
       ).length;
     expect(onPager('click')).toBe(1);
     for (let i = 0; i < 5; i++) btn(el, '[data-action="next"]').click();

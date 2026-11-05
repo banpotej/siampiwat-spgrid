@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 import { normalizeHidden, restoreHidden, visibleColumns } from '../../src/core/columnVisibility.js';
 
 const columns = [
@@ -20,21 +20,21 @@ afterEach(() => vi.restoreAllMocks());
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, columnPicker: true, ...options });
+  const grid = new SPGrid(el, { columns, rows, columnPicker: true, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
 const headers = (el) => [...el.querySelectorAll('th')].map((th) => th.dataset.key);
 const open = (/** @type {HTMLElement} */ el) =>
-  /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
-const dialog = (/** @type {HTMLElement} */ el) => el.querySelector('.dg-modal');
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click();
+const dialog = (/** @type {HTMLElement} */ el) => el.querySelector('.spg-modal');
 /** @param {HTMLElement} el @param {string} key The checkbox in the open modal. */
 const box = (el, key) =>
   /** @type {HTMLInputElement} */ (
-    el.querySelector(`.dg-settings input[type="checkbox"][data-key="${key}"]`)
+    el.querySelector(`.spg-settings input[type="checkbox"][data-key="${key}"]`)
   );
 const apply = (/** @type {HTMLElement} */ el) =>
-  /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
 /** Open the modal, flip one checkbox and apply (the hide/show round trip). */
 const toggle = (/** @type {HTMLElement} */ el, /** @type {string} */ key) => {
   open(el);
@@ -43,7 +43,7 @@ const toggle = (/** @type {HTMLElement} */ el, /** @type {string} */ key) => {
 };
 const press = (/** @type {HTMLElement} */ target, /** @type {string} */ k) =>
   target.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
-const saved = () => localStorage.getItem('datagrid:columns:po');
+const saved = () => localStorage.getItem('spgrid:columns:po');
 
 describe('core/columnVisibility', () => {
   it('normalizeHidden returns column order without duplicates and rejects bad input', () => {
@@ -68,60 +68,60 @@ describe('core/columnVisibility', () => {
 
 describe('column picker', () => {
   it('is rendered only with columnPicker; the modal has one checkbox per data column (not the action column)', () => {
-    expect(make({ columnPicker: false }).el.querySelector('.dg-columns-btn')).toBeNull();
+    expect(make({ columnPicker: false }).el.querySelector('.spg-columns-btn')).toBeNull();
     const { el } = make();
-    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn'));
+    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn'));
     expect(btn.type).toBe('button');
     expect(btn.getAttribute('aria-label')).toBe('Settings');
     expect(btn.title).toBe('Settings');
     expect(dialog(el)).toBeNull();
     open(el);
-    expect(el.querySelectorAll('.dg-columns-item')).toHaveLength(3);
+    expect(el.querySelectorAll('.spg-columns-item')).toHaveLength(3);
     expect(box(el, 'ops')).toBeNull();
-    expect(el.querySelectorAll('.dg-columns-item input:checked')).toHaveLength(3);
-    expect(el.querySelector('.dg-modal-box')?.getAttribute('aria-modal')).toBe('true');
+    expect(el.querySelectorAll('.spg-columns-item input:checked')).toHaveLength(3);
+    expect(el.querySelector('.spg-modal-box')?.getAttribute('aria-modal')).toBe('true');
     expect(document.activeElement).toBe(box(el, 'name'));
   });
 
   it('works without searchable and sits beside the search group when there is one', () => {
-    expect(make().el.querySelector('.dg-toolbar > .dg-columns-btn')).not.toBeNull();
+    expect(make().el.querySelector('.spg-toolbar > .spg-columns-btn')).not.toBeNull();
     const { el } = make({ searchable: true });
-    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar'));
-    expect([...toolbar.children].map((c) => c.className)).toEqual(['dg-input-group']);
-    expect(toolbar.querySelector('.dg-input-group')?.lastElementChild?.className).toBe(
-      'dg-tool-btn dg-columns-btn',
+    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.spg-toolbar'));
+    expect([...toolbar.children].map((c) => c.className)).toEqual(['spg-input-group']);
+    expect(toolbar.querySelector('.spg-input-group')?.lastElementChild?.className).toBe(
+      'spg-tool-btn spg-columns-btn',
     );
   });
 
   it('uses the labels and escapes column labels', () => {
     const thai = make({ labels: thaiLabels });
-    expect(thai.el.querySelector('.dg-columns-btn')?.getAttribute('aria-label')).toBe('ตั้งค่า');
+    expect(thai.el.querySelector('.spg-columns-btn')?.getAttribute('aria-label')).toBe('ตั้งค่า');
     open(thai.el);
-    expect(thai.el.querySelector('.dg-modal-title')?.textContent).toBe('ตั้งค่า');
-    expect(thai.el.querySelector('.dg-modal-ok')?.textContent).toBe('ตกลง');
+    expect(thai.el.querySelector('.spg-modal-title')?.textContent).toBe('ตั้งค่า');
+    expect(thai.el.querySelector('.spg-modal-ok')?.textContent).toBe('ตกลง');
     const { el } = make({ columns: [{ key: 'a', label: '<b>"A"</b>\nTwo' }, { key: 'b' }] });
     open(el);
-    const item = /** @type {HTMLElement} */ (el.querySelector('.dg-columns-item'));
+    const item = /** @type {HTMLElement} */ (el.querySelector('.spg-columns-item'));
     expect(item.querySelector('b')).toBeNull();
     expect(item.textContent).toBe('<b>"A"</b> / Two');
   });
 
   it('marks the button aria-expanded while the modal is open and opens only one', () => {
     const { el } = make();
-    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn'));
+    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn'));
     expect(btn.getAttribute('aria-haspopup')).toBe('dialog');
     open(el);
     open(el);
-    expect(el.querySelectorAll('.dg-modal')).toHaveLength(1);
+    expect(el.querySelectorAll('.spg-modal')).toHaveLength(1);
     expect(btn.getAttribute('aria-expanded')).toBe('true');
   });
 
   it('discards the changes on Cancel, Escape and a click on the backdrop (focus back on the button)', () => {
     const { el, grid } = make();
-    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn'));
+    const btn = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn'));
     btn.focus();
     for (const close of [
-      () => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-cancel')).click(),
+      () => /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-cancel')).click(),
       () => press(box(el, 'name'), 'Escape'),
       () => /** @type {HTMLElement} */ (dialog(el)).click(),
     ]) {
@@ -180,7 +180,7 @@ describe('column picker', () => {
   it('keeps Tab inside the modal, the close button being its last stop', () => {
     const { el } = make();
     open(el);
-    const close = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-x'));
+    const close = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-x'));
     close.focus();
     const tab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
     close.dispatchEvent(tab);
@@ -196,7 +196,7 @@ describe('column picker', () => {
     expect(back.defaultPrevented).toBe(true);
     expect(document.activeElement).toBe(close);
     // Apply is no longer the end of the ring: Tab from it goes on (natively) to the close button.
-    const ok = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok'));
+    const ok = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok'));
     ok.focus();
     const next = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
     ok.dispatchEvent(next);
@@ -207,12 +207,12 @@ describe('column picker', () => {
     const { el, grid } = make();
     open(el);
     expect(() => grid.destroy()).not.toThrow();
-    expect(el.querySelector('.dg-modal')).toBeNull();
+    expect(el.querySelector('.spg-modal')).toBeNull();
   });
 });
 
 describe('Columns button state', () => {
-  const button = (/** @type {HTMLElement} */ el) => el.querySelector('.dg-columns-btn');
+  const button = (/** @type {HTMLElement} */ el) => el.querySelector('.spg-columns-btn');
 
   it('is marked active while a column is hidden, and clears when all are shown again', () => {
     const { el, grid } = make();
@@ -296,7 +296,7 @@ describe('hidden columns API', () => {
 describe('search follows the visible columns', () => {
   /** @param {HTMLElement} el */
   const options = (el) =>
-    [...el.querySelectorAll('select.dg-search-column option')].map((o) => ({
+    [...el.querySelectorAll('select.spg-search-column option')].map((o) => ({
       value: /** @type {HTMLOptionElement} */ (o).value,
       off:
         /** @type {HTMLOptionElement} */ (o).hidden &&
@@ -327,7 +327,7 @@ describe('search follows the visible columns', () => {
     grid.setFilter({ search: 'engineer' });
     expect(el.querySelectorAll('tbody tr')).toHaveLength(1);
     grid.setHiddenColumns(['role']);
-    expect(el.querySelectorAll('tbody tr:not(.dg-empty)')).toHaveLength(0);
+    expect(el.querySelectorAll('tbody tr:not(.spg-empty)')).toHaveLength(0);
     grid.setHiddenColumns([]);
     expect(el.querySelectorAll('tbody tr')).toHaveLength(1);
   });
@@ -358,7 +358,7 @@ describe('search follows the visible columns', () => {
 });
 
 describe('columnStorageKey (localStorage)', () => {
-  it('saves every change under datagrid:columns:<key>', () => {
+  it('saves every change under spgrid:columns:<key>', () => {
     const { el } = make({ columnStorageKey: 'po' });
     expect(saved()).toBeNull();
     toggle(el, 'role');
@@ -368,7 +368,7 @@ describe('columnStorageKey (localStorage)', () => {
   });
 
   it('restores the saved choice on the next grid, ahead of hiddenColumns', () => {
-    localStorage.setItem('datagrid:columns:po', JSON.stringify(['city']));
+    localStorage.setItem('spgrid:columns:po', JSON.stringify(['city']));
     const { el, grid } = make({ columnStorageKey: 'po', hiddenColumns: ['name'] });
     expect(headers(el)).toEqual(['name', 'role', 'ops']);
     expect(grid.getHiddenColumns()).toEqual(['city']);
@@ -389,11 +389,11 @@ describe('columnStorageKey (localStorage)', () => {
   });
 
   it('ignores saved keys that are no longer columns, bad JSON and an all-hidden list', () => {
-    localStorage.setItem('datagrid:columns:po', JSON.stringify(['role', 'gone']));
+    localStorage.setItem('spgrid:columns:po', JSON.stringify(['role', 'gone']));
     expect(make({ columnStorageKey: 'po' }).grid.getHiddenColumns()).toEqual(['role']);
-    localStorage.setItem('datagrid:columns:po', '{not json');
+    localStorage.setItem('spgrid:columns:po', '{not json');
     expect(make({ columnStorageKey: 'po' }).grid.getHiddenColumns()).toEqual([]);
-    localStorage.setItem('datagrid:columns:po', JSON.stringify(['name', 'role', 'city']));
+    localStorage.setItem('spgrid:columns:po', JSON.stringify(['name', 'role', 'city']));
     expect(make({ columnStorageKey: 'po' }).grid.getHiddenColumns()).toEqual([]);
   });
 
@@ -419,9 +419,9 @@ describe('columnStorageKey (localStorage)', () => {
 describe('sort in the settings modal', () => {
   const sortable = columns.map((c) => ({ ...c, sortable: c.key !== 'ops' }));
   const sortKey = (/** @type {HTMLElement} */ el) =>
-    /** @type {HTMLSelectElement} */ (el.querySelector('.dg-settings-sort-key'));
+    /** @type {HTMLSelectElement} */ (el.querySelector('.spg-settings-sort-key'));
   const sortDir = (/** @type {HTMLElement} */ el) =>
-    /** @type {HTMLSelectElement} */ (el.querySelector('.dg-settings-sort-dir'));
+    /** @type {HTMLSelectElement} */ (el.querySelector('.spg-settings-sort-dir'));
   const choose = (/** @type {HTMLSelectElement} */ select, /** @type {string} */ value) => {
     select.value = value;
     select.dispatchEvent(new Event('change', { bubbles: true }));
@@ -432,7 +432,7 @@ describe('sort in the settings modal', () => {
   it('is left out when no column is sortable', () => {
     const { el } = make();
     open(el);
-    expect(el.querySelector('.dg-settings-sort')).toBeNull();
+    expect(el.querySelector('.spg-settings-sort')).toBeNull();
   });
 
   it('lists the sortable columns, starts from the current sort and disables the direction when unsorted', () => {
@@ -469,7 +469,7 @@ describe('sort in the settings modal', () => {
     open(el);
     choose(sortKey(el), 'city');
     apply(el);
-    expect(JSON.parse(/** @type {string} */ (localStorage.getItem('datagrid:sort:po')))).toEqual({
+    expect(JSON.parse(/** @type {string} */ (localStorage.getItem('spgrid:sort:po')))).toEqual({
       key: 'city',
       direction: 'asc',
     });

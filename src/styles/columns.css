@@ -1,41 +1,41 @@
-/* The Settings button is a .dg-tool-btn (see toolButtons.css) that opens the settings modal (a .dg-modal, see
+/* The Settings button is a .spg-tool-btn (see toolButtons.css) that opens the settings modal (a .spg-modal, see
    modal.css): column checkboxes, sort selects and look switches, kept plain: no boxes, just spacing. */
 
-.dg-columns-btn[aria-expanded='true'] {
-  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+.spg-columns-btn[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
 }
 
 /* Some column is hidden: the button takes the accent tint, like a pressed toggle button (also while open). */
-.dg-columns-btn[data-active] {
-  border-color: color-mix(in srgb, var(--dgi-accent) 45%, var(--dgi-border-strong));
-  background: color-mix(in srgb, var(--dgi-accent) 14%, var(--dgi-bg));
-  color: var(--dgi-accent);
+.spg-columns-btn[data-active] {
+  border-color: color-mix(in srgb, var(--spgi-accent) 45%, var(--spgi-border-strong));
+  background: color-mix(in srgb, var(--spgi-accent) 14%, var(--spgi-bg));
+  color: var(--spgi-accent);
 }
 
-.dg-columns-btn[data-active]:hover,
-.dg-columns-btn[data-active][aria-expanded='true'] {
-  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
+.spg-columns-btn[data-active]:hover,
+.spg-columns-btn[data-active][aria-expanded='true'] {
+  background: color-mix(in srgb, var(--spgi-accent) 22%, var(--spgi-bg));
 }
 
-/* The "on" colour of the checkboxes and switches: a grey, not the accent blue (--dg-control-on sets it; also the Apply button). */
-.dg-settings {
-  --dgi-control-on: var(--dg-control-on, #6b7280);
+/* The "on" colour of the checkboxes and switches: a grey, not the accent blue (--spg-control-on sets it; also the Apply button). */
+.spg-settings {
+  --spgi-control-on: var(--spg-control-on, #6b7280);
 }
 
-/* Overrides .dg-modal-box (modal.css loads later, hence the doubled class). The card: a title, a scrolling body of
+/* Overrides .spg-modal-box (modal.css loads later, hence the doubled class). The card: a title, a scrolling body of
    sections, and a footer set off by a hairline. */
-.dg-modal-box.dg-settings {
+.spg-modal-box.spg-settings {
   display: flex;
   flex-direction: column;
   width: min(100%, 27rem);
   max-height: min(100%, 46rem);
   padding: 0;
   border-color: transparent;
-  border-radius: calc(var(--dgi-radius) + 6px);
+  border-radius: calc(var(--spgi-radius) + 6px);
   text-align: start;
 }
 
-.dg-settings .dg-modal-title {
+.spg-settings .spg-modal-title {
   margin: 0;
   padding: 22px 26px 6px;
   font-size: 1.2em;
@@ -43,24 +43,24 @@
   letter-spacing: -0.01em;
 }
 
-.dg-settings-body {
+.spg-settings-body {
   display: grid;
   gap: 0;
   padding: 0 26px;
   overflow-y: auto;
 }
 
-.dg-settings-body > section {
+.spg-settings-body > section {
   padding: 14px 0;
 }
 
-.dg-settings-body > section + section {
-  border-top: 1px solid var(--dgi-border);
+.spg-settings-body > section + section {
+  border-top: 1px solid var(--spgi-border);
 }
 
-.dg-settings-heading {
+.spg-settings-heading {
   margin: 0 0 10px;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
   font-size: 0.72em;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -68,133 +68,133 @@
 }
 
 /* Columns: two quiet columns of checkboxes; a row lights up under the pointer. */
-.dg-settings-list {
+.spg-settings-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
   gap: 2px 8px;
   margin-inline: -8px;
 }
 
-.dg-settings-bulk {
+.spg-settings-bulk {
   display: flex;
   gap: 1em;
   margin-top: 8px;
 }
 
-.dg-settings-link {
+.spg-settings-link {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--dgi-accent, currentColor);
+  color: var(--spgi-accent, currentColor);
   font: inherit;
   font-size: 0.9em;
   text-decoration: underline;
   cursor: pointer;
 }
 
-.dg-columns-item {
+.spg-columns-item {
   display: flex;
   align-items: center;
   gap: 0.65em;
   min-width: 0;
   padding: 0.4em 8px;
-  border-radius: var(--dgi-input-radius);
+  border-radius: var(--spgi-input-radius);
   line-height: 1.35;
   cursor: pointer;
-  transition: background-color var(--dgi-transition);
+  transition: background-color var(--spgi-transition);
 }
 
-.dg-columns-item:hover {
-  background: var(--dgi-hover-bg);
+.spg-columns-item:hover {
+  background: var(--spgi-hover-bg);
 }
 
-.dg-columns-item > span {
+.spg-columns-item > span {
   overflow-wrap: anywhere;
 }
 
-.dg-columns-item:has(input:not(:checked)) {
-  color: var(--dgi-muted);
+.spg-columns-item:has(input:not(:checked)) {
+  color: var(--spgi-muted);
 }
 
 /* Our own checkbox: a rounded square that fills with the accent and a white tick. */
-.dg-columns-item input {
+.spg-columns-item input {
   appearance: none;
   flex: none;
   width: 1.15em;
   height: 1.15em;
   margin: 0;
-  border: 1.5px solid var(--dgi-border-strong);
+  border: 1.5px solid var(--spgi-border-strong);
   border-radius: 0.3em;
-  background: var(--dgi-bg) center / 80% no-repeat;
+  background: var(--spgi-bg) center / 80% no-repeat;
   cursor: inherit;
   transition:
-    background-color var(--dgi-transition),
-    border-color var(--dgi-transition);
+    background-color var(--spgi-transition),
+    border-color var(--spgi-transition);
 }
 
-.dg-columns-item input:checked {
-  border-color: var(--dgi-control-on);
-  background-color: var(--dgi-control-on);
+.spg-columns-item input:checked {
+  border-color: var(--spgi-control-on);
+  background-color: var(--spgi-control-on);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3.5 8.5 3 3 6-6.5'/%3E%3C/svg%3E");
 }
 
-.dg-columns-item input:focus-visible,
-.dg-settings-switch input:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-columns-item input:focus-visible,
+.spg-settings-switch input:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: 2px;
 }
 
-.dg-columns-item:has(input:disabled) {
+.spg-columns-item:has(input:disabled) {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
 /* Sort: the two selects side by side, each under a small caption. */
-.dg-settings-sort {
+.spg-settings-sort {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
   gap: 12px;
 }
 
-.dg-settings-field {
+.spg-settings-field {
   display: grid;
   gap: 0.35em;
   min-width: 0;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
   font-size: 0.85em;
 }
 
-.dg-settings-field select {
+.spg-settings-field select {
   min-width: 0;
   min-height: 2.5em;
   padding: 0.3em 2.2em 0.3em 0.8em;
-  border: 1px solid var(--dgi-border-strong);
-  border-radius: var(--dgi-input-radius);
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
   appearance: none;
-  background: var(--dgi-bg) var(--dgi-chevron) right 0.7em center / 1em 1em no-repeat;
-  color: var(--dgi-text);
+  background: var(--spgi-bg) var(--spgi-chevron) right 0.7em center / 1em 1em no-repeat;
+  color: var(--spgi-text);
   font: inherit;
   cursor: pointer;
-  transition: border-color var(--dgi-transition);
+  transition: border-color var(--spgi-transition);
 }
 
-.dg-settings-field select:hover:not(:disabled) {
-  border-color: var(--dgi-muted);
+.spg-settings-field select:hover:not(:disabled) {
+  border-color: var(--spgi-muted);
 }
 
-.dg-settings-field select:focus-visible {
-  border-color: var(--dgi-focus);
-  outline: 2px solid color-mix(in srgb, var(--dgi-focus) 30%, transparent);
+.spg-settings-field select:focus-visible {
+  border-color: var(--spgi-focus);
+  outline: 2px solid color-mix(in srgb, var(--spgi-focus) 30%, transparent);
   outline-offset: 0;
 }
 
-.dg-settings-field select:disabled {
+.spg-settings-field select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Display: a switch row, the text at the start and a small track with a knob at the end. */
-.dg-settings-switch {
+.spg-settings-switch {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -203,7 +203,7 @@
   cursor: pointer;
 }
 
-.dg-settings-switch input {
+.spg-settings-switch input {
   appearance: none;
   position: relative;
   flex: none;
@@ -211,12 +211,12 @@
   height: 1.3em;
   margin: 0;
   border-radius: 999px;
-  background: var(--dgi-border-strong);
+  background: var(--spgi-border-strong);
   cursor: inherit;
-  transition: background-color var(--dgi-transition);
+  transition: background-color var(--spgi-transition);
 }
 
-.dg-settings-switch input::before {
+.spg-settings-switch input::before {
   content: '';
   position: absolute;
   inset-block: 0.15em;
@@ -225,80 +225,80 @@
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
-  transition: transform var(--dgi-transition);
+  transition: transform var(--spgi-transition);
 }
 
-.dg-settings-switch input:checked {
-  background: var(--dgi-control-on);
+.spg-settings-switch input:checked {
+  background: var(--spgi-control-on);
 }
 
-.dg-settings-switch input:checked::before {
+.spg-settings-switch input:checked::before {
   transform: translateX(1em);
 }
 
-.dg-settings-switch input:checked:dir(rtl)::before {
+.spg-settings-switch input:checked:dir(rtl)::before {
   transform: translateX(-1em);
 }
 
 /* Footer: Reset at the start as a quiet link-like button; Cancel is ghost, only Apply is filled. */
-.dg-settings .dg-modal-actions {
+.spg-settings .spg-modal-actions {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
   padding: 14px 26px;
-  border-top: 1px solid var(--dgi-border);
-  background: color-mix(in srgb, var(--dgi-header-bg) 50%, var(--dgi-bg));
+  border-top: 1px solid var(--spgi-border);
+  background: color-mix(in srgb, var(--spgi-header-bg) 50%, var(--spgi-bg));
 }
 
-.dg-settings .dg-modal-btn {
+.spg-settings .spg-modal-btn {
   flex: none;
   min-height: 2.4em;
   padding: 0.3em 1.1em;
-  border-radius: var(--dgi-input-radius);
+  border-radius: var(--spgi-input-radius);
 }
 
-.dg-settings .dg-modal-btn:not(.dg-modal-ok) {
+.spg-settings .spg-modal-btn:not(.spg-modal-ok) {
   border-color: transparent;
   background: transparent;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
 }
 
-.dg-settings .dg-modal-btn:not(.dg-modal-ok):hover {
-  background: var(--dgi-hover-bg);
-  color: var(--dgi-text);
+.spg-settings .spg-modal-btn:not(.spg-modal-ok):hover {
+  background: var(--spgi-hover-bg);
+  color: var(--spgi-text);
 }
 
-.dg-settings .dg-modal-ok {
+.spg-settings .spg-modal-ok {
   min-width: 5.5em;
-  border-color: var(--dgi-control-on);
-  background: var(--dgi-control-on);
+  border-color: var(--spgi-control-on);
+  background: var(--spgi-control-on);
   color: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
 }
 
-.dg-settings .dg-modal-ok:hover {
-  background: color-mix(in srgb, var(--dgi-control-on) 85%, #000);
+.spg-settings .spg-modal-ok:hover {
+  background: color-mix(in srgb, var(--spgi-control-on) 85%, #000);
 }
 
-.dg-settings .dg-modal-btn.dg-settings-reset {
+.spg-settings .spg-modal-btn.spg-settings-reset {
   margin-inline-end: auto;
-  border-color: var(--dgi-danger);
-  background: var(--dgi-danger);
+  border-color: var(--spgi-danger);
+  background: var(--spgi-danger);
   color: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
 }
 
-.dg-settings .dg-modal-btn.dg-settings-reset:hover {
-  background: color-mix(in srgb, var(--dgi-danger) 85%, #000);
+.spg-settings .spg-modal-btn.spg-settings-reset:hover {
+  background: color-mix(in srgb, var(--spgi-danger) 85%, #000);
   color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-columns-item,
-  .dg-columns-item input,
-  .dg-settings-field select,
-  .dg-settings-switch input,
-  .dg-settings-switch input::before {
+  .spg-columns-item,
+  .spg-columns-item input,
+  .spg-settings-field select,
+  .spg-settings-switch input,
+  .spg-settings-switch input::before {
     transition: none;
   }
 }

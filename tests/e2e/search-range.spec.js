@@ -8,8 +8,8 @@ test('the date range boxes fit inside the filter bar and the frame shows the foc
     .getByRole('combobox', { name: 'ค้นหาใน' })
     .selectOption({ label: 'วันที่จัดส่งเอกสาร' });
 
-  const range = page.locator('.dg-search-range');
-  const from = page.locator('.dg-date-from');
+  const range = page.locator('.spg-search-range');
+  const from = page.locator('.spg-date-from');
   await expect(range).toBeVisible();
 
   const fits = await range.evaluate((el) => {

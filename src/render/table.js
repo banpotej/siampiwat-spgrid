@@ -29,7 +29,7 @@ const DEFAULT_ALIGN = { number: 'right', boolean: 'center' };
  */
 const alignClass = (column) => {
   const align = column.align ?? DEFAULT_ALIGN[column.type ?? 'text'];
-  return align && ALIGNS.includes(align) ? `dg-align-${align}` : '';
+  return align && ALIGNS.includes(align) ? `spg-align-${align}` : '';
 };
 
 /**
@@ -41,32 +41,32 @@ const alignClass = (column) => {
  * @returns {string}
  */
 function renderHeaderCell(column, sort, icons, resize, reorder) {
-  const classes = [alignClass(column), isActionColumn(column) ? 'dg-action-col' : ''];
+  const classes = [alignClass(column), isActionColumn(column) ? 'spg-action-col' : ''];
   const attrs = [`scope="col"`, `data-key="${escapeHtml(column.key)}"`];
   if (column.ariaLabel) attrs.push(`aria-label="${escapeHtml(column.ariaLabel)}"`);
   let icon = '';
   if (reorder) attrs.push('draggable="true"');
   const sortable = column.sortable === true && !isActionColumn(column);
   if (sortable) {
-    classes.push('dg-sortable');
+    classes.push('spg-sortable');
     const direction = sort && sort.key === column.key ? sort.direction : null;
     if (direction) attrs.push(`aria-sort="${ARIA_SORT[direction]}"`);
-    icon = renderIcon(icons, direction ? SORT_ICON[direction] : 'unfold_more', 'dg-sort-icon');
+    icon = renderIcon(icons, direction ? SORT_ICON[direction] : 'unfold_more', 'spg-sort-icon');
   }
   if (sortable || reorder) attrs.push('tabindex="0"');
   const cls = classes.filter(Boolean).join(' ');
   if (cls) attrs.push(`class="${cls}"`);
   // An action column has no header text unless it is given one; `key` is only an identifier there.
   const text = column.label ?? (isActionColumn(column) ? '' : column.key);
-  const label = `<span class="dg-th-label">${renderLabel(text)}</span>`;
+  const label = `<span class="spg-th-label">${renderLabel(text)}</span>`;
   const width = resize.widths
     ? ` style="width:${resize.widths.get(column.key) ?? FALLBACK_WIDTH}px"`
     : widthAttr(column);
   const handle =
     resize.enabled && !isActionColumn(column)
-      ? `<span class="dg-resize" role="separator" aria-orientation="vertical" tabindex="0" aria-label="${escapeHtml(resize.label(String(text).replace(/\s*\n\s*/g, ' ')))}"></span>`
+      ? `<span class="spg-resize" role="separator" aria-orientation="vertical" tabindex="0" aria-label="${escapeHtml(resize.label(String(text).replace(/\s*\n\s*/g, ' ')))}"></span>`
       : '';
-  return `<th ${attrs.join(' ')}${width}><span class="dg-th">${label}${icon}</span>${handle}</th>`;
+  return `<th ${attrs.join(' ')}${width}><span class="spg-th">${label}${icon}</span>${handle}</th>`;
 }
 
 /**
@@ -99,7 +99,7 @@ export function renderTable(
   const head = columns.map((c) => renderHeaderCell(c, sort, icons, resize, reorder)).join('');
   const body =
     rows.length === 0
-      ? `<tr class="dg-empty"><td colspan="${Math.max(columns.length, 1)}"><div class="dg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(labels.empty)}</span></div></td></tr>`
+      ? `<tr class="spg-empty"><td colspan="${Math.max(columns.length, 1)}"><div class="spg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(labels.empty)}</span></div></td></tr>`
       : groupItems(rows, group.keys, group.collapsed)
           .map((item) => {
             if (item.type === 'group') {
@@ -114,7 +114,7 @@ export function renderTable(
             const { row, index } = item;
             const cells = columns
               .map((c) => {
-                const cls = [alignClass(c), isActionColumn(c) ? 'dg-action-cell' : '']
+                const cls = [alignClass(c), isActionColumn(c) ? 'spg-action-cell' : '']
                   .filter(Boolean)
                   .join(' ');
                 return `<td${cls ? ` class="${cls}"` : ''}>${renderCell(c, row, icons, { labels, locale })}</td>`;
@@ -131,7 +131,7 @@ export function renderTable(
     ? columns.reduce((sum, c) => sum + (widths.get(c.key) ?? FALLBACK_WIDTH), 0)
     : 0;
   const tableAttrs = widths
-    ? ` class="dg-table dg-fixed" style="width:${total}px"`
-    : ' class="dg-table"';
+    ? ` class="spg-table spg-fixed" style="width:${total}px"`
+    : ' class="spg-table"';
   return `<table${tableAttrs}><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
 }

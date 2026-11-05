@@ -33,10 +33,10 @@ test('the Settings modal picks the grid lines, which are drawn and remembered', 
   expect(await lines(page)).toEqual({ row: true, column: true, header: true }); // the example starts with 'both'
 
   for (const { mode, label, ...expected } of MODES) {
-    await page.locator('.dg-columns-btn').click();
+    await page.locator('.spg-columns-btn').click();
     const dialog = page.getByRole('dialog');
     await dialog.locator('select[data-choice="gridLines"]').selectOption({ label });
-    await dialog.locator('.dg-modal-ok').click();
+    await dialog.locator('.spg-modal-ok').click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     expect(await lines(page), mode).toEqual(expected);
   }
@@ -60,10 +60,10 @@ test('the Settings modal picks the line style, which is drawn and remembered', a
     ['เส้นประ', 'dashed'],
     ['เส้นทึบ', 'solid'],
   ]) {
-    await page.locator('.dg-columns-btn').click();
+    await page.locator('.spg-columns-btn').click();
     const dialog = page.getByRole('dialog');
     await dialog.locator('select[data-choice="lineStyle"]').selectOption({ label });
-    await dialog.locator('.dg-modal-ok').click();
+    await dialog.locator('.spg-modal-ok').click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     expect(await rowLine(), style).toBe(style);
   }
@@ -72,9 +72,9 @@ test('the Settings modal picks the line style, which is drawn and remembered', a
   expect(await rowLine()).toBe('solid');
 
   // 'ค่าเริ่มต้น' goes back to the theme.
-  await page.locator('.dg-columns-btn').click();
+  await page.locator('.spg-columns-btn').click();
   await page.locator('select[data-choice="lineStyle"]').selectOption({ label: 'ค่าเริ่มต้น' });
-  await page.locator('.dg-modal-ok').click();
+  await page.locator('.spg-modal-ok').click();
   expect(await rowLine()).toBe('dashed');
 });
 
@@ -82,8 +82,8 @@ test('the Settings modal has a round close button hanging off its top-right corn
   page,
 }) => {
   await page.goto('/purchase-order.html');
-  await page.locator('.dg-columns-btn').click();
-  const box = page.locator('.dg-settings');
+  await page.locator('.spg-columns-btn').click();
+  const box = page.locator('.spg-settings');
   const close = box.getByRole('button', { name: 'ปิด' });
   await expect(close).toBeVisible();
   await expect(close).toHaveCSS('border-top-left-radius', '50%');
@@ -95,5 +95,5 @@ test('the Settings modal has a round close button hanging off its top-right corn
   expect((c?.y ?? 0) + (c?.height ?? 0) / 2).toBeLessThan((b?.y ?? 0) + 6);
 
   await close.click();
-  await expect(page.locator('.dg-modal')).toHaveCount(0);
+  await expect(page.locator('.spg-modal')).toHaveCount(0);
 });

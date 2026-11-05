@@ -1,26 +1,26 @@
 ﻿import { describe, expect, it } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const columns = [{ key: 'id', label: 'ID' }, { key: 'name' }];
 
-describe('DataGrid', () => {
+describe('SPGrid', () => {
   it('renders headers and rows', () => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns, rows: [{ id: 1, name: 'Ada' }] });
+    new SPGrid(el, { columns, rows: [{ id: 1, name: 'Ada' }] });
     expect([...el.querySelectorAll('th')].map((t) => t.textContent)).toEqual(['ID', 'name']);
     expect(el.querySelectorAll('tbody tr')).toHaveLength(1);
   });
 
   it('escapes cell content', () => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns, rows: [{ id: 1, name: '<script>x</script>' }] });
+    new SPGrid(el, { columns, rows: [{ id: 1, name: '<script>x</script>' }] });
     expect(el.querySelector('script')).toBeNull();
     expect(el.querySelectorAll('td')[1].textContent).toBe('<script>x</script>');
   });
 
   it('setRows re-renders and destroy clears', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns });
+    const grid = new SPGrid(el, { columns });
     grid.setRows([
       { id: 1, name: 'a' },
       { id: 2, name: 'b' },
@@ -33,7 +33,7 @@ describe('DataGrid', () => {
   it('setRows with the same array does not re-render', () => {
     const el = document.createElement('div');
     const rows = [{ id: 1, name: 'a' }];
-    const grid = new DataGrid(el, { columns, rows });
+    const grid = new SPGrid(el, { columns, rows });
     const table = el.querySelector('table');
     grid.setRows(rows);
     expect(el.querySelector('table')).toBe(table);
@@ -41,7 +41,7 @@ describe('DataGrid', () => {
 
   it('render() still forces a re-render', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns, rows: [{ id: 1, name: 'a' }] });
+    const grid = new SPGrid(el, { columns, rows: [{ id: 1, name: 'a' }] });
     const table = el.querySelector('table');
     grid.render();
     expect(el.querySelector('table')).not.toBe(table);
@@ -49,14 +49,14 @@ describe('DataGrid', () => {
 
   it('setRows after destroy does not render', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns });
+    const grid = new SPGrid(el, { columns });
     grid.destroy();
     grid.setRows([{ id: 1, name: 'a' }]);
     expect(el.innerHTML).toBe('');
   });
 
   it('rejects invalid container', () => {
-    expect(() => new DataGrid(/** @type {any} */ (null), { columns })).toThrow(TypeError);
+    expect(() => new SPGrid(/** @type {any} */ (null), { columns })).toThrow(TypeError);
   });
 
   it.each([
@@ -65,12 +65,12 @@ describe('DataGrid', () => {
     ['a plain object', {}],
     ['a number', 0],
   ])('throws TypeError when container is %s', (_name, value) => {
-    expect(() => new DataGrid(/** @type {any} */ (value), { columns })).toThrow(TypeError);
+    expect(() => new SPGrid(/** @type {any} */ (value), { columns })).toThrow(TypeError);
   });
 
   it('setRows replaces the rendered content', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns, rows: [{ id: 1, name: 'old' }] });
+    const grid = new SPGrid(el, { columns, rows: [{ id: 1, name: 'old' }] });
     grid.setRows([{ id: 2, name: 'new' }]);
     const cells = [...el.querySelectorAll('tbody td')].map((td) => td.textContent);
     expect(cells).toEqual(['2', 'new']);
@@ -78,7 +78,7 @@ describe('DataGrid', () => {
 
   it('destroy empties the container', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns, rows: [{ id: 1, name: 'a' }] });
+    const grid = new SPGrid(el, { columns, rows: [{ id: 1, name: 'a' }] });
     expect(el.children.length).toBeGreaterThan(0);
     grid.destroy();
     expect(el.children).toHaveLength(0);
@@ -87,7 +87,7 @@ describe('DataGrid', () => {
 
   it('renders null and undefined cells as empty and 0 as "0"', () => {
     const el = document.createElement('div');
-    new DataGrid(el, {
+    new SPGrid(el, {
       columns: [{ key: 'a' }, { key: 'b' }, { key: 'c' }, { key: 'missing' }],
       rows: [{ a: null, b: undefined, c: 0 }],
     });
@@ -97,7 +97,7 @@ describe('DataGrid', () => {
 
   it('escapes HTML in cells and headers without creating elements', () => {
     const el = document.createElement('div');
-    new DataGrid(el, {
+    new SPGrid(el, {
       columns: [{ key: 'x', label: '<b>head</b>' }],
       rows: [{ x: '<img src=x onerror="alert(1)"> & "q" \'s\'' }],
     });

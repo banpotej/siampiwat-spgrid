@@ -4,7 +4,7 @@ import { saveGroupBy } from './groupByStore.js';
 import { savePageSize } from './pageSizeStore.js';
 import { saveSort } from './sortStore.js';
 
-/** @typedef {import('../types.js').DataGridOptions} DataGridOptions */
+/** @typedef {import('../types.js').SPGridOptions} SPGridOptions */
 /** @typedef {import('../types.js').GridState} GridState */
 /** @typedef {import('../types.js').PageResult} PageResult */
 
@@ -12,7 +12,7 @@ import { saveSort } from './sortStore.js';
  * The grid's event emitter with the `on*` callbacks of `options` already subscribed, and the page size
  * saved on every change when `pageSizeStorageKey` is set (likewise the sort with `sortStorageKey`).
  *
- * @param {DataGridOptions} options
+ * @param {SPGridOptions} options
  */
 export function createGridEvents(options) {
   const events = createEmitter(

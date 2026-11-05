@@ -3,7 +3,7 @@ body {
   padding: 24px 16px;
   background: #fff;
   font-family: 'Sarabun', sans-serif;
-  --dg-font-family: 'Sarabun', sans-serif;
+  --spg-font-family: 'Sarabun', sans-serif;
 }
 main {
   max-width: 900px;

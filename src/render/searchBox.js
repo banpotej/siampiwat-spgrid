@@ -54,7 +54,7 @@ export function clearedSearch({ columns, searchColumn, filter }, key) {
  */
 export function searchColumnChange(shell, state, key) {
   if (key !== null && !dataKeys(state.columns).includes(key)) {
-    throw new RangeError(`DataGrid: unknown column "${key}"`);
+    throw new RangeError(`SPGrid: unknown column "${key}"`);
   }
   if (shell.searchColumn) shell.searchColumn.value = key ?? '';
   if (key === state.searchColumn) return null;

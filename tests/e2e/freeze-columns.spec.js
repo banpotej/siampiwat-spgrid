@@ -2,10 +2,10 @@ import { expect, test } from '@playwright/test';
 
 /** @param {import('@playwright/test').Page} page @param {string} count */
 async function freeze(page, count) {
-  await page.locator('.dg-columns-btn').click();
+  await page.locator('.spg-columns-btn').click();
   const dialog = page.getByRole('dialog');
   await dialog.locator('select[data-choice="freezeColumns"]').selectOption(count);
-  await dialog.locator('.dg-modal-ok').click();
+  await dialog.locator('.spg-modal-ok').click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
 }
 
@@ -23,11 +23,11 @@ test('the Settings modal freezes the first columns, which stay put while the tab
   page,
 }) => {
   await page.goto('/purchase-order.html');
-  const wrap = page.locator('#grid .dg-table-wrap');
-  await expect(page.locator('.dg-frozen')).toHaveCount(0);
+  const wrap = page.locator('#grid .spg-table-wrap');
+  await expect(page.locator('.spg-frozen')).toHaveCount(0);
 
   await freeze(page, '2');
-  await expect(page.locator('thead th.dg-frozen')).toHaveCount(2);
+  await expect(page.locator('thead th.spg-frozen')).toHaveCount(2);
   const before = await edges(page);
   await wrap.evaluate((el) => (el.scrollLeft = 400));
   const after = await edges(page);
@@ -45,14 +45,14 @@ test('the Settings modal freezes the first columns, which stay put while the tab
   });
   expect(aligned).toEqual([true, true]);
   const bg = await page
-    .locator('tbody tr:nth-child(2) td.dg-frozen')
+    .locator('tbody tr:nth-child(2) td.spg-frozen')
     .first()
     .evaluate((td) => getComputedStyle(td).backgroundColor);
   expect(bg).not.toBe('rgba(0, 0, 0, 0)');
 
   // The choice comes back after a reload, and 'ไม่ตรึง' (none) takes it away.
   await page.reload();
-  await expect(page.locator('thead th.dg-frozen')).toHaveCount(2);
+  await expect(page.locator('thead th.spg-frozen')).toHaveCount(2);
   await freeze(page, '0');
-  await expect(page.locator('.dg-frozen')).toHaveCount(0);
+  await expect(page.locator('.spg-frozen')).toHaveCount(0);
 });

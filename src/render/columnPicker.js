@@ -16,7 +16,7 @@ import { renderIcon } from './icons.js';
  */
 export function renderColumnPicker(label, icons) {
   const text = escapeHtml(label);
-  return `<button type="button" class="dg-tool-btn dg-columns-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="${text}" title="${text}">${renderIcon(icons, 'settings')}</button>`;
+  return `<button type="button" class="spg-tool-btn spg-columns-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="${text}" title="${text}">${renderIcon(icons, 'settings')}</button>`;
 }
 
 /**
@@ -26,7 +26,7 @@ export function renderColumnPicker(label, icons) {
  * @param {string[]} hidden
  */
 export function syncColumnPicker(picker, hidden) {
-  picker?.querySelector('.dg-columns-btn')?.toggleAttribute('data-active', hidden.length > 0);
+  picker?.querySelector('.spg-columns-btn')?.toggleAttribute('data-active', hidden.length > 0);
 }
 
 /**
@@ -47,8 +47,8 @@ export function bindColumnPicker(
   picker,
   { columns, groupColumns, labels, getState, onApply, onReset },
 ) {
-  const button = /** @type {HTMLButtonElement} */ (picker.querySelector('.dg-columns-btn'));
-  const root = /** @type {HTMLElement} */ (picker.closest('.dg-root') ?? picker);
+  const button = /** @type {HTMLButtonElement} */ (picker.querySelector('.spg-columns-btn'));
+  const root = /** @type {HTMLElement} */ (picker.closest('.spg-root') ?? picker);
   /** @type {(() => void) | null} */
   let dismiss = null;
 

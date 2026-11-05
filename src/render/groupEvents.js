@@ -12,7 +12,7 @@ export function bindGroupToggle(host, onToggle) {
   /** @param {MouseEvent} e */
   const onClick = (e) => {
     const target = e.target instanceof Element ? e.target : null;
-    const row = target?.closest('.dg-group-toggle')?.closest('tr.dg-group-row');
+    const row = target?.closest('.spg-group-toggle')?.closest('tr.spg-group-row');
     if (row instanceof HTMLElement && host.contains(row)) onToggle(row.dataset.groupId ?? '');
   };
   host.addEventListener('click', onClick);

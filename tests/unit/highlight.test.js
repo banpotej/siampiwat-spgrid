@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 import { matchRanges } from '../../src/core/highlight.js';
 
 describe('matchRanges', () => {
@@ -37,11 +37,11 @@ describe('highlightSearch', () => {
   /** @param {object} [extra] */
   const make = (extra = {}) => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns, rows, ...extra });
+    const grid = new SPGrid(el, { columns, rows, ...extra });
     return { el, grid };
   };
   /** @param {HTMLElement} el */
-  const marks = (el) => [...el.querySelectorAll('mark.dg-mark')].map((m) => m.textContent);
+  const marks = (el) => [...el.querySelectorAll('mark.spg-mark')].map((m) => m.textContent);
 
   it('marks the search text in every matching cell, case-insensitively', () => {
     const { el, grid } = make();
@@ -57,7 +57,7 @@ describe('highlightSearch', () => {
   it('only marks the chosen column, and never the action buttons', () => {
     const { el, grid } = make();
     grid.setFilter({ search: 'a' });
-    expect(el.querySelector('.dg-action mark')).toBeNull();
+    expect(el.querySelector('.spg-action mark')).toBeNull();
     grid.setSearchColumn('city');
     grid.setFilter({ search: 'ali' });
     expect(marks(el)).toEqual(['Ali']);
@@ -67,20 +67,20 @@ describe('highlightSearch', () => {
 
   it('marks text inside typed cells without breaking their markup', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, {
+    const grid = new SPGrid(el, {
       columns: [
         { key: 'status', label: 'S', type: 'badge', badges: { Done: { tone: 'success' } } },
       ],
       rows: [{ status: 'Done' }],
     });
     grid.setFilter({ search: 'on' });
-    expect(el.querySelector('.dg-badge mark')?.textContent).toBe('on');
-    expect(el.querySelector('.dg-badge')?.textContent).toBe('Done');
+    expect(el.querySelector('.spg-badge mark')?.textContent).toBe('on');
+    expect(el.querySelector('.spg-badge')?.textContent).toBe('Done');
   });
 
   it('never parses cell text as HTML', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, {
+    const grid = new SPGrid(el, {
       columns: [{ key: 'a', label: 'A' }],
       rows: [{ a: '<b>bold</b>' }],
     });

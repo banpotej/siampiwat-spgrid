@@ -11,7 +11,7 @@ import { defineConfig } from 'vite';
  * @returns {import('vite').Plugin}
  */
 const copyRawFiles = () => ({
-  name: 'datagrid-site-raw-files',
+  name: 'spgrid-site-raw-files',
   closeBundle() {
     for (const dir of ['examples', 'dist']) {
       cpSync(resolve(dir), resolve('site', dir), { recursive: true });
@@ -25,12 +25,9 @@ export default defineConfig({
     outDir: 'site',
     emptyOutDir: true,
     rollupOptions: {
-      input: [
-        'index.html',
-        'quick-start.html',
-        'basic.html',
-        'purchase-order.html',
-      ].map((f) => resolve(f)),
+      input: ['index.html', 'quick-start.html', 'basic.html', 'purchase-order.html'].map((f) =>
+        resolve(f),
+      ),
     },
   },
 });

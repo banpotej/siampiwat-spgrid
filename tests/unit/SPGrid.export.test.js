@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 import { columnLetter, sheetName } from '../../src/core/xlsx.js';
 import { crc32 } from '../../src/core/zip.js';
 
@@ -40,7 +40,7 @@ const onClick = (event) => {
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  return new DataGrid(el, { columns, rows, ...options });
+  return new SPGrid(el, { columns, rows, ...options });
 };
 
 describe('exportExcel', () => {
@@ -102,20 +102,20 @@ describe('helpers', () => {
 });
 
 describe('exportButton', () => {
-  const button = (/** @type {HTMLElement} */ el) => el.querySelector('button.dg-export');
+  const button = (/** @type {HTMLElement} */ el) => el.querySelector('button.spg-export');
 
   it('is not rendered by default', () => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns, rows, searchable: true });
+    new SPGrid(el, { columns, rows, searchable: true });
     expect(button(el)).toBeNull();
   });
 
   it('renders without a search box, with a label and icon, and downloads on click', () => {
     const el = document.createElement('div');
     document.body.append(el);
-    new DataGrid(el, { columns, rows, exportButton: true, labels: { exportExcel: 'Excel!' } });
+    new SPGrid(el, { columns, rows, exportButton: true, labels: { exportExcel: 'Excel!' } });
     const btn = /** @type {HTMLButtonElement} */ (button(el));
-    expect(el.querySelector('.dg-search')).toBeNull();
+    expect(el.querySelector('.spg-search')).toBeNull();
     expect(btn.textContent).toBe('');
     expect(btn.getAttribute('aria-label')).toBe('Excel!');
     expect(btn.title).toBe('Excel!');
@@ -127,7 +127,7 @@ describe('exportButton', () => {
   it('stops listening after destroy()', () => {
     const el = document.createElement('div');
     document.body.append(el);
-    const grid = new DataGrid(el, { columns, rows, exportButton: true, searchable: true });
+    const grid = new SPGrid(el, { columns, rows, exportButton: true, searchable: true });
     const btn = /** @type {HTMLButtonElement} */ (button(el));
     grid.destroy();
     btn.click();
@@ -138,9 +138,9 @@ describe('exportButton', () => {
 describe('exportButton placement', () => {
   it('is the last part of the input group when searchable', () => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns, rows, searchable: true, searchButton: true, exportButton: true });
+    new SPGrid(el, { columns, rows, searchable: true, searchButton: true, exportButton: true });
     expect(
-      el.querySelector('.dg-input-group')?.lastElementChild?.classList.contains('dg-export'),
+      el.querySelector('.spg-input-group')?.lastElementChild?.classList.contains('spg-export'),
     ).toBe(true);
   });
 });

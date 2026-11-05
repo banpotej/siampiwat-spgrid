@@ -16,7 +16,7 @@ const STEP_ICON = {
 };
 
 /**
- * The "Showing 1–10 of 60" text with each number wrapped in <span class="dg-num"> so the figures stand out from the words.
+ * The "Showing 1–10 of 60" text with each number wrapped in <span class="spg-num"> so the figures stand out from the words.
  * Split before escaping, so an entity such as &#39; is never cut up.
  *
  * @param {string} text
@@ -26,7 +26,7 @@ const renderSummaryText = (text) =>
   text
     .split(/(\d[\d,.]*)/)
     .map((part, i) =>
-      i % 2 ? `<span class="dg-num">${escapeHtml(part)}</span>` : escapeHtml(part),
+      i % 2 ? `<span class="spg-num">${escapeHtml(part)}</span>` : escapeHtml(part),
     )
     .join('');
 
@@ -40,7 +40,7 @@ function renderPageSizeSelect(options, pageSize) {
   const items = sizes
     .map((n) => `<option value="${n}"${n === pageSize ? ' selected' : ''}>${n}</option>`)
     .join('');
-  return `<select class="dg-page-size-select">${items}</select>`;
+  return `<select class="spg-page-size-select">${items}</select>`;
 }
 
 /**
@@ -59,20 +59,20 @@ export function renderPager({ paging, labels, pageSizeOptions, icons }) {
   const pages = getPageWindow(page, totalPages)
     .map((item) =>
       item === 'ellipsis'
-        ? '<span class="dg-ellipsis" aria-hidden="true">…</span>'
-        : `<button type="button" class="dg-page-btn" data-page="${item}"${item === page ? ' aria-current="page"' : ''}>${item}</button>`,
+        ? '<span class="spg-ellipsis" aria-hidden="true">…</span>'
+        : `<button type="button" class="spg-page-btn" data-page="${item}"${item === page ? ' aria-current="page"' : ''}>${item}</button>`,
     )
     .join('');
   /** @param {'first' | 'prev' | 'next' | 'last'} action @param {boolean} disabled */
   const step = (action, disabled) =>
-    `<button type="button" class="dg-page-btn dg-step-btn" data-action="${action}" aria-label="${escapeHtml(labels[action])}"${disabled ? ' disabled' : ''}>${renderIcon(icons, STEP_ICON[action])}</button>`;
+    `<button type="button" class="spg-page-btn spg-step-btn" data-action="${action}" aria-label="${escapeHtml(labels[action])}"${disabled ? ' disabled' : ''}>${renderIcon(icons, STEP_ICON[action])}</button>`;
 
   const select = pageSizeOptions.length
-    ? `<label class="dg-page-size">${escapeHtml(labels.pageSize)} ${renderPageSizeSelect(pageSizeOptions, pageSize)}</label>`
+    ? `<label class="spg-page-size">${escapeHtml(labels.pageSize)} ${renderPageSizeSelect(pageSizeOptions, pageSize)}</label>`
     : '';
   return (
-    `<div class="dg-summary">${renderSummaryText(labels.summary(from, to, totalRows))}</div>${select}` +
-    `<nav class="dg-pager" aria-label="${escapeHtml(labels.pagination)}" tabindex="-1">` +
+    `<div class="spg-summary">${renderSummaryText(labels.summary(from, to, totalRows))}</div>${select}` +
+    `<nav class="spg-pager" aria-label="${escapeHtml(labels.pagination)}" tabindex="-1">` +
     `${step('first', page <= 1)}${step('prev', page <= 1)}${pages}` +
     `${step('next', page >= totalPages)}${step('last', page >= totalPages)}</nav>`
   );

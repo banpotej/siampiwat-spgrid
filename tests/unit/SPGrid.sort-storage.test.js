@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const columns = [
   { key: 'name', label: 'Name', sortable: true },
@@ -11,7 +11,7 @@ const rows = [
   { name: 'Al', age: 40 },
   { name: 'Cy', age: 20 },
 ];
-const KEY = 'datagrid:sort:po';
+const KEY = 'spgrid:sort:po';
 const AGE_ASC = { key: 'age', direction: 'asc' };
 
 beforeEach(() => localStorage.clear());
@@ -21,7 +21,7 @@ afterEach(() => vi.restoreAllMocks());
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, sortStorageKey: 'po', ...options });
+  const grid = new SPGrid(el, { columns, rows, sortStorageKey: 'po', ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
@@ -56,7 +56,7 @@ describe('defaultSort', () => {
 });
 
 describe('sortStorageKey (localStorage)', () => {
-  it('saves every change under datagrid:sort:<key>', () => {
+  it('saves every change under spgrid:sort:<key>', () => {
     const { grid } = make();
     expect(localStorage.getItem(KEY)).toBeNull();
     grid.setSort({ key: 'name', direction: 'asc' });

@@ -18,8 +18,8 @@ export function bindHeaderEvents(host, { getSort, setSort }) {
   /** @param {Event} e */
   const onHeader = (e) => {
     if (e instanceof KeyboardEvent && e.key !== 'Enter' && e.key !== ' ') return;
-    if (e.target instanceof Element && e.target.closest('.dg-resize')) return; // the resize handle is not a sort control
-    const th = e.target instanceof Element ? e.target.closest('th.dg-sortable') : null;
+    if (e.target instanceof Element && e.target.closest('.spg-resize')) return; // the resize handle is not a sort control
+    const th = e.target instanceof Element ? e.target.closest('th.spg-sortable') : null;
     const key = th instanceof HTMLElement ? th.dataset.key : undefined;
     if (!th || key === undefined) return;
     if (e instanceof KeyboardEvent) e.preventDefault(); // Space must not scroll the page
@@ -31,7 +31,7 @@ export function bindHeaderEvents(host, { getSort, setSort }) {
 
     // Re-rendering replaced the header; give keyboard users their place back.
     if (hadFocus) {
-      for (const cell of host.querySelectorAll('th.dg-sortable')) {
+      for (const cell of host.querySelectorAll('th.spg-sortable')) {
         if (cell instanceof HTMLElement && cell.dataset.key === key) cell.focus();
       }
     }

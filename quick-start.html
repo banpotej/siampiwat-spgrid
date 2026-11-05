@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Quick Start (Next.js) | Siam Piwat DataGrid</title>
+    <title>Quick Start (Next.js) | Siam Piwat SPGrid</title>
     <link rel="stylesheet" href="/examples/page.css" />
     <link rel="stylesheet" href="/examples/landing.css" />
   </head>
@@ -24,11 +24,11 @@
             ต้องใช้ Node.js 22 ขึ้นไป (ข้ามขั้นสร้างโปรเจกต์ได้ถ้ามีอยู่แล้ว)
             <pre tabindex="0"><code>npx create-next-app@latest my-app --ts --app
 cd my-app
-npm install @siampiwat/datagrid</code></pre>
+npm install @siampiwat/spgrid</code></pre>
           </li>
           <li>
             <strong>สร้าง client component</strong>
-            ที่ <code>app/Grid.tsx</code> DataGrid ทำงานกับ DOM จึงห้าม import บน server ให้ import
+            ที่ <code>app/Grid.tsx</code> SPGrid ทำงานกับ DOM จึงห้าม import บน server ให้ import
             แบบ dynamic ใน <code>useEffect</code> และเรียก <code>destroy()</code>
             ตอน unmount
             <pre tabindex="0"><code>'use client';
@@ -43,9 +43,9 @@ export default function Grid({ rows }: { rows: Row[] }) {
 
   useEffect(() =&gt; {
     let cancelled = false;
-    import('@siampiwat/datagrid').then(({ DataGrid }) =&gt; {
+    import('@siampiwat/spgrid').then(({ SPGrid }) =&gt; {
       if (cancelled || !el.current) return;
-      grid.current = new DataGrid(el.current, {
+      grid.current = new SPGrid(el.current, {
         rowKey: 'id',
         columns: [
           { key: 'id', label: 'ID', sortable: true },
@@ -90,7 +90,7 @@ export default function Home() {
           </li>
         </ol>
       </section>
-      <footer class="site-footer">Siam Piwat DataGrid · <a href="/">กลับหน้าหลัก</a></footer>
+      <footer class="site-footer">Siam Piwat SPGrid · <a href="/">กลับหน้าหลัก</a></footer>
     </main>
     <script type="module">
       import { renderNav } from '/examples/nav.js';

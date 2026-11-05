@@ -31,13 +31,13 @@ import { sortRows } from './sort.js';
  */
 export function normalizeGroupBy(columns, keys) {
   if (!Array.isArray(keys) || keys.some((key) => typeof key !== 'string')) {
-    throw new TypeError('DataGrid: groupBy must be an array of column keys');
+    throw new TypeError('SPGrid: groupBy must be an array of column keys');
   }
   const data = dataKeys(columns);
   for (const key of keys) {
-    if (!data.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
+    if (!data.includes(key)) throw new RangeError(`SPGrid: unknown column "${key}"`);
   }
-  if (new Set(keys).size !== keys.length) throw new RangeError('DataGrid: repeated groupBy column');
+  if (new Set(keys).size !== keys.length) throw new RangeError('SPGrid: repeated groupBy column');
   return [...keys];
 }
 

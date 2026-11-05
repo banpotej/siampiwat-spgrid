@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const columns = [
   { key: 'name', label: 'Name', sortable: true },
@@ -15,7 +15,7 @@ beforeEach(() => localStorage.clear());
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, reorderableColumns: true, ...extra });
+  const grid = new SPGrid(el, { columns, rows, reorderableColumns: true, ...extra });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
@@ -73,26 +73,26 @@ describe('reorderableColumns', () => {
     grid.on('columnOrderChange', spy);
     mockBox(el, 'role');
     fire(th(el, 'name'), 'dragstart');
-    expect(th(el, 'name').classList.contains('dg-dragging')).toBe(true);
+    expect(th(el, 'name').classList.contains('spg-dragging')).toBe(true);
     fire(th(el, 'role'), 'dragover', { clientX: 190 });
-    expect(th(el, 'role').classList.contains('dg-drop-after')).toBe(true);
+    expect(th(el, 'role').classList.contains('spg-drop-after')).toBe(true);
     fire(th(el, 'role'), 'dragover', { clientX: 110 });
-    expect(th(el, 'role').classList.contains('dg-drop-before')).toBe(true);
-    expect(th(el, 'role').classList.contains('dg-drop-after')).toBe(false);
+    expect(th(el, 'role').classList.contains('spg-drop-before')).toBe(true);
+    expect(th(el, 'role').classList.contains('spg-drop-after')).toBe(false);
     fire(th(el, 'name'), 'dragend');
-    expect(el.querySelector('.dg-dragging, .dg-drop-before')).toBeNull();
+    expect(el.querySelector('.spg-dragging, .spg-drop-before')).toBeNull();
     dragOnto(el, 'name', 'name', 150);
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('never starts a drag from a resize handle', () => {
     const { el } = make({ resizableColumns: true });
-    const handle = /** @type {HTMLElement} */ (th(el, 'role').querySelector('.dg-resize'));
+    const handle = /** @type {HTMLElement} */ (th(el, 'role').querySelector('.spg-resize'));
     fire(handle, 'pointerdown', { button: 0 });
     const start = new MouseEvent('dragstart', { bubbles: true, cancelable: true });
     handle.dispatchEvent(start);
     expect(start.defaultPrevented).toBe(true);
-    expect(th(el, 'role').classList.contains('dg-dragging')).toBe(false);
+    expect(th(el, 'role').classList.contains('spg-dragging')).toBe(false);
   });
 
   it('moves the focused header with Alt+Left / Alt+Right and keeps focus on it', () => {
@@ -153,7 +153,7 @@ describe('setColumnOrder / getColumnOrder', () => {
 describe('columnOrderStorageKey', () => {
   it('saves the order and restores it for the next grid', () => {
     make({ columnOrderStorageKey: 'po' }).grid.setColumnOrder(['city', 'role']);
-    expect(JSON.parse(localStorage.getItem('datagrid:columnOrder:po') ?? 'null')).toEqual([
+    expect(JSON.parse(localStorage.getItem('spgrid:columnOrder:po') ?? 'null')).toEqual([
       'city',
       'role',
       'name',
@@ -164,14 +164,14 @@ describe('columnOrderStorageKey', () => {
   });
 
   it('ignores stale or broken saved data and saves nothing without a key', () => {
-    localStorage.setItem('datagrid:columnOrder:po', JSON.stringify(['gone', 'role']));
+    localStorage.setItem('spgrid:columnOrder:po', JSON.stringify(['gone', 'role']));
     expect(heads(make({ columnOrderStorageKey: 'po' }).el)).toEqual([
       'role',
       'name',
       'city',
       'ops',
     ]);
-    localStorage.setItem('datagrid:columnOrder:bad', '{oops');
+    localStorage.setItem('spgrid:columnOrder:bad', '{oops');
     expect(heads(make({ columnOrderStorageKey: 'bad' }).el)).toEqual([
       'name',
       'role',
@@ -187,7 +187,7 @@ describe('columnOrderStorageKey', () => {
     const { grid } = make({ columnOrderStorageKey: 'po' });
     grid.setColumnOrder(['city']);
     grid.resetView();
-    expect(JSON.parse(localStorage.getItem('datagrid:columnOrder:po') ?? 'null')).toEqual([
+    expect(JSON.parse(localStorage.getItem('spgrid:columnOrder:po') ?? 'null')).toEqual([
       'name',
       'role',
       'city',

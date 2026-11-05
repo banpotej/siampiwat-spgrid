@@ -1,4 +1,4 @@
-import { DataGrid, showDetails, thaiLabels } from '/src/index.js';
+import { SPGrid, showDetails, thaiLabels } from '/src/index.js';
 import { createPurchaseOrders } from '/examples/mock/purchaseOrders.js';
 import { confirmCancel } from '/examples/dialogs.js';
 
@@ -89,7 +89,7 @@ const details = {
   ],
 };
 
-const grid = new DataGrid(document.getElementById('grid'), {
+const grid = new SPGrid(document.getElementById('grid'), {
   rowKey: 'id',
   // Double-click a row, or Enter on a focused row, shows its details (the same as its eye button).
   onRowActivate: ({ row }) => showDetails(row, columns, details),

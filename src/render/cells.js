@@ -46,11 +46,11 @@ function renderActions(actions, row, icons) {
       const name = a.icon;
       const icon =
         typeof name === 'string' && Object.hasOwn(icons, name)
-          ? renderIcon(icons, name, 'dg-action-icon')
+          ? renderIcon(icons, name, 'spg-action-icon')
           : '';
       // With an icon the button is icon-only: the label is its accessible name and (unless `title` says otherwise) its tooltip.
       const iconOnly = icon !== '' && a.showLabel !== true;
-      const cls = ['dg-action', iconOnly ? 'dg-action-icononly' : '', a.className]
+      const cls = ['spg-action', iconOnly ? 'spg-action-icononly' : '', a.className]
         .filter(Boolean)
         .map(escapeHtml)
         .join(' ');

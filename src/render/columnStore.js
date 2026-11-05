@@ -4,7 +4,7 @@ import { readJson, writeJson } from '../utils/storage.js';
 
 /** @typedef {import('../types.js').Column} Column */
 
-const PREFIX = 'datagrid:columns:';
+const PREFIX = 'spgrid:columns:';
 
 /**
  * The hidden column keys saved under `storageKey`, or `fallback` when nothing usable is saved

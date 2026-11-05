@@ -114,7 +114,7 @@
  */
 
 /**
- * @typedef {object} GridState Internal state of a DataGrid.
+ * @typedef {object} GridState Internal state of a SPGrid.
  * @property {Column[]} columns
  * @property {Row[]} rows
  * @property {SortState} sort
@@ -132,7 +132,7 @@
  */
 
 /**
- * @typedef {object} DataGridOptions
+ * @typedef {object} SPGridOptions
  * @property {Column[]} columns
  * @property {Row[]} [rows]
  * @property {string} [rowKey] Field that identifies a row; rendered as `data-row-id` and reported as `rowKey`.
@@ -145,7 +145,7 @@
  * @property {{ key: string, direction: SortDirection }} [defaultSort] Sort applied when the grid is created (and by
  *   `resetView()`); `key` must be a data column. Default: unsorted.
  * @property {string} [sortStorageKey] Remember the sort in `localStorage` under this name (stored as
- *   `datagrid:sort:<name>`) and restore it next time, ahead of `defaultSort`; clearing the sort is remembered too.
+ *   `spgrid:sort:<name>`) and restore it next time, ahead of `defaultSort`; clearing the sort is remembered too.
  *   Give each grid its own name. Default: not saved.
  * @property {(sort: SortState) => void} [onSortChange] Called whenever the sort changes.
  * @property {boolean} [searchable] Render a search box above the table.
@@ -158,7 +158,7 @@
  * @property {boolean} [filterSummary] Render a strip under the toolbar, while a filter is active, with how many rows
  *   matched ("Found 12 of 250") and one chip per active filter (search text with its column, column filters); the
  *   x on a chip removes that filter. Default false.
- * @property {string} [title] Name of the grid, shown at the start (left) of the toolbar as an `<h2 class="dg-title">`
+ * @property {string} [title] Name of the grid, shown at the start (left) of the toolbar as an `<h2 class="spg-title">`
  *   (escaped; the toolbar is rendered for it even without a search box). Default none.
  * @property {string} [description] Text under the grid name (escaped), shown in a strip below the toolbar; a button
  *   next to the name hides or shows it (starts shown). Default none.
@@ -177,12 +177,12 @@
  *   part to the same modal and turn the button on by themselves. Default false.
  * @property {string[]} [hiddenColumns] Keys of data columns hidden at first (`columnStorageKey` can override it).
  * @property {string} [columnStorageKey] Remember the hidden columns in `localStorage` under this name
- *   (stored as `datagrid:columns:<name>`) and restore them next time. Give each grid its own name. Default: not saved.
+ *   (stored as `spgrid:columns:<name>`) and restore them next time. Give each grid its own name. Default: not saved.
  * @property {(hidden: string[]) => void} [onColumnsChange] Called whenever the set of hidden columns changes.
  * @property {boolean} [reorderableColumns] Let the user drag a header cell onto another to move the column (it lands
  *   before or after it), or focus a header cell and press Alt+Left / Alt+Right to move it one place. Default false.
  * @property {string} [columnOrderStorageKey] Remember the order of the columns in `localStorage` under this name
- *   (stored as `datagrid:columnOrder:<name>`) and restore it next time, whether or not `reorderableColumns` is on.
+ *   (stored as `spgrid:columnOrder:<name>`) and restore it next time, whether or not `reorderableColumns` is on.
  *   Give each grid its own name. Default: not saved.
  * @property {(order: string[]) => void} [onColumnOrderChange] Called whenever the order of the columns changes
  *   (same as `on('columnOrderChange', fn)`); receives the key of every column in display order.
@@ -192,7 +192,7 @@
  * @property {number} [pageSize] Rows per page; enables pagination. Default: off (show all rows).
  * @property {number[]} [pageSizeOptions] Sizes offered in a "rows per page" select, e.g. [10, 20, 50].
  * @property {string} [pageSizeStorageKey] Remember the rows per page in `localStorage` under this name (stored as
- *   `datagrid:pageSize:<name>`) and restore it next time, ahead of `pageSize`. Default: not saved.
+ *   `spgrid:pageSize:<name>`) and restore it next time, ahead of `pageSize`. Default: not saved.
  * @property {(page: PageState) => void} [onPageChange] Called whenever the page or page size changes.
  * @property {Partial<Record<IconName, string>>} [icons] Replacement SVG markup per icon. Trusted: it is
  *   inserted as HTML, so pass only markup you control, never user data.
@@ -200,32 +200,32 @@
  * @property {boolean} [resizableColumns] Let the user drag the right edge of a header cell (or focus the handle and use the
  *   left / right arrow keys) to change a column's width. Action columns are not resizable. Default false.
  * @property {string} [columnWidthStorageKey] With `resizableColumns`: remember the column widths in `localStorage` under
- *   this name (stored as `datagrid:columnWidths:<name>`) and restore them next time. Give each grid its own name.
+ *   this name (stored as `spgrid:columnWidths:<name>`) and restore them next time. Give each grid its own name.
  *   Default: not saved.
- * @property {boolean} [highlightSearch] Mark where the search text occurs in the cells (`<mark class="dg-mark">`, limited
+ * @property {boolean} [highlightSearch] Mark where the search text occurs in the cells (`<mark class="spg-mark">`, limited
  *   to the search column when one is chosen). Default true.
  * @property {boolean} [textWrap] Long cell text wraps onto more lines (true) or stays on one line (false); default true
  *   (`textWrapStorageKey` can override it).
  * @property {boolean} [textWrapToggle] Add a "Wrap text" switch to the settings modal so the user can turn wrapping on
  *   or off. Default false.
  * @property {string} [textWrapStorageKey] Remember the wrap choice in `localStorage` under this name (stored as
- *   `datagrid:textWrap:<name>`) and restore it next time, ahead of `textWrap`. Default: not remembered.
+ *   `spgrid:textWrap:<name>`) and restore it next time, ahead of `textWrap`. Default: not remembered.
  * @property {boolean} [stripedToggle] Add a "Striped rows" switch to the settings modal so the user can turn the
  *   zebra rows on or off. Default false.
  * @property {string} [stripedStorageKey] Remember the striped choice in `localStorage` under this name (stored as
- *   `datagrid:striped:<name>`) and restore it next time, ahead of `striped`. Default: not remembered.
+ *   `spgrid:striped:<name>`) and restore it next time, ahead of `striped`. Default: not remembered.
  * @property {boolean} [bordered] Draw a border around every cell (vertical lines too); default false. The same as
  *   `gridLines: 'both'` (`gridLines` wins when both are set).
  * @property {GridLines} [gridLines] Which lines the table draws: 'default' (the theme's row lines), 'horizontal' (row
  *   lines), 'vertical' (column lines), 'both' (every cell bordered) or 'none'. Default 'default' (`gridLinesStorageKey`
  *   can override it). An unknown value throws a `RangeError`.
  * @property {LineStyle} [lineStyle] How the grid lines are drawn: 'solid', 'dashed', 'dotted', or 'default' (the theme's
- *   `--dg-line-style`, dashed unless you changed it). Default 'default' (`lineStyleStorageKey` can override it). An
+ *   `--spg-line-style`, dashed unless you changed it). Default 'default' (`lineStyleStorageKey` can override it). An
  *   unknown value throws a `RangeError`.
  * @property {boolean} [lineStyleToggle] Add a "Line style" select to the settings modal so the user can pick the style.
  *   Default false.
  * @property {string} [lineStyleStorageKey] Remember the line style in `localStorage` under this name (stored as
- *   `datagrid:lineStyle:<name>`) and restore it next time, ahead of `lineStyle`. Default: not remembered.
+ *   `spgrid:lineStyle:<name>`) and restore it next time, ahead of `lineStyle`. Default: not remembered.
  * @property {string[]} [groupBy] Data column keys to group the rows by, outermost first (e.g. `['department', 'status']`).
  *   Each group gets a collapsible header row (the column's cell for the group's value, and how many of its rows are on
  *   the page); inside a group the rows keep the `sort`. Group columns are sorted first (ascending, or as the sort says
@@ -234,22 +234,22 @@
  * @property {boolean} [groupByToggle] Add a "Grouping" section to the settings modal with two selects (group by, then
  *   by) over the data columns, so the user can pick the group columns. Default false.
  * @property {string} [groupByStorageKey] Remember the group columns in `localStorage` under this name (stored as
- *   `datagrid:groupBy:<name>`) and restore it next time, ahead of `groupBy`; ungrouping is remembered too. Give each
+ *   `spgrid:groupBy:<name>`) and restore it next time, ahead of `groupBy`; ungrouping is remembered too. Give each
  *   grid its own name. Default: not remembered.
  * @property {(groupBy: string[]) => void} [onGroupByChange] Called whenever the group columns change (same as
  *   `on('groupByChange', fn)`).
  * @property {boolean} [gridLinesToggle] Add a "Grid lines" select to the settings modal so the user can pick the mode.
  *   Default false.
  * @property {string} [gridLinesStorageKey] Remember the grid lines choice in `localStorage` under this name (stored as
- *   `datagrid:gridLines:<name>`) and restore it next time, ahead of `gridLines`/`bordered`. Default: not remembered.
+ *   `spgrid:gridLines:<name>`) and restore it next time, ahead of `gridLines`/`bordered`. Default: not remembered.
  * @property {number} [freezeColumns] How many columns, counted from the start (left) edge of the shown columns, stay in
- *   place while the table scrolls sideways (`dg-frozen`). The table area must scroll: `maxHeight` makes it, or give
- *   `.dg-table-wrap` `overflow-x: auto`. One column always stays free. Default 0 (`freezeColumnsStorageKey` can
+ *   place while the table scrolls sideways (`spg-frozen`). The table area must scroll: `maxHeight` makes it, or give
+ *   `.spg-table-wrap` `overflow-x: auto`. One column always stays free. Default 0 (`freezeColumnsStorageKey` can
  *   override it). Anything but a whole number, 0 or more, throws a `RangeError`.
  * @property {boolean} [freezeColumnsToggle] Add a "Frozen columns" select (0, 1, 2 …) to the settings modal so the user
  *   can pick how many. Default false.
  * @property {string} [freezeColumnsStorageKey] Remember the frozen column count in `localStorage` under this name (stored
- *   as `datagrid:freezeColumns:<name>`) and restore it next time, ahead of `freezeColumns`. Default: not remembered.
+ *   as `spgrid:freezeColumns:<name>`) and restore it next time, ahead of `freezeColumns`. Default: not remembered.
  * @property {'compact' | 'comfortable'} [density] Cell padding; default 'comfortable'.
  * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
  * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);

@@ -3,7 +3,7 @@ import { escapeHtml } from '../utils/escape.js';
 
 /**
  * @typedef {object} ConfirmDialog Where and how the built-in dialog shows up.
- * @property {HTMLElement | null} root Element that carries the theme tokens (`.dg-root`); the dialog is added inside it.
+ * @property {HTMLElement | null} root Element that carries the theme tokens (`.spg-root`); the dialog is added inside it.
  * @property {string} title
  * @property {string} ok
  * @property {string} cancel
@@ -20,18 +20,18 @@ function showDialog(message, { root, title, ok, cancel }) {
   if (!root) return Promise.resolve(window.confirm(message));
   const opener = /** @type {HTMLElement | null} */ (document.activeElement);
   const overlay = document.createElement('div');
-  overlay.className = 'dg-modal';
+  overlay.className = 'spg-modal';
   overlay.innerHTML =
-    `<div class="dg-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="dg-modal-title" aria-describedby="dg-modal-text">` +
-    `<div class="dg-modal-icon" aria-hidden="true">!</div>` +
-    `<h2 class="dg-modal-title" id="dg-modal-title">${escapeHtml(title)}</h2>` +
-    `<p class="dg-modal-text" id="dg-modal-text">${escapeHtml(message)}</p>` +
-    `<div class="dg-modal-actions">` +
-    `<button type="button" class="dg-modal-btn dg-modal-cancel">${escapeHtml(cancel)}</button>` +
-    `<button type="button" class="dg-modal-btn dg-modal-ok">${escapeHtml(ok)}</button>` +
+    `<div class="spg-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="spg-modal-title" aria-describedby="spg-modal-text">` +
+    `<div class="spg-modal-icon" aria-hidden="true">!</div>` +
+    `<h2 class="spg-modal-title" id="spg-modal-title">${escapeHtml(title)}</h2>` +
+    `<p class="spg-modal-text" id="spg-modal-text">${escapeHtml(message)}</p>` +
+    `<div class="spg-modal-actions">` +
+    `<button type="button" class="spg-modal-btn spg-modal-cancel">${escapeHtml(cancel)}</button>` +
+    `<button type="button" class="spg-modal-btn spg-modal-ok">${escapeHtml(ok)}</button>` +
     `</div></div>`;
-  const cancelBtn = /** @type {HTMLButtonElement} */ (overlay.querySelector('.dg-modal-cancel'));
-  const okBtn = /** @type {HTMLButtonElement} */ (overlay.querySelector('.dg-modal-ok'));
+  const cancelBtn = /** @type {HTMLButtonElement} */ (overlay.querySelector('.spg-modal-cancel'));
+  const okBtn = /** @type {HTMLButtonElement} */ (overlay.querySelector('.spg-modal-ok'));
   return new Promise((resolve) => {
     /** @param {boolean} answer */
     const close = (answer) => {

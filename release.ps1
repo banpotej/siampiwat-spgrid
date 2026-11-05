@@ -59,8 +59,8 @@ $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
 # The install examples in README.md and index.html spell out the version; keep them on the new one.
 foreach ($file in 'README.md', 'index.html') {
     $text = Get-Content "$PSScriptRoot\$file" -Raw -Encoding UTF8
-    $text = $text -replace '(download/v|siampiwat-datagrid-)\d+\.\d+\.\d+', "`${1}$version"
-    $text = $text -replace '(datagrid@(?:<span class="npm-version">)?)\d+\.\d+\.\d+', "`${1}$version"
+    $text = $text -replace '(download/v|siampiwat-spgrid-)\d+\.\d+\.\d+', "`${1}$version"
+    $text = $text -replace '(spgrid@(?:<span class="npm-version">)?)\d+\.\d+\.\d+', "`${1}$version"
     [IO.File]::WriteAllText("$PSScriptRoot\$file", $text, (New-Object Text.UTF8Encoding($false)))
 }
 

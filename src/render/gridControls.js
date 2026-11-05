@@ -8,9 +8,9 @@ const DEFAULT_DEBOUNCE = 200;
 /**
  * Wire the toolbar, pager, action cells, column picker and filter chips of one grid to its public methods.
  *
- * @param {import('../DataGrid.js').DataGrid} grid
+ * @param {import('../SPGrid.js').SPGrid} grid
  * @param {ReturnType<typeof import('./toolbar.js').mountShell>} shell
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  * @param {Required<import('../types.js').Labels>} labels
  * @param {{
  *   applyFilter: (filter: import('../types.js').FilterState | null) => void,
@@ -96,7 +96,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
         options.resetButton === true
           ? () =>
               askConfirm(options.confirmReset, labels.confirmReset, {
-                root: shell.host.closest('.dg-root'),
+                root: shell.host.closest('.spg-root'),
                 title: labels.resetView,
                 ok: labels.confirmOk,
                 cancel: labels.cancel,

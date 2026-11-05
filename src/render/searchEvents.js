@@ -7,8 +7,8 @@ import { rangeText } from './searchValue.js';
  * @param {HTMLInputElement} input
  */
 export function syncClearButton(input) {
-  const clear = input.parentElement?.querySelector('.dg-search-clear');
-  const enumShown = !!input.parentElement?.querySelector('.dg-search-value:not([hidden])');
+  const clear = input.parentElement?.querySelector('.spg-search-clear');
+  const enumShown = !!input.parentElement?.querySelector('.spg-search-value:not([hidden])');
   if (clear instanceof HTMLElement) clear.hidden = enumShown || input.value === '';
 }
 
@@ -62,12 +62,12 @@ export function bindSearchEvents(
 
   /** @param {Event} e */
   const onClick = (e) => {
-    if (e.target instanceof Element && e.target.closest('.dg-search-submit')) {
+    if (e.target instanceof Element && e.target.closest('.spg-search-submit')) {
       onSearch(input.value);
       return;
     }
     const clear =
-      e.target instanceof Element ? e.target.closest('.dg-search-clear, .dg-search-reset') : null;
+      e.target instanceof Element ? e.target.closest('.spg-search-clear, .spg-search-reset') : null;
     if (!clear || !toolbar.contains(clear)) return;
     clearTimeout(timer);
     timer = undefined;
@@ -76,7 +76,7 @@ export function bindSearchEvents(
     dateRange?.querySelectorAll('input').forEach((box) => (box.value = ''));
     syncClearButton(input);
     onSearch('');
-    if (clear.classList.contains('dg-search-reset')) onColumn?.(null);
+    if (clear.classList.contains('spg-search-reset')) onColumn?.(null);
     const shown = [input, valueSelect, dateRange?.querySelector('input')].find(
       (el) => el && !el.closest('[hidden]') && !el.hidden,
     );
@@ -109,7 +109,7 @@ export function bindSearchEvents(
       onSearch(input.value);
       return;
     }
-    if (!(select instanceof HTMLSelectElement) || !select.classList.contains('dg-search-column')) {
+    if (!(select instanceof HTMLSelectElement) || !select.classList.contains('spg-search-column')) {
       return;
     }
     onColumn?.(select.value === '' ? null : select.value);

@@ -14,7 +14,7 @@ for (const { name, colorScheme, width } of shots) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ colorScheme });
     await page.goto('/tests/e2e/fixtures/grids.html');
-    await expect(page.locator('.dg-root')).toHaveCount(4);
+    await expect(page.locator('.spg-root')).toHaveCount(4);
 
     // Hover a header and open a few states so the shot shows more than the idle look.
     await page.locator('#grid-default th', { hasText: 'Name' }).click();

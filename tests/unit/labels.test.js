@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 /** @param {import('../../src/types.js').Labels} labels */
 const make = (labels) => {
   const el = document.createElement('div');
   const rows = Array.from({ length: 25 }, (_, i) => ({ id: i + 1 }));
-  new DataGrid(el, { columns: [{ key: 'id' }], rows, searchable: true, pageSize: 10, labels });
+  new SPGrid(el, { columns: [{ key: 'id' }], rows, searchable: true, pageSize: 10, labels });
   return el;
 };
 
@@ -21,24 +21,26 @@ describe('thaiLabels', () => {
     expect(el.querySelector('input')?.getAttribute('aria-label')).toBe('ค้นหา');
     expect(el.querySelector('nav')?.getAttribute('aria-label')).toBe('การแบ่งหน้า');
     expect(el.querySelector('[data-action="next"]')?.getAttribute('aria-label')).toBe('ถัดไป');
-    expect(el.querySelector('.dg-summary')?.textContent).toBe('แสดง 1–10 จาก 25 รายการ');
+    expect(el.querySelector('.spg-summary')?.textContent).toBe('แสดง 1–10 จาก 25 รายการ');
   });
 });
 
 describe('pager summary text', () => {
-  it('wraps each number in <span class="dg-num"> and keeps the words as text', () => {
+  it('wraps each number in <span class="spg-num"> and keeps the words as text', () => {
     const el = make({});
-    const nums = [...el.querySelectorAll('.dg-pager-host .dg-summary .dg-num')];
+    const nums = [...el.querySelectorAll('.spg-pager-host .spg-summary .spg-num')];
     expect(nums.map((n) => n.textContent)).toEqual(['1', '10', '25']);
-    expect(el.querySelector('.dg-pager-host .dg-summary')?.textContent).toBe('Showing 1–10 of 25');
+    expect(el.querySelector('.spg-pager-host .spg-summary')?.textContent).toBe(
+      'Showing 1–10 of 25',
+    );
   });
 
   it('escapes a custom summary and never cuts up an entity', () => {
     const el = make({ summary: (from, to, total) => `<i>'${from}</i> & ${to}/${total}` });
-    const summary = el.querySelector('.dg-pager-host .dg-summary');
+    const summary = el.querySelector('.spg-pager-host .spg-summary');
     expect(summary?.querySelector('i')).toBeNull();
     expect(summary?.textContent).toBe("<i>'1</i> & 10/25");
-    expect([...(summary?.querySelectorAll('.dg-num') ?? [])].map((n) => n.textContent)).toEqual([
+    expect([...(summary?.querySelectorAll('.spg-num') ?? [])].map((n) => n.textContent)).toEqual([
       '1',
       '10',
       '25',

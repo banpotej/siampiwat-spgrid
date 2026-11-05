@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => localStorage.clear());
 
@@ -7,12 +7,13 @@ beforeEach(() => localStorage.clear());
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [{ a: 1 }], ...extra });
-  const root = /** @type {HTMLElement} */ (el.querySelector('.dg-root'));
+  new SPGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [{ a: 1 }], ...extra });
+  const root = /** @type {HTMLElement} */ (el.querySelector('.spg-root'));
   return { el, root };
 };
 /** @param {HTMLElement} el */
-const open = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
+const open = (el) =>
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click();
 /** @param {HTMLElement} el */
 const select = (el) =>
   /** @type {HTMLSelectElement | null} */ (el.querySelector('select[data-choice="lineStyle"]'));
@@ -20,18 +21,18 @@ const select = (el) =>
 const choose = (el, style) => {
   open(el);
   /** @type {HTMLSelectElement} */ (select(el)).value = style;
-  /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
 };
-const CLASSES = ['dg-line-solid', 'dg-line-dashed', 'dg-line-dotted'];
+const CLASSES = ['spg-line-solid', 'spg-line-dashed', 'spg-line-dotted'];
 /** @param {HTMLElement} root */
 const styles = (root) => CLASSES.filter((c) => root.classList.contains(c));
 
 describe('lineStyle option', () => {
   it.each([
     ['default', []],
-    ['solid', ['dg-line-solid']],
-    ['dashed', ['dg-line-dashed']],
-    ['dotted', ['dg-line-dotted']],
+    ['solid', ['spg-line-solid']],
+    ['dashed', ['spg-line-dashed']],
+    ['dotted', ['spg-line-dotted']],
   ])('%s sets the root class %j', (lineStyle, expected) => {
     expect(styles(make({ lineStyle }).root)).toEqual(expected);
   });
@@ -43,8 +44,8 @@ describe('lineStyle option', () => {
 
   it('works beside gridLines', () => {
     const { root } = make({ lineStyle: 'dotted', gridLines: 'both' });
-    expect(root.classList.contains('dg-line-dotted')).toBe(true);
-    expect(root.classList.contains('dg-bordered')).toBe(true);
+    expect(root.classList.contains('spg-line-dotted')).toBe(true);
+    expect(root.classList.contains('spg-bordered')).toBe(true);
   });
 });
 
@@ -75,12 +76,12 @@ describe('lineStyleToggle', () => {
     const { el, root } = make({ lineStyleToggle: true });
     open(el);
     /** @type {HTMLSelectElement} */ (select(el)).value = 'dotted';
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-cancel')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-cancel')).click();
     expect(styles(root)).toEqual([]);
     choose(el, 'dotted');
-    expect(styles(root)).toEqual(['dg-line-dotted']);
+    expect(styles(root)).toEqual(['spg-line-dotted']);
     choose(el, 'solid');
-    expect(styles(root)).toEqual(['dg-line-solid']);
+    expect(styles(root)).toEqual(['spg-line-solid']);
     choose(el, 'default');
     expect(styles(root)).toEqual([]);
   });
@@ -91,20 +92,20 @@ describe('lineStyleToggle', () => {
     /** @type {HTMLSelectElement} */ (select(el)).value = 'solid';
     /** @type {HTMLSelectElement} */ (el.querySelector('select[data-choice="gridLines"]')).value =
       'vertical';
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
-    expect(styles(root)).toEqual(['dg-line-solid']);
-    expect(root.classList.contains('dg-lines-vertical')).toBe(true);
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
+    expect(styles(root)).toEqual(['spg-line-solid']);
+    expect(root.classList.contains('spg-lines-vertical')).toBe(true);
   });
 
   it('is remembered under lineStyleStorageKey, ahead of the option; a bad saved value is ignored', () => {
     choose(make({ lineStyleToggle: true, lineStyleStorageKey: 'po' }).el, 'dotted');
-    expect(JSON.parse(localStorage.getItem('datagrid:lineStyle:po') ?? 'null')).toBe('dotted');
+    expect(JSON.parse(localStorage.getItem('spgrid:lineStyle:po') ?? 'null')).toBe('dotted');
     expect(styles(make({ lineStyle: 'solid', lineStyleStorageKey: 'po' }).root)).toEqual([
-      'dg-line-dotted',
+      'spg-line-dotted',
     ]);
-    localStorage.setItem('datagrid:lineStyle:bad', JSON.stringify('wavy'));
+    localStorage.setItem('spgrid:lineStyle:bad', JSON.stringify('wavy'));
     expect(styles(make({ lineStyle: 'solid', lineStyleStorageKey: 'bad' }).root)).toEqual([
-      'dg-line-solid',
+      'spg-line-solid',
     ]);
   });
 

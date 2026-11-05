@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 const columns = [
   { key: 'name', label: 'Name', sortable: true },
@@ -20,13 +20,13 @@ afterEach(() => vi.restoreAllMocks());
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, resizableColumns: true, ...extra });
+  const grid = new SPGrid(el, { columns, rows, resizableColumns: true, ...extra });
   return { el, grid };
 };
 /** @param {HTMLElement} el @param {string} key */
 const th = (el, key) => /** @type {HTMLElement} */ (el.querySelector(`th[data-key="${key}"]`));
 /** @param {HTMLElement} el @param {string} key */
-const handle = (el, key) => /** @type {HTMLElement} */ (th(el, key).querySelector('.dg-resize'));
+const handle = (el, key) => /** @type {HTMLElement} */ (th(el, key).querySelector('.spg-resize'));
 /** @param {Element} target @param {string} type @param {object} [init] */
 const fire = (target, type, init = {}) =>
   target.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, ...init }));
@@ -40,23 +40,23 @@ const drag = (el, key, dx) => {
 
 describe('resizableColumns', () => {
   it('draws a labelled separator on every data column, but not on action columns or by default', () => {
-    expect(make({ resizableColumns: false }).el.querySelector('.dg-resize')).toBeNull();
+    expect(make({ resizableColumns: false }).el.querySelector('.spg-resize')).toBeNull();
     const { el } = make();
-    expect(el.querySelector('.dg-root')?.classList.contains('dg-resizable')).toBe(true);
+    expect(el.querySelector('.spg-root')?.classList.contains('spg-resizable')).toBe(true);
     const name = handle(el, 'name');
     expect(name.getAttribute('role')).toBe('separator');
     expect(name.getAttribute('aria-orientation')).toBe('vertical');
     expect(name.getAttribute('aria-label')).toBe('Resize Name');
     expect(handle(el, 'role').getAttribute('aria-label')).toBe('Resize Role ตำแหน่ง');
-    expect(th(el, 'ops').querySelector('.dg-resize')).toBeNull();
+    expect(th(el, 'ops').querySelector('.spg-resize')).toBeNull();
     expect(
-      make({ labels: thaiLabels }).el.querySelector('.dg-resize')?.getAttribute('aria-label'),
+      make({ labels: thaiLabels }).el.querySelector('.spg-resize')?.getAttribute('aria-label'),
     ).toBe('ปรับความกว้าง Name');
   });
 
   it('leaves the table alone until the first resize', () => {
     const { el } = make();
-    expect(el.querySelector('table')?.classList.contains('dg-fixed')).toBe(false);
+    expect(el.querySelector('table')?.classList.contains('spg-fixed')).toBe(false);
     expect(th(el, 'role').style.width).toBe('30%');
   });
 
@@ -64,7 +64,7 @@ describe('resizableColumns', () => {
     const { el } = make();
     drag(el, 'name', 40);
     const table = /** @type {HTMLElement} */ (el.querySelector('table'));
-    expect(table.classList.contains('dg-fixed')).toBe(true);
+    expect(table.classList.contains('spg-fixed')).toBe(true);
     expect(th(el, 'name').style.width).toBe('140px');
     expect(th(el, 'role').style.width).toBe('100px');
     expect(th(el, 'ops').style.width).toBe('100px');
@@ -84,11 +84,11 @@ describe('resizableColumns', () => {
     const { el } = make();
     const h = handle(el, 'name');
     fire(h, 'pointerdown', { clientX: 200, button: 2 });
-    expect(el.querySelector('table')?.classList.contains('dg-fixed')).toBe(false);
+    expect(el.querySelector('table')?.classList.contains('spg-fixed')).toBe(false);
     drag(el, 'name', 10);
     fire(h, 'pointermove', { clientX: 500 });
     expect(th(el, 'name').style.width).toBe('110px');
-    expect(h.classList.contains('dg-resizing')).toBe(false);
+    expect(h.classList.contains('spg-resizing')).toBe(false);
   });
 
   it('keeps the widths through a re-render (sorting, filtering, paging)', () => {
@@ -97,7 +97,7 @@ describe('resizableColumns', () => {
     grid.setSort({ key: 'name', direction: 'asc' });
     grid.setFilter({ search: 'ada' });
     expect(th(el, 'name').style.width).toBe('140px');
-    expect(el.querySelector('table')?.classList.contains('dg-fixed')).toBe(true);
+    expect(el.querySelector('table')?.classList.contains('spg-fixed')).toBe(true);
     expect(/** @type {HTMLElement} */ (el.querySelector('table')).style.width).toBe('340px');
   });
 
@@ -138,7 +138,7 @@ describe('resizableColumns', () => {
 
   it('removes its listeners on destroy', () => {
     const { el, grid } = make();
-    const host = /** @type {HTMLElement} */ (el.querySelector('.dg-table-wrap'));
+    const host = /** @type {HTMLElement} */ (el.querySelector('.spg-table-wrap'));
     const remove = vi.spyOn(host, 'removeEventListener');
     grid.destroy();
     expect(remove).toHaveBeenCalledWith('pointerdown', expect.any(Function));
@@ -148,7 +148,7 @@ describe('resizableColumns', () => {
 
 describe('columnWidthStorageKey', () => {
   beforeEach(() => localStorage.clear());
-  const KEY = 'datagrid:columnWidths:po';
+  const KEY = 'spgrid:columnWidths:po';
 
   it('saves the widths when a drag ends and restores them for the next grid', () => {
     const { el } = make({ columnWidthStorageKey: 'po' });
@@ -163,7 +163,7 @@ describe('columnWidthStorageKey', () => {
       ops: 100,
     });
     const next = make({ columnWidthStorageKey: 'po' }).el;
-    expect(next.querySelector('table')?.classList.contains('dg-fixed')).toBe(true);
+    expect(next.querySelector('table')?.classList.contains('spg-fixed')).toBe(true);
     expect(th(next, 'name').style.width).toBe('140px');
     expect(th(next, 'role').style.width).toBe('100px');
   });
@@ -183,7 +183,7 @@ describe('columnWidthStorageKey', () => {
     expect(
       make({ columnWidthStorageKey: 'po' })
         .el.querySelector('table')
-        ?.classList.contains('dg-fixed'),
+        ?.classList.contains('spg-fixed'),
     ).toBe(false);
     localStorage.setItem(KEY, JSON.stringify({ name: 200 }));
     const { el } = make({ columnWidthStorageKey: 'po' });

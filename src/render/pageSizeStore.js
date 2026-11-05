@@ -1,7 +1,7 @@
 // @ts-check
 import { readJson, writeJson } from '../utils/storage.js';
 
-const PREFIX = 'datagrid:pageSize:';
+const PREFIX = 'spgrid:pageSize:';
 
 /**
  * The rows per page saved under `storageKey`, or `fallback` when nothing usable is saved (no entry,

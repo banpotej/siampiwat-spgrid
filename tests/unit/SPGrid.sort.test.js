@@ -1,7 +1,7 @@
 ﻿import { describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
-describe('DataGrid sorting', () => {
+describe('SPGrid sorting', () => {
   const sortCols = [
     { key: 'id', label: 'ID', sortable: true },
     { key: 'name', label: 'Name', sortable: true },
@@ -15,7 +15,7 @@ describe('DataGrid sorting', () => {
   /** @param {object} [options] */
   const make = (options = {}) => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, { columns: sortCols, rows, ...options });
+    const grid = new SPGrid(el, { columns: sortCols, rows, ...options });
     return { el, grid };
   };
   /** @param {HTMLElement} el @param {number} col */

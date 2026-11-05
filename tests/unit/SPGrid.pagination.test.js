@@ -8,7 +8,7 @@ describe('enabling pagination', () => {
     const { el, grid } = make({ pageSize: undefined });
     expect(ids(el)).toHaveLength(25);
     expect(el.querySelector('nav')).toBeNull();
-    expect(el.querySelector('.dg-summary')).toBeNull();
+    expect(el.querySelector('.spg-summary')).toBeNull();
     expect(grid.getPageSize()).toBeNull();
   });
 
@@ -131,7 +131,7 @@ describe('summary', () => {
     const summaryLabel = vi.fn((from, to, total) => `<i>${from}-${to}/${total}</i>`);
     const { el, grid } = make({ labels: { summary: summaryLabel } });
     expect(summary(el)).toBe('<i>1-10/25</i>');
-    expect(el.querySelector('.dg-summary i')).toBeNull();
+    expect(el.querySelector('.spg-summary i')).toBeNull();
     grid.setFilter({ search: 'zzz' });
     expect(summaryLabel).toHaveBeenLastCalledWith(0, 0, 0);
   });

@@ -2,16 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>DataGrid from built files</title>
-    <!-- The "load it from a URL, no npm" recipe: only dist/datagrid.js and dist/datagrid.css. -->
-    <link rel="stylesheet" href="/dist/datagrid.css" />
+    <title>SPGrid from built files</title>
+    <!-- The "load it from a URL, no npm" recipe: only dist/spgrid.js and dist/spgrid.css. -->
+    <link rel="stylesheet" href="/dist/spgrid.css" />
   </head>
   <body>
     <div id="grid"></div>
     <script type="module">
-      import { DataGrid } from '/dist/datagrid.js';
+      import { SPGrid } from '/dist/spgrid.js';
 
-      new DataGrid(document.getElementById('grid'), {
+      new SPGrid(document.getElementById('grid'), {
         rowKey: 'id',
         columns: [
           { key: 'id', label: 'ID' },

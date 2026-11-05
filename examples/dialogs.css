@@ -1,17 +1,17 @@
 /* Dialogs of the example page (dialogs.js): the cancel confirmation. The row details modal is part of the library (details.css). */
 /* Cancel confirmation: the grid's confirm card with a red, destructive primary button. */
-.dg-modal-box.confirm-cancel .dg-modal-icon {
-  background: color-mix(in srgb, var(--dgi-danger) 12%, var(--dgi-bg));
-  color: var(--dgi-danger);
+.spg-modal-box.confirm-cancel .spg-modal-icon {
+  background: color-mix(in srgb, var(--spgi-danger) 12%, var(--spgi-bg));
+  color: var(--spgi-danger);
 }
-.dg-modal-box.confirm-cancel .dg-modal-ok {
-  border-color: var(--dgi-danger);
-  background: var(--dgi-danger);
+.spg-modal-box.confirm-cancel .spg-modal-ok {
+  border-color: var(--spgi-danger);
+  background: var(--spgi-danger);
   color: light-dark(#fff, #111827);
 }
-.dg-modal-box.confirm-cancel .dg-modal-ok:hover {
-  background: color-mix(in srgb, var(--dgi-danger) 88%, #000);
+.spg-modal-box.confirm-cancel .spg-modal-ok:hover {
+  background: color-mix(in srgb, var(--spgi-danger) 88%, #000);
 }
-.dg-modal-box.confirm-cancel .dg-modal-text strong {
-  color: var(--dgi-text);
+.spg-modal-box.confirm-cancel .spg-modal-text strong {
+  color: var(--spgi-text);
 }

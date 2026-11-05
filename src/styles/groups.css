@@ -1,62 +1,62 @@
 /* Group header rows (the `groupBy` option): one full-width row before each group, with a button that collapses it.
-   An inner group is indented by its level (--dg-group-level is set on the row). */
-.dg-table tbody tr.dg-group-row,
-.dg-table tbody tr.dg-group-row:hover,
-.dg-striped .dg-table tbody tr.dg-group-row {
-  background: var(--dgi-header-bg);
+   An inner group is indented by its level (--spg-group-level is set on the row). */
+.spg-table tbody tr.spg-group-row,
+.spg-table tbody tr.spg-group-row:hover,
+.spg-striped .spg-table tbody tr.spg-group-row {
+  background: var(--spgi-header-bg);
 }
 
-.dg-group-row td {
+.spg-group-row td {
   padding: 0;
   font-weight: 600;
 }
 
-.dg-group-toggle {
+.spg-group-toggle {
   display: flex;
   align-items: center;
   gap: 0.5em;
   width: 100%;
-  padding: calc(var(--dgi-pad-y) * 0.75) var(--dgi-pad-x);
-  padding-inline-start: calc(var(--dgi-pad-x) + var(--dg-group-level, 0) * 1.25em);
+  padding: calc(var(--spgi-pad-y) * 0.75) var(--spgi-pad-x);
+  padding-inline-start: calc(var(--spgi-pad-x) + var(--spg-group-level, 0) * 1.25em);
   border: 0;
   background: transparent;
-  color: var(--dgi-header-text);
+  color: var(--spgi-header-text);
   font: inherit;
   text-align: start;
   cursor: pointer;
 }
 
-.dg-group-toggle:hover {
-  background: var(--dgi-sort-hover-bg);
+.spg-group-toggle:hover {
+  background: var(--spgi-sort-hover-bg);
 }
 
-.dg-group-toggle:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-group-toggle:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: -2px;
 }
 
 /* The chevron points right when the group is collapsed and down when it is open. */
-.dg-group-icon {
+.spg-group-icon {
   display: inline-flex;
-  color: var(--dgi-icon);
-  transition: transform var(--dgi-transition);
+  color: var(--spgi-icon);
+  transition: transform var(--spgi-transition);
 }
 
-.dg-group-toggle[aria-expanded='true'] .dg-group-icon {
+.spg-group-toggle[aria-expanded='true'] .spg-group-icon {
   transform: rotate(90deg);
 }
 
-.dg-group-count {
-  color: var(--dgi-muted);
+.spg-group-count {
+  color: var(--spgi-muted);
   font-weight: 400;
 }
 
 @media (forced-colors: active) {
-  .dg-group-toggle {
+  .spg-group-toggle {
     color: ButtonText;
   }
 
-  .dg-group-toggle:focus-visible {
+  .spg-group-toggle:focus-visible {
     outline-color: Highlight;
   }
 }

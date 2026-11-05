@@ -1,5 +1,5 @@
 // @ts-check
-export { DataGrid } from './DataGrid.js';
+export { SPGrid } from './SPGrid.js';
 export { thaiLabels } from './render/labels.js';
 export { showDetails } from './render/detailsModal.js';
 export { escapeHtml } from './utils/escape.js';

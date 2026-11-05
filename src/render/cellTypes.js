@@ -53,7 +53,7 @@ export const isTyped = (type) =>
  * @returns {string}
  */
 export function renderTypedCell(column, value, { icons, labels, locale }) {
-  if (isBlank(value)) return '<span class="dg-cell-empty">–</span>';
+  if (isBlank(value)) return '<span class="spg-cell-empty">–</span>';
   switch (column.type) {
     case 'number': {
       const n = typeof value === 'number' ? value : Number(value);
@@ -61,7 +61,7 @@ export function renderTypedCell(column, value, { icons, labels, locale }) {
       const text = /** @type {Intl.NumberFormat} */ (
         formatter('number', locale, column.format)
       ).format(n);
-      return `<span class="dg-cell-number">${escapeHtml(text)}</span>`;
+      return `<span class="spg-cell-number">${escapeHtml(text)}</span>`;
     }
     case 'date': {
       const date = value instanceof Date ? value : new Date(/** @type {string | number} */ (value));
@@ -75,12 +75,12 @@ export function renderTypedCell(column, value, { icons, labels, locale }) {
       const text = /** @type {Intl.DateTimeFormat} */ (formatter('date', locale, options)).format(
         date,
       );
-      return `<span class="dg-cell-date">${renderIcon(icons, 'calendar_today')}<time datetime="${date.toISOString()}">${escapeHtml(text)}</time></span>`;
+      return `<span class="spg-cell-date">${renderIcon(icons, 'calendar_today')}<time datetime="${date.toISOString()}">${escapeHtml(text)}</time></span>`;
     }
     case 'boolean': {
       const yes = value === true;
       const label = yes ? labels.yes : labels.no;
-      return `<span class="dg-bool dg-bool-${yes ? 'yes' : 'no'}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${renderIcon(icons, yes ? 'check' : 'close')}</span>`;
+      return `<span class="spg-bool spg-bool-${yes ? 'yes' : 'no'}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${renderIcon(icons, yes ? 'check' : 'close')}</span>`;
     }
     default: {
       const key = String(value);
@@ -89,7 +89,7 @@ export function renderTypedCell(column, value, { icons, labels, locale }) {
       const name = badge.icon;
       const icon =
         typeof name === 'string' && Object.hasOwn(icons, name) ? renderIcon(icons, name) : '';
-      return `<span class="dg-badge dg-badge-${tone}${icon ? ' dg-badge-icon' : ''}">${icon}${escapeHtml(badge.label ?? key)}</span>`;
+      return `<span class="spg-badge spg-badge-${tone}${icon ? ' spg-badge-icon' : ''}">${icon}${escapeHtml(badge.label ?? key)}</span>`;
     }
   }
 }

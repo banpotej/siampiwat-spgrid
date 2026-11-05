@@ -9,11 +9,11 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>DataGrid basic example</title>
+    <title>SPGrid basic example</title>
     <style>
       body {
         font-family: 'Sarabun', sans-serif;
-        --dg-font-family: 'Sarabun', sans-serif;
+        --spg-font-family: 'Sarabun', sans-serif;
       }
     </style>
   </head>
@@ -21,9 +21,9 @@
     <!-- Three rows, sortable + searchable with a column select, no pagination. Used by the smoke/sort/filter e2e tests. -->
     <div id="grid"></div>
     <script type="module">
-      import { DataGrid } from '/src/index.js';
+      import { SPGrid } from '/src/index.js';
 
-      new DataGrid(document.getElementById('grid'), {
+      new SPGrid(document.getElementById('grid'), {
         columns: [
           { key: 'id', label: 'ID', sortable: true },
           { key: 'name', label: 'Name', sortable: true },

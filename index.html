@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Siam Piwat DataGrid: ตารางข้อมูล vanilla JS</title>
+    <title>Siam Piwat SPGrid: ตารางข้อมูล vanilla JS</title>
     <link rel="stylesheet" href="/examples/page.css" />
     <link rel="stylesheet" href="/examples/landing.css" />
   </head>
@@ -18,12 +18,12 @@
       <nav id="site-nav"></nav>
       <header class="hero">
         <ul class="hero-chips" aria-label="จุดเด่น">
-          <li><code>@siampiwat/datagrid</code> <span id="version"></span></li>
+          <li><code>@siampiwat/spgrid</code> <span id="version"></span></li>
           <li>Vanilla JS</li>
           <li>ไม่มี dependency</li>
           <li>รองรับภาษาไทย</li>
         </ul>
-        <h1>Siam Piwat DataGrid</h1>
+        <h1>Siam Piwat SPGrid</h1>
         <p>
           ตารางข้อมูลแบบ vanilla JS ไม่มี dependency ใช้งานง่าย ค้นหา เรียงลำดับ แบ่งหน้า
           และปรับแต่งได้ครบ พร้อมป้ายกำกับภาษาไทย ลองดูตัวอย่างด้านล่าง
@@ -52,13 +52,13 @@
         <ol>
           <li>
             <strong>ข้อกำหนด</strong>
-            Node.js 22 ขึ้นไป และ bundler ที่รองรับ ES modules (เช่น Vite, webpack) DataGrid ไม่มี
+            Node.js 22 ขึ้นไป และ bundler ที่รองรับ ES modules (เช่น Vite, webpack) SPGrid ไม่มี
             runtime dependency
           </li>
           <li>
             <strong>ติดตั้งแพ็กเกจด้วย npm</strong>
             เผยแพร่บน npm แล้ว ติดตั้งได้ด้วย
-            <pre tabindex="0"><code>npm install @siampiwat/datagrid</code></pre>
+            <pre tabindex="0"><code>npm install @siampiwat/spgrid</code></pre>
             หากติดตั้งผ่าน registry ไม่ได้ (เช่น ใช้ registry ภายใน) เลือกติดตั้งจาก URL หรือไฟล์ได้
             3 แบบ
             <h3>ก. จาก URL ของไฟล์ .tgz</h3>
@@ -66,7 +66,7 @@
             สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
             <pre
               tabindex="0"
-            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v1.0.9/siampiwat-datagrid-1.0.9.tgz</code></pre>
+            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v2.0.0/siampiwat-spgrid-2.0.0.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
             <pre tabindex="0"><code>npm install github:banpotej/siampiwat-datagrid
@@ -78,19 +78,19 @@ npm install github:banpotej/siampiwat-datagrid#main   # ระบุ branch ห�
               <span class="download-note" role="status"></span>
             </span>
             หรือ build และแพ็กไฟล์เองจาก repo นี้
-            <pre tabindex="0"><code># ใน repo datagrid
+            <pre tabindex="0"><code># ใน repo spgrid
 npm install
 npm run build
-npm pack              # ได้ไฟล์ siampiwat-datagrid-1.0.9.tgz
+npm pack              # ได้ไฟล์ siampiwat-spgrid-2.0.0.tgz
 
 # ในโปรเจกต์ที่จะใช้
-npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.9.tgz</code></pre>
+npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.0.tgz</code></pre>
           </li>
           <li>
             <strong>ดาวน์โหลดเป็นไฟล์ .zip</strong>
             เนื้อหาเดียวกับแพ็กเกจ npm (<code>dist/</code>, <code>docs/</code> รวมคู่มือสำหรับ AI
             Agent, README) แต่เป็น .zip สำหรับคนที่ไม่ใช้ npm แตกไฟล์แล้วใช้
-            <code>dist/datagrid.js</code> กับ <code>dist/datagrid.css</code>
+            <code>dist/spgrid.js</code> กับ <code>dist/spgrid.css</code>
             <span class="download" data-hint="npm run pack:release">
               <a class="download-btn" id="download-zip" download href="#">ดาวน์โหลด</a>
               <span class="download-note" role="status"></span>
@@ -99,23 +99,22 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.9.tgz</code></pre>
           <li>
             <strong>โหลดผ่าน URL ในหน้าเว็บ (ไม่ใช้ npm)</strong>
             ไฟล์ใน <code>dist/</code> เป็น ES module ที่ไม่มี dependency ใช้ผ่าน URL ได้โดยตรง นำ
-            <code>dist/datagrid.js</code> และ <code>dist/datagrid.css</code> ไปไว้บน static host
-            หรือ CDN (เช่น jsDelivr / unpkg หลังเผยแพร่ขึ้น npm) หรือดาวน์โหลดไฟล์ที่ build
-            แล้วจากที่นี่
+            <code>dist/spgrid.js</code> และ <code>dist/spgrid.css</code> ไปไว้บน static host หรือ
+            CDN (เช่น jsDelivr / unpkg หลังเผยแพร่ขึ้น npm) หรือดาวน์โหลดไฟล์ที่ build แล้วจากที่นี่
             <span class="download" data-hint="npm run build">
-              <a class="download-btn" download href="/dist/datagrid.js">ดาวน์โหลด datagrid.js</a>
-              <a class="download-btn" download href="/dist/datagrid.css">ดาวน์โหลด datagrid.css</a>
-              <a class="download-btn" download href="/dist/datagrid.cjs">ดาวน์โหลด datagrid.cjs</a>
+              <a class="download-btn" download href="/dist/spgrid.js">ดาวน์โหลด spgrid.js</a>
+              <a class="download-btn" download href="/dist/spgrid.css">ดาวน์โหลด spgrid.css</a>
+              <a class="download-btn" download href="/dist/spgrid.cjs">ดาวน์โหลด spgrid.cjs</a>
               <span class="download-note" role="status"></span>
             </span>
             <pre
               tabindex="0"
-            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@<span class="npm-version">1.0.9</span>/dist/datagrid.css" /&gt;
+            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.0</span>/dist/spgrid.css" /&gt;
 &lt;div id="app"&gt;&lt;/div&gt;
 &lt;script type="module"&gt;
-  import { DataGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/datagrid@<span class="npm-version">1.0.9</span>/dist/datagrid.js';
+  import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.0</span>/dist/spgrid.js';
 
-  new DataGrid(document.getElementById('app'), {
+  new SPGrid(document.getElementById('app'), {
     rowKey: 'id',
     columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }],
     rows: [{ id: 1, name: 'Ada' }],
@@ -126,12 +125,12 @@ npm install ../siampiwat-datagrid/siampiwat-datagrid-1.0.9.tgz</code></pre>
           </li>
           <li>
             <strong>นำเข้าและสร้างตาราง (เมื่อติดตั้งด้วย npm)</strong>
-            <code>import</code> จาก <code>datagrid</code> จะดึง CSS มาให้ด้วย (ผ่าน bundler)
-            ถ้าต้องการ JS อย่างเดียวใช้ <code>@siampiwat/datagrid/plain</code> หรือ import
-            <code>@siampiwat/datagrid/style.css</code> เอง
-            <pre tabindex="0"><code>import { DataGrid } from '@siampiwat/datagrid';
+            <code>import</code> จาก <code>spgrid</code> จะดึง CSS มาให้ด้วย (ผ่าน bundler)
+            ถ้าต้องการ JS อย่างเดียวใช้ <code>@siampiwat/spgrid/plain</code> หรือ import
+            <code>@siampiwat/spgrid/style.css</code> เอง
+            <pre tabindex="0"><code>import { SPGrid } from '@siampiwat/spgrid';
 
-const grid = new DataGrid(document.querySelector('#app'), {
+const grid = new SPGrid(document.querySelector('#app'), {
   rowKey: 'id',
   columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }],
   rows: [{ id: 1, name: 'Ada' }],
@@ -139,7 +138,7 @@ const grid = new DataGrid(document.querySelector('#app'), {
           </li>
           <li>
             <strong>ใช้กับ framework</strong>
-            DataGrid ทำงานกับ DOM จึงต้องสร้างฝั่งเบราว์เซอร์เท่านั้น เช่น ใน
+            SPGrid ทำงานกับ DOM จึงต้องสร้างฝั่งเบราว์เซอร์เท่านั้น เช่น ใน
             <code>useEffect</code> ของ React / Next.js (client component) แล้วเรียก
             <code>grid.destroy()</code> ตอน unmount
           </li>
@@ -150,7 +149,7 @@ const grid = new DataGrid(document.querySelector('#app'), {
         <ul id="examples"></ul>
       </section>
       <footer class="site-footer">
-        Siam Piwat DataGrid · <code>@siampiwat/datagrid</code> <span id="footer-version"></span>
+        Siam Piwat SPGrid · <code>@siampiwat/spgrid</code> <span id="footer-version"></span>
       </footer>
     </main>
     <script type="module">
@@ -169,7 +168,7 @@ const grid = new DataGrid(document.querySelector('#app'), {
         for (const el of document.querySelectorAll('.npm-version')) el.textContent = version;
       }
       showNpmVersion(pkg.version);
-      fetch('https://registry.npmjs.org/@siampiwat/datagrid/latest')
+      fetch('https://registry.npmjs.org/@siampiwat/spgrid/latest')
         .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
         .then((latest) => {
           if (/^\d+\.\d+\.\d+/.test(latest.version)) showNpmVersion(latest.version);
@@ -179,12 +178,12 @@ const grid = new DataGrid(document.querySelector('#app'), {
       // The tarball (`npm pack`) and dist/ (`npm run build`) are git-ignored build output, so check that
       // each file exists before offering it. The note names the command that creates the missing ones.
       const tgz = document.getElementById('download-tgz');
-      const file = `siampiwat-datagrid-${pkg.version}.tgz`;
+      const file = `siampiwat-spgrid-${pkg.version}.tgz`;
       tgz.href = `/release/${file}`;
       tgz.textContent = `ดาวน์โหลด ${file}`;
       // `npm run pack:release` builds the .tgz and the .zip into release/.
       const zip = document.getElementById('download-zip');
-      const zipFile = `siampiwat-datagrid-${pkg.version}.zip`;
+      const zipFile = `siampiwat-spgrid-${pkg.version}.zip`;
       zip.href = `/release/${zipFile}`;
       zip.textContent = `ดาวน์โหลด ${zipFile}`;
       for (const link of document.querySelectorAll('.download-btn')) {

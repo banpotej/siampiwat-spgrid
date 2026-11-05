@@ -14,11 +14,11 @@ import { dataKeys, isActionColumn } from './columns.js';
 export function normalizeHidden(columns, keys) {
   const data = dataKeys(columns);
   for (const key of keys) {
-    if (!data.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
+    if (!data.includes(key)) throw new RangeError(`SPGrid: unknown column "${key}"`);
   }
   const hidden = data.filter((key) => keys.includes(key));
   if (data.length > 0 && hidden.length === data.length) {
-    throw new RangeError('DataGrid: at least one column must stay visible');
+    throw new RangeError('SPGrid: at least one column must stay visible');
   }
   return hidden;
 }

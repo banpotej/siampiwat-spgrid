@@ -2,19 +2,19 @@
    so contrast holds in light and dark. */
 
 /* Blank values. */
-.dg-cell-empty {
-  color: var(--dgi-muted);
+.spg-cell-empty {
+  color: var(--spgi-muted);
   opacity: 0.6;
 }
 
 /* number: aligned digits so columns of figures line up. */
-.dg-cell-number {
+.spg-cell-number {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 /* date: a quiet calendar icon before the text. */
-.dg-cell-date {
+.spg-cell-date {
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
@@ -22,13 +22,13 @@
   white-space: nowrap;
 }
 
-.dg-cell-date .dg-icon {
-  color: var(--dgi-muted);
+.spg-cell-date .spg-icon {
+  color: var(--spgi-muted);
   font-size: 1.15em;
 }
 
 /* boolean: a round chip, tinted green for yes and faint for no. */
-.dg-bool {
+.spg-bool {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,40 +37,40 @@
   border-radius: 50%;
 }
 
-.dg-bool .dg-icon {
+.spg-bool .spg-icon {
   font-size: 1.15em;
 }
 
-.dg-bool-yes {
-  background: color-mix(in srgb, var(--dgi-success) 16%, var(--dgi-bg));
-  color: var(--dgi-success);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dgi-success) 35%, transparent);
+.spg-bool-yes {
+  background: color-mix(in srgb, var(--spgi-success) 16%, var(--spgi-bg));
+  color: var(--spgi-success);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--spgi-success) 35%, transparent);
 }
 
-.dg-bool-no {
-  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
-  color: var(--dgi-muted);
+.spg-bool-no {
+  background: color-mix(in srgb, var(--spgi-neutral) 5%, var(--spgi-bg));
+  color: var(--spgi-muted);
   opacity: 0.7;
 }
 
 /* badge: a pill with a leading dot (or icon) in the tone of the value. */
-.dg-badge {
-  --dgi-badge-tone: var(--dgi-neutral);
+.spg-badge {
+  --spgi-badge-tone: var(--spgi-neutral);
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
   padding: 0.15em 0.75em 0.15em 0.65em;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--dgi-badge-tone) 12%, var(--dgi-bg));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dgi-badge-tone) 28%, transparent);
-  color: var(--dgi-badge-tone);
+  background: color-mix(in srgb, var(--spgi-badge-tone) 12%, var(--spgi-bg));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--spgi-badge-tone) 28%, transparent);
+  color: var(--spgi-badge-tone);
   font-size: 0.875em;
   font-weight: 600;
   line-height: 1.5;
   white-space: nowrap;
 }
 
-.dg-badge:not(.dg-badge-icon)::before {
+.spg-badge:not(.spg-badge-icon)::before {
   content: '';
   flex: none;
   width: 0.5em;
@@ -79,36 +79,36 @@
   background: currentcolor;
 }
 
-.dg-badge .dg-icon {
+.spg-badge .spg-icon {
   margin-inline-start: -0.1em;
   font-size: 1.2em;
 }
 
-.dg-badge-success {
-  --dgi-badge-tone: var(--dgi-success);
+.spg-badge-success {
+  --spgi-badge-tone: var(--spgi-success);
 }
 
-.dg-badge-danger {
-  --dgi-badge-tone: var(--dgi-danger);
+.spg-badge-danger {
+  --spgi-badge-tone: var(--spgi-danger);
 }
 
-.dg-badge-warning {
-  --dgi-badge-tone: var(--dgi-warning);
+.spg-badge-warning {
+  --spgi-badge-tone: var(--spgi-warning);
 }
 
-.dg-badge-info {
-  --dgi-badge-tone: var(--dgi-info);
+.spg-badge-info {
+  --spgi-badge-tone: var(--spgi-info);
 }
 
 /* A search on an enum column marks the whole cell instead of a piece of its text. */
-.dg-table td.dg-match {
-  background: var(--dgi-mark);
+.spg-table td.spg-match {
+  background: var(--spgi-mark);
 }
 
 /* A search match inside a cell. */
-mark.dg-mark {
+mark.spg-mark {
   padding: 0 0.1em;
   border-radius: 3px;
-  background: var(--dgi-mark);
+  background: var(--spgi-mark);
   color: inherit;
 }

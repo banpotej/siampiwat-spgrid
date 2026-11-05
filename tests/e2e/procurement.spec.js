@@ -33,7 +33,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
     .toBe(true);
 
   const overflows = await page
-    .locator('.dg-table-wrap')
+    .locator('.spg-table-wrap')
     .evaluate((el) => el.scrollWidth > el.clientWidth);
   expect(overflows).toBe(true);
 });
@@ -59,7 +59,7 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   const third = rows.nth(2);
   const po = await third.locator('td:nth-child(3)').textContent();
   await third.getByRole('button', { name: 'View' }).click();
-  await expect(page.locator('.dg-modal')).toContainText(po?.trim() ?? '');
+  await expect(page.locator('.spg-modal')).toContainText(po?.trim() ?? '');
   await expect(log).toHaveText('');
   await page.keyboard.press('Escape');
 
@@ -121,11 +121,11 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
   await page.goto('/purchase-order.html');
   const row = page.locator('tbody tr').nth(2);
   const po = (await row.locator('td:nth-child(3)').textContent())?.trim();
-  const modal = page.locator('.dg-modal');
+  const modal = page.locator('.spg-modal');
 
   await row.getByRole('button', { name: 'View' }).click();
   await expect(modal.getByRole('dialog')).toContainText(po ?? '');
-  await expect(modal.locator('.dg-details-head .dg-badge')).toBeVisible(); // the status sits in the header
+  await expect(modal.locator('.spg-details-head .spg-badge')).toBeVisible(); // the status sits in the header
   for (const name of ['รายละเอียด', 'ชื่อผู้ค้า']) {
     await expect(modal.locator('dt', { hasText: name })).toHaveCount(1);
   }
@@ -208,7 +208,7 @@ test('dragging a header onto another reorders the columns and the order survives
   page,
 }) => {
   await page.goto('/purchase-order.html');
-  await page.evaluate(() => localStorage.removeItem('datagrid:columnOrder:purchase-orders'));
+  await page.evaluate(() => localStorage.removeItem('spgrid:columnOrder:purchase-orders'));
   await page.reload();
   const labels = async () =>
     (await page.locator('thead th').allInnerTexts()).map((t) => t.trim().split('\n')[0]);

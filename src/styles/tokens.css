@@ -1,37 +1,37 @@
 /*
- * Theme tokens. Consumers theme the grid through the public --dg-* variables
- * (set them on .dg-root or any ancestor); each internal --dgi-* token reads its
- * --dg-* variable and falls back to the light or dark default below.
+ * Theme tokens. Consumers theme the grid through the public --spg-* variables
+ * (set them on .spg-root or any ancestor); each internal --spgi-* token reads its
+ * --spg-* variable and falls back to the light or dark default below.
  * Dark applies under prefers-color-scheme, or [data-theme="dark"] on any
  * ancestor; [data-theme="light"] on an ancestor forces light.
  */
-.dg-root {
-  --dgi-bg: var(--dg-bg, #fff);
-  --dgi-text: var(--dg-color, #1f2937);
-  --dgi-muted: var(--dg-muted-color, #4b5563);
-  --dgi-border: var(--dg-border-color, #e5e7eb);
-  --dgi-border-strong: var(--dg-input-border, #d1d5db);
-  --dgi-header-bg: var(--dg-header-bg, #f9fafb);
-  --dgi-header-text: var(--dg-header-color, #111827);
-  --dgi-hover-bg: var(--dg-row-hover-bg, #f9fafb);
-  --dgi-stripe-bg: var(--dg-stripe-bg, #fcfcfd);
-  --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #f3f4f6);
-  --dgi-accent: var(--dg-accent, #1d4ed8);
-  --dgi-on-accent: var(--dg-accent-contrast, #fff);
-  --dgi-focus: var(--dg-focus-color, #1d4ed8);
-  --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #4b5563));
-  --dgi-empty: var(--dg-empty-color, var(--dgi-muted));
-  --dgi-radius: var(--dg-radius, 8px);
-  --dgi-input-radius: var(--dg-input-radius, 6px);
-  --dgi-pad-y: var(--dg-cell-padding-y, 12px);
-  --dgi-pad-x: var(--dg-cell-padding-x, 16px);
-  --dgi-gap: var(--dg-toolbar-gap, 12px);
-  --dgi-control-h: var(
-    --dg-control-height,
+.spg-root {
+  --spgi-bg: var(--spg-bg, #fff);
+  --spgi-text: var(--spg-color, #1f2937);
+  --spgi-muted: var(--spg-muted-color, #4b5563);
+  --spgi-border: var(--spg-border-color, #e5e7eb);
+  --spgi-border-strong: var(--spg-input-border, #d1d5db);
+  --spgi-header-bg: var(--spg-header-bg, #f9fafb);
+  --spgi-header-text: var(--spg-header-color, #111827);
+  --spgi-hover-bg: var(--spg-row-hover-bg, #f9fafb);
+  --spgi-stripe-bg: var(--spg-stripe-bg, #fcfcfd);
+  --spgi-sort-hover-bg: var(--spg-sort-hover-bg, #f3f4f6);
+  --spgi-accent: var(--spg-accent, #1d4ed8);
+  --spgi-on-accent: var(--spg-accent-contrast, #fff);
+  --spgi-focus: var(--spg-focus-color, #1d4ed8);
+  --spgi-icon: var(--spg-sort-indicator-color, var(--spg-muted-color, #4b5563));
+  --spgi-empty: var(--spg-empty-color, var(--spgi-muted));
+  --spgi-radius: var(--spg-radius, 8px);
+  --spgi-input-radius: var(--spg-input-radius, 6px);
+  --spgi-pad-y: var(--spg-cell-padding-y, 12px);
+  --spgi-pad-x: var(--spg-cell-padding-x, 16px);
+  --spgi-gap: var(--spg-toolbar-gap, 12px);
+  --spgi-control-h: var(
+    --spg-control-height,
     2.25em
   ); /* height of the toolbar's inputs and buttons */
-  --dgi-font: var(
-    --dg-font-family,
+  --spgi-font: var(
+    --spg-font-family,
     system-ui,
     -apple-system,
     'Segoe UI',
@@ -40,69 +40,69 @@
     Tahoma,
     sans-serif
   );
-  --dgi-font-size: var(--dg-font-size, 14px);
-  --dgi-line-height: var(--dg-line-height, 1.6);
-  --dgi-action-padding: var(--dg-action-padding, 0.3em 0.95em);
-  --dgi-action-radius: var(--dg-action-radius, var(--dgi-input-radius));
+  --spgi-font-size: var(--spg-font-size, 14px);
+  --spgi-line-height: var(--spg-line-height, 1.6);
+  --spgi-action-padding: var(--spg-action-padding, 0.3em 0.95em);
+  --spgi-action-radius: var(--spg-action-radius, var(--spgi-input-radius));
   /* Action buttons are tonal: a tint and a border of one tone, text in the tone itself. */
-  --dgi-action-tone: var(--dg-action-tone, var(--dgi-neutral));
-  --dgi-danger: var(--dg-danger, light-dark(#b91c1c, #f87171));
-  --dgi-success: var(--dg-success, light-dark(#15803d, #4ade80));
-  --dgi-warning: var(--dg-warning, light-dark(#b45309, #fbbf24));
-  --dgi-info: var(--dg-info, light-dark(#0369a1, #38bdf8));
-  --dgi-mark: var(
-    --dg-mark-bg,
+  --spgi-action-tone: var(--spg-action-tone, var(--spgi-neutral));
+  --spgi-danger: var(--spg-danger, light-dark(#b91c1c, #f87171));
+  --spgi-success: var(--spg-success, light-dark(#15803d, #4ade80));
+  --spgi-warning: var(--spg-warning, light-dark(#b45309, #fbbf24));
+  --spgi-info: var(--spg-info, light-dark(#0369a1, #38bdf8));
+  --spgi-mark: var(
+    --spg-mark-bg,
     light-dark(#fff3a3, rgb(250 204 21 / 0.3))
   ); /* search highlight: a soft yellow */
-  --dgi-neutral: var(--dg-neutral, light-dark(#374151, #d1d5db));
-  --dgi-line-style: var(--dg-line-style, dashed); /* row and cell lines inside the table */
-  --dgi-transition: 120ms ease;
-  --dgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); /* select arrow: a stroked chevron */
+  --spgi-neutral: var(--spg-neutral, light-dark(#374151, #d1d5db));
+  --spgi-line-style: var(--spg-line-style, dashed); /* row and cell lines inside the table */
+  --spgi-transition: 120ms ease;
+  --spgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); /* select arrow: a stroked chevron */
   color-scheme: light;
 }
 
-.dg-root.dg-compact {
-  --dgi-pad-y: var(--dg-cell-padding-y-compact, 6px);
-  --dgi-pad-x: var(--dg-cell-padding-x-compact, 12px);
+.spg-root.spg-compact {
+  --spgi-pad-y: var(--spg-cell-padding-y-compact, 6px);
+  --spgi-pad-x: var(--spg-cell-padding-x-compact, 12px);
 }
 
 @media (prefers-color-scheme: dark) {
-  .dg-root:not([data-theme='light'] *, [data-theme='light']) {
-    --dgi-bg: var(--dg-bg, #111827);
-    --dgi-text: var(--dg-color, #e5e7eb);
-    --dgi-muted: var(--dg-muted-color, #9ca3af);
-    --dgi-border: var(--dg-border-color, #374151);
-    --dgi-border-strong: var(--dg-input-border, #6b7280);
-    --dgi-header-bg: var(--dg-header-bg, #172033);
-    --dgi-header-text: var(--dg-header-color, #f9fafb);
-    --dgi-hover-bg: var(--dg-row-hover-bg, #172033);
-    --dgi-stripe-bg: var(--dg-stripe-bg, #131b2b);
-    --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #1f2937);
-    --dgi-accent: var(--dg-accent, #60a5fa);
-    --dgi-on-accent: var(--dg-accent-contrast, #0b1220);
-    --dgi-focus: var(--dg-focus-color, #93c5fd);
-    --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #9ca3af));
-    --dgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  .spg-root:not([data-theme='light'] *, [data-theme='light']) {
+    --spgi-bg: var(--spg-bg, #111827);
+    --spgi-text: var(--spg-color, #e5e7eb);
+    --spgi-muted: var(--spg-muted-color, #9ca3af);
+    --spgi-border: var(--spg-border-color, #374151);
+    --spgi-border-strong: var(--spg-input-border, #6b7280);
+    --spgi-header-bg: var(--spg-header-bg, #172033);
+    --spgi-header-text: var(--spg-header-color, #f9fafb);
+    --spgi-hover-bg: var(--spg-row-hover-bg, #172033);
+    --spgi-stripe-bg: var(--spg-stripe-bg, #131b2b);
+    --spgi-sort-hover-bg: var(--spg-sort-hover-bg, #1f2937);
+    --spgi-accent: var(--spg-accent, #60a5fa);
+    --spgi-on-accent: var(--spg-accent-contrast, #0b1220);
+    --spgi-focus: var(--spg-focus-color, #93c5fd);
+    --spgi-icon: var(--spg-sort-indicator-color, var(--spg-muted-color, #9ca3af));
+    --spgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
     color-scheme: dark;
   }
 }
 
-[data-theme='dark'] .dg-root,
-.dg-root[data-theme='dark'] {
-  --dgi-bg: var(--dg-bg, #111827);
-  --dgi-text: var(--dg-color, #e5e7eb);
-  --dgi-muted: var(--dg-muted-color, #9ca3af);
-  --dgi-border: var(--dg-border-color, #374151);
-  --dgi-border-strong: var(--dg-input-border, #6b7280);
-  --dgi-header-bg: var(--dg-header-bg, #172033);
-  --dgi-header-text: var(--dg-header-color, #f9fafb);
-  --dgi-hover-bg: var(--dg-row-hover-bg, #172033);
-  --dgi-stripe-bg: var(--dg-stripe-bg, #131b2b);
-  --dgi-sort-hover-bg: var(--dg-sort-hover-bg, #1f2937);
-  --dgi-accent: var(--dg-accent, #60a5fa);
-  --dgi-on-accent: var(--dg-accent-contrast, #0b1220);
-  --dgi-focus: var(--dg-focus-color, #93c5fd);
-  --dgi-icon: var(--dg-sort-indicator-color, var(--dg-muted-color, #9ca3af));
-  --dgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+[data-theme='dark'] .spg-root,
+.spg-root[data-theme='dark'] {
+  --spgi-bg: var(--spg-bg, #111827);
+  --spgi-text: var(--spg-color, #e5e7eb);
+  --spgi-muted: var(--spg-muted-color, #9ca3af);
+  --spgi-border: var(--spg-border-color, #374151);
+  --spgi-border-strong: var(--spg-input-border, #6b7280);
+  --spgi-header-bg: var(--spg-header-bg, #172033);
+  --spgi-header-text: var(--spg-header-color, #f9fafb);
+  --spgi-hover-bg: var(--spg-row-hover-bg, #172033);
+  --spgi-stripe-bg: var(--spg-stripe-bg, #131b2b);
+  --spgi-sort-hover-bg: var(--spg-sort-hover-bg, #1f2937);
+  --spgi-accent: var(--spg-accent, #60a5fa);
+  --spgi-on-accent: var(--spg-accent-contrast, #0b1220);
+  --spgi-focus: var(--spg-focus-color, #93c5fd);
+  --spgi-icon: var(--spg-sort-indicator-color, var(--spg-muted-color, #9ca3af));
+  --spgi-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
   color-scheme: dark;
 }

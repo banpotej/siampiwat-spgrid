@@ -99,7 +99,7 @@ export function removeFilterPart(filter, part) {
 export function resolveFilter(current, filter, keys) {
   const next = normalizeFilter(filter);
   for (const key of Object.keys(next?.columnFilters ?? {})) {
-    if (!keys.includes(key)) throw new RangeError(`DataGrid: unknown column "${key}"`);
+    if (!keys.includes(key)) throw new RangeError(`SPGrid: unknown column "${key}"`);
   }
   return isSameFilter(current, next) ? undefined : next;
 }

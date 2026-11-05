@@ -15,10 +15,10 @@ for (const { name, label } of KINDS) {
     }
 
     // Every visible part of the group (a field holds the search box, value select or date range) is as tall as the rest.
-    const parts = await page.locator('.dg-input-group').evaluate((group) => {
+    const parts = await page.locator('.spg-input-group').evaluate((group) => {
       const visible = (/** @type {Element} */ el) => el.getClientRects().length > 0;
       return [...group.children].filter(visible).map((child) => {
-        const box = [...child.querySelectorAll('.dg-search, .dg-search-value, .dg-search-range')]
+        const box = [...child.querySelectorAll('.spg-search, .spg-search-value, .spg-search-range')]
           .filter(visible)
           .at(0);
         const target = box ?? child;
@@ -31,7 +31,7 @@ for (const { name, label } of KINDS) {
 
     // Only the outer corners of the group are round: the middle part (search box, value select or range) is square.
     const middle = page
-      .locator('.dg-search:visible, .dg-search-value:visible, .dg-search-range:visible')
+      .locator('.spg-search:visible, .spg-search-value:visible, .spg-search-range:visible')
       .first();
     await expect(middle).toHaveCSS('border-top-left-radius', '0px');
     await expect(middle).toHaveCSS('border-top-right-radius', '0px');

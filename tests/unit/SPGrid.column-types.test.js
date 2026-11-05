@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
-/** @param {any[]} columns @param {any[]} rows @param {Partial<import('../../src/types.js').DataGridOptions>} [options] */
+/** @param {any[]} columns @param {any[]} rows @param {Partial<import('../../src/types.js').SPGridOptions>} [options] */
 const cells = (columns, rows, options = {}) => {
   const el = document.createElement('div');
-  new DataGrid(el, { columns, rows, locale: 'en-US', ...options });
+  new SPGrid(el, { columns, rows, locale: 'en-US', ...options });
   return /** @type {HTMLElement[]} */ ([...el.querySelectorAll('tbody td')]);
 };
 
@@ -23,23 +23,23 @@ describe('badge', () => {
 
   it('uses the tone, icon and label of the value', () => {
     const [td] = cells(columns, [{ s: 'done' }]);
-    const badge = /** @type {HTMLElement} */ (td.querySelector('.dg-badge'));
-    expect(badge.className).toBe('dg-badge dg-badge-success dg-badge-icon');
+    const badge = /** @type {HTMLElement} */ (td.querySelector('.spg-badge'));
+    expect(badge.className).toBe('spg-badge spg-badge-success spg-badge-icon');
     expect(badge.querySelector('[data-icon="check"]')).not.toBeNull();
     expect(td.textContent).toBe('Done!');
   });
 
   it('falls back to neutral for unknown values and tones, and escapes the text', () => {
     const tds = cells(columns, [{ s: 'bad' }, { s: '<b>x</b>' }, { s: 'toString' }]);
-    expect(tds[0].querySelector('.dg-badge')?.className).toBe('dg-badge dg-badge-neutral');
+    expect(tds[0].querySelector('.spg-badge')?.className).toBe('spg-badge spg-badge-neutral');
     expect(tds[1].querySelector('b')).toBeNull();
     expect(tds[1].textContent).toBe('<b>x</b>');
-    expect(tds[2].querySelector('.dg-badge-neutral')).not.toBeNull();
+    expect(tds[2].querySelector('.spg-badge-neutral')).not.toBeNull();
   });
 
   it('only looks at own keys of badges', () => {
     const [td] = cells(columns, [{ s: 'constructor' }]);
-    expect(td.querySelector('.dg-badge-danger')).not.toBeNull();
+    expect(td.querySelector('.spg-badge-danger')).not.toBeNull();
   });
 });
 
@@ -75,10 +75,10 @@ describe('boolean', () => {
     const [yes, no] = cells([{ key: 'b', type: 'boolean' }], [{ b: true }, { b: false }], {
       labels: thaiLabels,
     });
-    expect(yes.querySelector('.dg-bool-yes')?.getAttribute('aria-label')).toBe('ใช่');
+    expect(yes.querySelector('.spg-bool-yes')?.getAttribute('aria-label')).toBe('ใช่');
     expect(yes.querySelector('[data-icon="check"]')).not.toBeNull();
-    expect(no.querySelector('.dg-bool-no')?.getAttribute('aria-label')).toBe('ไม่ใช่');
-    expect(yes.className).toBe('dg-align-center');
+    expect(no.querySelector('.spg-bool-no')?.getAttribute('aria-label')).toBe('ไม่ใช่');
+    expect(yes.className).toBe('spg-align-center');
   });
 });
 
@@ -91,12 +91,12 @@ describe('number', () => {
     expect(a.textContent?.replace(/\s/g, ' ')).toBe('THB 1,234.50');
     expect(b.textContent?.replace(/\s/g, ' ')).toBe('THB 12.00');
     expect(c.textContent).toBe('abc');
-    expect(a.className).toBe('dg-align-right');
+    expect(a.className).toBe('spg-align-right');
   });
 
   it('lets `align` win over the default', () => {
     const [td] = cells([{ key: 'n', type: 'number', align: 'left' }], [{ n: 1 }]);
-    expect(td.className).toBe('dg-align-left');
+    expect(td.className).toBe('spg-align-left');
   });
 });
 
@@ -104,7 +104,7 @@ describe('all types', () => {
   it('show a muted dash for blank values', () => {
     for (const type of ['badge', 'date', 'boolean', 'number']) {
       const tds = cells([{ key: 'v', type }], [{ v: null }, {}, { v: '' }]);
-      for (const td of tds) expect(td.querySelector('.dg-cell-empty')?.textContent).toBe('–');
+      for (const td of tds) expect(td.querySelector('.spg-cell-empty')?.textContent).toBe('–');
     }
   });
 
@@ -122,7 +122,7 @@ describe('all types', () => {
 
   it('keep sorting on the raw value', () => {
     const el = document.createElement('div');
-    const grid = new DataGrid(el, {
+    const grid = new SPGrid(el, {
       columns: [{ key: 'd', type: 'date', sortable: true }],
       rows: [{ d: new Date(2026, 5, 1) }, { d: new Date(2026, 0, 1) }],
       locale: 'en-US',

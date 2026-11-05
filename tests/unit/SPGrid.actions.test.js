@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const rows = Array.from({ length: 25 }, (_, i) => ({
   id: i + 1,
@@ -26,7 +26,7 @@ const columns = () => [
 /** @param {object} [options] */
 function make(options = {}) {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, { columns: columns(), rows, pageSize: 5, ...options });
+  const grid = new SPGrid(el, { columns: columns(), rows, pageSize: 5, ...options });
   const calls = /** @type {any[]} */ ([]);
   grid.on('action', (payload) => calls.push(payload));
   return { el, grid, calls };
@@ -46,7 +46,7 @@ describe('action columns', () => {
     const views = el.querySelectorAll('button[data-action="view"]');
     expect(views).toHaveLength(25);
     expect(views[0].getAttribute('type')).toBe('button');
-    expect(views[0].classList.contains('dg-action')).toBe(true);
+    expect(views[0].classList.contains('spg-action')).toBe(true);
     expect(views[0].classList.contains('btn-v')).toBe(true);
     expect(views[0].textContent).toBe('View');
   });
@@ -102,10 +102,10 @@ describe('action columns', () => {
       ],
     });
     const th = /** @type {HTMLElement} */ (headers(el)[0]);
-    expect(th.classList.contains('dg-sortable')).toBe(false);
+    expect(th.classList.contains('spg-sortable')).toBe(false);
     expect(th.hasAttribute('tabindex')).toBe(false);
     expect(th.hasAttribute('aria-sort')).toBe(false);
-    expect(th.querySelector('.dg-sort-icon')).toBeNull();
+    expect(th.querySelector('.spg-sort-icon')).toBeNull();
     expect(th.getAttribute('aria-label')).toBe('View');
     expect(th.textContent).toBe('');
     th.click();
@@ -115,7 +115,7 @@ describe('action columns', () => {
   it('are not searched, filtered or sorted by key', () => {
     const { grid, el } = make({ pageSize: undefined });
     grid.setFilter({ search: 'secret' }); // every row has _view: 'secret', but it is not a data column
-    expect(el.querySelectorAll('tbody tr.dg-empty')).toHaveLength(1);
+    expect(el.querySelectorAll('tbody tr.spg-empty')).toHaveLength(1);
     expect(() => grid.setFilter({ columnFilters: { _view: 'secret' } })).toThrow(RangeError);
     expect(() => grid.setSort({ key: '_view', direction: 'asc' })).toThrow(RangeError);
   });
@@ -266,7 +266,7 @@ describe('custom render and cell actions', () => {
 describe('column header options', () => {
   it('splits a multi-line label into escaped lines joined by <br>', () => {
     const { el } = make({ columns: [{ key: 'a', label: 'เลขที่\nRFQ <b>' }] });
-    expect(el.querySelector('.dg-th-label')?.innerHTML).toBe('เลขที่<br>RFQ &lt;b&gt;');
+    expect(el.querySelector('.spg-th-label')?.innerHTML).toBe('เลขที่<br>RFQ &lt;b&gt;');
   });
 
   it('applies width and align to the header and cells; ignores an unsafe width', () => {
@@ -279,8 +279,8 @@ describe('column header options', () => {
     const [a, b] = /** @type {HTMLElement[]} */ (headers(el));
     expect(a.style.width).toBe('80px');
     expect(b.getAttribute('style')).toBeNull();
-    expect(a.classList.contains('dg-align-center')).toBe(true);
-    expect(el.querySelector('td')?.classList.contains('dg-align-center')).toBe(true);
+    expect(a.classList.contains('spg-align-center')).toBe(true);
+    expect(el.querySelector('td')?.classList.contains('spg-align-center')).toBe(true);
   });
 
   it('sets aria-label on a header only when ariaLabel is given', () => {
@@ -295,7 +295,7 @@ describe('action icons', () => {
   /** @param {any[]} actions @param {object} [options] */
   const makeIcons = (actions, options = {}) => {
     const el = document.createElement('div');
-    new DataGrid(el, {
+    new SPGrid(el, {
       columns: [{ key: '_a', actions }, { key: 'id' }],
       rows: [{ id: 1 }],
       ...options,
@@ -305,14 +305,14 @@ describe('action icons', () => {
 
   it('renders a decorative built-in icon; the button is icon-only, named and titled by the label', () => {
     const el = makeIcons([{ name: 'view', label: 'View', icon: 'visibility' }]);
-    const button = /** @type {HTMLElement} */ (el.querySelector('button.dg-action'));
+    const button = /** @type {HTMLElement} */ (el.querySelector('button.spg-action'));
     const icon = /** @type {HTMLElement} */ (button.firstElementChild);
-    expect(icon.className).toBe('dg-icon dg-action-icon');
+    expect(icon.className).toBe('spg-icon spg-action-icon');
     expect(icon.getAttribute('data-icon')).toBe('visibility');
     expect(icon.getAttribute('aria-hidden')).toBe('true');
     expect(icon.querySelector('svg')).not.toBeNull();
     expect(button.textContent).toBe('');
-    expect(button.className).toBe('dg-action dg-action-icononly');
+    expect(button.className).toBe('spg-action spg-action-icononly');
     expect(button.getAttribute('aria-label')).toBe('View');
     expect(button.title).toBe('View');
   });
@@ -322,18 +322,18 @@ describe('action icons', () => {
       { name: 'a', label: 'A', icon: 'edit', title: 'Edit "it"' },
       { name: 'b', label: 'B', icon: 'edit', showLabel: true },
     ]);
-    const [a, b] = /** @type {HTMLElement[]} */ ([...el.querySelectorAll('button.dg-action')]);
+    const [a, b] = /** @type {HTMLElement[]} */ ([...el.querySelectorAll('button.spg-action')]);
     expect(a.title).toBe('Edit "it"');
     expect(a.getAttribute('aria-label')).toBe('A');
     expect(b.textContent).toBe('B');
-    expect(b.className).toBe('dg-action');
+    expect(b.className).toBe('spg-action');
     expect(b.hasAttribute('aria-label')).toBe(false);
     expect(b.title).toBe('');
   });
 
   it('escapes the label in aria-label and title of an icon-only button', () => {
     const el = makeIcons([{ name: 'x', label: '<b>"x"</b>', icon: 'edit' }]);
-    const button = /** @type {HTMLElement} */ (el.querySelector('button.dg-action'));
+    const button = /** @type {HTMLElement} */ (el.querySelector('button.spg-action'));
     expect(button.getAttribute('aria-label')).toBe('<b>"x"</b>');
     expect(button.title).toBe('<b>"x"</b>');
     expect(button.querySelector('b')).toBeNull();
@@ -342,7 +342,7 @@ describe('action icons', () => {
   it('renders no icon without `icon` or with an unknown / inherited name', () => {
     for (const icon of [undefined, 'nope', 'toString', 42]) {
       const el = makeIcons([{ name: 'view', label: 'View', icon }]);
-      expect(el.querySelector('.dg-action-icon')).toBeNull();
+      expect(el.querySelector('.spg-action-icon')).toBeNull();
       expect(el.querySelector('button')?.textContent).toBe('View');
     }
   });
@@ -351,13 +351,13 @@ describe('action icons', () => {
     const el = makeIcons([{ name: 'view', label: 'View', icon: 'edit' }], {
       icons: { edit: '<svg data-mine="1"></svg>' },
     });
-    expect(el.querySelector('.dg-action-icon [data-mine]')).not.toBeNull();
+    expect(el.querySelector('.spg-action-icon [data-mine]')).not.toBeNull();
   });
 
   it('still reports the action when the icon is clicked', () => {
     const onAction = vi.fn();
     const el = makeIcons([{ name: 'view', label: 'View', icon: 'visibility' }], { onAction });
-    el.querySelector('.dg-action-icon svg path')?.dispatchEvent(
+    el.querySelector('.spg-action-icon svg path')?.dispatchEvent(
       new MouseEvent('click', { bubbles: true }),
     );
     expect(onAction).toHaveBeenCalledTimes(1);
@@ -368,7 +368,7 @@ describe('action icons', () => {
 describe('action column width', () => {
   it('marks only the headers of action columns, so CSS can shrink them to their buttons', () => {
     const el = document.createElement('div');
-    new DataGrid(el, {
+    new SPGrid(el, {
       columns: [
         { key: 'name', label: 'Name' },
         { key: 'ops', actions: [{ name: 'view', label: 'View' }] },
@@ -376,8 +376,8 @@ describe('action column width', () => {
       rows: [{ name: 'Ada' }],
     });
     expect(
-      [...el.querySelectorAll('th')].map((th) => th.classList.contains('dg-action-col')),
+      [...el.querySelectorAll('th')].map((th) => th.classList.contains('spg-action-col')),
     ).toEqual([false, true]);
-    expect(el.querySelector('td.dg-action-cell')).not.toBeNull();
+    expect(el.querySelector('td.spg-action-cell')).not.toBeNull();
   });
 });

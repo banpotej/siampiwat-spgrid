@@ -1,11 +1,11 @@
 /* Resizable, fixed-width and reorderable columns. Imported right after table.css so the cascade stays the same. */
 /* resizableColumns: a handle on each header cell's end edge. The first resize pins every column at a pixel width and
-   fixes the table layout (.dg-fixed); long words then break instead of spilling into the next column. */
-.dg-resizable:not(.dg-sticky) .dg-table th {
+   fixes the table layout (.spg-fixed); long words then break instead of spilling into the next column. */
+.spg-resizable:not(.spg-sticky) .spg-table th {
   position: relative;
 }
 
-.dg-resize {
+.spg-resize {
   position: absolute;
   inset-block: 0;
   inset-inline-end: -4px;
@@ -15,7 +15,7 @@
   touch-action: none;
 }
 
-.dg-resize::after {
+.spg-resize::after {
   content: '';
   position: absolute;
   inset-block: 25%;
@@ -23,128 +23,128 @@
   width: 2px;
   border-radius: 1px;
   background: transparent;
-  transition: background-color var(--dgi-transition);
+  transition: background-color var(--spgi-transition);
 }
 
-.dg-table th:hover .dg-resize::after {
-  background: var(--dgi-border-strong);
+.spg-table th:hover .spg-resize::after {
+  background: var(--spgi-border-strong);
 }
 
-.dg-resize:hover::after,
-.dg-resize.dg-resizing::after,
-.dg-resize:focus-visible::after {
-  background: var(--dgi-accent);
+.spg-resize:hover::after,
+.spg-resize.spg-resizing::after,
+.spg-resize:focus-visible::after {
+  background: var(--spgi-accent);
 }
 
-.dg-resize:focus-visible {
+.spg-resize:focus-visible {
   outline: none;
 }
 
-.dg-table.dg-fixed {
+.spg-table.spg-fixed {
   table-layout: fixed;
 }
 
-.dg-fixed th,
-.dg-fixed td {
+.spg-fixed th,
+.spg-fixed td {
   overflow-wrap: anywhere;
 }
 
 /* A narrowed column clips its own content (ellipsis) so it never paints over a neighbouring cell. */
-.dg-fixed td {
+.spg-fixed td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* Buttons are never cut to "…": an action cell that is a hair too narrow (rounding, borders, a width saved before the
    buttons changed) lets them spill over instead. */
-.dg-fixed td.dg-action-cell {
+.spg-fixed td.spg-action-cell {
   overflow: visible;
   text-overflow: clip;
 }
 
-.dg-fixed .dg-th {
+.spg-fixed .spg-th {
   min-width: 0;
 }
 
-.dg-fixed .dg-th-label {
+.spg-fixed .spg-th-label {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-resize::after {
+  .spg-resize::after {
     transition: none;
   }
 }
 
 /* reorderableColumns: the header cell being dragged, and the edge where it would land. */
-.dg-table th.dg-dragging {
+.spg-table th.spg-dragging {
   opacity: 0.45;
 }
 
-.dg-root:not(.dg-sticky) .dg-table th.dg-drop-before,
-.dg-root:not(.dg-sticky) .dg-table th.dg-drop-after {
+.spg-root:not(.spg-sticky) .spg-table th.spg-drop-before,
+.spg-root:not(.spg-sticky) .spg-table th.spg-drop-after {
   position: relative;
 }
 
-.dg-table th.dg-drop-before::before,
-.dg-table th.dg-drop-after::before {
+.spg-table th.spg-drop-before::before,
+.spg-table th.spg-drop-after::before {
   content: '';
   position: absolute;
   inset-block: 0;
   width: 2px;
-  background: var(--dgi-accent);
+  background: var(--spgi-accent);
 }
 
-.dg-table th.dg-drop-before::before {
+.spg-table th.spg-drop-before::before {
   inset-inline-start: 0;
 }
 
-.dg-table th.dg-drop-after::before {
+.spg-table th.spg-drop-after::before {
   inset-inline-end: 0;
 }
 
 /* freezeColumns: the first columns stay put while the table scrolls sideways. A sticky cell needs a solid background
    (the row's stripe or hover tint is layered over the page colour), and sits above the cells that slide under it. */
-.dg-root .dg-table th.dg-frozen,
-.dg-root .dg-table td.dg-frozen {
+.spg-root .spg-table th.spg-frozen,
+.spg-root .spg-table td.spg-frozen {
   position: sticky;
-  inset-inline-start: var(--dgi-freeze-start, 0);
+  inset-inline-start: var(--spgi-freeze-start, 0);
   z-index: 1;
-  background-color: var(--dgi-bg);
+  background-color: var(--spgi-bg);
 }
 
-.dg-root .dg-table th.dg-frozen {
+.spg-root .spg-table th.spg-frozen {
   z-index: 3; /* above the other header cells (a sticky header) and the body's frozen cells */
-  background-color: color-mix(in srgb, var(--dgi-header-bg) 45%, var(--dgi-bg));
+  background-color: color-mix(in srgb, var(--spgi-header-bg) 45%, var(--spgi-bg));
 }
 
-.dg-striped .dg-table tbody tr:nth-child(even) td.dg-frozen {
-  background-image: linear-gradient(var(--dgi-stripe-bg), var(--dgi-stripe-bg));
+.spg-striped .spg-table tbody tr:nth-child(even) td.spg-frozen {
+  background-image: linear-gradient(var(--spgi-stripe-bg), var(--spgi-stripe-bg));
 }
 
-.dg-table tbody tr:not(.dg-empty):hover td.dg-frozen {
-  background-image: linear-gradient(var(--dgi-hover-bg), var(--dgi-hover-bg));
+.spg-table tbody tr:not(.spg-empty):hover td.spg-frozen {
+  background-image: linear-gradient(var(--spgi-hover-bg), var(--spgi-hover-bg));
 }
 
 /* A line on the far edge of the last frozen column, so it reads as the edge of the frozen block. */
-.dg-root .dg-table .dg-frozen-last {
-  box-shadow: 1px 0 0 var(--dgi-border);
+.spg-root .spg-table .spg-frozen-last {
+  box-shadow: 1px 0 0 var(--spgi-border);
 }
 
-.dg-root.dg-sticky .dg-table th.dg-frozen-last {
+.spg-root.spg-sticky .spg-table th.spg-frozen-last {
   box-shadow:
-    1px 0 0 var(--dgi-border),
+    1px 0 0 var(--spgi-border),
     0 3px 3px -3px rgb(0 0 0 / 0.15);
 }
 
 @media (forced-colors: active) {
-  .dg-root .dg-table th.dg-frozen,
-  .dg-root .dg-table td.dg-frozen {
+  .spg-root .spg-table th.spg-frozen,
+  .spg-root .spg-table td.spg-frozen {
     background-color: Canvas;
   }
 
-  .dg-root .dg-table .dg-frozen-last {
+  .spg-root .spg-table .spg-frozen-last {
     box-shadow: 1px 0 0 CanvasText;
   }
 }

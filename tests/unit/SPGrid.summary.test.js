@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 import { removeFilterPart } from '../../src/core/filter.js';
 
 beforeEach(() => vi.useFakeTimers());
@@ -19,15 +19,15 @@ const rows = [
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, filterSummary: true, ...options });
+  const grid = new SPGrid(el, { columns, rows, filterSummary: true, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
-const summary = (el) => /** @type {HTMLElement | null} */ (el.querySelector('.dg-summary'));
+const summary = (el) => /** @type {HTMLElement | null} */ (el.querySelector('.spg-summary'));
 /** @param {HTMLElement} el */
-const chips = (el) => [...el.querySelectorAll('.dg-chip-text')].map((c) => c.textContent);
+const chips = (el) => [...el.querySelectorAll('.spg-chip-text')].map((c) => c.textContent);
 /** @param {HTMLElement} el */
-const count = (el) => el.querySelector('.dg-summary-count')?.textContent;
+const count = (el) => el.querySelector('.spg-summary-count')?.textContent;
 
 describe('removeFilterPart (core)', () => {
   it('drops the search or one column filter and normalizes the rest', () => {
@@ -86,7 +86,7 @@ describe('filter summary', () => {
     grid.setFilter({ search: 'ada' });
     expect(count(el)).toBe('พบ 2 จาก 3 รายการ');
     expect(chips(el)).toEqual(['ค้นหา: "ada"']);
-    const remove = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-chip-remove'));
+    const remove = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-chip-remove'));
     expect(remove.getAttribute('aria-label')).toBe('ลบตัวกรอง ค้นหา: "ada"');
     expect(remove.title).toBe('ลบตัวกรอง ค้นหา: "ada"');
     const custom = make({
@@ -105,17 +105,17 @@ describe('filter summary', () => {
     const summaryEl = /** @type {HTMLElement} */ (summary(el));
     expect(summaryEl.querySelector('b, i')).toBeNull();
     expect(chips(el)).toEqual(['<i>S</i>: "<b>"x"</b>"']);
-    const remove = summaryEl.querySelector('.dg-chip-remove');
+    const remove = summaryEl.querySelector('.spg-chip-remove');
     expect(remove?.getAttribute('aria-label')).toBe('Remove filter <i>S</i>: "<b>"x"</b>"');
   });
 
   it('removes the search text, the box content and the column choice with the search chip', () => {
     const { el, grid } = make({ searchable: true, searchColumnSelect: true });
-    const box = /** @type {HTMLInputElement} */ (el.querySelector('input.dg-search'));
+    const box = /** @type {HTMLInputElement} */ (el.querySelector('input.spg-search'));
     grid.setSearchColumn('role');
     grid.setFilter({ search: 'er' });
     expect(box.value).toBe('er');
-    /** @type {HTMLElement} */ (el.querySelector('.dg-chip-remove')).click();
+    /** @type {HTMLElement} */ (el.querySelector('.spg-chip-remove')).click();
     expect(grid.getFilter()).toBeNull();
     expect(grid.getSearchColumn()).toBeNull();
     expect(box.value).toBe('');
@@ -127,7 +127,7 @@ describe('filter summary', () => {
   it('removes a column filter and keeps the search', () => {
     const { el, grid } = make();
     grid.setFilter({ search: 'a', columnFilters: { role: 'er' } });
-    /** @type {HTMLElement} */ (el.querySelector('.dg-chip-remove[data-key="role"]')).click();
+    /** @type {HTMLElement} */ (el.querySelector('.spg-chip-remove[data-key="role"]')).click();
     expect(grid.getFilter()).toEqual({ search: 'a' });
     expect(chips(el)).toEqual(['Search: "a"']);
   });
@@ -137,7 +137,7 @@ describe('filter summary', () => {
     grid.setFilter({ search: 'ada' });
     const spy = vi.fn();
     grid.on('filterChange', spy);
-    /** @type {HTMLElement} */ (el.querySelector('.dg-chip-remove')).click();
+    /** @type {HTMLElement} */ (el.querySelector('.spg-chip-remove')).click();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(null);
   });

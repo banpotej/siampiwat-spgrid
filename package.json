@@ -1,7 +1,7 @@
 {
-  "name": "@siampiwat/datagrid",
-  "version": "1.0.9",
-  "description": "Reusable vanilla JS DataGrid",
+  "name": "@siampiwat/spgrid",
+  "version": "2.0.0",
+  "description": "Reusable vanilla JS SPGrid",
   "homepage": "https://github.com/banpotej/siampiwat-datagrid#readme",
   "repository": {
     "type": "git",
@@ -11,21 +11,21 @@
     "url": "https://github.com/banpotej/siampiwat-datagrid/issues"
   },
   "type": "module",
-  "main": "./dist/datagrid.styled.cjs",
-  "module": "./dist/datagrid.styled.js",
+  "main": "./dist/spgrid.styled.cjs",
+  "module": "./dist/spgrid.styled.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/datagrid.styled.js",
-      "require": "./dist/datagrid.styled.cjs"
+      "import": "./dist/spgrid.styled.js",
+      "require": "./dist/spgrid.styled.cjs"
     },
     "./plain": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/datagrid.js",
-      "require": "./dist/datagrid.cjs"
+      "import": "./dist/spgrid.js",
+      "require": "./dist/spgrid.cjs"
     },
-    "./style.css": "./dist/datagrid.css",
+    "./style.css": "./dist/spgrid.css",
     "./agent-guide": "./docs/AGENT_GUIDE.md"
   },
   "files": [
@@ -40,8 +40,8 @@
   },
   "sideEffects": [
     "*.css",
-    "./dist/datagrid.styled.js",
-    "./dist/datagrid.styled.cjs"
+    "./dist/spgrid.styled.js",
+    "./dist/spgrid.styled.cjs"
   ],
   "scripts": {
     "dev": "vite --open /",
@@ -72,8 +72,8 @@
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
   },
-  "jsdelivr": "dist/datagrid.js",
-  "unpkg": "dist/datagrid.js",
+  "jsdelivr": "dist/spgrid.js",
+  "unpkg": "dist/spgrid.js",
   "publishConfig": {
     "access": "public"
   }

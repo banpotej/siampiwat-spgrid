@@ -3,26 +3,26 @@ import { readJson, writeJson } from '../utils/storage.js';
 import { FREEZE_PREFIX, isFreezeCount } from './frozenColumns.js';
 
 /** localStorage key prefixes of the remembered view settings. */
-export const STRIPED_PREFIX = 'datagrid:striped:';
-export const TEXT_WRAP_PREFIX = 'datagrid:textWrap:';
-export const GRID_LINES_PREFIX = 'datagrid:gridLines:';
-export const LINE_STYLE_PREFIX = 'datagrid:lineStyle:';
+export const STRIPED_PREFIX = 'spgrid:striped:';
+export const TEXT_WRAP_PREFIX = 'spgrid:textWrap:';
+export const GRID_LINES_PREFIX = 'spgrid:gridLines:';
+export const LINE_STYLE_PREFIX = 'spgrid:lineStyle:';
 
 /** @typedef {import('../types.js').GridLines} GridLines */
 /** @typedef {import('../types.js').LineStyle} LineStyle */
 
-/** Every line style, in the order the settings select lists them ('default' follows the theme, `--dg-line-style`). */
+/** Every line style, in the order the settings select lists them ('default' follows the theme, `--spg-line-style`). */
 export const LINE_STYLES = /** @type {const} */ (['default', 'solid', 'dashed', 'dotted']);
 
 /** The root class that sets each style ('default' has none, so the theme decides). */
 const STYLE_CLASS = {
   default: '',
-  solid: 'dg-line-solid',
-  dashed: 'dg-line-dashed',
-  dotted: 'dg-line-dotted',
+  solid: 'spg-line-solid',
+  dashed: 'spg-line-dashed',
+  dotted: 'spg-line-dotted',
 };
 
-/** @param {LineStyle} style @returns {string} The class `.dg-root` carries for this style ('' for 'default'). */
+/** @param {LineStyle} style @returns {string} The class `.spg-root` carries for this style ('' for 'default'). */
 export function lineStyleClass(style) {
   return STYLE_CLASS[style];
 }
@@ -51,13 +51,13 @@ export const GRID_LINES = /** @type {const} */ ([
 /** The root class that draws each mode ('horizontal' only marks the choice: it looks like 'default'). */
 const LINES_CLASS = {
   default: '',
-  horizontal: 'dg-lines-horizontal',
-  vertical: 'dg-lines-vertical',
-  both: 'dg-bordered',
-  none: 'dg-lines-none',
+  horizontal: 'spg-lines-horizontal',
+  vertical: 'spg-lines-vertical',
+  both: 'spg-bordered',
+  none: 'spg-lines-none',
 };
 
-/** @param {GridLines} mode @returns {string} The class `.dg-root` carries for this mode ('' for 'default'). */
+/** @param {GridLines} mode @returns {string} The class `.spg-root` carries for this mode ('' for 'default'). */
 export function gridLinesClass(mode) {
   return LINES_CLASS[mode];
 }
@@ -100,8 +100,8 @@ export function loadFlag(prefix, storageKey, fallback) {
 /**
  * The striped / wrapped look of one grid: the classes on its root and the choices saved in `localStorage`.
  *
- * @param {Element | null} root The `.dg-root` element.
- * @param {Pick<import('../types.js').DataGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'lineStyleToggle' | 'freezeColumnsToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey' | 'lineStyleStorageKey' | 'freezeColumnsStorageKey'>} options
+ * @param {Element | null} root The `.spg-root` element.
+ * @param {Pick<import('../types.js').SPGridOptions, 'stripedToggle' | 'textWrapToggle' | 'gridLinesToggle' | 'lineStyleToggle' | 'freezeColumnsToggle' | 'stripedStorageKey' | 'textWrapStorageKey' | 'gridLinesStorageKey' | 'lineStyleStorageKey' | 'freezeColumnsStorageKey'>} options
  * @returns {{ get: () => ViewFlags, apply: (flags: ViewFlags) => void } | null} null when no switch is offered.
  */
 export function createViewSettings(root, options) {
@@ -113,8 +113,8 @@ export function createViewSettings(root, options) {
   if (!root || (!offerStriped && !offerWrapped && !offerLines && !offerStyle && !offerFreeze)) {
     return null;
   }
-  const striped = () => root.classList.contains('dg-striped');
-  const wrapped = () => !root.classList.contains('dg-nowrap');
+  const striped = () => root.classList.contains('spg-striped');
+  const wrapped = () => !root.classList.contains('spg-nowrap');
   const lines = () =>
     GRID_LINES.find(
       (mode) => LINES_CLASS[mode] !== '' && root.classList.contains(LINES_CLASS[mode]),
@@ -134,13 +134,13 @@ export function createViewSettings(root, options) {
     }),
     apply(flags) {
       if (offerStriped && flags.striped !== undefined && flags.striped !== striped()) {
-        root.classList.toggle('dg-striped', flags.striped);
+        root.classList.toggle('spg-striped', flags.striped);
         if (options.stripedStorageKey !== undefined) {
           writeJson(STRIPED_PREFIX + options.stripedStorageKey, flags.striped);
         }
       }
       if (offerWrapped && flags.wrapped !== undefined && flags.wrapped !== wrapped()) {
-        root.classList.toggle('dg-nowrap', !flags.wrapped);
+        root.classList.toggle('spg-nowrap', !flags.wrapped);
         if (options.textWrapStorageKey !== undefined) {
           writeJson(TEXT_WRAP_PREFIX + options.textWrapStorageKey, flags.wrapped);
         }

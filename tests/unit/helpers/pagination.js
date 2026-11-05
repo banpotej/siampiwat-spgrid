@@ -1,4 +1,4 @@
-import { DataGrid } from '../../../src/index.js';
+import { SPGrid } from '../../../src/index.js';
 
 export const columns = [
   { key: 'id', label: 'ID', sortable: true },
@@ -9,12 +9,12 @@ export const rows = Array.from({ length: 25 }, (_, i) => ({ id: i + 1, name: `Us
 /** @param {object} [options] */
 export const make = (options = {}) => {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, { columns, rows, pageSize: 10, ...options });
+  const grid = new SPGrid(el, { columns, rows, pageSize: 10, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
 export const ids = (el) =>
-  [...el.querySelectorAll('tbody tr:not(.dg-empty) td:first-child')].map((td) => td.textContent);
+  [...el.querySelectorAll('tbody tr:not(.spg-empty) td:first-child')].map((td) => td.textContent);
 /** @param {HTMLElement} el */
 export const nav = (el) => /** @type {HTMLElement} */ (el.querySelector('nav'));
 /** @param {HTMLElement} el */
@@ -24,6 +24,6 @@ export const navText = (el) =>
 export const btn = (el, selector) =>
   /** @type {HTMLButtonElement} */ (nav(el).querySelector(selector));
 /** @param {HTMLElement} el */
-export const summary = (el) => el.querySelector('.dg-summary')?.textContent;
+export const summary = (el) => el.querySelector('.spg-summary')?.textContent;
 /** @param {HTMLElement} el @param {number} col */
 export const th = (el, col) => /** @type {HTMLElement} */ (el.querySelectorAll('th')[col]);

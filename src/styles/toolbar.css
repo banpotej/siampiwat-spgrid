@@ -4,17 +4,17 @@
  * parts like the tool buttons. Parts are joined edge to edge: only the outer corners
  * are round, neighbours overlap by one border, and the whole group lights up when any part has focus.
  */
-.dg-toolbar {
+.spg-toolbar {
   display: flex;
   justify-content: flex-end; /* the filter bar sits at the end (right) edge of the grid */
   align-items: center;
-  padding: calc(var(--dgi-gap) * 0.67) var(--dgi-gap);
-  border-bottom: 1px solid var(--dgi-border);
+  padding: calc(var(--spgi-gap) * 0.67) var(--spgi-gap);
+  border-bottom: 1px solid var(--spgi-border);
 }
 
 /* The grid name: the start (left) edge of the toolbar; the rest of the toolbar is pushed to the end. */
 /* The name and, when there is a description, its toggle. */
-.dg-heading {
+.spg-heading {
   display: flex;
   flex: none;
   align-items: center;
@@ -22,47 +22,47 @@
   margin-inline-end: auto;
 }
 
-.dg-title {
+.spg-title {
   margin: 0;
-  color: var(--dgi-header-text);
+  color: var(--spgi-header-text);
   font-size: 1.05em;
   font-weight: 600;
   line-height: 1.4;
 }
 
-.dg-input-group {
+.spg-input-group {
   display: flex;
   align-items: stretch;
   width: 100%;
   max-width: 46em;
-  border-radius: var(--dgi-input-radius);
+  border-radius: var(--spgi-input-radius);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
-  transition: box-shadow var(--dgi-transition);
+  transition: box-shadow var(--spgi-transition);
 }
 
-.dg-input-group:focus-within {
+.spg-input-group:focus-within {
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.06),
-    0 0 0 3px color-mix(in srgb, var(--dgi-focus) 25%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--spgi-focus) 25%, transparent);
 }
 
 /* Shared by every part of the group. */
-.dg-search,
-.dg-search-value,
-.dg-search-column,
-.dg-search-submit,
-.dg-search-reset {
-  min-height: var(--dgi-control-h);
-  border: 1px solid var(--dgi-border-strong);
-  border-radius: var(--dgi-input-radius);
+.spg-search,
+.spg-search-value,
+.spg-search-column,
+.spg-search-submit,
+.spg-search-reset {
+  min-height: var(--spgi-control-h);
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
   font: inherit;
   transition:
-    background-color var(--dgi-transition),
-    border-color var(--dgi-transition),
-    transform var(--dgi-transition);
+    background-color var(--spgi-transition),
+    border-color var(--spgi-transition),
+    transform var(--spgi-transition);
 }
 
-.dg-search-field {
+.spg-search-field {
   position: relative;
   display: flex;
   flex: 1 1 8em;
@@ -70,71 +70,71 @@
   min-width: 0;
 }
 
-.dg-search {
+.spg-search {
   width: 100%;
   padding: 0.45em 2.5em;
-  background: var(--dgi-bg);
+  background: var(--spgi-bg);
   color: inherit;
 }
 
 /* The value select of an enum search column takes the box's place, so it looks like the box (hidden wins over display). */
-.dg-search-value {
+.spg-search-value {
   width: 100%;
   padding: 0.45em 2.5em;
-  background: var(--dgi-bg);
+  background: var(--spgi-bg);
   color: inherit;
 }
 
-.dg-search-value {
+.spg-search-value {
   align-self: stretch;
   padding-inline: 2.5em 2.2em;
   appearance: none;
-  background-image: var(--dgi-chevron);
+  background-image: var(--spgi-chevron);
   background-position: right 0.7em center;
   background-size: 1em 1em;
   background-repeat: no-repeat;
   cursor: pointer;
 }
 
-.dg-search-value:focus {
-  border-color: var(--dgi-focus);
+.spg-search-value:focus {
+  border-color: var(--spgi-focus);
 }
 
-.dg-search[hidden],
-.dg-search-value[hidden] {
+.spg-search[hidden],
+.spg-search-value[hidden] {
   display: none;
 }
 
-.dg-search::placeholder {
-  color: var(--dgi-muted);
+.spg-search::placeholder {
+  color: var(--spgi-muted);
   opacity: 0.8;
 }
 
 /* The leading icon and our own clear button replace the browser's. */
-.dg-search::-webkit-search-cancel-button,
-.dg-search::-webkit-search-decoration {
+.spg-search::-webkit-search-cancel-button,
+.spg-search::-webkit-search-decoration {
   display: none;
   appearance: none;
 }
 
-.dg-search:focus {
-  border-color: var(--dgi-focus);
+.spg-search:focus {
+  border-color: var(--spgi-focus);
 }
 
-.dg-search-icon {
+.spg-search-icon {
   position: absolute;
   inset-inline-start: 0.75em;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
   pointer-events: none;
-  transition: color var(--dgi-transition);
+  transition: color var(--spgi-transition);
 }
 
-.dg-search-field:focus-within .dg-search-icon {
-  color: var(--dgi-focus);
+.spg-search-field:focus-within .spg-search-icon {
+  color: var(--spgi-focus);
 }
 
 /* The x inside the box: only while there is text. */
-.dg-search-clear {
+.spg-search-clear {
   position: absolute;
   inset-inline-end: 0.35em;
   display: inline-flex;
@@ -146,149 +146,149 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
   cursor: pointer;
-  transition: background-color var(--dgi-transition);
+  transition: background-color var(--spgi-transition);
 }
 
-.dg-search-clear[hidden] {
+.spg-search-clear[hidden] {
   display: none;
 }
 
-.dg-search-clear:hover {
-  background: var(--dgi-sort-hover-bg);
-  color: var(--dgi-text);
+.spg-search-clear:hover {
+  background: var(--spgi-sort-hover-bg);
+  color: var(--spgi-text);
 }
 
-.dg-search-clear:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-search-clear:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: 1px;
 }
 
-/* The column select: a tinted addon with its own chevron (a stroked SVG chevron from --dgi-chevron,
+/* The column select: a tinted addon with its own chevron (a stroked SVG chevron from --spgi-chevron,
    themed light and dark). */
-.dg-search-column {
+.spg-search-column {
   flex: 0 1 auto;
   min-width: 0;
   max-width: 40%;
   padding: 0.4em 2.2em 0.4em 0.9em;
   appearance: none;
-  background-color: var(--dgi-header-bg);
-  background-image: var(--dgi-chevron);
+  background-color: var(--spgi-header-bg);
+  background-image: var(--spgi-chevron);
   background-position: right 0.7em center;
   background-size: 1em 1em;
   background-repeat: no-repeat;
-  color: var(--dgi-header-text);
+  color: var(--spgi-header-text);
   font-weight: 500;
   cursor: pointer;
 }
 
-.dg-search-column:hover {
-  background-color: var(--dgi-sort-hover-bg);
+.spg-search-column:hover {
+  background-color: var(--spgi-sort-hover-bg);
 }
 
 /* The opened list stays plain, whatever tint the closed select has. */
-.dg-search-column option {
-  background: var(--dgi-bg);
-  color: var(--dgi-text);
+.spg-search-column option {
+  background: var(--spgi-bg);
+  color: var(--spgi-text);
 }
 
-.dg-search-column:dir(rtl) {
+.spg-search-column:dir(rtl) {
   padding: 0.4em 0.9em 0.4em 2.2em;
   background-position: left 0.7em center;
 }
 
 /* Search and Clear search share one neutral (grey) tint, the same look as the action buttons. Both are icon-only: the label is their aria-label and tooltip. */
-.dg-search-submit,
-.dg-search-reset {
+.spg-search-submit,
+.spg-search-reset {
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  min-width: var(--dgi-control-h);
+  min-width: var(--spgi-control-h);
   padding: 0.4em 0.8em;
   cursor: pointer;
 }
 
-.dg-search-submit {
-  border-color: color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
-  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
-  color: var(--dgi-neutral);
+.spg-search-submit {
+  border-color: color-mix(in srgb, var(--spgi-neutral) 35%, var(--spgi-border-strong));
+  background: color-mix(in srgb, var(--spgi-neutral) 5%, var(--spgi-bg));
+  color: var(--spgi-neutral);
 }
 
-.dg-search-submit .dg-icon,
-.dg-search-reset .dg-icon {
+.spg-search-submit .spg-icon,
+.spg-search-reset .spg-icon {
   font-size: 1.2em;
 }
 
-.dg-search-reset {
-  border-color: color-mix(in srgb, var(--dgi-neutral) 35%, var(--dgi-border-strong));
-  background: color-mix(in srgb, var(--dgi-neutral) 5%, var(--dgi-bg));
-  color: var(--dgi-neutral);
+.spg-search-reset {
+  border-color: color-mix(in srgb, var(--spgi-neutral) 35%, var(--spgi-border-strong));
+  background: color-mix(in srgb, var(--spgi-neutral) 5%, var(--spgi-bg));
+  color: var(--spgi-neutral);
 }
 
-.dg-search-submit:hover,
-.dg-search-reset:hover {
-  background: color-mix(in srgb, var(--dgi-neutral) 10%, var(--dgi-bg));
+.spg-search-submit:hover,
+.spg-search-reset:hover {
+  background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
 }
 
-.dg-search-submit:active,
-.dg-search-reset:active {
+.spg-search-submit:active,
+.spg-search-reset:active {
   transform: translateY(1px);
 }
 
 /* Inside the group the focus ring is drawn inside each part, so a neighbour never covers it. */
-.dg-input-group .dg-search:focus-visible,
-.dg-input-group .dg-search-column:focus-visible,
-.dg-input-group .dg-search-submit:focus-visible,
-.dg-input-group .dg-search-reset:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-input-group .spg-search:focus-visible,
+.spg-input-group .spg-search-column:focus-visible,
+.spg-input-group .spg-search-submit:focus-visible,
+.spg-input-group .spg-search-reset:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: -3px;
 }
 
 /* Joining: only the outer corners stay round and neighbours share one border. */
-.dg-input-group > *,
-.dg-input-group .dg-search,
-.dg-input-group .dg-search-value {
+.spg-input-group > *,
+.spg-input-group .spg-search,
+.spg-input-group .spg-search-value {
   border-radius: 0;
 }
 
-.dg-input-group > :first-child,
-.dg-input-group > :first-child .dg-search {
-  border-start-start-radius: var(--dgi-input-radius);
-  border-end-start-radius: var(--dgi-input-radius);
+.spg-input-group > :first-child,
+.spg-input-group > :first-child .spg-search {
+  border-start-start-radius: var(--spgi-input-radius);
+  border-end-start-radius: var(--spgi-input-radius);
 }
 
-.dg-input-group > :last-child,
-.dg-input-group > :last-child .dg-search {
-  border-start-end-radius: var(--dgi-input-radius);
-  border-end-end-radius: var(--dgi-input-radius);
+.spg-input-group > :last-child,
+.spg-input-group > :last-child .spg-search {
+  border-start-end-radius: var(--spgi-input-radius);
+  border-end-end-radius: var(--spgi-input-radius);
 }
 
-.dg-input-group > * + * {
+.spg-input-group > * + * {
   margin-inline-start: -1px;
 }
 
 /* Raise the active part so its whole border shows above its neighbours. */
-.dg-input-group > :hover,
-.dg-input-group > :focus-within {
+.spg-input-group > :hover,
+.spg-input-group > :focus-within {
   position: relative;
   z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-input-group,
-  .dg-search,
-  .dg-search-column,
-  .dg-search-submit,
-  .dg-search-reset,
-  .dg-search-icon,
-  .dg-search-clear {
+  .spg-input-group,
+  .spg-search,
+  .spg-search-column,
+  .spg-search-submit,
+  .spg-search-reset,
+  .spg-search-icon,
+  .spg-search-clear {
     transition: none;
   }
 
-  .dg-search-submit:active,
-  .dg-search-reset:active {
+  .spg-search-submit:active,
+  .spg-search-reset:active {
     transform: none;
   }
 }

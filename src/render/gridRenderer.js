@@ -108,7 +108,7 @@ export class GridRenderer {
     if (this.#activatable) {
       // Rows are Tab stops that Enter activates (see rowActivate.js); the class gives them the pointer cursor.
       for (const tr of host.querySelectorAll('tbody tr[data-row-index]')) {
-        tr.classList.add('dg-activatable');
+        tr.classList.add('spg-activatable');
         tr.setAttribute('tabindex', '0');
       }
     }
@@ -167,14 +167,14 @@ export class GridRenderer {
   /** Freeze the leading columns the root's `data-freeze` asks for (none when it is absent). */
   #freeze() {
     const { host } = this.#shell;
-    freezeColumns(host, Number(host.closest('.dg-root')?.getAttribute('data-freeze') ?? 0));
+    freezeColumns(host, Number(host.closest('.spg-root')?.getAttribute('data-freeze') ?? 0));
   }
 
   /** Collapse or expand a group and draw the table again, keeping focus on the group's button. @param {string} id */
   #toggleGroup(id) {
     if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
     if (this.#last) this.render(...this.#last);
-    const rows = this.#shell.host.querySelectorAll('tr.dg-group-row');
+    const rows = this.#shell.host.querySelectorAll('tr.spg-group-row');
     const row = [...rows].find((r) => r instanceof HTMLElement && r.dataset.groupId === id);
     row?.querySelector('button')?.focus();
   }

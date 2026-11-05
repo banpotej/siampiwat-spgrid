@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const rows = Array.from({ length: 6 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}` }));
 const columns = [
@@ -13,7 +13,7 @@ function make(options = {}) {
   const el = document.createElement('div');
   document.body.append(el);
   const onRowActivate = vi.fn();
-  const grid = new DataGrid(el, { columns, rows, rowKey: 'id', onRowActivate, ...options });
+  const grid = new SPGrid(el, { columns, rows, rowKey: 'id', onRowActivate, ...options });
   return { el, grid, onRowActivate };
 }
 
@@ -64,7 +64,7 @@ describe('onRowActivate', () => {
     const { el } = make();
     for (const tr of el.querySelectorAll('tbody tr')) {
       expect(tr.getAttribute('tabindex')).toBe('0');
-      expect(tr.classList.contains('dg-activatable')).toBe(true);
+      expect(tr.classList.contains('spg-activatable')).toBe(true);
     }
     const plain = make({ onRowActivate: undefined });
     expect(plain.el.querySelector('tbody tr')?.hasAttribute('tabindex')).toBe(false);

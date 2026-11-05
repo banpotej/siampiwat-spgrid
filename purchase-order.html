@@ -9,16 +9,16 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>ตัวอย่าง DataGrid: รายการใบสั่งซื้อ (Purchase Order)</title>
+    <title>ตัวอย่าง SPGrid: รายการใบสั่งซื้อ (Purchase Order)</title>
     <link rel="stylesheet" href="/examples/dialogs.css" />
     <link rel="stylesheet" href="/examples/page.css" />
     <style>
       /* The table is wider than the container. The grid's wrapper clips by default (overflow: clip),
          so this example turns that into horizontal scrolling; the pager stays put. */
-      #grid .dg-table-wrap {
+      #grid .spg-table-wrap {
         overflow-x: auto;
       }
-      #grid .dg-table {
+      #grid .spg-table {
         min-width: 2050px;
       }
     </style>
@@ -27,7 +27,7 @@
     <main>
       <nav id="site-nav"></nav>
       <header class="intro">
-        <h1>ตัวอย่าง DataGrid: รายการใบสั่งซื้อ (Purchase Order)</h1>
+        <h1>ตัวอย่าง SPGrid: รายการใบสั่งซื้อ (Purchase Order)</h1>
       </header>
       <div id="grid"></div>
       <pre id="log" role="status" aria-live="polite"></pre>
@@ -36,7 +36,7 @@
           <summary>คำอธิบายตัวอย่าง</summary>
           <div class="intro-body">
             <p>
-              ตัวอย่างตารางข้อมูลที่สร้างด้วย DataGrid (vanilla JS ไม่มี dependency)
+              ตัวอย่างตารางข้อมูลที่สร้างด้วย SPGrid (vanilla JS ไม่มี dependency)
               แสดงรายการใบสั่งซื้อพร้อมความสามารถหลัก ได้แก่ การเรียงลำดับคอลัมน์ ป้ายสถานะ (badge)
               คอลัมน์วันที่และ boolean ปุ่มดำเนินการต่อแถว (ดู/ยกเลิก) การแบ่งหน้า
               และการเลื่อนแนวนอน
@@ -48,9 +48,9 @@
               <li>ด้านล่างสุดคือ Source Code ของตัวอย่างนี้ พร้อมปุ่มคัดลอก</li>
             </ul>
             <h3>การใช้งานในโค้ด</h3>
-            <pre tabindex="0"><code>import { DataGrid, thaiLabels } from '/src/index.js';
+            <pre tabindex="0"><code>import { SPGrid, thaiLabels } from '/src/index.js';
 
-const grid = new DataGrid(document.getElementById('grid'), {
+const grid = new SPGrid(document.getElementById('grid'), {
   rowKey: 'id', // คีย์ที่ไม่ซ้ำของแต่ละแถว
   rows, // array ของ object
   columns: [

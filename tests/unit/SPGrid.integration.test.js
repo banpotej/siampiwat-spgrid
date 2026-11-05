@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const columns = [
   { key: 'id', label: 'ID', sortable: true },
@@ -20,16 +20,16 @@ const rows = Array.from({ length: 20 }, (_, i) => ({
 /** @param {object} [options] */
 const make = (options = {}) => {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, { columns, rows, pageSize: 3, ...options });
+  const grid = new SPGrid(el, { columns, rows, pageSize: 3, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
 const ids = (el) =>
-  [...el.querySelectorAll('tbody tr:not(.dg-empty) td:first-child')].map((td) =>
+  [...el.querySelectorAll('tbody tr:not(.spg-empty) td:first-child')].map((td) =>
     Number(td.textContent),
   );
 /** @param {HTMLElement} el */
-const summary = (el) => el.querySelector('.dg-summary')?.textContent;
+const summary = (el) => el.querySelector('.spg-summary')?.textContent;
 /** @param {HTMLElement} el */
 const pages = (el) => [...el.querySelectorAll('nav button[data-page]')].map((b) => b.textContent);
 
@@ -117,7 +117,7 @@ describe('empty state with a pager', () => {
     grid.setFilter({ search: 'zzz' });
     const trs = el.querySelectorAll('tbody tr');
     expect(trs).toHaveLength(1);
-    expect(trs[0].classList.contains('dg-empty')).toBe(true);
+    expect(trs[0].classList.contains('spg-empty')).toBe(true);
     expect(trs[0].querySelector('td')?.colSpan).toBe(columns.length);
     expect(el.querySelector('[role="status"]')?.textContent).toBe('No data');
     expect(summary(el)).toBe('Showing 0 of 0');

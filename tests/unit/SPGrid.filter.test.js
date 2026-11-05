@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const columns = [
   { key: 'id', label: 'ID', sortable: true },
@@ -18,7 +18,7 @@ afterEach(() => vi.useRealTimers());
 /** @param {object} [options] */
 const make = (options = {}) => {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, { columns, rows, searchable: true, ...options });
+  const grid = new SPGrid(el, { columns, rows, searchable: true, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
@@ -30,7 +30,7 @@ const type = (el, value) => {
 };
 /** @param {HTMLElement} el */
 const names = (el) =>
-  [...el.querySelectorAll('tbody tr:not(.dg-empty)')].map(
+  [...el.querySelectorAll('tbody tr:not(.spg-empty)')].map(
     (tr) => tr.querySelectorAll('td')[1].textContent,
   );
 /** @param {HTMLElement} el @param {number} col */
@@ -271,7 +271,7 @@ describe('destroy', () => {
   it('removes the input listener, clears the debounce timer and goes inert', () => {
     const onFilterChange = vi.fn();
     const { el, grid } = make({ onFilterChange });
-    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar'));
+    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.spg-toolbar'));
     const remove = vi.spyOn(toolbar, 'removeEventListener');
     const box = input(el);
     type(el, 'ada');
@@ -296,36 +296,36 @@ describe('title', () => {
   it('shows the escaped grid name first in the toolbar, with or without a search box', () => {
     for (const searchable of [true, false]) {
       const el = document.createElement('div');
-      new DataGrid(el, {
+      new SPGrid(el, {
         columns: [{ key: 'a', label: 'A' }],
         rows: [],
         searchable,
         title: '<b>PO</b>',
       });
-      const title = el.querySelector('.dg-toolbar > .dg-heading > h2.dg-title');
+      const title = el.querySelector('.spg-toolbar > .spg-heading > h2.spg-title');
       expect(title?.textContent).toBe('<b>PO</b>');
-      expect(el.querySelector('.dg-title b')).toBeNull();
+      expect(el.querySelector('.spg-title b')).toBeNull();
     }
   });
 
   it('renders no toolbar without a title or search', () => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [] });
-    expect(el.querySelector('.dg-toolbar, .dg-title')).toBeNull();
+    new SPGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [] });
+    expect(el.querySelector('.spg-toolbar, .spg-title')).toBeNull();
   });
 });
 
 describe('description', () => {
   const make = (extra = {}) => {
     const el = document.createElement('div');
-    new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [], ...extra });
+    new SPGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [], ...extra });
     return el;
   };
 
   it('shows the escaped text below the toolbar, with a toggle that hides and shows it', () => {
     const el = make({ title: 'PO', description: '<i>about</i>' });
-    const desc = /** @type {HTMLElement} */ (el.querySelector('.dg-root > .dg-desc'));
-    const toggle = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-desc-toggle'));
+    const desc = /** @type {HTMLElement} */ (el.querySelector('.spg-root > .spg-desc'));
+    const toggle = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-desc-toggle'));
     expect(desc.textContent).toBe('<i>about</i>');
     expect(desc.querySelector('i')).toBeNull();
     expect(toggle.getAttribute('aria-label')).toBe('Show or hide description');
@@ -340,7 +340,9 @@ describe('description', () => {
   });
 
   it('works without a title and renders nothing when not given', () => {
-    expect(make({ description: 'x' }).querySelector('.dg-heading .dg-desc-toggle')).not.toBeNull();
-    expect(make({ title: 'PO' }).querySelector('.dg-desc, .dg-desc-toggle')).toBeNull();
+    expect(
+      make({ description: 'x' }).querySelector('.spg-heading .spg-desc-toggle'),
+    ).not.toBeNull();
+    expect(make({ title: 'PO' }).querySelector('.spg-desc, .spg-desc-toggle')).toBeNull();
   });
 });

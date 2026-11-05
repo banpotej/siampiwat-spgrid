@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 const rows = Array.from({ length: 30 }, (_, i) => ({ n: i + 1 }));
-const KEY = 'datagrid:pageSize:po';
+const KEY = 'spgrid:pageSize:po';
 
 beforeEach(() => localStorage.clear());
 afterEach(() => vi.restoreAllMocks());
@@ -11,7 +11,7 @@ afterEach(() => vi.restoreAllMocks());
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns: [{ key: 'n' }],
     rows,
     pageSize: 10,
@@ -25,13 +25,13 @@ const make = (options = {}) => {
 const shown = (el) => el.querySelectorAll('tbody tr').length;
 /** @param {HTMLElement} el @param {string} value */
 const choose = (el, value) => {
-  const select = /** @type {HTMLSelectElement} */ (el.querySelector('.dg-page-size select'));
+  const select = /** @type {HTMLSelectElement} */ (el.querySelector('.spg-page-size select'));
   select.value = value;
   select.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
 describe('pageSizeStorageKey (localStorage)', () => {
-  it('saves the size when the user picks one, under datagrid:pageSize:<key>', () => {
+  it('saves the size when the user picks one, under spgrid:pageSize:<key>', () => {
     const { el } = make();
     expect(localStorage.getItem(KEY)).toBeNull();
     choose(el, '20');

@@ -1,25 +1,25 @@
 /* The filter summary strip under the toolbar: "Found 12 of 250" and one removable chip per active filter. */
 
-.dg-summary {
+.spg-summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5em 0.9em;
-  padding: 0.6em var(--dgi-gap);
-  border-bottom: 1px solid var(--dgi-border);
-  background: color-mix(in srgb, var(--dgi-accent) 4%, var(--dgi-bg));
+  padding: 0.6em var(--spgi-gap);
+  border-bottom: 1px solid var(--spgi-border);
+  background: color-mix(in srgb, var(--spgi-accent) 4%, var(--spgi-bg));
 }
 
-.dg-summary[hidden] {
+.spg-summary[hidden] {
   display: none;
 }
 
-.dg-summary-count {
-  color: var(--dgi-muted);
+.spg-summary-count {
+  color: var(--spgi-muted);
   font-weight: 600;
 }
 
-.dg-chips {
+.spg-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4em;
@@ -28,25 +28,25 @@
   list-style: none;
 }
 
-.dg-chip {
+.spg-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.15em;
   max-width: 100%;
   padding: 0.15em 0.2em 0.15em 0.75em;
-  border: 1px solid color-mix(in srgb, var(--dgi-accent) 35%, var(--dgi-border));
+  border: 1px solid color-mix(in srgb, var(--spgi-accent) 35%, var(--spgi-border));
   border-radius: 999px;
-  background: color-mix(in srgb, var(--dgi-accent) 10%, var(--dgi-bg));
+  background: color-mix(in srgb, var(--spgi-accent) 10%, var(--spgi-bg));
   line-height: 1.4;
 }
 
-.dg-chip-text {
+.spg-chip-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.dg-chip-remove {
+.spg-chip-remove {
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -57,24 +57,24 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--dgi-muted);
+  color: var(--spgi-muted);
   font: inherit;
   cursor: pointer;
-  transition: background-color var(--dgi-transition);
+  transition: background-color var(--spgi-transition);
 }
 
-.dg-chip-remove:hover {
-  background: color-mix(in srgb, var(--dgi-accent) 22%, var(--dgi-bg));
-  color: var(--dgi-text);
+.spg-chip-remove:hover {
+  background: color-mix(in srgb, var(--spgi-accent) 22%, var(--spgi-bg));
+  color: var(--spgi-text);
 }
 
-.dg-chip-remove:focus-visible {
-  outline: 2px solid var(--dgi-focus);
+.spg-chip-remove:focus-visible {
+  outline: 2px solid var(--spgi-focus);
   outline-offset: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dg-chip-remove {
+  .spg-chip-remove {
     transition: none;
   }
 }

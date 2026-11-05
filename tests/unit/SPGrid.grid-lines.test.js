@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => localStorage.clear());
 
@@ -7,17 +7,18 @@ beforeEach(() => localStorage.clear());
 const make = (extra = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  new DataGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [{ a: 1 }], ...extra });
-  const root = /** @type {HTMLElement} */ (el.querySelector('.dg-root'));
+  new SPGrid(el, { columns: [{ key: 'a', label: 'A' }], rows: [{ a: 1 }], ...extra });
+  const root = /** @type {HTMLElement} */ (el.querySelector('.spg-root'));
   return { el, root };
 };
 /** @param {HTMLElement} el */
-const open = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click();
+const open = (el) =>
+  /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click();
 /** @param {HTMLElement} el */
 const select = (el) =>
   /** @type {HTMLSelectElement | null} */ (el.querySelector('select[data-choice="gridLines"]'));
 /** @param {HTMLElement} el */
-const apply = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-ok')).click();
+const apply = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-ok')).click();
 /** @param {HTMLElement} el @param {string} mode */
 const choose = (el, mode) => {
   open(el);
@@ -26,25 +27,25 @@ const choose = (el, mode) => {
   field.dispatchEvent(new Event('change', { bubbles: true }));
   apply(el);
 };
-const CLASSES = ['dg-bordered', 'dg-lines-horizontal', 'dg-lines-vertical', 'dg-lines-none'];
+const CLASSES = ['spg-bordered', 'spg-lines-horizontal', 'spg-lines-vertical', 'spg-lines-none'];
 /** @param {HTMLElement} root */
 const lines = (root) => CLASSES.filter((c) => root.classList.contains(c));
 
 describe('gridLines option', () => {
   it.each([
     ['default', []],
-    ['horizontal', ['dg-lines-horizontal']],
-    ['vertical', ['dg-lines-vertical']],
-    ['both', ['dg-bordered']],
-    ['none', ['dg-lines-none']],
+    ['horizontal', ['spg-lines-horizontal']],
+    ['vertical', ['spg-lines-vertical']],
+    ['both', ['spg-bordered']],
+    ['none', ['spg-lines-none']],
   ])('%s sets the root class %j', (gridLines, expected) => {
     expect(lines(make({ gridLines }).root)).toEqual(expected);
   });
 
   it('has no line class by default, and `bordered` is the same as "both"', () => {
     expect(lines(make().root)).toEqual([]);
-    expect(lines(make({ bordered: true }).root)).toEqual(['dg-bordered']);
-    expect(lines(make({ bordered: true, gridLines: 'none' }).root)).toEqual(['dg-lines-none']);
+    expect(lines(make({ bordered: true }).root)).toEqual(['spg-bordered']);
+    expect(lines(make({ bordered: true, gridLines: 'none' }).root)).toEqual(['spg-lines-none']);
   });
 
   it('throws a RangeError for an unknown mode', () => {
@@ -65,7 +66,7 @@ describe('gridLinesToggle', () => {
       'none',
     ]);
     expect(field.value).toBe('vertical');
-    expect(field.closest('section')?.querySelector('.dg-settings-heading')?.textContent).toBe(
+    expect(field.closest('section')?.querySelector('.spg-settings-heading')?.textContent).toBe(
       'Display',
     );
   });
@@ -82,12 +83,12 @@ describe('gridLinesToggle', () => {
     const field = /** @type {HTMLSelectElement} */ (select(el));
     field.value = 'both';
     expect(lines(root)).toEqual([]);
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-modal-cancel')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-modal-cancel')).click();
     expect(lines(root)).toEqual([]);
     choose(el, 'both');
-    expect(lines(root)).toEqual(['dg-bordered']);
+    expect(lines(root)).toEqual(['spg-bordered']);
     choose(el, 'none'); // one mode at a time
-    expect(lines(root)).toEqual(['dg-lines-none']);
+    expect(lines(root)).toEqual(['spg-lines-none']);
     choose(el, 'default');
     expect(lines(root)).toEqual([]);
     open(el);
@@ -100,22 +101,22 @@ describe('gridLinesToggle', () => {
     /** @type {HTMLInputElement} */ (el.querySelector('input[data-flag="striped"]')).click();
     /** @type {HTMLSelectElement} */ (select(el)).value = 'both';
     apply(el);
-    expect(root.classList.contains('dg-striped')).toBe(true);
-    expect(lines(root)).toEqual(['dg-bordered']);
+    expect(root.classList.contains('spg-striped')).toBe(true);
+    expect(lines(root)).toEqual(['spg-bordered']);
   });
 
   it('is remembered under gridLinesStorageKey, ahead of the options', () => {
     const first = make({ gridLinesToggle: true, gridLinesStorageKey: 'po' });
     choose(first.el, 'horizontal');
-    expect(JSON.parse(localStorage.getItem('datagrid:gridLines:po') ?? 'null')).toBe('horizontal');
+    expect(JSON.parse(localStorage.getItem('spgrid:gridLines:po') ?? 'null')).toBe('horizontal');
     const second = make({ gridLines: 'none', bordered: true, gridLinesStorageKey: 'po' });
-    expect(lines(second.root)).toEqual(['dg-lines-horizontal']);
+    expect(lines(second.root)).toEqual(['spg-lines-horizontal']);
   });
 
   it('ignores a saved value that is not a mode, and saves nothing without a key', () => {
-    localStorage.setItem('datagrid:gridLines:bad', JSON.stringify('diagonal'));
+    localStorage.setItem('spgrid:gridLines:bad', JSON.stringify('diagonal'));
     expect(lines(make({ gridLines: 'both', gridLinesStorageKey: 'bad' }).root)).toEqual([
-      'dg-bordered',
+      'spg-bordered',
     ]);
     choose(make({ gridLinesToggle: true }).el, 'both');
     expect(localStorage.length).toBe(1); // only the seeded bad entry

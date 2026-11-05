@@ -1,5 +1,5 @@
 /* A date search column: the from / to date boxes sit in one frame that looks like the search box. */
-.dg-search-range {
+.spg-search-range {
   display: flex;
   flex: 1;
   align-self: stretch;
@@ -7,46 +7,46 @@
   box-sizing: border-box;
   gap: 0.25em;
   min-width: 0;
-  min-height: var(--dgi-control-h);
+  min-height: var(--spgi-control-h);
   padding-block: 0.15em;
   padding-inline: 2.5em 0.4em;
-  border: 1px solid var(--dgi-border-strong);
+  border: 1px solid var(--spgi-border-strong);
   /* Square like the other parts of the group; the group (or the wrapped toolbar) decides the corners. */
   border-radius: inherit;
-  background: var(--dgi-bg);
-  color: var(--dgi-muted);
+  background: var(--spgi-bg);
+  color: var(--spgi-muted);
   font: inherit;
-  transition: border-color var(--dgi-transition);
+  transition: border-color var(--spgi-transition);
 }
 
-.dg-search-range[hidden] {
+.spg-search-range[hidden] {
   display: none;
 }
 
 /* Two dates need more room than a word. */
-.dg-input-group:has(.dg-search-range:not([hidden])) {
+.spg-input-group:has(.spg-search-range:not([hidden])) {
   max-width: 52em;
 }
 
-.dg-search-field:has(.dg-search-range:not([hidden])) {
+.spg-search-field:has(.spg-search-range:not([hidden])) {
   flex-basis: 21em;
 }
 
 /* Same focus look as the search box and the other parts of the group: the ring is drawn inside, so a neighbour never covers it. */
-.dg-search-range:focus-within {
-  border-color: var(--dgi-focus);
-  outline: 2px solid var(--dgi-focus);
+.spg-search-range:focus-within {
+  border-color: var(--spgi-focus);
+  outline: 2px solid var(--spgi-focus);
   outline-offset: -3px;
 }
 
 /* The dash between the two dates. */
-.dg-search-range > span {
+.spg-search-range > span {
   flex: none;
   opacity: 0.6;
 }
 
 /* The dates are borderless, so the whole range reads as one input group; focus shows on the shared frame. */
-.dg-search-range input {
+.spg-search-range input {
   flex: 1 1 0;
   min-width: 0;
   padding: 0.2em 0.45em;
@@ -55,21 +55,21 @@
   outline: 0;
   box-shadow: none;
   background: transparent;
-  color: var(--dgi-text);
+  color: var(--spgi-text);
   font: inherit;
   font-size: 0.92em;
   font-variant-numeric: tabular-nums;
 }
 
 /* The browser's calendar button stays quiet until its date is hovered or focused. */
-.dg-search-range input::-webkit-calendar-picker-indicator {
+.spg-search-range input::-webkit-calendar-picker-indicator {
   margin-inline-start: 0.2em;
   cursor: pointer;
   opacity: 0.35;
-  transition: opacity var(--dgi-transition);
+  transition: opacity var(--spgi-transition);
 }
 
-.dg-search-range input:hover::-webkit-calendar-picker-indicator,
-.dg-search-range input:focus::-webkit-calendar-picker-indicator {
+.spg-search-range input:hover::-webkit-calendar-picker-indicator,
+.spg-search-range input:focus::-webkit-calendar-picker-indicator {
   opacity: 0.8;
 }

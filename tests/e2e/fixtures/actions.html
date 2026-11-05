@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DataGrid actions fixture</title>
+    <title>SPGrid actions fixture</title>
   </head>
   <body>
     <!-- 25 rows (ids 1-25), pageSize 5, View/Cancel action columns and a link cell. Used by actions.spec.js. -->
     <div id="grid"></div>
     <pre id="log"></pre>
     <script type="module">
-      import { DataGrid, escapeHtml } from '/src/index.js';
+      import { SPGrid, escapeHtml } from '/src/index.js';
 
       const rows = Array.from({ length: 25 }, (_, i) => ({
         id: i + 1,
         name: `User ${i + 1}`,
         canCancel: (i + 1) % 3 === 0,
       }));
-      const grid = new DataGrid(document.getElementById('grid'), {
+      const grid = new SPGrid(document.getElementById('grid'), {
         columns: [
           {
             key: '_view',
@@ -32,7 +32,7 @@
                 name: 'cancel',
                 label: 'Cancel',
                 icon: 'cancel',
-                className: 'dg-action-danger',
+                className: 'spg-action-danger',
                 visible: (r) => r.canCancel,
               },
             ],

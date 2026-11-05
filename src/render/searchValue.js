@@ -10,11 +10,11 @@ import { parseDayRange } from '../core/dates.js';
  * @returns {string}
  */
 export const renderSearchAlternatives = ({ label, all, from, to }) =>
-  `<select class="dg-search-value" aria-label="${escapeHtml(label)}" hidden><option value="">${escapeHtml(all)}</option></select>` +
-  `<div class="dg-search-range" role="group" aria-label="${escapeHtml(label)}" hidden>` +
-  `<input type="date" class="dg-date-from" aria-label="${escapeHtml(from)}">` +
+  `<select class="spg-search-value" aria-label="${escapeHtml(label)}" hidden><option value="">${escapeHtml(all)}</option></select>` +
+  `<div class="spg-search-range" role="group" aria-label="${escapeHtml(label)}" hidden>` +
+  `<input type="date" class="spg-date-from" aria-label="${escapeHtml(from)}">` +
   `<span aria-hidden="true">–</span>` +
-  `<input type="date" class="dg-date-to" aria-label="${escapeHtml(to)}"></div>`;
+  `<input type="date" class="spg-date-to" aria-label="${escapeHtml(to)}"></div>`;
 
 /**
  * Show the control that fits the search column: the value select (filled from `options`) for 'enum', the date

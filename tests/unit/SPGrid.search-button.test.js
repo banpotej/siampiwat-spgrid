@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
@@ -11,7 +11,7 @@ const rows = [{ name: 'Ada' }, { name: 'Grace' }, { name: 'Eve' }];
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, {
+  const grid = new SPGrid(el, {
     columns,
     rows,
     searchable: true,
@@ -21,16 +21,16 @@ const make = (options = {}) => {
   return { el, grid };
 };
 /** @param {HTMLElement} el */
-const input = (el) => /** @type {HTMLInputElement} */ (el.querySelector('input.dg-search'));
+const input = (el) => /** @type {HTMLInputElement} */ (el.querySelector('input.spg-search'));
 /** @param {HTMLElement} el */
-const button = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-submit'));
+const button = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-submit'));
 /** @param {HTMLElement} el @param {string} value */
 const type = (el, value) => {
   input(el).value = value;
   input(el).dispatchEvent(new Event('input', { bubbles: true }));
 };
 /** @param {HTMLElement} el */
-const shown = (el) => el.querySelectorAll('tbody tr:not(.dg-empty)').length;
+const shown = (el) => el.querySelectorAll('tbody tr:not(.spg-empty)').length;
 /** @param {HTMLElement} el @param {KeyboardEventInit} init */
 const key = (el, init) => {
   const e = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
@@ -54,8 +54,8 @@ describe('search button', () => {
   it('shows only a decorative icon in both buttons; the name and tooltip come from the label', () => {
     const { el } = make();
     for (const [selector, icon, name] of [
-      ['.dg-search-submit', 'search', 'Search'],
-      ['.dg-search-reset', 'close', 'Clear search'],
+      ['.spg-search-submit', 'search', 'Search'],
+      ['.spg-search-reset', 'close', 'Clear search'],
     ]) {
       const btn = /** @type {HTMLElement} */ (el.querySelector(selector));
       const mark = /** @type {HTMLElement} */ (btn.firstElementChild);
@@ -116,14 +116,14 @@ describe('search button', () => {
 
     type(el, 'eve');
     button(el).click();
-    /** @type {HTMLElement} */ (el.querySelector('.dg-search-clear')).click();
+    /** @type {HTMLElement} */ (el.querySelector('.spg-search-clear')).click();
     expect(shown(el)).toBe(3);
     expect(input(el).value).toBe('');
   });
 
   it('has an icon-only Clear search button that empties the box and the filter at once', () => {
     const { el, grid } = make();
-    const reset = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-reset'));
+    const reset = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-reset'));
     expect(reset.type).toBe('button');
     expect(reset.getAttribute('aria-label')).toBe('Clear search');
     type(el, 'ada');
@@ -145,24 +145,24 @@ describe('search button', () => {
       rows: [{ name: 'Ada', role: 'Eve' }],
       searchColumnSelect: true,
     });
-    const select = /** @type {HTMLSelectElement} */ (el.querySelector('select.dg-search-column'));
+    const select = /** @type {HTMLSelectElement} */ (el.querySelector('select.spg-search-column'));
     select.value = 'role';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     expect(grid.getSearchColumn()).toBe('role');
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-reset')).click();
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-reset')).click();
     expect(grid.getSearchColumn()).toBeNull();
     expect(select.value).toBe('');
   });
 
   it('shows no Clear search button without searchButton and uses labels.clear for its name', () => {
-    expect(make({ searchButton: false }).el.querySelector('.dg-search-reset')).toBeNull();
+    expect(make({ searchButton: false }).el.querySelector('.spg-search-reset')).toBeNull();
     const { el } = make({ labels: thaiLabels });
-    expect(el.querySelector('.dg-search-reset')?.getAttribute('aria-label')).toBe('ล้างการค้นหา');
+    expect(el.querySelector('.spg-search-reset')?.getAttribute('aria-label')).toBe('ล้างการค้นหา');
   });
 
   it('keeps the clear button in step with the text while typing', () => {
     const { el } = make();
-    const clear = /** @type {HTMLElement} */ (el.querySelector('.dg-search-clear'));
+    const clear = /** @type {HTMLElement} */ (el.querySelector('.spg-search-clear'));
     expect(clear.hidden).toBe(true);
     type(el, 'a');
     expect(clear.hidden).toBe(false);
@@ -178,7 +178,7 @@ describe('search button', () => {
 
   it('removes its listeners on destroy', () => {
     const { el, grid } = make();
-    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar'));
+    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.spg-toolbar'));
     const remove = vi.spyOn(toolbar, 'removeEventListener');
     grid.destroy();
     expect(remove.mock.calls.map(([t]) => t)).toContain('keydown');
@@ -188,18 +188,18 @@ describe('search button', () => {
 describe('input group', () => {
   it('puts the select, the search box and the buttons in one group, in that order', () => {
     const { el } = make({ searchColumnSelect: true });
-    const group = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar > .dg-input-group'));
+    const group = /** @type {HTMLElement} */ (el.querySelector('.spg-toolbar > .spg-input-group'));
     expect([...group.children].map((c) => c.className)).toEqual([
-      'dg-search-column',
-      'dg-search-field',
-      'dg-search-submit',
-      'dg-search-reset',
+      'spg-search-column',
+      'spg-search-field',
+      'spg-search-submit',
+      'spg-search-reset',
     ]);
   });
 
   it('is just the search box when nothing else is on', () => {
     const { el } = make({ searchButton: false });
-    const group = /** @type {HTMLElement} */ (el.querySelector('.dg-input-group'));
-    expect([...group.children].map((c) => c.className)).toEqual(['dg-search-field']);
+    const group = /** @type {HTMLElement} */ (el.querySelector('.spg-input-group'));
+    expect([...group.children].map((c) => c.className)).toEqual(['spg-search-field']);
   });
 });

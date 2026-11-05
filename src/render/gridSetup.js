@@ -15,24 +15,24 @@ import { mountShell } from './toolbar.js';
 
 /**
  * @param {unknown} container
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  * @throws {TypeError} `container` is not an HTMLElement
  * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, or `freezeColumns` is not a whole number
  */
 export function assertOptions(container, options) {
   if (!(container instanceof HTMLElement)) {
-    throw new TypeError('DataGrid: container must be an HTMLElement');
+    throw new TypeError('SPGrid: container must be an HTMLElement');
   }
   if (options.pageSize !== undefined) assertPageSize(options.pageSize);
   options.pageSizeOptions?.forEach(assertPageSize);
   if (options.gridLines !== undefined && !GRID_LINES.includes(options.gridLines)) {
-    throw new RangeError(`DataGrid: unknown gridLines "${options.gridLines}"`);
+    throw new RangeError(`SPGrid: unknown gridLines "${options.gridLines}"`);
   }
   if (options.lineStyle !== undefined && !LINE_STYLES.includes(options.lineStyle)) {
-    throw new RangeError(`DataGrid: unknown lineStyle "${options.lineStyle}"`);
+    throw new RangeError(`SPGrid: unknown lineStyle "${options.lineStyle}"`);
   }
   if (options.freezeColumns !== undefined && !isFreezeCount(options.freezeColumns)) {
-    throw new RangeError(`DataGrid: freezeColumns must be a whole number, 0 or more`);
+    throw new RangeError(`SPGrid: freezeColumns must be a whole number, 0 or more`);
   }
 }
 
@@ -40,7 +40,7 @@ export function assertOptions(container, options) {
  * Mount the static shell in `container` and make the renderer that fills it.
  *
  * @param {HTMLElement} container
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  */
 export function mountParts(container, options) {
   const labels = resolveLabels(options.labels);
@@ -64,7 +64,7 @@ export function mountParts(container, options) {
 /**
  * What `resetView()` goes back to: the `pageSize`, `defaultSort` and `groupBy` options.
  *
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  * @returns {{ pageSize: number | null, sort: import('../types.js').SortState, groupBy: string[] }}
  * @throws {TypeError} `defaultSort` has a bad direction, or `groupBy` is not an array of keys
  * @throws {RangeError} `defaultSort` or `groupBy` names a column that is not a data column, or `groupBy` repeats one
@@ -80,7 +80,7 @@ export function initialView(options) {
 /**
  * The state a new grid starts with: the saved sort, group columns and page size (if any) over the options.
  *
- * @param {import('../types.js').DataGridOptions} options
+ * @param {import('../types.js').SPGridOptions} options
  * @param {import('../types.js').Column[]} columns Columns in display order.
  * @param {ReturnType<typeof initialView>} initial
  * @returns {import('../types.js').GridState}

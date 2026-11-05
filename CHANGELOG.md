@@ -16,6 +16,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: Quick Start for Next.js (App Router, client component). Docs only, no `src/` change.
 - Quick Start (Next.js) page (`/quick-start.html`) with copyable code, linked from the landing page and the top nav. No `src/` change.
 
+## [2.0.0] - 2026-11-05
+
+### Changed (BREAKING)
+
+- Renamed the project from "Siam Piwat DataGrid" to **SPGrid**. Migrate as follows:
+  - npm package `@siampiwat/datagrid` -> `@siampiwat/spgrid` (`npm uninstall @siampiwat/datagrid && npm install @siampiwat/spgrid`).
+  - Exports `DataGrid` -> `SPGrid`, type `DataGridOptions` -> `SPGridOptions`.
+  - Build files `dist/datagrid.*` -> `dist/spgrid.*` (`datagrid.css` -> `spgrid.css`, `datagrid.styled.js` -> `spgrid.styled.js`, and so on).
+  - CSS class prefix `dg-` -> `spg-`, CSS custom properties `--dg-*` -> `--spg-*` and `--dgi-*` -> `--spgi-*`. Update any
+    stylesheet that overrides them.
+  - localStorage keys `datagrid:*` -> `spgrid:*`. Values saved by 1.x (sort, columns, page size, view settings) are not read
+    and are not migrated; users start from the defaults once.
+  - Release files are now `siampiwat-spgrid-<version>.tgz` / `.zip`.
+- The GitHub repository name is unchanged.
+
 ## [1.0.9] - 2026-11-05
 
 ### Changed

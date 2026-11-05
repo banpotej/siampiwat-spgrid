@@ -63,7 +63,7 @@ const FOCUSABLE = 'input:not(:disabled), select:not(:disabled), button:not(:disa
  * click on the backdrop and Cancel discard it. The last shown column's checkbox is disabled: a grid always
  * shows a column. The reset button closes the dialog (as Cancel) and calls `onReset`.
  *
- * @param {HTMLElement} root Element that carries the theme tokens (`.dg-root`); the dialog is added inside it.
+ * @param {HTMLElement} root Element that carries the theme tokens (`.spg-root`); the dialog is added inside it.
  * @param {{ key: string, label: string, sortable?: boolean }[]} columns
  * @param {ColumnSettings} current
  * @param {DialogLabels} labels
@@ -81,33 +81,33 @@ export function openColumnDialog(
   onReset,
   groupColumns = columns,
 ) {
-  const id = `dg-settings-${++seq}`;
+  const id = `spg-settings-${++seq}`;
   /** @param {string} label A multi-line header ("ไทย\nEnglish") reads as one line. */
   const flat = (label) => label.replace(/\s*\n\s*/g, ' / ');
   const rows = columns
     .map(({ key, label }) => {
       const name = flat(label);
-      return `<label class="dg-columns-item"><input type="checkbox" data-key="${escapeHtml(key)}"><span>${escapeHtml(name)}</span></label>`;
+      return `<label class="spg-columns-item"><input type="checkbox" data-key="${escapeHtml(key)}"><span>${escapeHtml(name)}</span></label>`;
     })
     .join('');
   /** @param {string} text */
-  const heading = (text) => `<h3 class="dg-settings-heading">${escapeHtml(text)}</h3>`;
+  const heading = (text) => `<h3 class="spg-settings-heading">${escapeHtml(text)}</h3>`;
   const columnSection =
     columns.length === 0
       ? ''
-      : `<section>${heading(labels.columns)}<div class="dg-settings-list">${rows}</div>` +
-        `<div class="dg-settings-bulk"><button type="button" class="dg-settings-link" data-bulk="all">${escapeHtml(labels.selectAll)}</button>` +
-        `<button type="button" class="dg-settings-link" data-bulk="none">${escapeHtml(labels.clearAll)}</button></div></section>`;
+      : `<section>${heading(labels.columns)}<div class="spg-settings-list">${rows}</div>` +
+        `<div class="spg-settings-bulk"><button type="button" class="spg-settings-link" data-bulk="all">${escapeHtml(labels.selectAll)}</button>` +
+        `<button type="button" class="spg-settings-link" data-bulk="none">${escapeHtml(labels.clearAll)}</button></div></section>`;
   /** @param {'striped' | 'wrapped'} flag @param {string} text */
   const switchRow = (flag, text) =>
     current.view?.[flag] === undefined
       ? ''
-      : `<label class="dg-settings-switch"><span>${escapeHtml(text)}</span><input type="checkbox" role="switch" data-flag="${flag}"></label>`;
+      : `<label class="spg-settings-switch"><span>${escapeHtml(text)}</span><input type="checkbox" role="switch" data-flag="${flag}"></label>`;
   /** @param {'gridLines' | 'lineStyle' | 'freezeColumns'} name @param {string} text @param {readonly string[]} values @param {Record<string, string>} texts */
   const choiceRow = (name, text, values, texts) =>
     current.view?.[name] === undefined
       ? ''
-      : `<label class="dg-settings-field"><span>${escapeHtml(text)}</span><select data-choice="${name}">${values.map((value) => `<option value="${value}">${escapeHtml(texts[value])}</option>`).join('')}</select></label>`;
+      : `<label class="spg-settings-field"><span>${escapeHtml(text)}</span><select data-choice="${name}">${values.map((value) => `<option value="${value}">${escapeHtml(texts[value])}</option>`).join('')}</select></label>`;
   // 0 .. the most columns that can be frozen (the current count too, when it was set higher from code).
   const freezeValues = Array.from(
     { length: Math.max(current.freezeMax ?? 0, current.view?.freezeColumns ?? 0) + 1 },
@@ -126,7 +126,7 @@ export function openColumnDialog(
   const sortable = columns.filter((c) => c.sortable === true);
   /** @param {string} text @param {string} control */
   const field = (text, control) =>
-    `<label class="dg-settings-field"><span>${escapeHtml(text)}</span>${control}</label>`;
+    `<label class="spg-settings-field"><span>${escapeHtml(text)}</span>${control}</label>`;
   const sortKeyOptions =
     `<option value="">${escapeHtml(labels.noSort)}</option>` +
     sortable
@@ -135,11 +135,11 @@ export function openColumnDialog(
   const sortSection =
     sortable.length === 0
       ? ''
-      : `<section>${heading(labels.sort)}<div class="dg-settings-sort">` +
-        field(labels.sortBy, `<select class="dg-settings-sort-key">${sortKeyOptions}</select>`) +
+      : `<section>${heading(labels.sort)}<div class="spg-settings-sort">` +
+        field(labels.sortBy, `<select class="spg-settings-sort-key">${sortKeyOptions}</select>`) +
         field(
           labels.sortDirection,
-          `<select class="dg-settings-sort-dir"><option value="asc">${escapeHtml(labels.ascending)}</option><option value="desc">${escapeHtml(labels.descending)}</option></select>`,
+          `<select class="spg-settings-sort-dir"><option value="asc">${escapeHtml(labels.ascending)}</option><option value="desc">${escapeHtml(labels.descending)}</option></select>`,
         ) +
         `</div></section>`;
   const groupSection =
@@ -151,22 +151,22 @@ export function openColumnDialog(
           labels,
         );
   const overlay = document.createElement('div');
-  overlay.className = 'dg-modal';
+  overlay.className = 'spg-modal';
   overlay.innerHTML =
-    `<div class="dg-modal-box dg-settings" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
-    `<h2 class="dg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
-    `<div class="dg-settings-body">${columnSection}${sortSection}${groupSection}${viewSection}</div>` +
-    `<div class="dg-modal-actions">` +
+    `<div class="spg-modal-box spg-settings" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
+    `<h2 class="spg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
+    `<div class="spg-settings-body">${columnSection}${sortSection}${groupSection}${viewSection}</div>` +
+    `<div class="spg-modal-actions">` +
     (onReset
-      ? `<button type="button" class="dg-modal-btn dg-settings-reset">${escapeHtml(labels.reset)}</button>`
+      ? `<button type="button" class="spg-modal-btn spg-settings-reset">${escapeHtml(labels.reset)}</button>`
       : '') +
-    `<button type="button" class="dg-modal-btn dg-modal-cancel">${escapeHtml(labels.cancel)}</button>` +
-    `<button type="button" class="dg-modal-btn dg-modal-ok">${escapeHtml(labels.apply)}</button>` +
+    `<button type="button" class="spg-modal-btn spg-modal-cancel">${escapeHtml(labels.cancel)}</button>` +
+    `<button type="button" class="spg-modal-btn spg-modal-ok">${escapeHtml(labels.apply)}</button>` +
     `</div>` +
-    `<button type="button" class="dg-modal-x" aria-label="${escapeHtml(labels.close)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` +
+    `<button type="button" class="spg-modal-x" aria-label="${escapeHtml(labels.close)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>` +
     `</div>`;
 
-  const boxes = [...overlay.querySelectorAll('.dg-columns-item input')].map(
+  const boxes = [...overlay.querySelectorAll('.spg-columns-item input')].map(
     (el) => /** @type {HTMLInputElement} */ (el),
   );
   for (const box of boxes) box.checked = !(current.hidden ?? []).includes(box.dataset.key ?? '');
@@ -185,10 +185,10 @@ export function openColumnDialog(
     select.value = String(current.view?.[name] ?? (name === 'freezeColumns' ? 0 : 'default'));
   }
   const sortKey = /** @type {HTMLSelectElement | null} */ (
-    overlay.querySelector('.dg-settings-sort-key')
+    overlay.querySelector('.spg-settings-sort-key')
   );
   const sortDir = /** @type {HTMLSelectElement | null} */ (
-    overlay.querySelector('.dg-settings-sort-dir')
+    overlay.querySelector('.spg-settings-sort-dir')
   );
   if (sortKey && sortDir) {
     // A sort on a column that is not sortable (set from code) cannot be shown, so it shows as no sorting.
@@ -271,10 +271,10 @@ export function openColumnDialog(
     });
   }
   overlay.addEventListener('click', (event) => event.target === overlay && close(false));
-  overlay.querySelector('.dg-modal-cancel')?.addEventListener('click', () => close(false));
-  overlay.querySelector('.dg-modal-x')?.addEventListener('click', () => close(false));
-  overlay.querySelector('.dg-modal-ok')?.addEventListener('click', () => close(true));
-  overlay.querySelector('.dg-settings-reset')?.addEventListener('click', () => {
+  overlay.querySelector('.spg-modal-cancel')?.addEventListener('click', () => close(false));
+  overlay.querySelector('.spg-modal-x')?.addEventListener('click', () => close(false));
+  overlay.querySelector('.spg-modal-ok')?.addEventListener('click', () => close(true));
+  overlay.querySelector('.spg-settings-reset')?.addEventListener('click', () => {
     close(false);
     onReset?.();
   });

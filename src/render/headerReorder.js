@@ -23,8 +23,8 @@ export function bindHeaderReorder(host, onMove) {
   };
   const rtl = (/** @type {Element} */ el) => getComputedStyle(el).direction === 'rtl';
   const clearMarks = () => {
-    for (const el of thead.querySelectorAll('.dg-dragging, .dg-drop-before, .dg-drop-after')) {
-      el.classList.remove('dg-dragging', 'dg-drop-before', 'dg-drop-after');
+    for (const el of thead.querySelectorAll('.spg-dragging, .spg-drop-before, .spg-drop-after')) {
+      el.classList.remove('spg-dragging', 'spg-drop-before', 'spg-drop-after');
     }
   };
   /** @param {HTMLElement} th @param {MouseEvent} e @returns {boolean} The pointer is in the half where "after" lies. */
@@ -35,7 +35,7 @@ export function bindHeaderReorder(host, onMove) {
 
   /** @param {Event} e */
   const onPointerDown = (e) => {
-    fromHandle = e.target instanceof Element && e.target.closest('.dg-resize') !== null;
+    fromHandle = e.target instanceof Element && e.target.closest('.spg-resize') !== null;
   };
   /** @param {Event} e */
   const onDragStart = (e) => {
@@ -45,7 +45,7 @@ export function bindHeaderReorder(host, onMove) {
       return;
     }
     dragging = th.dataset.key ?? null;
-    th.classList.add('dg-dragging');
+    th.classList.add('spg-dragging');
     const transfer = /** @type {DragEvent} */ (e).dataTransfer;
     transfer?.setData('text/plain', dragging ?? ''); // Firefox starts no drag without data
     if (transfer) transfer.effectAllowed = 'move';
@@ -55,11 +55,11 @@ export function bindHeaderReorder(host, onMove) {
     const th = cell(e);
     if (dragging === null || !th || !(e instanceof MouseEvent)) return;
     e.preventDefault(); // allow the drop
-    for (const el of thead.querySelectorAll('.dg-drop-before, .dg-drop-after')) {
-      el.classList.remove('dg-drop-before', 'dg-drop-after');
+    for (const el of thead.querySelectorAll('.spg-drop-before, .spg-drop-after')) {
+      el.classList.remove('spg-drop-before', 'spg-drop-after');
     }
     if (th.dataset.key !== dragging)
-      th.classList.add(isAfter(th, e) ? 'dg-drop-after' : 'dg-drop-before');
+      th.classList.add(isAfter(th, e) ? 'spg-drop-after' : 'spg-drop-before');
   };
   /** @param {Event} e */
   const onDrop = (e) => {

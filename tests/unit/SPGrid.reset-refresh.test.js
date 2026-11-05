@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid, thaiLabels } from '../../src/index.js';
+import { SPGrid, thaiLabels } from '../../src/index.js';
 
 beforeEach(() => localStorage.clear());
 afterEach(() => vi.restoreAllMocks());
@@ -19,22 +19,22 @@ const rows = Array.from({ length: 30 }, (_, i) => ({
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, ...options });
+  const grid = new SPGrid(el, { columns, rows, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el @param {string} selector */
 const button = (el, selector) => /** @type {HTMLButtonElement} */ (el.querySelector(selector));
 /** What the user does to reset: open the settings modal and press its Reset view button. */
 const startReset = (/** @type {HTMLElement} */ el) => {
-  button(el, '.dg-columns-btn').click();
-  button(el, '.dg-settings-reset').click();
+  button(el, '.spg-columns-btn').click();
+  button(el, '.spg-settings-reset').click();
 };
 
 describe('toolbar buttons', () => {
   it('render only when turned on, as icon-only type=button named by their labels', () => {
-    expect(make({ searchable: true }).el.querySelector('.dg-refresh')).toBeNull();
+    expect(make({ searchable: true }).el.querySelector('.spg-refresh')).toBeNull();
     const { el } = make({ searchable: true, refreshButton: true });
-    const btn = button(el, '.dg-refresh');
+    const btn = button(el, '.spg-refresh');
     expect(btn.type).toBe('button');
     expect(btn.getAttribute('aria-label')).toBe('Refresh');
     expect(btn.title).toBe('Refresh');
@@ -44,10 +44,10 @@ describe('toolbar buttons', () => {
 
   it('use the Thai labels and escape custom ones', () => {
     const { el } = make({ searchable: true, refreshButton: true, labels: thaiLabels });
-    expect(button(el, '.dg-refresh').getAttribute('aria-label')).toBe('โหลดข้อมูลใหม่');
+    expect(button(el, '.spg-refresh').getAttribute('aria-label')).toBe('โหลดข้อมูลใหม่');
     const odd = make({ refreshButton: true, labels: { refresh: '<b>"R"</b>' } }).el;
-    expect(button(odd, '.dg-refresh').getAttribute('aria-label')).toBe('<b>"R"</b>');
-    expect(odd.querySelector('.dg-refresh b')).toBeNull();
+    expect(button(odd, '.spg-refresh').getAttribute('aria-label')).toBe('<b>"R"</b>');
+    expect(odd.querySelector('.spg-refresh b')).toBeNull();
   });
 
   it('sit at the end of the input group, in the order Refresh, Export, Settings', () => {
@@ -58,23 +58,23 @@ describe('toolbar buttons', () => {
       resetButton: true,
       exportButton: true,
     });
-    const group = /** @type {HTMLElement} */ (el.querySelector('.dg-input-group'));
+    const group = /** @type {HTMLElement} */ (el.querySelector('.spg-input-group'));
     expect([...group.children].map((c) => c.className)).toEqual([
-      'dg-search-field',
-      'dg-search-submit',
-      'dg-search-reset',
-      'dg-tool-btn dg-refresh',
-      'dg-export',
-      'dg-tool-btn dg-columns-btn',
+      'spg-search-field',
+      'spg-search-submit',
+      'spg-search-reset',
+      'spg-tool-btn spg-refresh',
+      'spg-export',
+      'spg-tool-btn spg-columns-btn',
     ]);
   });
 
   it('stand alone in the toolbar without a search box', () => {
     const { el } = make({ refreshButton: true, resetButton: true });
-    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.dg-toolbar'));
+    const toolbar = /** @type {HTMLElement} */ (el.querySelector('.spg-toolbar'));
     expect([...toolbar.children].map((c) => c.className)).toEqual([
-      'dg-tool-btn dg-refresh',
-      'dg-tool-btn dg-columns-btn',
+      'spg-tool-btn spg-refresh',
+      'spg-tool-btn spg-columns-btn',
     ]);
   });
 });
@@ -82,25 +82,25 @@ describe('toolbar buttons', () => {
 describe('reset in the settings modal', () => {
   it('is offered only with resetButton, as a text button named by labels.resetView', () => {
     const none = make({ columnPicker: true }).el;
-    button(none, '.dg-columns-btn').click();
-    expect(none.querySelector('.dg-settings-reset')).toBeNull();
+    button(none, '.spg-columns-btn').click();
+    expect(none.querySelector('.spg-settings-reset')).toBeNull();
     const { el } = make({ resetButton: true });
-    expect(el.querySelector('.dg-reset-view')).toBeNull();
-    button(el, '.dg-columns-btn').click();
-    expect(button(el, '.dg-settings-reset').textContent).toBe('Reset view');
-    expect(el.querySelector('.dg-settings-list')).toBeNull();
+    expect(el.querySelector('.spg-reset-view')).toBeNull();
+    button(el, '.spg-columns-btn').click();
+    expect(button(el, '.spg-settings-reset').textContent).toBe('Reset view');
+    expect(el.querySelector('.spg-settings-list')).toBeNull();
     const thai = make({ resetButton: true, labels: thaiLabels }).el;
-    button(thai, '.dg-columns-btn').click();
-    expect(button(thai, '.dg-settings-reset').textContent).toBe('รีเซ็ตมุมมอง');
+    button(thai, '.spg-columns-btn').click();
+    expect(button(thai, '.spg-settings-reset').textContent).toBe('รีเซ็ตมุมมอง');
   });
 
   it('closes the settings modal and asks before it resets', async () => {
     const { el, grid } = make({ resetButton: true, columnPicker: true });
     grid.setSort({ key: 'name', direction: 'asc' });
     startReset(el);
-    await vi.waitFor(() => button(el, '.dg-modal-ok'));
-    expect(el.querySelectorAll('.dg-modal')).toHaveLength(1);
-    expect(el.querySelector('.dg-settings')).toBeNull();
+    await vi.waitFor(() => button(el, '.spg-modal-ok'));
+    expect(el.querySelectorAll('.spg-modal')).toHaveLength(1);
+    expect(el.querySelector('.spg-settings')).toBeNull();
     expect(grid.getSort()).not.toBeNull();
   });
 });
@@ -112,8 +112,8 @@ describe('refresh', () => {
     const spy = vi.fn();
     grid.on('refresh', spy);
     grid.setPage(2);
-    button(el, '.dg-refresh').click();
-    button(el, '.dg-refresh').click();
+    button(el, '.spg-refresh').click();
+    button(el, '.spg-refresh').click();
     expect(spy).toHaveBeenCalledTimes(2);
     expect(onRefresh).toHaveBeenCalledTimes(2);
     expect(grid.getPage()).toBe(2);
@@ -121,7 +121,7 @@ describe('refresh', () => {
 
   it('removes its listener on destroy', () => {
     const { el, grid } = make({ refreshButton: true });
-    const btn = button(el, '.dg-refresh');
+    const btn = button(el, '.spg-refresh');
     const remove = vi.spyOn(btn, 'removeEventListener');
     grid.destroy();
     expect(remove).toHaveBeenCalledWith('click', expect.any(Function));
@@ -142,21 +142,21 @@ describe('Reset view confirmation', () => {
     const { el, grid } = messy();
     startReset(el);
     await settle();
-    const modal = /** @type {HTMLElement} */ (el.querySelector('.dg-root > .dg-modal'));
+    const modal = /** @type {HTMLElement} */ (el.querySelector('.spg-root > .spg-modal'));
     expect(modal.querySelector('[role="alertdialog"]')?.getAttribute('aria-modal')).toBe('true');
-    expect(modal.querySelector('.dg-modal-title')?.textContent).toBe('Reset view');
-    expect(modal.querySelector('.dg-modal-text')?.textContent).toContain('Reset the view?');
-    expect(document.activeElement).toBe(modal.querySelector('.dg-modal-cancel'));
-    button(el, '.dg-modal-cancel').click();
+    expect(modal.querySelector('.spg-modal-title')?.textContent).toBe('Reset view');
+    expect(modal.querySelector('.spg-modal-text')?.textContent).toContain('Reset the view?');
+    expect(document.activeElement).toBe(modal.querySelector('.spg-modal-cancel'));
+    button(el, '.spg-modal-cancel').click();
     await settle();
-    expect(el.querySelector('.dg-modal')).toBeNull();
+    expect(el.querySelector('.spg-modal')).toBeNull();
     expect(grid.getSort()).toEqual({ key: 'name', direction: 'asc' });
     const thai = messy({ labels: thaiLabels });
     startReset(thai.el);
     await settle();
-    expect(thai.el.querySelector('.dg-modal-text')?.textContent).toContain('รีเซ็ตมุมมอง?');
-    expect(thai.el.querySelector('.dg-modal-ok')?.textContent).toBe('รีเซ็ต');
-    expect(thai.el.querySelector('.dg-modal-cancel')?.textContent).toBe('ยกเลิก');
+    expect(thai.el.querySelector('.spg-modal-text')?.textContent).toContain('รีเซ็ตมุมมอง?');
+    expect(thai.el.querySelector('.spg-modal-ok')?.textContent).toBe('รีเซ็ต');
+    expect(thai.el.querySelector('.spg-modal-cancel')?.textContent).toBe('ยกเลิก');
     expect(ask).not.toHaveBeenCalled();
   });
 
@@ -164,30 +164,30 @@ describe('Reset view confirmation', () => {
     const { el, grid } = messy();
     startReset(el);
     await settle();
-    el.querySelector('.dg-modal')?.dispatchEvent(
+    el.querySelector('.spg-modal')?.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
     );
     await settle();
-    expect(el.querySelector('.dg-modal')).toBeNull();
+    expect(el.querySelector('.spg-modal')).toBeNull();
     startReset(el);
     await settle();
-    button(el, '.dg-modal').click();
+    button(el, '.spg-modal').click();
     await settle();
-    expect(el.querySelector('.dg-modal')).toBeNull();
+    expect(el.querySelector('.spg-modal')).toBeNull();
     expect(grid.getSort()).not.toBeNull();
     startReset(el);
     await settle();
-    button(el, '.dg-modal-ok').click();
+    button(el, '.spg-modal-ok').click();
     await vi.waitFor(() => expect(grid.getSort()).toBeNull());
-    expect(el.querySelector('.dg-modal')).toBeNull();
+    expect(el.querySelector('.spg-modal')).toBeNull();
   });
 
   it('escapes the message and labels shown in the modal', async () => {
     const { el } = messy({ labels: { confirmReset: '<b>x</b>', confirmOk: '<i>y</i>' } });
     startReset(el);
     await settle();
-    expect(el.querySelector('.dg-modal b, .dg-modal i')).toBeNull();
-    expect(el.querySelector('.dg-modal-text')?.textContent).toBe('<b>x</b>');
+    expect(el.querySelector('.spg-modal b, .spg-modal i')).toBeNull();
+    expect(el.querySelector('.spg-modal-text')?.textContent).toBe('<b>x</b>');
   });
 
   it('uses a custom confirmReset (sync or async) and its message from labels.confirmReset', async () => {
@@ -276,13 +276,13 @@ describe('resetView', () => {
     expect(grid.getHiddenColumns()).toEqual(['city']);
     expect(grid.getPageSize()).toBe(10);
     expect(grid.getPage()).toBe(1);
-    expect(/** @type {HTMLInputElement} */ (el.querySelector('input.dg-search')).value).toBe('');
+    expect(/** @type {HTMLInputElement} */ (el.querySelector('input.spg-search')).value).toBe('');
     expect(
-      /** @type {HTMLSelectElement} */ (el.querySelector('select.dg-search-column')).value,
+      /** @type {HTMLSelectElement} */ (el.querySelector('select.spg-search-column')).value,
     ).toBe('');
-    /** @type {HTMLButtonElement} */ (el.querySelector('.dg-columns-btn')).click(); // the modal shows the reset state
+    /** @type {HTMLButtonElement} */ (el.querySelector('.spg-columns-btn')).click(); // the modal shows the reset state
     const checked = (/** @type {string} */ key) =>
-      /** @type {HTMLInputElement} */ (el.querySelector(`.dg-settings input[data-key="${key}"]`))
+      /** @type {HTMLInputElement} */ (el.querySelector(`.spg-settings input[data-key="${key}"]`))
         .checked;
     expect(checked('city')).toBe(false);
     expect(checked('role')).toBe(true);
@@ -294,9 +294,9 @@ describe('resetView', () => {
     const view = make(options);
     mess(view);
     startReset(view.el);
-    await vi.waitFor(() => button(view.el, '.dg-modal-ok'));
+    await vi.waitFor(() => button(view.el, '.spg-modal-ok'));
     expect(view.grid.getSort()).not.toBeNull();
-    button(view.el, '.dg-modal-ok').click();
+    button(view.el, '.spg-modal-ok').click();
     await vi.waitFor(() => expect(view.grid.getSort()).toBeNull());
     expect(view.grid.getPageSize()).toBe(10);
   });
@@ -340,8 +340,8 @@ describe('resetView', () => {
     view.grid.setHiddenColumns(['role']);
     view.grid.setPageSize(20);
     view.grid.resetView();
-    expect(JSON.parse(localStorage.getItem('datagrid:columns:po') ?? 'null')).toEqual(['city']);
-    expect(localStorage.getItem('datagrid:pageSize:po')).toBe('10');
+    expect(JSON.parse(localStorage.getItem('spgrid:columns:po') ?? 'null')).toEqual(['city']);
+    expect(localStorage.getItem('spgrid:pageSize:po')).toBe('10');
     expect(make({ ...options, ...saved }).grid.getPageSize()).toBe(10);
   });
 

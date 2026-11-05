@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/test';
 test('an action column is no wider than its button plus the cell padding', async ({ page }) => {
   await page.goto('/tests/e2e/fixtures/actions.html');
   const widths = await page.evaluate(() => {
-    const cell = /** @type {HTMLElement} */ (document.querySelector('tbody tr td.dg-action-cell'));
-    const button = /** @type {HTMLElement} */ (cell.querySelector('button.dg-action'));
+    const cell = /** @type {HTMLElement} */ (document.querySelector('tbody tr td.spg-action-cell'));
+    const button = /** @type {HTMLElement} */ (cell.querySelector('button.spg-action'));
     const style = getComputedStyle(cell);
     const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
     return {

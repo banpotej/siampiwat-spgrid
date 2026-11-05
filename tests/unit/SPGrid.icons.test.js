@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 import { ICONS, resolveIcons } from '../../src/render/icons.js';
 import { nav } from './helpers/pagination.js';
 
@@ -18,7 +18,7 @@ const rows = Array.from({ length: 25 }, (_, i) => ({
 /** @param {object} [options] */
 const make = (options = {}) => {
   const el = document.createElement('div');
-  const grid = new DataGrid(el, { columns, rows, ...options });
+  const grid = new SPGrid(el, { columns, rows, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el @param {number} col */
@@ -30,7 +30,7 @@ const normalized = (markup) => {
   return div.innerHTML;
 };
 /** @param {HTMLElement} cell */
-const sortIcon = (cell) => cell.querySelector('.dg-sort-icon')?.getAttribute('data-icon');
+const sortIcon = (cell) => cell.querySelector('.spg-sort-icon')?.getAttribute('data-icon');
 
 describe('built-in icons', () => {
   it('are decorative inline SVGs using currentColor in a 24px Material Symbols viewBox', () => {
@@ -93,14 +93,14 @@ describe('sort icons', () => {
 
   it('are hidden from assistive technology and do not change the header text', () => {
     const { el } = make();
-    const icon = /** @type {HTMLElement} */ (th(el, 1).querySelector('.dg-sort-icon'));
+    const icon = /** @type {HTMLElement} */ (th(el, 1).querySelector('.spg-sort-icon'));
     expect(icon.getAttribute('aria-hidden')).toBe('true');
     expect(th(el, 1).textContent).toBe('Name');
   });
 
   it('are absent from columns that are not sortable', () => {
     const { el } = make();
-    expect(th(el, 2).querySelector('.dg-icon')).toBeNull();
+    expect(th(el, 2).querySelector('.spg-icon')).toBeNull();
   });
 });
 
@@ -163,12 +163,12 @@ describe('pager icon buttons', () => {
 describe('search box icons', () => {
   it('has a leading search icon and a clear button with an aria-label', () => {
     const { el } = make({ searchable: true, labels: { clear: 'ล้าง' } });
-    expect(el.querySelector('.dg-search-field [data-icon="search"]')).not.toBeNull();
-    const clear = /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-clear'));
+    expect(el.querySelector('.spg-search-field [data-icon="search"]')).not.toBeNull();
+    const clear = /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-clear'));
     expect(clear.getAttribute('aria-label')).toBe('ล้าง');
     expect(clear.querySelector('[data-icon="close"]')).not.toBeNull();
     expect(
-      make({ searchable: true }).el.querySelector('.dg-search-clear')?.getAttribute('aria-label'),
+      make({ searchable: true }).el.querySelector('.spg-search-clear')?.getAttribute('aria-label'),
     ).toBe('Clear search');
   });
 });
@@ -176,7 +176,7 @@ describe('search box icons', () => {
 describe('empty state', () => {
   it('shows the inbox icon with the (escaped) text and still announces it', () => {
     const { el } = make({ rows: [], labels: { empty: 'ไม่พบ <u>x</u>' } });
-    const cell = /** @type {HTMLElement} */ (el.querySelector('tr.dg-empty td'));
+    const cell = /** @type {HTMLElement} */ (el.querySelector('tr.spg-empty td'));
     expect(cell.querySelector('[data-icon="inbox"]')).not.toBeNull();
     expect(cell.textContent).toBe('ไม่พบ <u>x</u>');
     expect(el.querySelector('u')).toBeNull();
@@ -191,12 +191,12 @@ describe('options.icons', () => {
     const custom = '<svg data-test="mine" viewBox="0 0 1 1"><path d="M0 0"/></svg>';
     const { el, grid } = make({ icons: { arrow_upward: custom } });
     grid.setSort({ key: 'name', direction: 'asc' });
-    const icon = /** @type {HTMLElement} */ (th(el, 1).querySelector('.dg-sort-icon'));
+    const icon = /** @type {HTMLElement} */ (th(el, 1).querySelector('.spg-sort-icon'));
     expect(icon.querySelector('svg')?.getAttribute('data-test')).toBe('mine');
     expect(icon.getAttribute('aria-hidden')).toBe('true'); // still decorative
 
     grid.setSort({ key: 'name', direction: 'desc' });
-    expect(th(el, 1).querySelector('.dg-sort-icon')?.innerHTML).toBe(
+    expect(th(el, 1).querySelector('.spg-sort-icon')?.innerHTML).toBe(
       normalized(ICONS.arrow_downward),
     );
   });
@@ -229,20 +229,20 @@ describe('user data never reaches an icon', () => {
       pageSize: 1,
     });
     expect(el.querySelector('img')).toBeNull();
-    for (const icon of el.querySelectorAll('.dg-icon')) {
+    for (const icon of el.querySelectorAll('.spg-icon')) {
       const name = /** @type {keyof typeof ICONS} */ (icon.getAttribute('data-icon'));
       expect(icon.innerHTML).toBe(normalized(ICONS[name]));
     }
-    expect(el.querySelectorAll('.dg-icon').length).toBeGreaterThan(5);
+    expect(el.querySelectorAll('.spg-icon').length).toBeGreaterThan(5);
   });
 });
 
 describe('look options', () => {
   it('striped, density, stickyHeader and maxHeight set modifier classes and styles', () => {
-    const base = make().el.querySelector('.dg-root');
-    expect(base?.className).toBe('dg-root');
+    const base = make().el.querySelector('.spg-root');
+    expect(base?.className).toBe('spg-root');
 
-    expect(base?.classList.contains('dg-bordered')).toBe(false);
+    expect(base?.classList.contains('spg-bordered')).toBe(false);
     const { el } = make({
       striped: true,
       bordered: true,
@@ -250,23 +250,23 @@ describe('look options', () => {
       stickyHeader: true,
       maxHeight: 300,
     });
-    const root = /** @type {HTMLElement} */ (el.querySelector('.dg-root'));
-    expect(root.classList.contains('dg-striped')).toBe(true);
-    expect(root.classList.contains('dg-bordered')).toBe(true);
-    expect(root.classList.contains('dg-compact')).toBe(true);
-    expect(root.classList.contains('dg-sticky')).toBe(true);
-    const wrap = /** @type {HTMLElement} */ (el.querySelector('.dg-table-wrap'));
-    expect(wrap.classList.contains('dg-scroll')).toBe(true);
+    const root = /** @type {HTMLElement} */ (el.querySelector('.spg-root'));
+    expect(root.classList.contains('spg-striped')).toBe(true);
+    expect(root.classList.contains('spg-bordered')).toBe(true);
+    expect(root.classList.contains('spg-compact')).toBe(true);
+    expect(root.classList.contains('spg-sticky')).toBe(true);
+    const wrap = /** @type {HTMLElement} */ (el.querySelector('.spg-table-wrap'));
+    expect(wrap.classList.contains('spg-scroll')).toBe(true);
     expect(wrap.style.maxHeight).toBe('300px');
 
-    const css = make({ maxHeight: '20rem' }).el.querySelector('.dg-table-wrap');
+    const css = make({ maxHeight: '20rem' }).el.querySelector('.spg-table-wrap');
     expect(/** @type {HTMLElement} */ (css).style.maxHeight).toBe('20rem');
-    expect(make({ density: 'comfortable' }).el.querySelector('.dg-compact')).toBeNull();
+    expect(make({ density: 'comfortable' }).el.querySelector('.spg-compact')).toBeNull();
   });
 
   it('a hostile maxHeight cannot inject other CSS', () => {
     const { el } = make({ maxHeight: '10px; background: red' });
-    const wrap = /** @type {HTMLElement} */ (el.querySelector('.dg-table-wrap'));
+    const wrap = /** @type {HTMLElement} */ (el.querySelector('.spg-table-wrap'));
     expect(wrap.style.background).toBe('');
     expect(wrap.getAttribute('style') ?? '').not.toContain('red');
   });
@@ -278,8 +278,8 @@ describe('look options', () => {
         { key: 'name', align: /** @type {any} */ ('x" onclick="y') },
       ],
     });
-    expect(el.querySelector('th.dg-align-right')).not.toBeNull();
-    expect(el.querySelectorAll('td.dg-align-right')).toHaveLength(25);
+    expect(el.querySelector('th.spg-align-right')).not.toBeNull();
+    expect(el.querySelectorAll('td.spg-align-right')).toHaveLength(25);
     expect(el.querySelector('[onclick]')).toBeNull();
   });
 });

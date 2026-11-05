@@ -2,7 +2,7 @@
 import { dataKeys } from '../core/columns.js';
 import { readJson, writeJson } from '../utils/storage.js';
 
-const PREFIX = 'datagrid:groupBy:';
+const PREFIX = 'spgrid:groupBy:';
 
 /**
  * The group columns saved under `storageKey`, or `fallback` when nothing usable is saved (no entry, bad JSON,

@@ -16,8 +16,8 @@ describe('package contents', () => {
   it('has a release script that makes the .tgz and the .zip as separate files', () => {
     expect(pkg.scripts['pack:release']).toContain('pack.ps1');
     const script = read('pack.ps1');
-    expect(script).toContain('siampiwat-datagrid-$version.tgz');
-    expect(script).toContain('siampiwat-datagrid-$version.zip');
+    expect(script).toContain('siampiwat-spgrid-$version.tgz');
+    expect(script).toContain('siampiwat-spgrid-$version.zip');
     expect(read('.gitignore')).toContain('release/');
   });
 });

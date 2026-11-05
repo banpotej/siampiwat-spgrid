@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DataGrid } from '../../src/index.js';
+import { SPGrid } from '../../src/index.js';
 
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
@@ -11,13 +11,13 @@ const rows = [{ name: 'Ada' }, { name: 'Grace' }, { name: 'Eve' }];
 const make = (options = {}) => {
   const el = document.createElement('div');
   document.body.append(el);
-  const grid = new DataGrid(el, { columns, rows, searchable: true, ...options });
+  const grid = new SPGrid(el, { columns, rows, searchable: true, ...options });
   return { el, grid };
 };
 /** @param {HTMLElement} el */
-const input = (el) => /** @type {HTMLInputElement} */ (el.querySelector('input.dg-search'));
+const input = (el) => /** @type {HTMLInputElement} */ (el.querySelector('input.spg-search'));
 /** @param {HTMLElement} el */
-const clear = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.dg-search-clear'));
+const clear = (el) => /** @type {HTMLButtonElement} */ (el.querySelector('.spg-search-clear'));
 /** @param {HTMLElement} el @param {string} value */
 const type = (el, value) => {
   input(el).value = value;
@@ -25,7 +25,7 @@ const type = (el, value) => {
 };
 /** @param {HTMLElement} el */
 const names = (el) =>
-  [...el.querySelectorAll('tbody tr:not(.dg-empty) td')].map((td) => td.textContent);
+  [...el.querySelectorAll('tbody tr:not(.spg-empty) td')].map((td) => td.textContent);
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -79,7 +79,7 @@ describe('clear search button', () => {
 
   it('is not rendered, and nothing breaks, when the grid is not searchable', () => {
     const { el } = make({ searchable: false });
-    expect(el.querySelector('.dg-search-clear')).toBeNull();
+    expect(el.querySelector('.spg-search-clear')).toBeNull();
   });
 
   it('stops working after destroy()', () => {

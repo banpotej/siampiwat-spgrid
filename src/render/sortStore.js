@@ -3,7 +3,7 @@ import { readJson, writeJson } from '../utils/storage.js';
 
 /** @typedef {import('../types.js').SortState} SortState */
 
-const PREFIX = 'datagrid:sort:';
+const PREFIX = 'spgrid:sort:';
 
 /**
  * The sort saved under `storageKey`, or `fallback` when nothing usable is saved (no entry, bad JSON, a key
