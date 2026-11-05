@@ -29,7 +29,6 @@ export default defineConfig({
         'index.html',
         'quick-start.html',
         'basic.html',
-        'goods-receipt.html',
         'purchase-order.html',
       ].map((f) => resolve(f)),
     },

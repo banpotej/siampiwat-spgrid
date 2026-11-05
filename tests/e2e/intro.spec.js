@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 
 for (const [path, heading] of [
   ['/purchase-order.html', 'Purchase Order'],
-  ['/goods-receipt.html', 'Goods Receipt'],
 ]) {
   test(`${heading}: the explanation starts hidden and can be shown and hidden`, async ({
     page,

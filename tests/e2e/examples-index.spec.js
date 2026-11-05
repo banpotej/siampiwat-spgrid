@@ -4,9 +4,9 @@ test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Siam Piwat DataGrid');
   const cards = page.locator('#examples');
-  await expect(cards.getByRole('link')).toHaveCount(2);
-  await cards.getByRole('link', { name: /Goods Receipt/ }).click();
-  await expect(page).toHaveURL(/\/goods-receipt\.html$/);
+  await expect(cards.getByRole('link')).toHaveCount(1);
+  await cards.getByRole('link', { name: /Purchase Order/ }).click();
+  await expect(page).toHaveURL(/\/purchase-order\.html$/);
 });
 
 test('the landing page carries the new name and the package version', async ({ page }) => {
@@ -63,13 +63,6 @@ test('the nav is on every example page, marks the current one, and leads home', 
   await page.goto('/purchase-order.html');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
   await expect(nav.getByRole('link', { name: 'Purchase Order' })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
-
-  await nav.getByRole('link', { name: 'Goods Receipt' }).click();
-  await expect(page).toHaveURL(/\/goods-receipt\.html$/);
-  await expect(nav.getByRole('link', { name: 'Goods Receipt' })).toHaveAttribute(
     'aria-current',
     'page',
   );
@@ -172,7 +165,7 @@ test('each code block on the landing page has a copy button', async ({ page, con
 
 test('the top nav looks the same on the landing page and the example pages', async ({ page }) => {
   const looks = [];
-  for (const path of ['/', '/purchase-order.html', '/goods-receipt.html']) {
+  for (const path of ['/', '/purchase-order.html']) {
     await page.goto(path);
     looks.push(
       await page.evaluate(() => {
@@ -200,7 +193,6 @@ test('the top nav looks the same on the landing page and the example pages', asy
     );
   }
   expect(looks[1]).toBe(looks[0]);
-  expect(looks[2]).toBe(looks[0]);
 });
 
 test('the Next.js quick start has its own page, reachable from the landing page and the nav', async ({

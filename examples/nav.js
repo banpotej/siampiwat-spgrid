@@ -9,12 +9,6 @@ export const EXAMPLES = [
     nav: 'Purchase Order',
     description: 'ตารางเต็มรูปแบบ: เรียงลำดับ ค้นหา แบ่งหน้า จัดกลุ่ม และปุ่มดำเนินการต่อแถว',
   },
-  {
-    href: '/goods-receipt.html',
-    title: 'รายการรับสินค้า (Goods Receipt)',
-    nav: 'Goods Receipt',
-    description: 'ตารางข้อมูล GoodsReceipt สมมติ: badge สถานะ ค่า NULL วันที่ และตัวเลข',
-  },
 ];
 
 /** @param {string} href @param {string} text @param {string} [className] */

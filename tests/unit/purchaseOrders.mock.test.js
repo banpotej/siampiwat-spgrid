@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { createGoodsReceipts } from '../../examples/mock/goodsReceipts.js';
 import { createPurchaseOrders } from '../../examples/mock/purchaseOrders.js';
 
 describe('createPurchaseOrders', () => {
@@ -77,17 +76,5 @@ describe('createPurchaseOrders', () => {
       expect(r.vendor).toMatch(/[฀-๿]/);
     }
     expect(new Set(rows.map((r) => r.vendor)).size).toBeGreaterThan(5);
-  });
-});
-
-describe('createGoodsReceipts', () => {
-  it('shows document numbers whole, leaving NULL as null', () => {
-    const rows = createGoodsReceipts();
-    for (const r of rows) {
-      if (r.grNumber) expect(r.grNumber).toMatch(/^GR\d{2}-\d{6}$/);
-      if (r.materialDoc) expect(r.materialDoc).toMatch(/^MD\d{2}-\d{6}$/);
-    }
-    expect(rows.some((r) => r.grNumber === null)).toBe(true);
-    expect(rows.some((r) => r.materialDoc === null)).toBe(true);
   });
 });
