@@ -16,6 +16,17 @@ if ($LASTEXITCODE -ne 0) { throw "npm run build:site failed (exit $LASTEXITCODE)
 $null = New-Item -ItemType Directory -Force -Path $OutDir
 $zip = Join-Path $OutDir 'spgrid-site.zip'
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
-Compress-Archive -Path (Join-Path $PSScriptRoot 'site\*') -DestinationPath $zip -CompressionLevel Optimal
+# Not Compress-Archive: Windows PowerShell 5.1 writes entry names with backslashes ("assets\x.css"), which Linux
+# hosts extract as flat files, so /assets/*.css (and every other subfolder) 404s. Zip entries must use "/".
+Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+$siteDir = (Resolve-Path (Join-Path $PSScriptRoot 'site')).Path
+$archive = [System.IO.Compression.ZipFile]::Open($zip, 'Create')
+try {
+    foreach ($file in Get-ChildItem -LiteralPath $siteDir -Recurse -File) {
+        $entry = $file.FullName.Substring($siteDir.Length).TrimStart('\', '/').Replace('\', '/')
+        $null = [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $file.FullName, $entry, 'Optimal')
+    }
+}
+finally { $archive.Dispose() }
 
 Write-Host ("{0} ({1} KB)" -f $zip, [math]::Round((Get-Item $zip).Length / 1KB)) -ForegroundColor Green
