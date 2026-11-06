@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Demo site deploy: removed the custom-domain route from `wrangler.jsonc` (zone could not be inferred) and enabled `workers.dev`. Tooling only, no `src/` change.
+
 ## [2.0.2] - 2026-11-06
 
 ### Changed
