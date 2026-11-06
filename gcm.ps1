@@ -1,26 +1,39 @@
-# Fetch, pull, stage everything, commit and push the current branch.
-# Usage: .\gcm.ps1 "feat: my message"   (message defaults to a timestamp)
-param(
-    [string]$Message = ("chore: update {0:yyyy-MM-dd HH:mm:ss}" -f (Get-Date))
-)
+$ErrorActionPreference = "Stop"
 
-$ErrorActionPreference = 'Stop'
+Write-Host "=============== git commit all starting ============"
 
-function Invoke-Git {
-    Write-Host "> git $($args -join ' ')" -ForegroundColor Cyan
-    & git @args
-    if ($LASTEXITCODE -ne 0) { throw "git $($args -join ' ') failed (exit $LASTEXITCODE)" }
-}
+git pull
+git add .
 
-Invoke-Git fetch
-Invoke-Git pull
-Invoke-Git add .
+git diff --cached --quiet
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Generating commit message with Claude..."
 
-if (git status --porcelain) {
-    Invoke-Git commit -m $Message
+    $instructions = "Read the git diff provided as input and write ONE single-line git commit message summarizing it, using conventional commit style (feat:, fix:, chore:, refactor:, docs:). Output ONLY the commit message text - no quotes, no markdown, no explanation, no extra lines."
+
+    $msg = $null
+    try {
+        $msg = (git diff --cached | claude -p $instructions --tools "" --no-session-persistence 2>$null | Out-String).Trim()
+    } catch {
+        $msg = $null
+    }
+
+    if ($msg) {
+        $msg = ($msg -split "`n" | Where-Object { $_.Trim() -ne "" } | Select-Object -First 1)
+    }
+
+    if (-not $msg) {
+        Write-Host "Claude did not return a message, falling back to timestamp."
+        $msg = Get-Date -Format "yyyyMMddHHmmss"
+    }
+
+    Write-Host "Commit message: $msg"
+    git commit -m "$msg"
 }
 else {
-    Write-Host 'Nothing to commit.' -ForegroundColor Yellow
+    Write-Host "No changes to commit."
 }
 
-Invoke-Git push
+git push
+
+Write-Host "=============== git commit all completed ============"
