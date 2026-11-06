@@ -45,7 +45,9 @@ if (git tag --list "v$current") {
 
 # Fail before anything changes: a release needs entries under [Unreleased].
 if ((Get-Content CHANGELOG.md -Raw) -notmatch '## \[Unreleased\]\s+###') {
-    throw 'CHANGELOG.md has no entries under [Unreleased]; add them before releasing.'
+    Write-Host '[ERROR] Cannot release: CHANGELOG.md has no entries under [Unreleased].' -ForegroundColor Red
+    Write-Host 'Add at least one bullet under "## [Unreleased]" and run .\release.ps1 again.' -ForegroundColor Yellow
+    exit 1
 }
 
 if (-not $SkipCheck) { Invoke-Step npm run check }
