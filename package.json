@@ -54,7 +54,8 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run test:e2e",
-    "pack:release": "powershell -NoProfile -ExecutionPolicy Bypass -File pack.ps1"
+    "pack:release": "powershell -NoProfile -ExecutionPolicy Bypass -File pack.ps1",
+    "pack:site": "powershell -NoProfile -ExecutionPolicy Bypass -File pack-site.ps1"
   },
   "keywords": [],
   "author": "",

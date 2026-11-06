@@ -257,6 +257,7 @@ grid.destroy();
 - `npm test` – unit test
 - `npm run test:e2e` – Playwright end-to-end test
 - `npm run check` – lint, typecheck, unit test และ build
+- `npm run pack:site` – build landing page แล้วสร้าง `release/spgrid-site.zip` (มี `index.html` อยู่ที่ราก) สำหรับอัปโหลดเป็น static file ขึ้น Cloudflare (Workers & Pages › Upload assets) หรือ static host อื่นด้วยมือ ไม่มี CI deploy อัตโนมัติแล้ว
 
 ## ไอคอนและธีม
 
