@@ -13,6 +13,7 @@ Set-Location $PSScriptRoot
 function Invoke-Step {
     Write-Host "> $($args -join ' ')" -ForegroundColor Cyan
     $cmd, $rest = $args
+    $rest = @($rest)
     & $cmd @rest
     if ($LASTEXITCODE -ne 0) { throw "$($args -join ' ') failed (exit $LASTEXITCODE)" }
 }
@@ -21,7 +22,7 @@ $branch = (git rev-parse --abbrev-ref HEAD).Trim()
 if ($branch -ne 'main') { throw "Release from main only (current: $branch)." }
 
 # Log in up front so a missing npm session doesn't fail after the check/bump.
-npm whoami *> $null
+cmd /c 'npm whoami >nul 2>&1'
 if ($LASTEXITCODE -ne 0) {
     Write-Host 'Not logged in to npm; running npm login.' -ForegroundColor Yellow
     Invoke-Step npm login

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Demo site deploy: Cloudflare config now builds the site (`npm run build:site`) and serves it on the `siampiwat-spgrid.dev` custom domain. Tooling only, no `src/` change.
+- `release.ps1`: fixed argument splatting and the silent `npm whoami` login check on Windows PowerShell. Tooling only, no `src/` change.
+
 ## [2.0.1] - 2026-11-05
 
 ### Removed
