@@ -9,6 +9,12 @@ export const EXAMPLES = [
     nav: 'ตัวอย่าง',
     description: 'ตารางเต็มรูปแบบ: เรียงลำดับ ค้นหา แบ่งหน้า จัดกลุ่ม และปุ่มดำเนินการต่อแถว',
   },
+  {
+    href: '/theme-lavender.html',
+    title: 'ธีม Lavender',
+    nav: 'ธีม Lavender',
+    description: 'ธีมสีม่วงอ่อน: หัวตารางไล่เฉด แถวสลับสี เส้นขอบครบทุกเซลล์ และปุ่ม action สีทึบ',
+  },
 ];
 
 /** @param {string} href @param {string} text @param {string} [className] */

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Lavender theme (`src/styles/themeLavender.css`): opt in with the class `spg-theme-lavender` or `data-spg-theme="lavender"` on `.spg-root` or an ancestor. Sets only public `--spg-*` variables, with dark sets under `prefers-color-scheme` and `[data-theme="dark"]`. Grids that do not use it look the same as before.
+- `--spg-header-bg-image` (internal `--spgi-header-bg-image`, default `none`): a gradient or image for the table header, applied as `background-image` on `th`. The header's `background-color` and the sticky header are unchanged.
+- `.spg-action-warning` (tone from `--spg-warning`) and `.spg-action-solid` (a filled button in its tone with white text; dark mode uses a near-black label). Both have zero specificity, like the other action classes.
+- Example page `theme-lavender.html`.
+
 ## [2.0.3] - 2026-11-06
 
 ### Changed

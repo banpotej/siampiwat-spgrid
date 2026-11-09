@@ -4,7 +4,7 @@ test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
   const cards = page.locator('#examples');
-  await expect(cards.getByRole('link')).toHaveCount(1);
+  await expect(cards.getByRole('link')).toHaveCount(2);
   await cards.getByRole('link', { name: /Purchase Order/ }).click();
   await expect(page).toHaveURL(/\/purchase-order\.html$/);
 });
@@ -62,10 +62,7 @@ test('the nav is on every example page, marks the current one, and leads home', 
 }) => {
   await page.goto('/purchase-order.html');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await expect(nav.getByRole('link', { name: 'ตัวอย่าง' })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
+  await expect(nav.getByRole('link', { name: 'ตัวอย่าง' })).toHaveAttribute('aria-current', 'page');
 
   await nav.getByRole('link', { name: 'SPGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);

@@ -13,6 +13,8 @@
   --spgi-border-strong: var(--spg-input-border, #d1d5db);
   --spgi-header-bg: var(--spg-header-bg, #f9fafb);
   --spgi-header-text: var(--spg-header-color, #111827);
+  /* A gradient or image for the header (e.g. the lavender theme); none keeps the flat tint. */
+  --spgi-header-bg-image: var(--spg-header-bg-image, none);
   --spgi-hover-bg: var(--spg-row-hover-bg, #f9fafb);
   --spgi-stripe-bg: var(--spg-stripe-bg, #fcfcfd);
   --spgi-sort-hover-bg: var(--spg-sort-hover-bg, #f3f4f6);

@@ -60,6 +60,27 @@
   --spgi-action-tone: var(--spgi-neutral);
 }
 
+:where(.spg-action-warning) {
+  --spgi-action-tone: var(--spgi-warning);
+}
+
+/* .spg-action-solid fills the button with its tone and writes the label in white (dark: a near-black, since the
+   dark tones are light). Add it next to a tone class; --spg-action-bg / -color / -hover-bg still override it. */
+:where(.spg-action-solid) {
+  border-color: var(--spgi-action-tone);
+  background: var(--spg-action-bg, var(--spgi-action-tone));
+  color: var(--spg-action-color, light-dark(#fff, #0b1220));
+}
+
+:where(.spg-action-solid):hover:not([disabled]),
+:where(.spg-action-solid):active:not([disabled]) {
+  border-color: color-mix(in srgb, var(--spgi-action-tone) 80%, #000);
+  background: var(
+    --spg-action-hover-bg,
+    color-mix(in srgb, var(--spgi-action-tone) 82%, light-dark(#000, #fff))
+  );
+}
+
 :where(.spg-action):focus-visible {
   outline: 2px solid var(--spgi-focus);
   outline-offset: 2px;

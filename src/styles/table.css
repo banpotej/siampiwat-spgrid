@@ -86,7 +86,8 @@
 .spg-table th {
   padding-block: calc(var(--spgi-pad-y) * 0.6);
   border-bottom: 1px solid var(--spgi-border);
-  background: color-mix(in srgb, var(--spgi-header-bg) 45%, var(--spgi-bg));
+  background-color: color-mix(in srgb, var(--spgi-header-bg) 45%, var(--spgi-bg));
+  background-image: var(--spgi-header-bg-image);
   color: var(--spgi-muted);
   font-size: 0.857em;
   font-weight: 600;

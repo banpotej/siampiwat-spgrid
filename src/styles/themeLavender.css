@@ -1,0 +1,59 @@
+/*
+ * Lavender theme (opt-in). Add class "spg-theme-lavender" (or data-spg-theme="lavender") to .spg-root or any
+ * ancestor, e.g. the element you pass to new SPGrid(). It only sets the public --spg-* variables, so a grid
+ * without the class is untouched, and any --spg-* you set closer to the grid still wins.
+ * Dark follows tokens.css: prefers-color-scheme, [data-theme="dark"] on an ancestor, [data-theme="light"] forces light.
+ * Pair it with options { striped: true, gridLines: 'both' } and action classes "spg-action-warning spg-action-solid".
+ */
+:is(.spg-theme-lavender, [data-spg-theme='lavender']) {
+  --spg-border-color: #d9d2ee;
+  --spg-input-border: #c9bfe6;
+  --spg-header-color: #374151;
+  --spg-header-bg-image: linear-gradient(#fff, #ece7f7);
+  --spg-stripe-bg: #f6f3fc;
+  --spg-row-hover-bg: #efeafa;
+  --spg-sort-hover-bg: #ebe5f8;
+  --spg-accent: #7c5cbf;
+  --spg-focus-color: #7c5cbf;
+  --spg-radius: 4px;
+  --spg-warning: #c2410c; /* a true orange; white text on it is 5.2:1 */
+}
+
+/* The header text follows --spg-header-color here (the default theme keeps it muted). */
+:is(.spg-theme-lavender, [data-spg-theme='lavender']) .spg-table th {
+  color: var(--spgi-header-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :is(.spg-theme-lavender, [data-spg-theme='lavender']):not(
+    [data-theme='light'] *,
+    [data-theme='light']
+  ) {
+    --spg-bg: #17121f;
+    --spg-border-color: #3d3558;
+    --spg-input-border: #7c6fa3;
+    --spg-header-color: #f3f0fa;
+    --spg-header-bg-image: linear-gradient(#1f1930, #2d2445);
+    --spg-stripe-bg: #1e182a;
+    --spg-row-hover-bg: #2a2240;
+    --spg-sort-hover-bg: #342a4f;
+    --spg-accent: #b79cf0;
+    --spg-focus-color: #c4b0f5;
+    --spg-warning: #fb923c;
+  }
+}
+
+[data-theme='dark'] :is(.spg-theme-lavender, [data-spg-theme='lavender']),
+:is(.spg-theme-lavender, [data-spg-theme='lavender'])[data-theme='dark'] {
+  --spg-bg: #17121f;
+  --spg-border-color: #3d3558;
+  --spg-input-border: #7c6fa3;
+  --spg-header-color: #f3f0fa;
+  --spg-header-bg-image: linear-gradient(#1f1930, #2d2445);
+  --spg-stripe-bg: #1e182a;
+  --spg-row-hover-bg: #2a2240;
+  --spg-sort-hover-bg: #342a4f;
+  --spg-accent: #b79cf0;
+  --spg-focus-color: #c4b0f5;
+  --spg-warning: #fb923c;
+}
