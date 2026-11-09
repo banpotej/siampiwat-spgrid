@@ -12,7 +12,7 @@ test('the lavender example applies the theme to its grid', async ({ page }) => {
   await expect(page.locator('#grid')).toHaveClass(/spg-theme-lavender/);
   await expect(page.locator('tbody tr')).toHaveCount(5);
   await expect(page.locator('thead th')).toHaveText(
-    ['ID', 'Document Type', 'Field Key', 'Attribute', 'Active', 'Action'],
+    ['รหัส', 'ชื่อ-นามสกุล', 'แผนก', 'ตำแหน่ง', 'สถานะ', 'การดำเนินการ'],
     { useInnerText: true },
   );
 
@@ -32,18 +32,18 @@ test('the lavender example applies the theme to its grid', async ({ page }) => {
   await expect(td).not.toHaveCSS('border-inline-end-width', '0px');
 });
 
-test('Yes is a green badge and Edit / Delete are solid with white text', async ({ page }) => {
+test('the active badge is green and แก้ไข / ลบ are solid with white text', async ({ page }) => {
   await page.goto('/theme-lavender.html');
-  await expect(page.locator('.spg-badge-success').first()).toHaveText('Yes');
-  const edit = page.getByRole('button', { name: 'Edit' }).first();
-  const del = page.getByRole('button', { name: 'Delete' }).first();
+  await expect(page.locator('.spg-badge-success').first()).toHaveText('ใช้งาน');
+  const edit = page.getByRole('button', { name: 'แก้ไข' }).first();
+  const del = page.getByRole('button', { name: 'ลบ' }).first();
   await expect(edit).toHaveCSS('background-color', WARNING);
   await expect(edit).toHaveCSS('color', WHITE);
   await expect(del).toHaveCSS('background-color', DANGER);
   await expect(del).toHaveCSS('color', WHITE);
 
-  await page.getByRole('button', { name: 'Delete' }).nth(1).click();
-  await expect(page.locator('#log')).toHaveText('delete: vendor_name');
+  await page.getByRole('button', { name: 'ลบ' }).nth(1).click();
+  await expect(page.locator('#log')).toHaveText('delete: สมหญิง รักเรียน');
 });
 
 test('the sticky header keeps its position and gradient under the theme', async ({ page }) => {
@@ -60,7 +60,7 @@ test('dark mode swaps in the dark lavender colours', async ({ page }) => {
   await page.goto('/theme-lavender.html');
   await expect(page.locator('.spg-root')).toHaveCSS('background-color', 'rgb(23, 18, 31)');
   expect(await backgroundImage(page.locator('thead th').first())).toContain('rgb(45, 36, 69)');
-  await expect(page.getByRole('button', { name: 'Edit' }).first()).toHaveCSS(
+  await expect(page.getByRole('button', { name: 'แก้ไข' }).first()).toHaveCSS(
     'color',
     'rgb(11, 18, 32)',
   );

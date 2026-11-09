@@ -11,8 +11,8 @@ export const EXAMPLES = [
   },
   {
     href: '/theme-lavender.html',
-    title: 'ธีม Lavender',
-    nav: 'ธีม Lavender',
+    title: 'ธีมลาเวนเดอร์',
+    nav: 'ธีมลาเวนเดอร์',
     description: 'ธีมสีม่วงอ่อน: หัวตารางไล่เฉด แถวสลับสี เส้นขอบครบทุกเซลล์ และปุ่ม action สีทึบ',
   },
 ];
