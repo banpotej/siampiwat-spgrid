@@ -176,7 +176,7 @@ npm install @siampiwat/spgrid
 
 ```sh
 # ไฟล์ .tgz ที่แนบกับ GitHub Release (repo แบบ private ต้องใช้ token) - สร้างด้วย `npm run pack:release`
-npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v2.0.4/siampiwat-spgrid-2.0.4.tgz
+npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v2.0.5/siampiwat-spgrid-2.0.5.tgz
 
 # git URL: npm จะรันสคริปต์ `prepare` ทำให้แพ็กเกจ build ตัวเองตอนติดตั้ง (ต้องมี git)
 npm install github:banpotej/siampiwat-datagrid
@@ -185,8 +185,8 @@ npm install github:banpotej/siampiwat-datagrid#main   # branch หรือ tag
 # tarball ในเครื่อง
 npm install                # ใน repo นี้
 npm run build
-npm pack                   # สร้าง siampiwat-spgrid-2.0.4.tgz
-npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.4.tgz   # ในโปรเจกต์ของคุณ
+npm pack                   # สร้าง siampiwat-spgrid-2.0.5.tgz
+npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.5.tgz   # ในโปรเจกต์ของคุณ
 ```
 
 `import { SPGrid } from '@siampiwat/spgrid'` จะนำ stylesheet เข้ามาด้วย (ผ่าน bundler ของคุณ) ส่วน `@siampiwat/spgrid/style.css` ยังคง export อยู่ และ
@@ -216,11 +216,11 @@ npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.4.tgz   # ในโปร
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@2.0.4/dist/spgrid.css"
+  href="https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@2.0.5/dist/spgrid.css"
 />
 <div id="app"></div>
 <script type="module">
-  import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@2.0.4/dist/spgrid.js';
+  import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@2.0.5/dist/spgrid.js';
 
   new SPGrid(document.getElementById('app'), {
     rowKey: 'id',

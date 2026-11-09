@@ -34,6 +34,7 @@ export default defineConfig({
       input: [
         'index.html',
         'quick-start.html',
+        'for-agents.html',
         'basic.html',
         'purchase-order.html',
         'theme-lavender.html',

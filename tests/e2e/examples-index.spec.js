@@ -211,3 +211,23 @@ test('the Next.js quick start has its own page, reachable from the landing page 
   await nav.getByRole('link', { name: 'SPGrid' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
 });
+
+test('the Claude Code page has its own page, reachable from the landing page and the nav', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'สำหรับ Claude Code' }).first().click();
+  await expect(page).toHaveURL(/\/for-agents\.html$/);
+
+  const guide = page.getByRole('region', { name: 'ใช้ SPGrid กับ Claude Code' });
+  await expect(guide).toContainText('node_modules/@siampiwat/spgrid/docs/AGENT_GUIDE.md');
+  await expect(guide).toContainText('escapeHtml()');
+  await expect(guide).toContainText('destroy()');
+  await expect(guide.locator('.code-block')).toHaveCount(5);
+
+  const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
+  await expect(nav.getByRole('link', { name: 'สำหรับ Claude Code' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+});

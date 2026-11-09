@@ -294,6 +294,24 @@ ul {
     monospace;
 }
 
+/* For Claude Code page: the rules list stays a plain bullet list, not the grid of cards */
+.install .rules {
+  display: block;
+  margin: 6px 0 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.install .rules li {
+  margin-bottom: 4px;
+}
+
+.agents > p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
 .code-block {
   position: relative;
 }

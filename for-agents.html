@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>สำหรับ Claude Code | SPGrid</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/landing.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <section class="install agents" aria-labelledby="agents-title">
+        <h2 id="agents-title">ใช้ SPGrid กับ Claude Code</h2>
+        <p>
+          แนวทางให้ Claude Code (หรือ AI coding agent ตัวอื่น) เรียกใช้และศึกษา SPGrid
+          ได้ถูกต้องในโปรเจกต์ของคุณ คู่มือสำหรับ agent
+          <code>AGENT_GUIDE.md</code> แพ็กไปกับแพ็กเกจแล้ว ไม่ต้องคัดลอกไว้เอง
+        </p>
+        <ol>
+          <li>
+            <strong>ติดตั้งแพ็กเกจ</strong>
+            ติดตั้งในโปรเจกต์ที่ใช้งานจริง agent จะอ่านคู่มือและ type ได้จาก
+            <code>node_modules</code> ตรงเวอร์ชันที่ติดตั้ง
+            <pre tabindex="0"><code>npm install @siampiwat/spgrid</code></pre>
+          </li>
+          <li>
+            <strong>ชี้ให้ Claude Code อ่านคู่มือ</strong>
+            เพิ่มบรรทัดนี้ใน <code>CLAUDE.md</code> หรือ <code>AGENTS.md</code> ของโปรเจกต์ (<code
+              >@path</code
+            >
+            จะดึงไฟล์มาเป็นบริบทให้ทุก session)
+            <pre tabindex="0"><code>## SPGrid
+ตารางข้อมูลใช้ @siampiwat/spgrid ห้ามเขียนตารางเอง
+@node_modules/@siampiwat/spgrid/docs/AGENT_GUIDE.md
+ตัวเลือกที่ไม่อยู่ในคู่มือย่อ ดู node_modules/@siampiwat/spgrid/docs/API.md</code></pre>
+            ถ้าไม่ใช้ <code>@path</code> ก็ให้ agent อ่านไฟล์เดียวกันนี้เองก่อนเขียนโค้ด หรือ
+            <code>import</code> เส้นทาง <code>@siampiwat/spgrid/agent-guide</code> ที่แพ็กเกจ export
+            ไว้
+          </li>
+          <li>
+            <strong>สั่งงานให้ชัดว่าต้องการอะไร</strong>
+            บอกข้อมูล คอลัมน์ และพฤติกรรมที่ต้องการ แล้วให้ agent เลือกตัวเลือกของ SPGrid เอง
+            <pre
+              tabindex="0"
+            ><code>อ่าน AGENT_GUIDE.md ของ @siampiwat/spgrid ก่อน แล้วทำตารางรายการใบสั่งซื้อใน app/po/page.tsx
+- คอลัมน์: เลขที่, ผู้ขาย, วันที่ (type date), มูลค่า (type number), สถานะ (badge)
+- ค้นหาได้ แบ่งหน้า 20 แถว เรียงตามวันที่ล่าสุดก่อน
+- ปุ่ม "ดู" ต่อแถว เปิดรายละเอียดด้วย showDetails
+- ป้ายกำกับภาษาไทย (thaiLabels)
+เมื่อเสร็จให้รัน dev server และเช็กว่า console ไม่มี error</code></pre>
+          </li>
+          <li>
+            <strong>ลำดับที่ agent ควรศึกษา</strong>
+            เริ่มจากไฟล์เล็กที่สรุปแล้วค่อยลงรายละเอียด อ่านเท่าที่งานต้องใช้
+            <pre
+              tabindex="0"
+            ><code>1. docs/AGENT_GUIDE.md          สรุปการติดตั้ง คอลัมน์ อีเวนต์ ตัวเลือก และกฎที่ป้องกันบั๊ก
+2. docs/API.md                 อ้างอิงเต็มทุกตัวเลือก เมธอด และธีม (--spg-*) เป็นภาษาไทย
+3. dist/types/index.d.ts       type ที่แน่นอน เช่น Column, SPGridOptions (ใช้ผ่าน import type)
+4. /purchase-order.html        ตัวอย่างเต็มรูปแบบ มีปุ่มดูโค้ดต้นฉบับ
+5. /quick-start.html           ตัวอย่าง Next.js client component ที่ใช้ได้เลย</code></pre>
+            ทุกพาธในข้อ 1–3 อยู่ใต้ <code>node_modules/@siampiwat/spgrid/</code>
+          </li>
+          <li>
+            <strong>กฎที่ agent ต้องรู้</strong>
+            ข้อที่พลาดบ่อยที่สุด รายละเอียดครบอยู่ใน <code>AGENT_GUIDE.md</code>
+            <ul class="rules">
+              <li>
+                ห้าม import ฝั่ง server SPGrid ต้องใช้ DOM ใน Next.js / React ให้สร้างใน
+                <code>useEffect</code> ของ client component
+              </li>
+              <li>
+                หนึ่ง grid ต่อหนึ่ง container และเรียก <code>destroy()</code> ตอน unmount
+                ข้อมูลใหม่ใช้ <code>setRows()</code> ห้ามสร้าง grid ซ้ำ
+              </li>
+              <li>
+                ฟังก์ชัน <code>render</code> ไม่ escape ให้ ต้องห่อข้อมูลผู้ใช้ด้วย
+                <code>escapeHtml()</code>
+              </li>
+              <li>
+                ใส่ <code>rowKey</code> เมื่อแถวมี id และเก็บค่าดิบ (Date, number, boolean) ไว้ใน
+                <code>rows</code> ให้ <code>type</code> จัดรูปแบบเอง
+              </li>
+              <li>
+                key ที่ไม่มีอยู่ หรือค่าที่ไม่ถูกต้องจะ throw <code>RangeError</code> /
+                <code>TypeError</code> อย่าซ่อนด้วย try/catch
+              </li>
+              <li>ปรับหน้าตาด้วยตัวแปร <code>--spg-*</code> อย่าแก้ไฟล์ CSS ของแพ็กเกจ</li>
+              <li>
+                ยังไม่รองรับ server-side paging, virtual scrolling และการเลือกแถว
+                (ข้อมูลทั้งหมดอยู่ในหน่วยความจำ)
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>ให้ agent ตรวจก่อนส่งงาน</strong>
+            เพิ่มรายการนี้ในคำสั่งหรือ <code>CLAUDE.md</code> เพื่อให้ตรวจผลเองได้
+            <pre
+              tabindex="0"
+            ><code>- new SPGrid ไม่ throw และ container.querySelector('table') มีแถวข้อมูล
+- console ของเบราว์เซอร์ไม่มี error (RangeError จะบอกชื่อตัวเลือกที่ผิด)
+- เรียก destroy() ตอน teardown และใช้ setRows() กับข้อมูลใหม่
+- ทุก render function escape ค่าที่นำไปต่อเป็น HTML</code></pre>
+          </li>
+        </ol>
+        <p>
+          กำลังแก้ไขตัวไลบรารี SPGrid เอง (ไม่ใช่ใช้งาน)? ให้ agent อ่าน
+          <code>AGENTS.md</code> ที่ root ของ repo แทน
+        </p>
+      </section>
+      <footer class="site-footer">SPGrid · <a href="/">กลับหน้าหลัก</a></footer>
+    </main>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      import { addCopyButtons } from '/examples/copy-code.js';
+
+      renderNav();
+      addCopyButtons(document.querySelector('.install'));
+    </script>
+  </body>
+</html>

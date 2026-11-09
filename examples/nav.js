@@ -1,6 +1,7 @@
 // Shared by every example page: the list of examples (one place to add a new one) and the top nav.
 export const HOME = '/';
 export const QUICK_START = '/quick-start.html';
+export const FOR_AGENTS = '/for-agents.html';
 
 export const EXAMPLES = [
   {
@@ -36,6 +37,7 @@ export function renderNav() {
   nav.replaceChildren(
     link(HOME, 'SPGrid', 'brand'),
     link(QUICK_START, 'Quick Start'),
+    link(FOR_AGENTS, 'สำหรับ Claude Code'),
     ...EXAMPLES.map((example) => link(example.href, example.nav)),
   );
 }
