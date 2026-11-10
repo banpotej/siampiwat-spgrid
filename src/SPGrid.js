@@ -1,6 +1,5 @@
 // @ts-check
 import { dataKeys } from './core/columns.js';
-import { normalizeFilter, resolveFilter } from './core/filter.js';
 import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
 import { changedGroupBy } from './core/group.js';
@@ -11,7 +10,7 @@ import { assertOptions, initialState, initialView, mountParts } from './render/g
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
 import { exportExcel } from './render/exportExcel.js';
-import { searchColumnChange, syncSearchBox } from './render/searchBox.js';
+import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
 /** @typedef {import('./types.js').Row} Row */
@@ -21,8 +20,6 @@ import './spgrid.css';
 
 export class SPGrid {
   /** @type {HTMLElement} */ #container;
-  /** @type {ReturnType<typeof import('./render/toolbar.js').mountShell>} The static shell; only `host` and `pagerHost` content is re-rendered. */
-  #shell;
   /** @type {import('./core/state.js').State<import('./types.js').GridState>} */ #state;
   /** @type {() => void} */ #unsubscribe;
   /** @type {ReturnType<typeof createGridEvents>} */ #events;
@@ -30,6 +27,7 @@ export class SPGrid {
   /** @type {import('./render/gridRenderer.js').GridRenderer} */ #renderer;
   /** @type {{ pageSize: number | null, sort: SortState, groupBy: string[] }} The `pageSize`, `defaultSort` and `groupBy` options, which `resetView()` goes back to. */
   #initial;
+  /** @type {FilterControl} */ #filter;
   /** @type {HiddenColumns} */ #hidden;
   /** @type {ColumnOrder} */ #order;
   #reorderable;
@@ -54,7 +52,6 @@ export class SPGrid {
     this.#initial = initialView(options);
     this.#events = createGridEvents(options);
     const { labels, shell, renderer } = mountParts(container, options);
-    this.#shell = shell;
     this.#renderer = renderer;
     this.#hidden = new HiddenColumns(options, shell, (keys) => {
       // A search limited to a column that just got hidden goes back to every visible column.
@@ -63,13 +60,14 @@ export class SPGrid {
       this.#events.emit('columnsChange', keys);
     });
     this.#unbindControls = bindGridControls(this, shell, options, labels, {
-      applyFilter: (filter) => this.#applyFilter(filter),
+      applyFilter: (filter) => this.#filter.apply(filter),
       columnFilters: () => this.#state.get().filter?.columnFilters,
       columns: () => this.#state.get().columns,
       visible: () => this.#visible,
       emit: (event, payload) => this.#events.emit(event, payload),
     });
     this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
+    this.#filter = new FilterControl(shell, this.#state);
     this.#unsubscribe = this.#state.subscribe((state, prev) => {
       const before = this.#paging;
       this.render();
@@ -108,14 +106,12 @@ export class SPGrid {
 
   /** @returns {FilterState | null} A copy of the current filter, or null when nothing is filtered. */
   getFilter() {
-    const { filter, searchColumn } = this.#state.get();
-    const current = normalizeFilter(filter);
-    return current?.search !== undefined && searchColumn ? { ...current, searchColumn } : current;
+    return this.#filter.get();
   }
 
   /** @returns {string | null} Column the search box is limited to, or null for every column. */
   getSearchColumn() {
-    return this.#state.get().searchColumn;
+    return this.#filter.getSearchColumn();
   }
 
   /**
@@ -124,16 +120,7 @@ export class SPGrid {
    * @throws {RangeError} key is not a data column
    */
   setSearchColumn(key) {
-    if (this.#destroyed) return;
-    const change = searchColumnChange(this.#shell, this.#state.get(), key);
-    if (!change) return;
-    this.#state.set(change);
-    this.#syncSearchBox();
-  }
-
-  /** Swap the search box and the value select for the current search column, and mirror the search into them. */
-  #syncSearchBox() {
-    syncSearchBox(this.#shell, this.#state.get().columns, this.#state.get().searchColumn);
+    if (!this.#destroyed) this.#filter.setSearchColumn(key);
   }
 
   /**
@@ -143,12 +130,7 @@ export class SPGrid {
    * @throws {RangeError} a `columnFilters` key is not a column
    */
   setFilter(filter) {
-    if (this.#destroyed) return;
-    this.#applyFilter(filter);
-    if (this.#shell.search) {
-      this.#shell.search.value = this.getFilter()?.search ?? '';
-      this.#syncSearchBox();
-    }
+    if (!this.#destroyed) this.#filter.set(filter);
   }
 
   /** @returns {number} The page being shown (1 while pagination is off). */
@@ -288,12 +270,5 @@ export class SPGrid {
     if (!change()) return;
     this.#state.set({ columns: this.#order.columns() });
     this.#events.emit('columnOrderChange', this.#order.get());
-  }
-
-  /** @param {FilterState | null} filter */
-  #applyFilter(filter) {
-    const { columns, filter: current } = this.#state.get();
-    const next = resolveFilter(current, filter, dataKeys(columns));
-    if (next !== undefined) this.#state.set({ filter: next, page: 1 });
   }
 }
