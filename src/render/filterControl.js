@@ -1,5 +1,6 @@
 // @ts-check
 import { dataKeys } from '../core/columns.js';
+import { normalizeConditions } from '../core/conditions.js';
 import { normalizeFilter, resolveFilter } from '../core/filter.js';
 import { searchColumnChange, syncSearchBox } from './searchBox.js';
 
@@ -21,9 +22,31 @@ export class FilterControl {
 
   /** @returns {FilterState | null} A copy of the current filter, or null when nothing is filtered. */
   get() {
-    const { filter, searchColumn } = this.#state.get();
+    const { filter, searchColumn, conditions } = this.#state.get();
     const current = normalizeFilter(filter);
-    return current?.search !== undefined && searchColumn ? { ...current, searchColumn } : current;
+    const base =
+      current?.search !== undefined && searchColumn ? { ...current, searchColumn } : current;
+    return conditions ? { ...base, conditions: structuredClone(conditions) } : base;
+  }
+
+  /** @returns {import('../types.js').GridState['conditions']} A copy of the advanced filter, or null. */
+  getConditions() {
+    const { conditions } = this.#state.get();
+    return conditions && structuredClone(conditions);
+  }
+
+  /**
+   * Changes the advanced filter; resets to page 1.
+   * @param {import('../types.js').GridState['conditions']} tree
+   * @throws {RangeError} unknown or action column, an operator the column does not take, or a `logic` other than and / or
+   * @throws {TypeError} a malformed condition
+   */
+  setConditions(tree) {
+    const { columns, conditions } = this.#state.get();
+    const next = normalizeConditions(tree, columns);
+    if (JSON.stringify(next) !== JSON.stringify(conditions)) {
+      this.#state.set({ conditions: next, page: 1 });
+    }
   }
 
   /** @returns {string | null} */

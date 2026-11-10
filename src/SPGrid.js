@@ -135,6 +135,22 @@ export class SPGrid {
     if (!this.#destroyed) this.#filter.set(filter);
   }
 
+  /** @returns {import('./types.js').ConditionGroup | import('./types.js').Condition | null} A copy of the advanced filter, or null. */
+  getAdvancedFilter() {
+    return this.#filter.getConditions();
+  }
+
+  /**
+   * Filter by conditions (field + operator + value, combined with AND / OR) on top of the search and the column filters.
+   * Conditions with a blank value are dropped; `null` clears. Resets to page 1; also applies to `exportExcel()`.
+   * @param {import('./types.js').ConditionGroup | import('./types.js').Condition | null} tree
+   * @throws {RangeError} unknown or action column, an operator the column does not take, or a `logic` other than and / or
+   * @throws {TypeError} a malformed condition
+   */
+  setAdvancedFilter(tree) {
+    if (!this.#destroyed) this.#filter.setConditions(tree);
+  }
+
   /** @returns {number} The page being shown (1 while pagination is off). */
   getPage() {
     return this.#paging?.page ?? 1;
@@ -237,7 +253,7 @@ export class SPGrid {
     if (this.#destroyed) return;
     this.setFilter(null);
     this.setSearchColumn(null);
-    this.#state.set({ ...this.#initial, page: 1 });
+    this.#state.set({ ...this.#initial, conditions: null, page: 1 });
     this.#hidden.reset();
     this.#reorder(() => this.#order.reset());
   }

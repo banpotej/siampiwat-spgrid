@@ -1,0 +1,132 @@
+/* The Advanced filter button is a .spg-tool-btn (see toolButtons.css) that opens a modal of condition rows. It takes the
+   accent tint while a filter is set, like the Settings button while a column is hidden. */
+.spg-advfilter[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
+}
+
+.spg-advfilter[data-active] {
+  border-color: color-mix(in srgb, var(--spgi-accent) 45%, var(--spgi-border-strong));
+  background: color-mix(in srgb, var(--spgi-accent) 14%, var(--spgi-bg));
+  color: var(--spgi-accent);
+}
+
+.spg-advfilter[data-active]:hover,
+.spg-advfilter[data-active][aria-expanded='true'] {
+  background: color-mix(in srgb, var(--spgi-accent) 22%, var(--spgi-bg));
+}
+
+/* Overrides .spg-modal-box (modal.css loads later, hence the doubled class). */
+.spg-modal-box.spg-adv-dialog {
+  width: min(100%, 52rem);
+}
+
+.spg-adv-match {
+  max-width: 16rem;
+}
+
+.spg-adv-rows {
+  display: grid;
+  gap: 10px;
+}
+
+/* One condition: field, operator, value controls, remove. The value controls take what is left. */
+.spg-adv-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) minmax(8rem, 1fr) minmax(10rem, 2fr) auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.spg-adv-row select,
+.spg-adv-row input:not([type='checkbox']) {
+  min-width: 0;
+  min-height: 2.5em;
+  padding: 0.3em 0.8em;
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
+  background: var(--spgi-bg);
+  color: var(--spgi-text);
+  font: inherit;
+  transition: border-color var(--spgi-transition);
+}
+
+.spg-adv-row select {
+  padding-right: 2.2em;
+  appearance: none;
+  background: var(--spgi-bg) var(--spgi-chevron) right 0.7em center / 1em 1em no-repeat;
+  cursor: pointer;
+}
+
+.spg-adv-row select:hover,
+.spg-adv-row input:not([type='checkbox']):hover {
+  border-color: var(--spgi-muted);
+}
+
+.spg-adv-row select:focus-visible,
+.spg-adv-row input:not([type='checkbox']):focus-visible {
+  border-color: var(--spgi-focus);
+  outline: 2px solid color-mix(in srgb, var(--spgi-focus) 30%, transparent);
+  outline-offset: 0;
+}
+
+.spg-adv-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.spg-adv-value > input {
+  flex: 1 1 8rem;
+}
+
+.spg-adv-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+}
+
+.spg-adv-remove {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5em;
+  height: 2.5em;
+  padding: 0;
+  border: 0;
+  border-radius: var(--spgi-input-radius);
+  background: transparent;
+  color: var(--spgi-muted);
+  cursor: pointer;
+}
+
+.spg-adv-remove:hover {
+  background: var(--spgi-hover-bg);
+  color: var(--spgi-text);
+}
+
+.spg-adv-remove:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 1px;
+}
+
+/* A nested group (set from code): read only, with its own remove button. */
+.spg-adv-kept {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 0.3em 0.8em;
+  border: 1px dashed var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
+  color: var(--spgi-muted);
+  font-size: 0.9em;
+}
+
+@media (max-width: 40rem) {
+  .spg-adv-row {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .spg-adv-value {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+}

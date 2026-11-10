@@ -19,6 +19,7 @@
 - `options.searchButton?: boolean` – (ใช้คู่กับ `searchable`) เพิ่มปุ่ม "Search" ข้างช่องค้นหา เมื่อเปิดจะกรองเมื่อกดปุ่มหรือกด Enter ในช่อง ไม่กรองระหว่างพิมพ์ (`searchDebounce` ไม่มีผล) ค่าเริ่มต้น `false`
 - `options.exportButton?: boolean` – แสดงปุ่ม "Export Excel" (`<button class="spg-export">` ไอคอน `download` อย่างเดียว ไม่มีข้อความ; ชื่อสำหรับ screen reader และ tooltip มาจาก `labels.exportExcel`) เป็นส่วนสุดท้ายของ Input Group ต่อจากช่องค้นหา (ถ้าไม่เปิด `searchable` จะเป็นปุ่มเดี่ยวในแถบเครื่องมือ); กดแล้วเรียก `exportExcel()` ค่าเริ่มต้น `false` สีปุ่มปรับได้ด้วย `--spg-success`
 - `options.exportColumnSelect?: boolean` – ใช้คู่กับ `exportButton`: กดปุ่ม Export แล้วเปิด modal ที่มีช่องค้นหา (`labels.exportSearch`) เริ่มต้นด้วยคำค้นของตารางตอนนั้น พร้อมบรรทัดบอกจำนวนแถวที่จะส่งออก (`labels.exportRowCount`) และตาราง Preview ของ 10 แถวแรกเฉพาะฟิลด์ที่ติ๊ก (ค่าดิบเหมือนที่จะอยู่ในไฟล์ ข้อความถูก escape; ถ้ายังมีแถวต่อ ขึ้น `labels.exportPreviewMore`, ถ้าไม่เหลือแถวขึ้น `labels.exportPreviewEmpty`) ทั้งสองส่วนอัปเดตทันทีที่พิมพ์หรือติ๊กฟิลด์ กด Enter ในช่องเพื่อส่งออกได้ แก้คำค้นแล้วเฉพาะการส่งออกครั้งนี้เปลี่ยนไป ตารางที่แสดงอยู่ไม่เปลี่ยน ถ้าไม่แก้คำค้นจะใช้ตัวกรองของตารางตามเดิม (รวมการค้นในคอลัมน์ enum/วันที่) และให้ติ๊กเลือกฟิลด์ (คอลัมน์ข้อมูล ไม่รวม action) ที่จะส่งออก ทุกฟิลด์ถูกติ๊กไว้ก่อน มีปุ่ม "เลือกทั้งหมด" / "ล้างทั้งหมด" (`labels.selectAll`, `labels.clearAll`) ปุ่มยืนยัน (ข้อความจาก `labels.exportExcel`) กดไม่ได้ถ้าไม่ได้ติ๊กอะไร; ยืนยันแล้วเรียก `exportExcel({ columns, search })` ส่วน Esc, คลิกพื้นหลัง และ Cancel ปิดโดยไม่ดาวน์โหลด ค่าเริ่มต้น `false` (กดแล้วส่งออกทุกคอลัมน์ทันที)
+- `options.advancedFilter?: boolean` – แสดงปุ่ม "ตัวกรองขั้นสูง" (`<button class="spg-tool-btn spg-advfilter">` ไอคอน `filter_list`; ชื่อและ tooltip มาจาก `labels.advancedFilter`) ในแถบเครื่องมือ (ก่อนปุ่ม Export; ใช้ได้โดยไม่ต้องเปิด `searchable`) กดแล้วเปิด modal ที่ผู้ใช้สร้างเงื่อนไขได้หลายข้อ แต่ละข้อคือ ฟิลด์ + ตัวดำเนินการ + ค่า (ดู [Advanced filter](#advanced-filter)) ปุ่มเป็นสีเน้น (`data-active`) ตลอดที่มีเงื่อนไขอยู่ ค่าเริ่มต้น `false`
 - `options.filterSummary?: boolean` – แสดงแถบสรุปใต้แถบเครื่องมือ (`<div class="spg-summary">`) **เฉพาะขณะมีตัวกรอง**: ข้อความจำนวน เช่น "Found 12 of 250" (`labels.filterSummary(shown, total)`; `shown` = แถวที่ผ่านตัวกรองก่อนแบ่งหน้า, `total` = แถวทั้งหมด) และชิปหนึ่งอันต่อตัวกรองที่ใช้อยู่ (`<li class="spg-chip">`) ได้แก่ ข้อความค้นหา (ขึ้นต้นด้วย `labels.search` หรือชื่อคอลัมน์ถ้าจำกัดการค้นหาไว้คอลัมน์เดียว) และ `columnFilters` แต่ละคอลัมน์ ปุ่ม ✕ บนชิป (`labels.removeFilter(text)` เป็น aria-label) ลบตัวกรองนั้น: ลบชิปค้นหาจะล้างช่องค้นหาและกลับไปค้นทุกคอลัมน์ด้วย และยิง `filterChange` ครั้งเดียว ค่าเริ่มต้น `false`
 - `options.refreshButton?: boolean` – แสดงปุ่ม Refresh (`<button class="spg-tool-btn spg-refresh">` ไอคอน `refresh` อย่างเดียว; ชื่อและ tooltip มาจาก `labels.refresh`) ในกลุ่ม Input Group กดแล้วยิง event `refresh` (และเรียก `onRefresh`) เท่านั้น ไลบรารีไม่โหลดข้อมูลเอง — แอปโหลดแล้วเรียก `setRows()` ค่าเริ่มต้น `false`
 - `options.onRefresh?: () => void` – เรียกเมื่อกดปุ่ม Refresh (เหมือน `on('refresh', fn)`)
@@ -90,6 +91,12 @@
   | `exportRowCount`                                                                                     | บรรทัดจำนวนแถวใต้ช่องค้นหานั้น `(count) => string`                                                          | `'12 rows will be exported'`                                                  |
   | `exportPreviewMore`                                                                                  | บรรทัดใต้ Preview เมื่อยังมีแถวต่อ `(more) => string`                                                       | `'… and 50 more rows'`                                                        |
   | `exportPreviewEmpty`                                                                                 | ข้อความใน Preview เมื่อไม่เหลือแถว                                                                          | `'No rows match'`                                                             |
+  | `advancedFilter`                                                                                     | aria-label/tooltip ของปุ่มตัวกรองขั้นสูง (`advancedFilter`) และหัวข้อ modal                                 | `'Advanced filter'`                                                           |
+  | `advMatch`, `advMatchAll`, `advMatchAny`                                                             | ป้ายของตัวเลือก AND/OR ใน modal และสองตัวเลือก                                                              | `'Match'`, `'All conditions'`, `'Any condition'`                              |
+  | `advField`, `advOperator`, `advValue`                                                                | aria-label ของช่องเลือกฟิลด์ ตัวดำเนินการ และค่าในแต่ละแถว                                                  | `'Field'`, `'Operator'`, `'Value'`                                            |
+  | `advAdd`, `advRemove`                                                                                | ปุ่มเพิ่มเงื่อนไข และ aria-label ของปุ่มลบแถว                                                               | `'Add condition'`, `'Remove condition'`                                       |
+  | `conditionOperator`                                                                                  | ข้อความของตัวดำเนินการ `(op) => string` ใน modal และในชิป                                                   | `'contains'`, `'at least'`, `'between'`, ...                                  |
+  | `conditionAnd`, `conditionOr`                                                                        | คำที่คั่นส่วนต่างๆ ของกลุ่มในชิป                                                                            | `'and'`, `'or'`                                                               |
   | `exportFields`                                                                                       | หัวข้อ modal เลือกฟิลด์ที่จะส่งออก (`exportColumnSelect`)                                                   | `'Choose fields to export'`                                                   |
   | `refresh`                                                                                            | aria-label และ tooltip ของปุ่ม Refresh (`refreshButton`)                                                    | `'Refresh'`                                                                   |
   | `resetView`                                                                                          | aria-label และ tooltip ของปุ่ม Reset view (`resetButton`)                                                   | `'Reset view'`                                                                |
@@ -402,6 +409,38 @@ _ดีไซน์ของแถบกรอง:_ select เป็น addon �
 
 คอลัมน์ `type: 'date'` (ที่ไม่มี `options`) เมื่อถูกเลือกเป็นคอลัมน์ค้นหา ช่องข้อความจะถูกซ่อนและแทนด้วยช่อง `<input type="date">` สองช่อง (`.spg-date-from` / `.spg-date-to` ใน `.spg-search-range`; aria-label จาก `labels.dateFrom` / `labels.dateTo`) กรองทันทีเมื่อเลือกวันที่ จะใส่ช่องเดียวก็ได้ (ตั้งแต่วันนั้นเป็นต้นไป หรือถึงวันนั้น) ขอบเขตรวมวันที่เลือกทั้งสองด้าน เทียบเป็น **วัน** ตามที่เซลล์แสดง: สตริง `YYYY-MM-DD` คือวันนั้นตรง ๆ ส่วน `Date`, ISO ที่มีเวลา และ timestamp คือวันตามเขตเวลาของผู้ใช้ ค่าว่างหรืออ่านไม่ได้ไม่ตรงเงื่อนไข ค่าค้นหาที่เก็บใน `getFilter().search` เป็นสตริง `FROM..TO` (เช่น `2026-10-01..2026-10-15` หรือ `2026-10-01..`) ซึ่ง `setFilter()` รับในรูปแบบนี้ได้ (เมื่อ `searchColumn` เป็นคอลัมน์วันที่) chip ใน `filterSummary` แสดงเป็น `FROM – TO` และเซลล์ที่ตรงถูกไฮไลต์ทั้งเซลล์ เหมือนคอลัมน์ enum การสลับชนิดของคอลัมน์ค้นหาจะล้างคำค้นเดิม
 
+### Advanced filter
+
+ตัวกรองหลายเงื่อนไข: แต่ละเงื่อนไขคือ `{ key, op, value }` (ฟิลด์ + ตัวดำเนินการ + ค่า) และรวมกันเป็นกลุ่ม `{ logic: 'and' | 'or', conditions: [...] }` ซึ่งซ้อนกลุ่มได้ ใช้ผ่าน `setAdvancedFilter(tree)` / `getAdvancedFilter()` หรือให้ผู้ใช้สร้างเองใน modal ด้วย `advancedFilter: true`
+
+```js
+grid.setAdvancedFilter({
+  logic: 'and',
+  conditions: [
+    { key: 'amount', op: 'gte', value: 1000 },
+    { key: 'status', op: 'in', value: ['approved', 'done'] },
+    {
+      logic: 'or',
+      conditions: [
+        { key: 'vendor', op: 'contains', value: 'siam' },
+        { key: 'vendor', op: 'isEmpty' },
+      ],
+    },
+  ],
+});
+```
+
+- **ตัวดำเนินการตามชนิดคอลัมน์:** ข้อความ `contains`, `notContains`, `equals`, `notEquals`, `startsWith`, `isEmpty`, `isNotEmpty` · ตัวเลข (`type: 'number'`) `equals`, `notEquals`, `gt`, `gte`, `lt`, `lte`, `between`, `isEmpty`, `isNotEmpty` · วันที่ (`type: 'date'`) `equals`, `notEquals`, `before`, `after`, `between`, `isEmpty`, `isNotEmpty` · enum (คอลัมน์ที่มี `options` หรือ `badge` ที่มี `badges`) `in`, `notIn`, `isEmpty`, `isNotEmpty` · boolean `isTrue`, `isFalse`, `isEmpty`, `isNotEmpty`
+- **ค่า:** ข้อความหรือตัวเลข, วันเป็น `'YYYY-MM-DD'`, `between` ใช้ `[จาก, ถึง]` (ปล่อยด้านใดด้านหนึ่งว่างได้ จะเป็นช่วงปลายเปิด, ช่วงเป็นแบบรวมปลาย), `in`/`notIn` ใช้ `string[]`, `isEmpty`/`isNotEmpty`/`isTrue`/`isFalse` ไม่มีค่า การเทียบข้อความไม่สนตัวพิมพ์และสระวรรณยุกต์เหมือนช่องค้นหา
+- **เงื่อนไขที่ยังไม่มีค่า:** ค่าว่าง, `between` ที่ว่างทั้งคู่, ลิสต์ว่าง หรือตัวเลข/วันที่ที่อ่านไม่ได้ ถือว่า "ยังไม่ทำงาน" และไม่กรองอะไร (กลุ่มที่ไม่เหลือเงื่อนไขที่ทำงานก็ไม่กรอง) `getAdvancedFilter()` จึงไม่มีเงื่อนไขเหล่านี้
+- **เซลล์ว่าง** (`null`, `undefined`, ข้อความว่าง) ผ่านเฉพาะ `isEmpty` และตัวดำเนินการแบบปฏิเสธ (`notContains`, `notEquals`, `notIn`)
+- **ใช้ร่วมกับตัวกรองอื่น:** เป็น AND กับช่องค้นหาและตัวกรองรายคอลัมน์ (`setFilter`) และใช้กับ `exportExcel()` กับ Preview ใน modal Export ด้วย (`exportExcel({ search })` ไม่แตะเงื่อนไขขั้นสูง)
+- `setAdvancedFilter(tree | null)` โยน `RangeError` เมื่อ `key` ไม่ใช่คอลัมน์ข้อมูล (รวมคอลัมน์ action), ตัวดำเนินการไม่ตรงกับชนิดคอลัมน์ หรือ `logic` ไม่ใช่ `'and'`/`'or'` และโยน `TypeError` เมื่อโครงสร้างผิด หรือ `between`/`in`/`notIn` ที่ค่าไม่ใช่อาร์เรย์ ตัวกรองเดิมไม่เปลี่ยนเมื่อโยนข้อผิดพลาด
+- `getFilter()` และ event `filterChange` มี `conditions` (สำเนาของตัวกรองขั้นสูง) เมื่อมีเงื่อนไข ส่วน `setFilter()` ไม่แตะตัวกรองขั้นสูง (ส่งผลของ `getFilter()` กลับเข้าไปได้ ฟิลด์ `conditions` จะถูกข้าม) `resetView()` ล้างตัวกรองขั้นสูงด้วย
+- **modal:** แถวละหนึ่งเงื่อนไข ช่องค่าเปลี่ยนตามคอลัมน์และตัวดำเนินการ (ช่องข้อความ/ตัวเลข/วันที่, ช่อง "จาก–ถึง" สำหรับ `between`, checkbox ของค่าสำหรับ enum, ไม่มีช่องสำหรับตัวดำเนินการที่ไม่มีค่า) มีตัวเลือก "ตรงทุกข้อ / ตรงข้อใดข้อหนึ่ง" (AND / OR) ปุ่มเพิ่มเงื่อนไข ลบแถว และล้างทั้งหมด ยังไม่มีอะไรเปลี่ยนจนกว่าจะกดตกลง (`labels.apply`) Esc คลิกพื้นหลัง และยกเลิกปิดโดยไม่เปลี่ยน modal สร้างได้เฉพาะกลุ่มชั้นเดียว กลุ่มซ้อนที่ตั้งผ่าน API จะแสดงเป็นบรรทัดอ่านอย่างเดียวที่ลบได้ และคงอยู่เมื่อกดตกลง
+- **`filterSummary`:** เงื่อนไขขั้นสูงขึ้นเป็นชิป: กลุ่ม AND ขึ้นชิปละหนึ่งเงื่อนไข (ลบทีละข้อได้) กลุ่ม OR หรือเงื่อนไขเดี่ยวขึ้นชิปเดียวทั้งก้อน (ลบแล้วล้างทั้งหมด) ข้อความมาจาก `labels.conditionOperator`, `labels.conditionAnd`, `labels.conditionOr`
+- ชนิด `Condition`, `ConditionGroup` และ `ConditionOperator` ดูใน `src/conditionTypes.js`
+
 ### Pagination
 
 ตั้ง `pageSize` เพื่อเปิดการแบ่งหน้า ลำดับการทำงานคือ กรอง → เรียง → แบ่งหน้า
@@ -517,6 +556,7 @@ new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
   ค่าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `getFilter()` – คืน `FilterState` ปัจจุบัน (สำเนา) หรือ `null` เมื่อไม่ได้กรอง
 - `setFilter(filter)` – ตั้งตัวกรองด้วย `{ search, columnFilters }` หรือ `null` เพื่อล้าง และเขียน `search`
+- `getAdvancedFilter()` / `setAdvancedFilter(tree | null)` – ตัวกรองหลายเงื่อนไข (สำเนา / ตั้งค่า; `null` ล้าง) ดู [Advanced filter](#advanced-filter)
   ลงในช่องค้นหาด้วย; โยน `RangeError` ถ้า key ใน `columnFilters` ไม่ใช่คอลัมน์
 - `getSearchColumn()` – คอลัมน์ที่จำกัดการค้นหา หรือ `null` = ทุกคอลัมน์
 - `setSearchColumn(key)` – จำกัดการค้นหาให้คอลัมน์ `key` (หรือ `null` เพื่อค้นทุกคอลัมน์) ย้าย select ตาม และกลับหน้า 1; โยน `RangeError` ถ้า `key` ไม่ใช่คอลัมน์ข้อมูล

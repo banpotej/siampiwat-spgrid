@@ -18,6 +18,19 @@
  * @property {string} [allColumns] First option of the search column select; default 'All columns'.
  * @property {string} [exportExcel] Text of the Export button (`exportButton` option); default 'Export Excel'.
  * @property {string} [exportFields] Title of the modal that lists the fields to export (`exportColumnSelect` option); default 'Choose fields to export'.
+ * @property {string} [advancedFilter] aria-label and tooltip of the Advanced filter button (`advancedFilter` option), and the title of its modal; default 'Advanced filter'.
+ * @property {string} [advMatch] Label of the all / any select in that modal; default 'Match'.
+ * @property {string} [advMatchAll] Option of that select: every condition must hold (AND); default 'All conditions'.
+ * @property {string} [advMatchAny] Option of that select: one condition is enough (OR); default 'Any condition'.
+ * @property {string} [advField] aria-label of a condition's field select; default 'Field'.
+ * @property {string} [advOperator] aria-label of a condition's operator select; default 'Operator'.
+ * @property {string} [advValue] aria-label of a condition's value box; default 'Value'.
+ * @property {string} [advAdd] Button that adds a condition row; default 'Add condition'.
+ * @property {string} [advRemove] aria-label of the button that removes a condition row; default 'Remove condition'.
+ * @property {(op: import('./types.js').ConditionOperator) => string} [conditionOperator] Text of an operator, in the modal and in the
+ *   filter chips; default 'contains', 'at least', 'between', ...
+ * @property {string} [conditionAnd] Word between the parts of an AND group in a filter chip; default 'and'.
+ * @property {string} [conditionOr] Word between the parts of an OR group in a filter chip; default 'or'.
  * @property {string} [exportSearch] Label of the search box in that modal, which narrows the rows to export; default 'Rows to export (search)'.
  * @property {(count: number) => string} [exportRowCount] Line under that search box; default '12 rows will be exported'.
  * @property {(more: number) => string} [exportPreviewMore] Line under the preview table when more rows follow; default '… and 50 more rows'.

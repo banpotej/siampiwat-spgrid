@@ -223,3 +223,16 @@ export function filterByConditions(rows, tree, columns, options = {}) {
   const built = buildTree(tree, columns, options.locale);
   return built ? rows.filter(built.test) : [...rows];
 }
+
+/**
+ * Drop one top-level condition of an AND group, or the whole filter. Pure.
+ *
+ * @param {Condition | ConditionGroup | null} tree
+ * @param {number | null} index Position in `tree.conditions`; null (or a tree that is not an AND group): drop everything.
+ * @returns {Condition | ConditionGroup | null} null when nothing is left.
+ */
+export function removeConditionPart(tree, index) {
+  if (index === null || !tree || !('conditions' in tree) || tree.logic !== 'and') return null;
+  const rest = tree.conditions.filter((_, i) => i !== index);
+  return rest.length > 0 ? { logic: 'and', conditions: rest } : null;
+}

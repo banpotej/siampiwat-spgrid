@@ -1,7 +1,9 @@
 // @ts-check
+import { removeConditionPart } from '../core/conditions.js';
 import { removeFilterPart } from '../core/filter.js';
 import { isActionColumn } from '../core/columns.js';
 import { askConfirm } from './confirm.js';
+import { bindAdvancedFilter } from './advancedFilter.js';
 import { bindControls } from './controls.js';
 import { openExportDialog } from './exportDialog.js';
 
@@ -25,7 +27,8 @@ const DEFAULT_DEBOUNCE = 200;
  * @returns {() => void} Removes every listener.
  */
 export function bindGridControls(grid, shell, options, labels, host) {
-  return bindControls(shell, {
+  const unbindAdvanced = bindAdvancedFilter(grid, shell, labels, host.columns);
+  const unbindControls = bindControls(shell, {
     debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
     submit: options.searchButton === true,
     onSearch: (search) => host.applyFilter({ search, columnFilters: host.columnFilters() }),
@@ -57,6 +60,10 @@ export function bindGridControls(grid, shell, options, labels, host) {
     },
     onRefresh: () => host.emit('refresh', undefined),
     onRemoveFilter: (part) => {
+      if (part.type === 'condition' || part.type === 'conditions') {
+        const index = part.type === 'condition' ? part.index : null;
+        return grid.setAdvancedFilter(removeConditionPart(grid.getAdvancedFilter(), index));
+      }
       grid.setFilter(removeFilterPart(grid.getFilter(), part));
       if (part.type === 'search') grid.setSearchColumn(null);
     },
@@ -143,4 +150,8 @@ export function bindGridControls(grid, shell, options, labels, host) {
       emit: host.emit,
     },
   });
+  return () => {
+    unbindAdvanced();
+    unbindControls();
+  };
 }

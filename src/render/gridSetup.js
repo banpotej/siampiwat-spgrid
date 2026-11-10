@@ -92,6 +92,7 @@ export function initialState(options, columns, initial) {
     sort: loadSort(options.sortStorageKey, dataKeys(options.columns), initial.sort),
     groupBy: loadGroupBy(options.groupByStorageKey, columns, initial.groupBy),
     filter: null,
+    conditions: null,
     page: 1,
     pageSize: loadPageSize(options.pageSizeStorageKey, options.pageSize) ?? null,
     searchColumn: null,

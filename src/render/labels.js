@@ -1,5 +1,7 @@
 // @ts-check
 
+import { OPERATORS_EN, OPERATORS_TH } from './conditionLabels.js';
+
 /** @typedef {import('../types.js').Labels} Labels */
 
 /** @type {Required<Labels>} */
@@ -24,6 +26,18 @@ const DEFAULT_LABELS = {
   exportRowCount: (count) => `${count} ${count === 1 ? 'row' : 'rows'} will be exported`,
   exportPreviewMore: (more) => `… and ${more} more ${more === 1 ? 'row' : 'rows'}`,
   exportPreviewEmpty: 'No rows match',
+  advancedFilter: 'Advanced filter',
+  advMatch: 'Match',
+  advMatchAll: 'All conditions',
+  advMatchAny: 'Any condition',
+  advField: 'Field',
+  advOperator: 'Operator',
+  advValue: 'Value',
+  advAdd: 'Add condition',
+  advRemove: 'Remove condition',
+  conditionOperator: (op) => OPERATORS_EN[op],
+  conditionAnd: 'and',
+  conditionOr: 'or',
   columns: 'Settings',
   columnSettings: 'Settings',
   columnsSection: 'Columns',
@@ -101,6 +115,18 @@ export const thaiLabels = {
   exportRowCount: (count) => `จะส่งออก ${count} รายการ`,
   exportPreviewMore: (more) => `… และอีก ${more} รายการ`,
   exportPreviewEmpty: 'ไม่พบแถวที่ตรงกัน',
+  advancedFilter: 'ตัวกรองขั้นสูง',
+  advMatch: 'ต้องตรงกับ',
+  advMatchAll: 'ตรงทุกข้อ',
+  advMatchAny: 'ตรงข้อใดข้อหนึ่ง',
+  advField: 'ฟิลด์',
+  advOperator: 'การเปรียบเทียบ',
+  advValue: 'ค่า',
+  advAdd: 'เพิ่มเงื่อนไข',
+  advRemove: 'ลบเงื่อนไข',
+  conditionOperator: (op) => OPERATORS_TH[op],
+  conditionAnd: 'และ',
+  conditionOr: 'หรือ',
   columns: 'ตั้งค่า',
   columnSettings: 'ตั้งค่า',
   columnsSection: 'คอลัมน์',

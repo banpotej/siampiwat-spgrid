@@ -67,7 +67,7 @@
 
 /**
  * Names of the built-in icons (Material Symbols); see `options.icons`.
- * @typedef {'arrow_upward' | 'arrow_downward' | 'unfold_more' | 'chevron_left' | 'chevron_right' | 'first_page' | 'last_page' | 'search' | 'close' | 'inbox' | 'visibility' | 'edit' | 'delete' | 'cancel' | 'check' | 'download' | 'calendar_today' | 'view_column' | 'restart_alt' | 'refresh' | 'stripes' | 'wrap_text' | 'settings'} IconName
+ * @typedef {'arrow_upward' | 'arrow_downward' | 'unfold_more' | 'chevron_left' | 'chevron_right' | 'first_page' | 'last_page' | 'search' | 'close' | 'inbox' | 'visibility' | 'edit' | 'delete' | 'cancel' | 'check' | 'download' | 'calendar_today' | 'view_column' | 'restart_alt' | 'refresh' | 'stripes' | 'wrap_text' | 'settings' | 'filter_list'} IconName
  */
 
 /**
@@ -86,24 +86,9 @@
  * @typedef {{ key: string, direction: SortDirection } | null} SortState
  */
 
-/**
- * @typedef {'contains' | 'notContains' | 'equals' | 'notEquals' | 'startsWith' | 'gt' | 'gte' | 'lt' | 'lte' | 'between' |
- *   'before' | 'after' | 'in' | 'notIn' | 'isTrue' | 'isFalse' | 'isEmpty' | 'isNotEmpty'} ConditionOperator
- */
-
-/**
- * @typedef {object} Condition One test on one data column: `key` `op` `value`.
- * @property {string} key
- * @property {ConditionOperator} op Which operators a column takes depends on its kind (see `operatorsFor`).
- * @property {unknown} [value] A string, number or day; `[from, to]` for `between`; `string[]` for `in` / `notIn`; none for
- *   `isEmpty`, `isNotEmpty`, `isTrue`, `isFalse`. A blank or unreadable value makes the condition inactive (it matches every row).
- */
-
-/**
- * @typedef {object} ConditionGroup Conditions (or nested groups) combined with AND or OR.
- * @property {'and' | 'or'} logic
- * @property {(Condition | ConditionGroup)[]} conditions
- */
+/** @typedef {import('./conditionTypes.js').ConditionOperator} ConditionOperator */
+/** @typedef {import('./conditionTypes.js').Condition} Condition */
+/** @typedef {import('./conditionTypes.js').ConditionGroup} ConditionGroup */
 
 /**
  * @typedef {object} FilterState
@@ -115,6 +100,8 @@
  *   in. Set by the grid for a search limited to a `date` column; not part of the user's filter.
  * @property {string} [searchColumn] Only in `getFilter()` / 'filterChange': the column the search box is limited to.
  * @property {Record<string, string | null | undefined>} [columnFilters] Per-column substring filters, ANDed.
+ * @property {Condition | ConditionGroup} [conditions] Only in `getFilter()` / 'filterChange': the advanced filter. `setFilter` ignores it
+ *   (see `setAdvancedFilter`).
  */
 
 /**
@@ -138,6 +125,7 @@
  * @property {Row[]} rows
  * @property {SortState} sort
  * @property {FilterState | null} filter
+ * @property {Condition | ConditionGroup | null} conditions The advanced filter (normalized); null when there is none.
  * @property {number} page Requested 1-based page; the rendered page is clamped into range.
  * @property {number | null} pageSize Rows per page; null while pagination is off.
  * @property {string | null} searchColumn Column the global search is limited to; null searches every data column.
@@ -177,6 +165,9 @@
  * @property {boolean} [exportColumnSelect] With `exportButton`: the button first opens a modal where the user ticks the
  *   fields (data columns) to export and can narrow the rows with a search box (starting with the grid's search text),
  *   then calls `exportExcel({ columns, search })`. Default false (exports every column and the grid's rows).
+ * @property {boolean} [advancedFilter] Render an "Advanced filter" button in the toolbar (works without `searchable`) that opens a
+ *   modal where the user builds conditions (field + operator + value) combined with all / any. They apply on top of the search and
+ *   the column filters, and also to Excel export. Same as `setAdvancedFilter()`. Default false.
  * @property {boolean} [filterSummary] Render a strip under the toolbar, while a filter is active, with how many rows
  *   matched ("Found 12 of 250") and one chip per active filter (search text with its column, column filters); the
  *   x on a chip removes that filter. Default false.

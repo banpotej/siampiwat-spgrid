@@ -59,6 +59,7 @@ describe('built-in icons', () => {
         'stripes',
         'wrap_text',
         'settings',
+        'filter_list',
       ].sort(),
     );
     for (const svg of Object.values(ICONS)) {

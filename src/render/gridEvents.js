@@ -57,7 +57,8 @@ export function emitChanges(events, grid, { state, prev, before, after }) {
   if (state.sort !== prev.sort) events.emit('sortChange', grid.getSort());
   if (state.groupBy !== prev.groupBy) events.emit('groupByChange', [...state.groupBy]);
   const columnChanged = state.searchColumn !== prev.searchColumn && state.filter?.search;
-  if (state.filter !== prev.filter || columnChanged) events.emit('filterChange', grid.getFilter());
+  const filterChanged = state.filter !== prev.filter || state.conditions !== prev.conditions;
+  if (filterChanged || columnChanged) events.emit('filterChange', grid.getFilter());
   if (after && (after.page !== before?.page || after.pageSize !== before?.pageSize)) {
     events.emit('pageChange', { page: after.page, pageSize: after.pageSize });
   }

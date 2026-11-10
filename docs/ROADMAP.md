@@ -23,9 +23,9 @@
   - [x] ธีม Lavender (opt-in) และตัวแปร `--spg-header-bg-image`
 - **Phase 2 (ถัดไป):** เรียงตามลำดับความสำคัญ
   - [ ] ตัวกรองขั้นสูงแบบหลายเงื่อนไข (ฟิลด์ + ตัวดำเนินการ + ค่า, AND/OR, ซ้อนกลุ่มได้): ทำทีละขั้น
-    - [x] core: `src/core/conditions.js` (`filterByConditions`, `normalizeConditions`, `operatorsFor`) ยังไม่ต่อกับตารางและยังไม่ export จาก `src/index.js`
-    - [ ] state + API (`setAdvancedFilter`, `getAdvancedFilter`), event `filterChange`, ชิปใน filter summary, `resetView()`, ต่อเข้า `computeView`
-    - [ ] UI: modal ตัวสร้างเงื่อนไข
+    - [x] core: `src/core/conditions.js` (`filterByConditions`, `normalizeConditions`, `operatorsFor`) ยังไม่ export จาก `src/index.js` (ใช้ผ่าน `setAdvancedFilter`)
+    - [x] state + API (`setAdvancedFilter`, `getAdvancedFilter`), event `filterChange`, ชิปใน filter summary, `resetView()`, ต่อเข้า `computeView` และ export
+    - [x] UI: ปุ่ม `advancedFilter` และ modal ตัวสร้างเงื่อนไข (ชั้นเดียว AND/OR) ใช้ในตัวอย่าง Purchase Order
     - [ ] จำค่าใน `localStorage`
   - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
   - [ ] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด, `aria-selected`, roving tabindex (ทำควบคู่กับ selection)

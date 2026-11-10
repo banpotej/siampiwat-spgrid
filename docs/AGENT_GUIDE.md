@@ -95,7 +95,7 @@ grid.on('sortChange', ({ key, direction }) => {}); // also filterChange, pageCha
 ## Options by job
 
 - **Toolbar:** `title`, `description`, `searchable`, `searchColumnSelect`, `searchButton`, `exportButton`, `exportColumnSelect` (pick the fields to export),
-  `refreshButton`, `filterSummary`, `columnPicker` (opens Settings), `resetButton`.
+  `refreshButton`, `advancedFilter` (multi-condition filter modal), `filterSummary`, `columnPicker` (opens Settings), `resetButton`.
 - **Paging / sort:** `pageSize`, `pageSizeOptions`, `defaultSort: { key, direction }`, `groupBy: ['col']`.
 - **Look:** `striped`, `density: 'compact'`, `gridLines`, `lineStyle`, `textWrap`, `stickyHeader`, `maxHeight`,
   `freezeColumns: n`, `icons`, `labels`.
@@ -108,7 +108,7 @@ grid.on('sortChange', ({ key, direction }) => {}); // also filterChange, pageCha
   its own name**; without a key nothing is saved.
 - **Thai UI:** `labels: thaiLabels`; any single text can be overridden: `labels: { ...thaiLabels, search: 'หา' }`.
 
-Methods: `setRows`, `getSort/setSort`, `getFilter/setFilter`, `getPage/setPage`, `getPageSize/setPageSize`,
+Methods: `setRows`, `getSort/setSort`, `getFilter/setFilter`, `getAdvancedFilter/setAdvancedFilter`, `getPage/setPage`, `getPageSize/setPageSize`,
 `getHiddenColumns/setHiddenColumns`, `getColumnOrder/setColumnOrder`, `getGroupBy/setGroupBy`, `setSearchColumn`,
 `exportExcel`, `resetView`, `render`, `destroy`.
 

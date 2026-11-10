@@ -1,6 +1,7 @@
 // @ts-check
 import { escapeHtml } from '../utils/escape.js';
 import { searchKind } from '../core/columns.js';
+import { columnLabel, describeCondition } from './conditionText.js';
 import { renderIcon } from './icons.js';
 
 /** @typedef {import('../types.js').Column} Column */
@@ -8,20 +9,15 @@ import { renderIcon } from './icons.js';
 /** @typedef {import('../types.js').IconName} IconName */
 
 /**
- * @param {Column[]} columns
- * @param {string} key
- * @returns {string} The column's label on one line (a multi-line header reads "ไทย / English"), or the key.
- */
-const columnLabel = (columns, key) =>
-  (columns.find((c) => c.key === key)?.label ?? key).replace(/\s*\n\s*/g, ' / ');
-
-/**
  * The filter summary: how many rows the filter left, and one removable chip per active part of it
- * (the search text, with its column when limited to one, and each column filter). Escaped.
+ * (the search text, with its column when limited to one, each column filter, and the advanced filter: one chip for each
+ * condition of an AND group, one chip for anything else). Escaped.
  *
  * @param {{ filter: FilterState | null, columns: Column[], shown: number, total: number,
  *   labels: { search: string, filterSummary: (shown: number, total: number) => string,
- *     removeFilter: (text: string) => string },
+ *     removeFilter: (text: string) => string,
+ *     conditionOperator: (op: import('../types.js').ConditionOperator) => string,
+ *     conditionAnd: string, conditionOr: string },
  *   icons: Record<IconName, string> }} opts `shown`: rows matching; `total`: rows before filtering.
  * @returns {string} '' when nothing is filtered.
  */
@@ -41,6 +37,19 @@ export function renderSummary({ filter, columns, shown, total, labels, icons }) 
       attrs: `data-remove="column" data-key="${escapeHtml(key)}"`,
     });
   }
+  const tree = filter?.conditions;
+  if (tree) {
+    const parts =
+      'conditions' in tree && tree.logic === 'and'
+        ? tree.conditions.map((node, i) => ({
+            node,
+            attrs: `data-remove="condition" data-index="${i}"`,
+          }))
+        : [{ node: tree, attrs: 'data-remove="conditions"' }];
+    for (const { node, attrs } of parts) {
+      chips.push({ text: describeCondition(node, columns, labels), attrs });
+    }
+  }
   if (chips.length === 0) return '';
   const items = chips
     .map(({ text, attrs }) => {
@@ -58,7 +67,8 @@ export function renderSummary({ filter, columns, shown, total, labels, icons }) 
  * Bind the summary's delegated click: the remove button of a chip reports which part to drop.
  *
  * @param {HTMLElement} host
- * @param {(part: { type: 'search' } | { type: 'column', key: string }) => void} onRemove
+ * @param {(part: { type: 'search' } | { type: 'column', key: string } | { type: 'condition', index: number }
+ *   | { type: 'conditions' }) => void} onRemove
  * @returns {() => void} Unbind.
  */
 export function bindSummaryEvents(host, onRemove) {
@@ -66,11 +76,10 @@ export function bindSummaryEvents(host, onRemove) {
   const onClick = (e) => {
     const button = e.target instanceof Element ? e.target.closest('.spg-chip-remove') : null;
     if (!(button instanceof HTMLElement) || !host.contains(button)) return;
-    onRemove(
-      button.dataset.remove === 'column'
-        ? { type: 'column', key: button.dataset.key ?? '' }
-        : { type: 'search' },
-    );
+    const { remove, key, index } = button.dataset;
+    if (remove === 'column') onRemove({ type: 'column', key: key ?? '' });
+    else if (remove === 'condition') onRemove({ type: 'condition', index: Number(index) });
+    else onRemove({ type: remove === 'conditions' ? 'conditions' : 'search' });
   };
   host.addEventListener('click', onClick);
   return () => host.removeEventListener('click', onClick);

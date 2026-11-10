@@ -10,6 +10,7 @@
 @import './styles/toolButtons.css';
 @import './styles/searchRange.css';
 @import './styles/columns.css';
+@import './styles/advancedFilter.css';
 @import './styles/summary.css';
 @import './styles/pager.css';
 @import './styles/actions.css';
