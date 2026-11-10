@@ -2,6 +2,8 @@
 
 SPGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
 
+🌐 **เว็บไซต์ (Landing Page):** <https://spgrid.banpote-j.workers.dev/> – ดูตัวอย่างที่ใช้งานได้จริง, Quick Start และวิธีใช้กับ Claude Code
+
 ## Quick Start
 
 ทำตามทีละขั้นเพื่อติดตั้งและแสดงตารางแรกให้ได้ภายในไม่กี่นาที (ใช้ Vite เป็นตัวอย่าง)
