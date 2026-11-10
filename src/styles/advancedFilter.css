@@ -1,4 +1,4 @@
-/* The Advanced filter button is a .spg-tool-btn (see toolButtons.css) that opens a modal of condition rows. It takes the
+/* The Advanced filter button is a .spg-tool-btn (see toolButtons.css) that opens a modal of condition cards. It takes the
    accent tint while a filter is set, like the Settings button while a column is hidden. */
 .spg-advfilter[aria-expanded='true'] {
   background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
@@ -17,24 +17,126 @@
 
 /* Overrides .spg-modal-box (modal.css loads later, hence the doubled class). */
 .spg-modal-box.spg-adv-dialog {
-  width: min(100%, 52rem);
+  width: min(100%, 56rem);
+  --spgi-adv-cols: minmax(12rem, 1.3fr) minmax(9rem, 1fr) minmax(11rem, 2fr) 2.25rem;
+}
+
+/* "Match: [All conditions | Any condition]": a segmented switch instead of a hidden select. */
+.spg-adv-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
 }
 
 .spg-adv-match {
-  max-width: 16rem;
+  color: var(--spgi-muted);
+  font-size: 0.85em;
+}
+
+.spg-adv-segment {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--spgi-border);
+  border-radius: calc(var(--spgi-input-radius) + 3px);
+  background: var(--spgi-hover-bg);
+}
+
+.spg-adv-segment label {
+  position: relative;
+  cursor: pointer;
+}
+
+.spg-adv-segment input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.spg-adv-segment span {
+  display: block;
+  padding: 0.35em 1.1em;
+  border-radius: var(--spgi-input-radius);
+  color: var(--spgi-muted);
+  font-size: 0.9em;
+  transition:
+    background-color var(--spgi-transition),
+    color var(--spgi-transition);
+}
+
+.spg-adv-segment label:hover span {
+  color: var(--spgi-text);
+}
+
+.spg-adv-segment label:has(input:checked) span {
+  background: var(--spgi-bg);
+  color: var(--spgi-accent);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 0.16);
+}
+
+.spg-adv-segment label:has(input:focus-visible) span {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 1px;
+}
+
+/* Column captions, lined up with the cards below. */
+.spg-adv-head,
+.spg-adv-row {
+  display: grid;
+  grid-template-columns: var(--spgi-adv-cols);
+  gap: 8px;
+  align-items: start;
+}
+
+.spg-adv-head {
+  padding: 0 13px 6px;
+  color: var(--spgi-muted);
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .spg-adv-rows {
   display: grid;
-  gap: 10px;
+  gap: 26px;
 }
 
-/* One condition: field, operator, value controls, remove. The value controls take what is left. */
+/* One condition is one card; "and" / "or" sits on the seam above every card but the first. */
 .spg-adv-row {
-  display: grid;
-  grid-template-columns: minmax(8rem, 1fr) minmax(8rem, 1fr) minmax(10rem, 2fr) auto;
-  gap: 8px;
-  align-items: start;
+  position: relative;
+  padding: 12px;
+  border: 1px solid var(--spgi-border);
+  border-radius: calc(var(--spgi-input-radius) + 2px);
+  background: var(--spgi-bg);
+  transition:
+    border-color var(--spgi-transition),
+    box-shadow var(--spgi-transition);
+}
+
+.spg-adv-row:hover {
+  border-color: var(--spgi-border-strong);
+}
+
+.spg-adv-row:focus-within {
+  border-color: color-mix(in srgb, var(--spgi-accent) 55%, var(--spgi-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--spgi-accent) 12%, transparent);
+}
+
+.spg-adv-row[data-join]::before {
+  content: attr(data-join);
+  position: absolute;
+  top: -21px;
+  left: 14px;
+  padding: 1px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spgi-accent) 14%, var(--spgi-bg));
+  color: var(--spgi-accent);
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.7;
 }
 
 .spg-adv-row select,
@@ -57,6 +159,11 @@
   cursor: pointer;
 }
 
+.spg-adv-row input::placeholder {
+  color: var(--spgi-muted);
+  opacity: 0.8;
+}
+
 .spg-adv-row select:hover,
 .spg-adv-row input:not([type='checkbox']):hover {
   border-color: var(--spgi-muted);
@@ -72,24 +179,84 @@
 .spg-adv-value {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   min-width: 0;
+  min-height: 2.5em;
 }
 
 .spg-adv-value > input {
   flex: 1 1 8rem;
 }
 
+/* An operator with no value (is empty, is yes): a quiet dash instead of a blank. */
+.spg-adv-value:empty::before {
+  content: '—';
+  color: var(--spgi-muted);
+}
+
+.spg-adv-dash {
+  color: var(--spgi-muted);
+}
+
+/* Values of an enum column: toggle chips instead of a list of checkboxes. */
 .spg-adv-checks {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 12px;
+  gap: 6px;
+}
+
+.spg-adv-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 0.95em;
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: 999px;
+  background: var(--spgi-bg);
+  color: var(--spgi-text);
+  font-size: 0.9em;
+  cursor: pointer;
+  transition:
+    background-color var(--spgi-transition),
+    border-color var(--spgi-transition),
+    color var(--spgi-transition);
+}
+
+.spg-adv-chip input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.spg-adv-chip:hover {
+  border-color: var(--spgi-muted);
+}
+
+.spg-adv-chip:has(input:checked) {
+  border-color: var(--spgi-accent);
+  background: color-mix(in srgb, var(--spgi-accent) 14%, var(--spgi-bg));
+  color: var(--spgi-accent);
+  font-weight: 600;
+}
+
+.spg-adv-chip:has(input:checked)::before {
+  content: '✓';
+  margin-right: 0.4em;
+  font-size: 0.85em;
+}
+
+.spg-adv-chip:has(input:focus-visible) {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
 }
 
 .spg-adv-remove {
   display: inline-grid;
   place-items: center;
-  width: 2.5em;
+  width: 2.25rem;
   height: 2.5em;
   padding: 0;
   border: 0;
@@ -97,11 +264,14 @@
   background: transparent;
   color: var(--spgi-muted);
   cursor: pointer;
+  transition:
+    background-color var(--spgi-transition),
+    color var(--spgi-transition);
 }
 
 .spg-adv-remove:hover {
-  background: var(--spgi-hover-bg);
-  color: var(--spgi-text);
+  background: color-mix(in srgb, var(--spgi-danger) 12%, transparent);
+  color: var(--spgi-danger);
 }
 
 .spg-adv-remove:focus-visible {
@@ -111,22 +281,97 @@
 
 /* A nested group (set from code): read only, with its own remove button. */
 .spg-adv-kept {
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 2.25rem;
   align-items: center;
-  padding: 0.3em 0.8em;
-  border: 1px dashed var(--spgi-border-strong);
-  border-radius: var(--spgi-input-radius);
+  border-style: dashed;
   color: var(--spgi-muted);
   font-size: 0.9em;
 }
 
+.spg-adv-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: 100%;
+  margin-top: 14px;
+  padding: 0.65em 1em;
+  border: 1px dashed var(--spgi-border-strong);
+  border-radius: calc(var(--spgi-input-radius) + 2px);
+  background: transparent;
+  color: var(--spgi-accent);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--spgi-transition),
+    border-color var(--spgi-transition);
+}
+
+.spg-adv-add:hover {
+  border-color: var(--spgi-accent);
+  background: color-mix(in srgb, var(--spgi-accent) 8%, transparent);
+}
+
+.spg-adv-add:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
+}
+
+/* How many rows the draft leaves, live. It turns red when nothing is left. */
+.spg-adv-result {
+  margin: 14px 0 0;
+  padding: 0.6em 0.9em;
+  border-radius: var(--spgi-input-radius);
+  background: color-mix(in srgb, var(--spgi-accent) 9%, var(--spgi-bg));
+  color: var(--spgi-accent);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.spg-adv-result:empty {
+  display: none;
+}
+
+.spg-adv-result[data-empty] {
+  background: color-mix(in srgb, var(--spgi-danger) 9%, var(--spgi-bg));
+  color: var(--spgi-danger);
+}
+
+/* Clear all: a quiet text button at the start of the footer; Cancel and Apply keep the end. */
+.spg-modal-actions .spg-adv-clear {
+  flex: 0 0 auto;
+  margin-right: auto;
+  border-color: transparent;
+  background: transparent;
+  color: var(--spgi-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.spg-modal-actions .spg-adv-clear:hover {
+  background: var(--spgi-hover-bg);
+  color: var(--spgi-text);
+}
+
 @media (max-width: 40rem) {
+  .spg-adv-head {
+    display: none;
+  }
+
   .spg-adv-row {
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 2.25rem;
   }
 
   .spg-adv-value {
     grid-column: 1 / -1;
     order: 3;
+  }
+}
+
+@media (forced-colors: active) {
+  .spg-adv-chip:has(input:checked),
+  .spg-adv-segment label:has(input:checked) span {
+    outline: 2px solid Highlight;
   }
 }

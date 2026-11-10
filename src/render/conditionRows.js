@@ -43,19 +43,24 @@ function valueHtml(column, op, value, labels) {
   if (NO_VALUE.has(op)) return '';
   const type = inputType(column);
   const step = type === 'number' ? ' step="any"' : '';
+  const hint = type === 'date' ? '' : ` placeholder="${escapeHtml(labels.advValue)}"`;
   /** @param {string} cls @param {string} label @param {unknown} v */
   const box = (cls, label, v) =>
-    `<input type="${type}"${step} class="${cls}" aria-label="${escapeHtml(label)}" value="${escapeHtml(v === undefined || v === null ? '' : String(v))}">`;
+    `<input type="${type}"${step}${hint} class="${cls}" aria-label="${escapeHtml(label)}" value="${escapeHtml(v === undefined || v === null ? '' : String(v))}">`;
   if (op === 'between') {
     const [from, to] = Array.isArray(value) ? value : [];
-    return box('spg-adv-from', labels.dateFrom, from) + box('spg-adv-to', labels.dateTo, to);
+    return (
+      box('spg-adv-from', labels.dateFrom, from) +
+      '<span class="spg-adv-dash" aria-hidden="true">–</span>' +
+      box('spg-adv-to', labels.dateTo, to)
+    );
   }
   const choices = columnOptions(column);
   if (choices) {
     const picked = new Set(Array.isArray(value) ? value.map(String) : []);
     const items = choices.map(
       (o) =>
-        `<label class="spg-columns-item"><input type="checkbox" class="spg-adv-check" value="${escapeHtml(o.value)}"${picked.has(o.value) ? ' checked' : ''}><span>${escapeHtml(o.label)}</span></label>`,
+        `<label class="spg-adv-chip"><input type="checkbox" class="spg-adv-check" value="${escapeHtml(o.value)}"${picked.has(o.value) ? ' checked' : ''}><span>${escapeHtml(o.label)}</span></label>`,
     );
     return `<span class="spg-adv-checks" role="group" aria-label="${escapeHtml(labels.advValue)}">${items.join('')}</span>`;
   }

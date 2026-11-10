@@ -10,6 +10,7 @@ import { assertOptions, initialState, initialView, mountParts } from './render/g
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
 import { exportExcel, exportRows } from './render/exportExcel.js';
+import { previewCount } from './render/conditionPreview.js';
 import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
@@ -64,6 +65,12 @@ export class SPGrid {
       columnFilters: () => this.#state.get().filter?.columnFilters,
       columns: () => this.#state.get().columns,
       visible: () => this.#visible,
+      previewCount: (conditions) =>
+        previewCount(
+          this.#state.get(),
+          { locale: this.#locale, hidden: this.#hidden.get() },
+          conditions,
+        ),
       exportRows: (search) =>
         exportRows(this.#state.get(), { locale: this.#locale, hidden: this.#hidden.get(), search }),
       emit: (event, payload) => this.#events.emit(event, payload),

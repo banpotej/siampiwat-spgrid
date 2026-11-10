@@ -107,9 +107,8 @@ describe('the condition modal', () => {
     expect(rowsOf(modal)).toHaveLength(1);
     const fields = [...modal.querySelectorAll('.spg-adv-field option')].map((o) => o.textContent);
     expect(fields).toEqual(['Name', 'Amount', 'Due', 'Status', 'Active']);
-    expect(/** @type {HTMLSelectElement} */ (modal.querySelector('.spg-adv-logic')).value).toBe(
-      'and',
-    );
+    const checked = () => modal.querySelector('.spg-adv-logic:checked');
+    expect(/** @type {HTMLInputElement} */ (checked()).value).toBe('and');
   });
 
   it('changes the operators and the value box with the column', () => {
@@ -155,7 +154,7 @@ describe('the condition modal', () => {
     pick(/** @type {Element} */ (second.querySelector('.spg-adv-field')), 'status');
     /** @type {HTMLInputElement} */ (second.querySelector('.spg-adv-check[value="void"]')).checked =
       true;
-    pick(/** @type {Element} */ (modal.querySelector('.spg-adv-logic')), 'or');
+    /** @type {HTMLInputElement} */ (modal.querySelector('.spg-adv-logic[value="or"]')).click();
     apply(modal);
     expect(el.querySelector('.spg-modal')).toBeNull();
     expect(grid.getAdvancedFilter()).toEqual({
@@ -179,9 +178,9 @@ describe('the condition modal', () => {
       ],
     });
     const modal = modalOf(el);
-    expect(/** @type {HTMLSelectElement} */ (modal.querySelector('.spg-adv-logic')).value).toBe(
-      'or',
-    );
+    expect(
+      /** @type {HTMLInputElement} */ (modal.querySelector('.spg-adv-logic:checked')).value,
+    ).toBe('or');
     const [a, b] = rowsOf(modal);
     expect(/** @type {HTMLInputElement} */ (a.querySelector('.spg-adv-from')).value).toBe('100');
     expect(/** @type {HTMLInputElement} */ (a.querySelector('.spg-adv-to')).value).toBe('900');
@@ -274,5 +273,101 @@ describe('the condition modal', () => {
     modalOf(el);
     grid.destroy();
     expect(el.querySelector('.spg-modal')).toBeNull();
+  });
+});
+
+describe('the condition modal, ease of use', () => {
+  it('joins the cards with "and" / "or" and follows the all / any switch', () => {
+    const { el } = make();
+    const modal = modalOf(el);
+    /** @type {HTMLButtonElement} */ (modal.querySelector('.spg-adv-add')).click();
+    const [first, second] = /** @type {HTMLElement[]} */ (rowsOf(modal));
+    expect(first.dataset.join).toBeUndefined();
+    expect(second.dataset.join).toBe('and');
+    /** @type {HTMLInputElement} */ (modal.querySelector('.spg-adv-logic[value="or"]')).click();
+    expect(second.dataset.join).toBe('or');
+    /** @type {HTMLButtonElement} */ (first.querySelector('.spg-adv-remove')).click();
+    expect(second.dataset.join).toBeUndefined();
+  });
+
+  it('says and / or in Thai too', () => {
+    const { el } = make({ labels: thaiLabels });
+    const modal = modalOf(el);
+    /** @type {HTMLButtonElement} */ (modal.querySelector('.spg-adv-add')).click();
+    expect(/** @type {HTMLElement} */ (rowsOf(modal)[1]).dataset.join).toBe('และ');
+  });
+
+  it('shows column captions and a switch with both choices', () => {
+    const { el } = make();
+    const modal = modalOf(el);
+    expect(modal.querySelector('.spg-adv-head')?.textContent).toBe('FieldOperatorValue');
+    const choices = [...modal.querySelectorAll('.spg-adv-segment span')].map((c) => c.textContent);
+    expect(choices).toEqual(['All conditions', 'Any condition']);
+  });
+
+  it('counts the rows the draft leaves while it is edited, and flags none', () => {
+    const { el, grid } = make();
+    const modal = modalOf(el);
+    const result = /** @type {HTMLElement} */ (modal.querySelector('.spg-adv-result'));
+    expect(result.textContent).toBe('Found 3 of 3');
+    const [row] = rowsOf(modal);
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-field')), 'amount');
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-op')), 'gt');
+    fill(row, '.spg-adv-input', '1000');
+    expect(result.textContent).toBe('Found 2 of 3');
+    expect(result.hasAttribute('data-empty')).toBe(false);
+    fill(row, '.spg-adv-input', '99999');
+    expect(result.textContent).toBe('Found 0 of 3');
+    expect(result.hasAttribute('data-empty')).toBe(true);
+    expect(grid.getAdvancedFilter()).toBeNull();
+  });
+
+  it('counts on top of the search, and in Thai', () => {
+    const { el, grid } = make({ labels: thaiLabels });
+    grid.setFilter({ search: 'a' });
+    const modal = modalOf(el);
+    expect(modal.querySelector('.spg-adv-result')?.textContent).toBe('พบ 2 จาก 3 รายการ');
+  });
+
+  it('Enter in a value box applies', () => {
+    const { el, grid } = make();
+    const modal = modalOf(el);
+    const [row] = rowsOf(modal);
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-field')), 'amount');
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-op')), 'gt');
+    fill(row, '.spg-adv-input', '1000');
+    const input = /** @type {HTMLElement} */ (row.querySelector('.spg-adv-input'));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(el.querySelector('.spg-modal')).toBeNull();
+    expect(grid.getAdvancedFilter()).toEqual({
+      logic: 'and',
+      conditions: [{ key: 'amount', op: 'gt', value: 1000 }],
+    });
+  });
+
+  it('Enter on a select does not apply', () => {
+    const { el } = make();
+    const modal = modalOf(el);
+    const field = /** @type {HTMLElement} */ (modal.querySelector('.spg-adv-field'));
+    field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(el.querySelector('.spg-modal')).not.toBeNull();
+  });
+
+  it("puts the cursor in the new row's field select", () => {
+    const { el } = make();
+    const modal = modalOf(el);
+    /** @type {HTMLButtonElement} */ (modal.querySelector('.spg-adv-add')).click();
+    expect(document.activeElement).toBe(rowsOf(modal)[1].querySelector('.spg-adv-field'));
+  });
+
+  it('shows enum values as toggle chips, a hint in the value boxes and a dash in a range', () => {
+    const { el } = make();
+    const [row] = rowsOf(modalOf(el));
+    expect(row.querySelector('.spg-adv-input')?.getAttribute('placeholder')).toBe('Value');
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-field')), 'status');
+    expect(row.querySelectorAll('.spg-adv-chip')).toHaveLength(3);
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-field')), 'due');
+    pick(/** @type {Element} */ (row.querySelector('.spg-adv-op')), 'between');
+    expect(row.querySelector('.spg-adv-dash')).not.toBeNull();
   });
 });

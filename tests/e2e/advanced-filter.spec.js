@@ -18,8 +18,8 @@ test('builds a multi-condition filter in the modal, shows chips, and removes the
   // Row 1: status is one of เสร็จสิ้น, ยกเลิก.
   const first = dialog.locator('.spg-adv-row').nth(0);
   await first.locator('.spg-adv-field').selectOption('status');
-  await first.getByText('เสร็จสิ้น', { exact: true }).click();
-  await first.getByText('ยกเลิก', { exact: true }).click();
+  await first.getByRole('checkbox', { name: 'เสร็จสิ้น' }).check();
+  await first.getByRole('checkbox', { name: 'ยกเลิก' }).check();
   // Row 2: the vendor name contains a word.
   await dialog.getByRole('button', { name: /เพิ่มเงื่อนไข/ }).click();
   const second = dialog.locator('.spg-adv-row').nth(1);
@@ -51,7 +51,7 @@ test('the Reset view button clears the advanced filter', async ({ page }) => {
   const dialog = page.getByRole('dialog', { name: 'ตัวกรองขั้นสูง' });
   const row = dialog.locator('.spg-adv-row').first();
   await row.locator('.spg-adv-field').selectOption('status');
-  await row.getByText('ยกเลิก', { exact: true }).click();
+  await row.getByRole('checkbox', { name: 'ยกเลิก' }).check();
   await dialog.getByRole('button', { name: 'ตกลง' }).click();
   await expect(page.locator('.spg-chip')).toHaveCount(1);
 

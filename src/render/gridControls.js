@@ -22,12 +22,13 @@ const DEFAULT_DEBOUNCE = 200;
  *   columns: () => import('../types.js').Column[],
  *   visible: () => import('../types.js').Row[],
  *   exportRows: (search: string | undefined) => import('../types.js').Row[],
+ *   previewCount: (conditions: import('../types.js').GridState['conditions']) => { shown: number, total: number },
  *   emit: (event: any, payload: any) => void,
  * }} host What the grid keeps private.
  * @returns {() => void} Removes every listener.
  */
 export function bindGridControls(grid, shell, options, labels, host) {
-  const unbindAdvanced = bindAdvancedFilter(grid, shell, labels, host.columns);
+  const unbindAdvanced = bindAdvancedFilter(grid, shell, labels, host.columns, host.previewCount);
   const unbindControls = bindControls(shell, {
     debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
     submit: options.searchButton === true,

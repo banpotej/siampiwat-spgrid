@@ -9,9 +9,10 @@ import { openConditionDialog } from './conditionDialog.js';
  * @param {ReturnType<typeof import('./toolbar.js').mountShell>} shell
  * @param {Required<import('../types.js').Labels>} labels
  * @param {() => import('../types.js').Column[]} getColumns
+ * @param {(conditions: import('../types.js').GridState['conditions']) => { shown: number, total: number }} count
  * @returns {() => void} Unbind (also dismisses an open modal).
  */
-export function bindAdvancedFilter(grid, shell, labels, getColumns) {
+export function bindAdvancedFilter(grid, shell, labels, getColumns, count) {
   const button = shell.advancedButton;
   if (!button) return () => {};
   const root = /** @type {HTMLElement} */ (shell.host.closest('.spg-root') ?? shell.host);
@@ -24,11 +25,18 @@ export function bindAdvancedFilter(grid, shell, labels, getColumns) {
   const onClick = () => {
     if (dismiss) return;
     button.setAttribute('aria-expanded', 'true');
-    dismiss = openConditionDialog(root, getColumns(), grid.getAdvancedFilter(), labels, (tree) => {
-      dismiss = null;
-      button.setAttribute('aria-expanded', 'false');
-      if (tree !== undefined) grid.setAdvancedFilter(tree);
-    });
+    dismiss = openConditionDialog(
+      root,
+      getColumns(),
+      grid.getAdvancedFilter(),
+      labels,
+      count,
+      (tree) => {
+        dismiss = null;
+        button.setAttribute('aria-expanded', 'false');
+        if (tree !== undefined) grid.setAdvancedFilter(tree);
+      },
+    );
   };
   button.addEventListener('click', onClick);
   const unsubscribe = grid.on('filterChange', sync);
