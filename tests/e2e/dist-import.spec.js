@@ -32,8 +32,8 @@ test('the install section documents npm, tarball URL, git URL, file and plain UR
   const install = page.getByRole('region', { name: 'การติดตั้ง' });
   for (const text of [
     'npm install @siampiwat/spgrid',
-    `npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v${version}/siampiwat-spgrid-${version}.tgz`,
-    'npm install github:banpotej/siampiwat-datagrid',
+    `npm install https://github.com/banpotej/siampiwat-spgrid/releases/download/v${version}/siampiwat-spgrid-${version}.tgz`,
+    'npm install github:banpotej/siampiwat-spgrid',
     `import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@${version}/dist/spgrid.js'`,
   ]) {
     await expect(install).toContainText(text);

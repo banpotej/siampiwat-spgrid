@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Docs and site: the repository is `banpotej/siampiwat-spgrid`. The install examples (Release tarball URL, `github:` URL), the `repository`, `homepage` and `bugs` fields of `package.json` and the e2e check now use that name instead of the old `siampiwat-datagrid` (GitHub redirects the old URL). README and the landing page gain a "what to read where in GitHub" guide (README, `docs/API.md`, `docs/AGENT_GUIDE.md`, CHANGELOG, Releases, `examples/`, ROADMAP, Issues) with reading tips, and the landing footer links to the repository. No `src/` change.
 - Tooling: `deploy-site.ps1` (`npm run deploy:site`) extracts `release/spgrid-site.zip` and deploys it to Cloudflare with `wrangler deploy` (worker name and compatibility date from `wrangler.jsonc`; `-Pack` builds the zip first, `-DryRun` deploys nothing). Wrangler is fetched by `npx`, not added as a dependency. No `src/` change.
 - Internal: `src/core/conditions.js`, the pure filter behind the advanced filter: `filterByConditions(rows, tree, columns)`, `normalizeConditions`, `operatorsFor`, `removeConditionPart`. The condition types live in `src/conditionTypes.js`. Also: the `.spg-modal-box` body grid now has `grid-template-columns: minmax(0, 1fr)`, so wide content scrolls inside its own box instead of widening the modal.
 - Internal: search and filter handling moved from `SPGrid` into `FilterControl` (`src/render/filterControl.js`). No behavior change.

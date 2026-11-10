@@ -2,13 +2,13 @@
   "name": "@siampiwat/spgrid",
   "version": "2.0.9",
   "description": "Reusable vanilla JS SPGrid",
-  "homepage": "https://github.com/banpotej/siampiwat-datagrid#readme",
+  "homepage": "https://github.com/banpotej/siampiwat-spgrid#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/banpotej/siampiwat-datagrid.git"
+    "url": "git+https://github.com/banpotej/siampiwat-spgrid.git"
   },
   "bugs": {
-    "url": "https://github.com/banpotej/siampiwat-datagrid/issues"
+    "url": "https://github.com/banpotej/siampiwat-spgrid/issues"
   },
   "type": "module",
   "main": "./dist/spgrid.styled.cjs",

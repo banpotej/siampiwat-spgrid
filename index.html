@@ -97,11 +97,11 @@
             สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
             <pre
               tabindex="0"
-            ><code>npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v2.0.9/siampiwat-spgrid-2.0.9.tgz</code></pre>
+            ><code>npm install https://github.com/banpotej/siampiwat-spgrid/releases/download/v2.0.9/siampiwat-spgrid-2.0.9.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
-            <pre tabindex="0"><code>npm install github:banpotej/siampiwat-datagrid
-npm install github:banpotej/siampiwat-datagrid#main   # ระบุ branch หรือ tag</code></pre>
+            <pre tabindex="0"><code>npm install github:banpotej/siampiwat-spgrid
+npm install github:banpotej/siampiwat-spgrid#main   # ระบุ branch หรือ tag</code></pre>
             <h3>ค. จากไฟล์ในเครื่อง</h3>
             ดาวน์โหลดแพ็กเกจที่แพ็กไว้แล้วติดตั้งจากไฟล์ได้เลย
             <span class="download" data-hint="npm run pack:release">
@@ -115,7 +115,7 @@ npm run build
 npm pack              # ได้ไฟล์ siampiwat-spgrid-2.0.9.tgz
 
 # ในโปรเจกต์ที่จะใช้
-npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.9.tgz</code></pre>
+npm install ../siampiwat-spgrid/siampiwat-spgrid-2.0.9.tgz</code></pre>
           </li>
           <li>
             <strong>ดาวน์โหลดเป็นไฟล์ .zip</strong>
@@ -179,8 +179,66 @@ const grid = new SPGrid(document.querySelector('#app'), {
         <h2 id="examples-title">ตัวอย่าง</h2>
         <ul id="examples"></ul>
       </section>
+      <section class="features repo" aria-labelledby="repo-title">
+        <h2 id="repo-title">อ่านอะไรที่ไหนใน GitHub</h2>
+        <ul>
+          <li>
+            <strong><a href="https://github.com/banpotej/siampiwat-spgrid#readme">README</a></strong
+            >Quick Start และวิธีติดตั้ง เริ่มอ่านที่นี่
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/blob/main/docs/API.md"
+                >docs/API.md</a
+              ></strong
+            >ตัวเลือก เมธอด event และ label ทั้งหมด
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/blob/main/docs/AGENT_GUIDE.md"
+                >docs/AGENT_GUIDE.md</a
+              ></strong
+            >คู่มือให้ AI เช่น Claude Code เขียนโค้ดด้วย SPGrid
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/blob/main/CHANGELOG.md"
+                >CHANGELOG</a
+              ></strong
+            >สิ่งที่เปลี่ยนในแต่ละเวอร์ชัน อ่านก่อนอัปเกรด หัวข้อ BREAKING คือสิ่งที่ต้องแก้โค้ดเดิม
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/releases">Releases</a></strong
+            >ไฟล์ .tgz และ .zip สำหรับติดตั้งโดยไม่ใช้ npm
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/tree/main/examples"
+                >examples/</a
+              ></strong
+            >โค้ดของหน้าตัวอย่างข้างบน (po-list.js คือใบสั่งซื้อ)
+          </li>
+          <li>
+            <strong
+              ><a href="https://github.com/banpotej/siampiwat-spgrid/blob/main/docs/ROADMAP.md"
+                >ROADMAP</a
+              ></strong
+            >อะไรเสร็จแล้วและอะไรกำลังจะมา
+          </li>
+          <li>
+            <strong><a href="https://github.com/banpotej/siampiwat-spgrid/issues">Issues</a></strong
+            >พบบั๊กหรืออยากเสนอฟีเจอร์ แนบเวอร์ชันและตัวอย่างโค้ดที่ทำซ้ำได้
+          </li>
+        </ul>
+        <p class="repo-tip">
+          เอกสารบน branch <code>main</code> อาจนำหน้าเวอร์ชันที่เผยแพร่บน npm
+          ถ้าฟีเจอร์ที่เห็นไม่มีในแพ็กเกจ ให้ดูหัวข้อ <code>[Unreleased]</code> ใน CHANGELOG
+        </p>
+      </section>
       <footer class="site-footer">
-        SPGrid · <code>@siampiwat/spgrid</code> <span id="footer-version"></span>
+        SPGrid · <code>@siampiwat/spgrid</code> <span id="footer-version"></span> ·
+        <a href="https://github.com/banpotej/siampiwat-spgrid">GitHub</a>
       </footer>
     </main>
     <script type="module">

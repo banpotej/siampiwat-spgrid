@@ -192,17 +192,17 @@ npm install @siampiwat/spgrid
 
 ```sh
 # ไฟล์ .tgz ที่แนบกับ GitHub Release (repo แบบ private ต้องใช้ token) - สร้างด้วย `npm run pack:release`
-npm install https://github.com/banpotej/siampiwat-datagrid/releases/download/v2.0.9/siampiwat-spgrid-2.0.9.tgz
+npm install https://github.com/banpotej/siampiwat-spgrid/releases/download/v2.0.9/siampiwat-spgrid-2.0.9.tgz
 
 # git URL: npm จะรันสคริปต์ `prepare` ทำให้แพ็กเกจ build ตัวเองตอนติดตั้ง (ต้องมี git)
-npm install github:banpotej/siampiwat-datagrid
-npm install github:banpotej/siampiwat-datagrid#main   # branch หรือ tag
+npm install github:banpotej/siampiwat-spgrid
+npm install github:banpotej/siampiwat-spgrid#main   # branch หรือ tag
 
 # tarball ในเครื่อง
 npm install                # ใน repo นี้
 npm run build
 npm pack                   # สร้าง siampiwat-spgrid-2.0.9.tgz
-npm install ../siampiwat-datagrid/siampiwat-spgrid-2.0.9.tgz   # ในโปรเจกต์ของคุณ
+npm install ../siampiwat-spgrid/siampiwat-spgrid-2.0.9.tgz   # ในโปรเจกต์ของคุณ
 ```
 
 `import { SPGrid } from '@siampiwat/spgrid'` จะนำ stylesheet เข้ามาด้วย (ผ่าน bundler ของคุณ) ส่วน `@siampiwat/spgrid/style.css` ยังคง export อยู่ และ
@@ -265,6 +265,28 @@ grid.destroy();
 
 ค่าในเซลล์จะถูก escape HTML ให้อัตโนมัติ เว้นแต่คอลัมน์กำหนด `render` (กรณีนั้นคุณต้อง escape เอง) คอลัมน์ยังเป็นคอลัมน์ action
 (`actions`) ที่ส่ง event `action` ได้ ดู API ทั้งหมดที่ [docs/API.md](docs/API.md)
+
+## อ่านอะไรที่ไหนใน GitHub
+
+Repository: <https://github.com/banpotej/siampiwat-spgrid>
+
+| อยากรู้เรื่อง                                   | ไปที่                                                                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| ติดตั้งและแสดงตารางแรก                          | [Quick Start](#quick-start) ในไฟล์นี้                                                                 |
+| ตัวเลือก เมธอด event และ label ทั้งหมด          | [docs/API.md](docs/API.md)                                                                            |
+| ให้ AI (เช่น Claude Code) เขียนโค้ดด้วย SPGrid  | [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)                                                            |
+| มีอะไรเปลี่ยนในแต่ละเวอร์ชัน (อ่านก่อนอัปเกรด)  | [CHANGELOG.md](CHANGELOG.md) หัวข้อ `BREAKING` คือสิ่งที่ต้องแก้โค้ดเดิม                              |
+| อะไรเสร็จแล้วและอะไรกำลังจะมา                   | [docs/ROADMAP.md](docs/ROADMAP.md)                                                                    |
+| ไฟล์ `.tgz` / `.zip` สำหรับติดตั้งโดยไม่ใช้ npm | [Releases](https://github.com/banpotej/siampiwat-spgrid/releases)                                     |
+| โค้ดของหน้าตัวอย่างที่ใช้งานจริง                | โฟลเดอร์ [`examples/`](examples) (เช่น `po-list.js` คือตัวอย่างใบสั่งซื้อ)                            |
+| พบบั๊กหรืออยากเสนอฟีเจอร์                       | [Issues](https://github.com/banpotej/siampiwat-spgrid/issues) (แนบเวอร์ชันและตัวอย่างโค้ดที่ทำซ้ำได้) |
+
+ข้อแนะนำสำหรับผู้อ่าน:
+
+- **ดูตัวอย่างก่อนอ่านโค้ด:** [หน้าตัวอย่าง](https://spgrid.banpote-j.workers.dev/purchase-order) เปิดฟีเจอร์เกือบทั้งหมดไว้ และ `examples/po-list.js` คือ config ที่ใช้
+- **ตรวจเวอร์ชันก่อนคัดลอกโค้ด:** `docs/API.md` และ README บน branch `main` อาจนำหน้าเวอร์ชันที่เผยแพร่บน npm ถ้าฟีเจอร์ที่เห็นไม่มีในแพ็กเกจ ให้ดูหัวข้อ `[Unreleased]` ใน CHANGELOG
+- **ไฟล์ในโฟลเดอร์ `docs/` ที่ขึ้นต้นด้วยวันที่** (เช่น `20261105_...md`) เป็นบันทึกการทำงานภายใน ไม่ใช่เอกสารการใช้งาน
+- **ส่วนที่ผู้ใช้ไม่ต้องแตะ:** `src/` คือซอร์สของไลบรารี (ใช้ผ่านแพ็กเกจ ไม่ต้องคัดลอก) และ `dist/` ถูกสร้างจาก `npm run build`
 
 ## คำสั่ง
 

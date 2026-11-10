@@ -210,6 +210,22 @@ ul {
   border-left-color: var(--sp-sherpa);
 }
 
+.features strong a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.features strong a:hover,
+.features strong a:focus-visible {
+  text-decoration: underline;
+}
+
+.repo-tip {
+  margin: 14px 0 0;
+  color: var(--sp-muted);
+  font-size: 13px;
+}
+
 .features strong,
 .cards strong {
   display: block;

@@ -9,6 +9,31 @@ test('landing page lists each example as a card', async ({ page }) => {
   await expect(page).toHaveURL(/\/purchase-order\.html$/);
 });
 
+test('the landing page guides readers to the GitHub repository', async ({ page }) => {
+  await page.goto('/');
+  const guide = page.getByRole('region', { name: 'อ่านอะไรที่ไหนใน GitHub' });
+  const repo = 'https://github.com/banpotej/siampiwat-spgrid';
+  for (const [name, href] of [
+    ['README', `${repo}#readme`],
+    ['docs/API.md', `${repo}/blob/main/docs/API.md`],
+    ['docs/AGENT_GUIDE.md', `${repo}/blob/main/docs/AGENT_GUIDE.md`],
+    ['CHANGELOG', `${repo}/blob/main/CHANGELOG.md`],
+    ['Releases', `${repo}/releases`],
+    ['Issues', `${repo}/issues`],
+  ]) {
+    await expect(guide.getByRole('link', { name: name, exact: true })).toHaveAttribute(
+      'href',
+      href,
+    );
+  }
+  await expect(page.locator('.site-footer').getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+    'href',
+    repo,
+  );
+  // The old repository name must not survive anywhere on the page.
+  expect(await page.content()).not.toContain('siampiwat-datagrid');
+});
+
 test('the landing page carries the new name and the package version', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/^SPGrid/);
