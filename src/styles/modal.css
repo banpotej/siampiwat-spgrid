@@ -129,6 +129,11 @@
   background: color-mix(in srgb, var(--spgi-accent) 88%, #000);
 }
 
+.spg-modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .spg-modal-btn:focus-visible {
   outline: 2px solid var(--spgi-focus);
   outline-offset: 2px;

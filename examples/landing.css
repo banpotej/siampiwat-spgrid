@@ -423,6 +423,11 @@ ul {
     flex: 1 1 100%;
     text-align: center;
   }
+
+  /* Reserve a strip above the code so the copy button never covers a long line */
+  .code-block pre {
+    padding-top: 42px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

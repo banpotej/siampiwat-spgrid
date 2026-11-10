@@ -9,7 +9,7 @@ import { createGridEvents, emitChanges } from './render/gridEvents.js';
 import { assertOptions, initialState, initialView, mountParts } from './render/gridSetup.js';
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
-import { exportExcel } from './render/exportExcel.js';
+import { exportExcel, exportRows } from './render/exportExcel.js';
 import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
@@ -64,6 +64,9 @@ export class SPGrid {
       columnFilters: () => this.#state.get().filter?.columnFilters,
       columns: () => this.#state.get().columns,
       visible: () => this.#visible,
+      exportCount: (search) =>
+        exportRows(this.#state.get(), { locale: this.#locale, hidden: this.#hidden.get(), search })
+          .length,
       emit: (event, payload) => this.#events.emit(event, payload),
     });
     this.#state = createState(initialState(options, this.#order.columns(), this.#initial));

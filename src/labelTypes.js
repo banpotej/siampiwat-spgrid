@@ -17,6 +17,9 @@
  * @property {string} [allValues] First option of the value select shown for an enum search column; default 'All'.
  * @property {string} [allColumns] First option of the search column select; default 'All columns'.
  * @property {string} [exportExcel] Text of the Export button (`exportButton` option); default 'Export Excel'.
+ * @property {string} [exportFields] Title of the modal that lists the fields to export (`exportColumnSelect` option); default 'Choose fields to export'.
+ * @property {string} [exportSearch] Label of the search box in that modal, which narrows the rows to export; default 'Rows to export (search)'.
+ * @property {(count: number) => string} [exportRowCount] Line under that search box; default '12 rows will be exported'.
  * @property {string} [columns] aria-label and tooltip of the Settings button (see `columnPicker`); default 'Settings'.
  * @property {string} [columnsSection] Heading of the column list in the settings modal; default 'Columns'.
  * @property {string} [selectAll] Button under the column list that shows every column; default 'Select all'.

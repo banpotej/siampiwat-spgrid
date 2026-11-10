@@ -9,17 +9,53 @@ import { buildXlsx } from '../core/xlsx.js';
 export const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 /**
+ * The data columns to export: all of them, or only `keys`, in the grid's column order.
+ *
+ * @param {import('../types.js').Column[]} columns
+ * @param {string[] | undefined} keys
+ * @returns {import('../types.js').Column[]}
+ * @throws {RangeError} `keys` is empty, or holds a key that is not a data column
+ */
+function pickColumns(columns, keys) {
+  if (keys === undefined) return columns;
+  const unknown = keys.find((key) => !columns.some((c) => c.key === key));
+  if (unknown !== undefined) throw new RangeError(`exportExcel: "${unknown}" is not a data column`);
+  if (keys.length === 0) throw new RangeError('exportExcel: columns is empty');
+  return columns.filter((c) => keys.includes(c.key));
+}
+
+/**
+ * The rows an export writes: the grid's filtered and sorted rows, every page. A given `search` replaces the grid's
+ * search text and its search column limit with a plain text search over the visible data columns.
+ *
+ * @param {GridState} state
+ * @param {{ locale?: string, hidden?: string[], search?: string }} options
+ * @returns {import('../types.js').Row[]}
+ */
+export function exportRows(state, { locale, hidden, search }) {
+  const view =
+    search === undefined
+      ? state
+      : { ...state, searchColumn: null, filter: { ...state.filter, search } };
+  return computeView({ ...view, pageSize: null }, { locale, hidden }).rows;
+}
+
+/**
  * The filtered and sorted rows (all pages) of the data columns as an .xlsx Blob. Values are the raw
  * row values, not `column.render` output (which is HTML).
  *
  * @param {GridState} state
- * @param {{ locale?: string, sheetName?: string, hidden?: string[] }} options `hidden`: as for `computeView`, so the
- * rows match what the grid shows.
+ * @param {{ locale?: string, sheetName?: string, hidden?: string[], columns?: string[], search?: string }} options
+ * `hidden`: as for `computeView`, so the rows match what the grid shows. `columns`: keys of the data columns to export
+ * (default all). `search`: see `exportRows`.
  * @returns {Blob}
  */
-export function buildExcelBlob(state, { locale, sheetName, hidden }) {
-  const columns = state.columns.filter((c) => !isActionColumn(c));
-  const { rows } = computeView({ ...state, pageSize: null }, { locale, hidden });
+export function buildExcelBlob(state, { locale, sheetName, hidden, columns: keys, search }) {
+  const columns = pickColumns(
+    state.columns.filter((c) => !isActionColumn(c)),
+    keys,
+  );
+  const rows = exportRows(state, { locale, hidden, search });
   const bytes = buildXlsx({
     sheetName,
     headers: columns.map((c) => c.label ?? c.key),
@@ -34,9 +70,13 @@ export function buildExcelBlob(state, { locale, sheetName, hidden }) {
  * @param {GridState} state
  * @param {{ locale?: string, hidden?: string[] } & ExportOptions} options
  * @returns {Blob}
+ * @throws {RangeError} `columns` is empty, or holds a key that is not a data column
  */
-export function exportExcel(state, { locale, hidden, filename = 'export.xlsx', sheetName }) {
-  const blob = buildExcelBlob(state, { locale, sheetName, hidden });
+export function exportExcel(
+  state,
+  { locale, hidden, filename = 'export.xlsx', sheetName, columns, search },
+) {
+  const blob = buildExcelBlob(state, { locale, sheetName, hidden, columns, search });
   downloadBlob(blob, /\.xlsx$/i.test(filename) ? filename : `${filename}.xlsx`);
   return blob;
 }

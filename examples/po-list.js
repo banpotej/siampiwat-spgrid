@@ -103,6 +103,7 @@ const grid = new SPGrid(document.getElementById('grid'), {
   rows,
   searchable: true,
   exportButton: true,
+  exportColumnSelect: true,
   columnPicker: true,
   filterSummary: true,
   resetButton: true,

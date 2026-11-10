@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Choose the fields when exporting to Excel. `exportExcel({ columns })` takes the keys of the data columns to write (default: all; they keep the grid's column order; a `RangeError` for an empty list or a key that is not a data column). The new `exportColumnSelect` option makes the Export button open a modal with one checkbox per data column (all ticked, Select all / Clear all, Export disabled while none is ticked) and then call `exportExcel({ columns, search })`. `exportExcel({ search })` filters the rows for that one export (it replaces the grid's search text and search column; column filters still apply; the grid is not changed). The modal also has a search box that starts with the grid's search text and shows how many rows will be exported; `search` is passed only when the user changed the text. New labels `exportFields` (the modal title), `exportSearch` and `exportRowCount`; `labels.exportExcel` is also the modal's confirm button text. Off by default, so existing grids behave as before.
+- The Purchase Order example turns `exportColumnSelect` on.
+
+### Changed
+
+- Internal: search and filter handling moved from `SPGrid` into `FilterControl` (`src/render/filterControl.js`). No behavior change.
+
 ## [2.0.5] - 2026-11-09
 
 ### Added

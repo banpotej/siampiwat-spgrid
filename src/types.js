@@ -155,6 +155,9 @@
  *   clicked or Enter is pressed in the box, not while typing (`searchDebounce` is ignored). Default false.
  * @property {boolean} [exportButton] Render an "Export Excel" button in the toolbar (works without `searchable`)
  *   that calls `exportExcel()`. Default false.
+ * @property {boolean} [exportColumnSelect] With `exportButton`: the button first opens a modal where the user ticks the
+ *   fields (data columns) to export and can narrow the rows with a search box (starting with the grid's search text),
+ *   then calls `exportExcel({ columns, search })`. Default false (exports every column and the grid's rows).
  * @property {boolean} [filterSummary] Render a strip under the toolbar, while a filter is active, with how many rows
  *   matched ("Found 12 of 250") and one chip per active filter (search text with its column, column filters); the
  *   x on a chip removes that filter. Default false.
@@ -260,6 +263,11 @@
  * @typedef {object} ExportOptions
  * @property {string} [filename] Download name; default 'export.xlsx' (`.xlsx` is appended when missing).
  * @property {string} [sheetName] Worksheet name; default 'Sheet1'. Characters Excel forbids are replaced.
+ * @property {string[]} [columns] Keys of the data columns to export; default every data column. They come out in the
+ *   grid's column order, whatever the order here. Throws a RangeError for an empty list or a key that is not a data column.
+ * @property {string} [search] Text to filter the rows by for this export only (whitespace-separated words are ANDed, over
+ *   the visible data columns). It replaces the grid's search text and its search column; the per-column filters still apply.
+ *   Default: the rows the grid is filtered to. The grid itself is not changed.
  */
 
 /** @typedef {import('./labelTypes.js').Labels} Labels */

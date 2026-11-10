@@ -94,7 +94,7 @@ grid.on('sortChange', ({ key, direction }) => {}); // also filterChange, pageCha
 
 ## Options by job
 
-- **Toolbar:** `title`, `description`, `searchable`, `searchColumnSelect`, `searchButton`, `exportButton`,
+- **Toolbar:** `title`, `description`, `searchable`, `searchColumnSelect`, `searchButton`, `exportButton`, `exportColumnSelect` (pick the fields to export),
   `refreshButton`, `filterSummary`, `columnPicker` (opens Settings), `resetButton`.
 - **Paging / sort:** `pageSize`, `pageSizeOptions`, `defaultSort: { key, direction }`, `groupBy: ['col']`.
 - **Look:** `striped`, `density: 'compact'`, `gridLines`, `lineStyle`, `textWrap`, `stickyHeader`, `maxHeight`,

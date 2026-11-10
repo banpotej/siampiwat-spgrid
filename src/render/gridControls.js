@@ -1,7 +1,9 @@
 // @ts-check
 import { removeFilterPart } from '../core/filter.js';
+import { isActionColumn } from '../core/columns.js';
 import { askConfirm } from './confirm.js';
 import { bindControls } from './controls.js';
+import { openExportDialog } from './exportDialog.js';
 
 const DEFAULT_DEBOUNCE = 200;
 
@@ -17,6 +19,7 @@ const DEFAULT_DEBOUNCE = 200;
  *   columnFilters: () => import('../types.js').FilterState['columnFilters'],
  *   columns: () => import('../types.js').Column[],
  *   visible: () => import('../types.js').Row[],
+ *   exportCount: (search: string | undefined) => number,
  *   emit: (event: any, payload: any) => void,
  * }} host What the grid keeps private.
  * @returns {() => void} Removes every listener.
@@ -27,7 +30,29 @@ export function bindGridControls(grid, shell, options, labels, host) {
     submit: options.searchButton === true,
     onSearch: (search) => host.applyFilter({ search, columnFilters: host.columnFilters() }),
     onColumn: (key) => grid.setSearchColumn(key),
-    onExport: () => grid.exportExcel(),
+    onExport: () => {
+      if (options.exportColumnSelect !== true) return void grid.exportExcel();
+      const root = shell.host.closest('.spg-root');
+      if (!root) return void grid.exportExcel();
+      const columns = host
+        .columns()
+        .filter((c) => !isActionColumn(c))
+        .map((c) => ({ key: c.key, label: c.label ?? c.key }));
+      const dialog = {
+        title: labels.exportFields,
+        ok: labels.exportExcel,
+        cancel: labels.cancel,
+        close: labels.close,
+        selectAll: labels.selectAll,
+        clearAll: labels.clearAll,
+        search: labels.exportSearch,
+        rowCount: labels.exportRowCount,
+      };
+      const search = { value: grid.getFilter()?.search ?? '', count: host.exportCount };
+      openExportDialog(/** @type {HTMLElement} */ (root), columns, dialog, search, (choice) => {
+        if (choice) grid.exportExcel(choice);
+      });
+    },
     onRefresh: () => host.emit('refresh', undefined),
     onRemoveFilter: (part) => {
       grid.setFilter(removeFilterPart(grid.getFilter(), part));
