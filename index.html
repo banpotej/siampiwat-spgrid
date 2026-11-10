@@ -9,7 +9,19 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>SPGrid: ตารางข้อมูล vanilla JS</title>
+    <title>SPGrid: ตารางข้อมูลสำหรับงานระบบองค์กร (vanilla JS)</title>
+    <meta
+      name="description"
+      content="SPGrid ตารางข้อมูล vanilla JS ไม่มี dependency: ค้นหา กรองหลายเงื่อนไข เรียงลำดับ จัดกลุ่ม แบ่งหน้า และส่งออก Excel พร้อมป้ายกำกับภาษาไทยและโหมดมืด"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SPGrid: ตารางข้อมูลสำหรับงานระบบองค์กร" />
+    <meta
+      property="og:description"
+      content="ตารางข้อมูล vanilla JS ไม่มี dependency: ค้นหา กรองหลายเงื่อนไข จัดกลุ่ม ส่งออก Excel ภาษาไทยพร้อมใช้ ลองดูตัวอย่างที่ใช้งานได้จริง"
+    />
+    <meta property="og:url" content="https://spgrid.banpote-j.workers.dev/" />
+    <meta property="og:locale" content="th_TH" />
     <link rel="stylesheet" href="/examples/page.css" />
     <link rel="stylesheet" href="/examples/landing.css" />
   </head>
@@ -21,12 +33,15 @@
           <li><code>@siampiwat/spgrid</code> <span id="version"></span></li>
           <li>Vanilla JS</li>
           <li>ไม่มี dependency</li>
-          <li>รองรับภาษาไทย</li>
+          <li>ภาษาไทยพร้อมใช้</li>
+          <li>ส่งออก Excel</li>
+          <li>โหมดมืด</li>
         </ul>
         <h1>SPGrid</h1>
         <p>
-          ตารางข้อมูลแบบ vanilla JS ไม่มี dependency ใช้งานง่าย ค้นหา เรียงลำดับ แบ่งหน้า
-          และปรับแต่งได้ครบ พร้อมป้ายกำกับภาษาไทย ลองดูตัวอย่างด้านล่าง
+          ตารางข้อมูลสำหรับงานระบบองค์กร ค้นหา กรองหลายเงื่อนไข เรียงลำดับ จัดกลุ่ม แบ่งหน้า
+          และส่งออก Excel ได้ในตัว ใช้กับ React, Next.js, Vue หรือ HTML ล้วน
+          ไม่ต้องติดตั้งไลบรารีเพิ่ม ลองดูตัวอย่างที่ใช้งานได้จริงได้เลย
         </p>
         <div class="hero-actions">
           <a class="cta primary" id="start" href="/purchase-order.html">ดูตัวอย่างแรก</a>
@@ -39,13 +54,28 @@
         <h2 id="features-title">ความสามารถหลัก</h2>
         <ul>
           <li>
-            <strong>เรียงลำดับและค้นหา</strong>คลิกหัวคอลัมน์ ค้นหาทุกคอลัมน์หรือเลือกเฉพาะคอลัมน์
+            <strong>ค้นหาและเรียงลำดับ</strong>คลิกหัวคอลัมน์ ค้นหาทุกคอลัมน์หรือเลือกเฉพาะคอลัมน์
+            (ข้อความ ค่าจากรายการ ช่วงวันที่)
+          </li>
+          <li>
+            <strong>ตัวกรองขั้นสูง</strong>ตั้งเงื่อนไขหลายข้อ เลือกให้ตรงทุกข้อหรือข้อใดข้อหนึ่ง
+            เห็นจำนวนแถวที่เหลือทันที และสรุปเป็นชิปที่ลบทีละข้อได้
+          </li>
+          <li>
+            <strong>ส่งออก Excel</strong>เลือกฟิลด์ ค้นแถว และดูตัวอย่างก่อนส่งออก
+            สร้างไฟล์ในเบราว์เซอร์
           </li>
           <li><strong>แบ่งหน้า</strong>เลือกจำนวนแถวต่อหน้า จำค่าที่เลือกไว้ได้</li>
-          <li><strong>จัดคอลัมน์</strong>ซ่อน/แสดง ปรับความกว้าง และลากสลับตำแหน่ง</li>
+          <li><strong>จัดคอลัมน์</strong>ซ่อน/แสดง ปรับความกว้าง ลากสลับตำแหน่ง และตรึงคอลัมน์</li>
           <li><strong>จัดกลุ่มแถว</strong>จัดกลุ่มตามคอลัมน์ พร้อมหัวกลุ่มที่ยุบได้</li>
-          <li><strong>ชนิดคอลัมน์</strong>ข้อความ ตัวเลข วันที่ ใช่/ไม่ใช่ และ badge สถานะ</li>
-          <li><strong>ปรับหน้าตา</strong>ลายแถบ เส้นตาราง ความหนาแน่น และโหมดมืด</li>
+          <li>
+            <strong>ชนิดคอลัมน์</strong>ข้อความ ตัวเลข วันที่ ใช่/ไม่ใช่ badge สถานะ และปุ่มต่อแถว
+          </li>
+          <li><strong>ปรับหน้าตา</strong>ลายแถบ เส้นตาราง ความหนาแน่น โหมดมืด และธีมให้เลือกใช้</li>
+          <li>
+            <strong>ใช้ได้ทุกที่</strong>ES modules ไม่มี dependency มี TypeScript types
+            และคู่มือสำหรับ Claude Code
+          </li>
         </ul>
       </section>
       <section class="install" aria-labelledby="install-title">

@@ -8,7 +8,8 @@ export const EXAMPLES = [
     href: '/purchase-order.html',
     title: 'รายการใบสั่งซื้อ (Purchase Order)',
     nav: 'ตัวอย่าง',
-    description: 'ตารางเต็มรูปแบบ: เรียงลำดับ ค้นหา แบ่งหน้า จัดกลุ่ม และปุ่มดำเนินการต่อแถว',
+    description:
+      'ตารางเต็มรูปแบบ: ค้นหา ตัวกรองขั้นสูง เรียงลำดับ จัดกลุ่ม แบ่งหน้า ส่งออก Excel และปุ่มดำเนินการต่อแถว',
   },
   {
     href: '/theme-lavender.html',

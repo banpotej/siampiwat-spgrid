@@ -1,8 +1,22 @@
 # SPGrid
 
-SPGrid แบบ vanilla JS ที่นำกลับมาใช้ซ้ำได้ ไม่มี runtime dependency และใช้ ES modules เท่านั้น
+ตารางข้อมูล (data grid) แบบ vanilla JS สำหรับงานระบบองค์กร: ค้นหา กรองหลายเงื่อนไข เรียงลำดับ จัดกลุ่ม แบ่งหน้า และส่งออก Excel ได้ในตัว
+ไม่มี runtime dependency ใช้ ES modules กับ framework ใดก็ได้ (React, Next.js, Vue หรือ HTML ล้วน) มี TypeScript types และป้ายกำกับภาษาไทยพร้อมใช้
 
-🌐 **เว็บไซต์ (Landing Page):** <https://spgrid.banpote-j.workers.dev/> – ดูตัวอย่างที่ใช้งานได้จริง, Quick Start และวิธีใช้กับ Claude Code
+🌐 **[เว็บไซต์ SPGrid](https://spgrid.banpote-j.workers.dev/)** · [ตัวอย่างใบสั่งซื้อ (Purchase Order)](https://spgrid.banpote-j.workers.dev/purchase-order) · [Quick Start (Next.js)](https://spgrid.banpote-j.workers.dev/quick-start) · [สำหรับ Claude Code](https://spgrid.banpote-j.workers.dev/for-agents) · [npm](https://www.npmjs.com/package/@siampiwat/spgrid) · [API](docs/API.md)
+
+## ความสามารถหลัก
+
+- **ค้นหาและเรียงลำดับ:** ค้นทุกคอลัมน์หรือเลือกเฉพาะคอลัมน์ (ข้อความ, ค่าจากรายการ, ช่วงวันที่) คลิกหัวคอลัมน์เพื่อเรียง
+- **ตัวกรองขั้นสูง:** ตั้งเงื่อนไขได้หลายข้อ (ฟิลด์ + เงื่อนไข + ค่า) เลือกให้ตรงทุกข้อหรือข้อใดข้อหนึ่ง เห็นจำนวนแถวที่เหลือทันที และสรุปเป็นชิปที่ลบทีละข้อได้
+- **ส่งออก Excel:** เลือกฟิลด์ที่จะส่งออก ค้นแถว และดูตัวอย่างก่อนส่งออก สร้างไฟล์ `.xlsx` ในเบราว์เซอร์ ไม่ใช้ไลบรารีเพิ่ม
+- **จัดการคอลัมน์:** ซ่อน/แสดง ปรับความกว้าง ลากสลับตำแหน่ง ตรึงคอลัมน์ และจำค่าที่เลือกไว้ได้
+- **จัดกลุ่มแถว:** หลายชั้น พร้อมหัวกลุ่มที่ยุบได้ และแบ่งหน้าพร้อมเลือกจำนวนแถวต่อหน้า
+- **ชนิดคอลัมน์:** ข้อความ ตัวเลข วันที่ ใช่/ไม่ใช่ badge สถานะ และปุ่มดำเนินการต่อแถว
+- **ปรับหน้าตา:** ลายแถบ เส้นตาราง ความหนาแน่น โหมดมืด และธีมที่เลือกใช้ได้ (เช่น ลาเวนเดอร์) ผ่าน CSS variable `--spg-*`
+- **ปลอดภัยโดยค่าเริ่มต้น:** ค่าในเซลล์ถูก escape HTML ให้อัตโนมัติ
+
+ลองเล่นทุกอย่างได้ที่[หน้าตัวอย่าง](https://spgrid.banpote-j.workers.dev/purchase-order) หรือเริ่มจาก [Quick Start](#quick-start) ด้านล่าง
 
 ## Quick Start
 
