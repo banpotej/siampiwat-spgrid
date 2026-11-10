@@ -45,6 +45,7 @@
 
 .spg-settings-body {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0;
   padding: 0 26px;
   overflow-y: auto;
@@ -184,6 +185,62 @@
   border-color: var(--spgi-focus);
   outline: 2px solid color-mix(in srgb, var(--spgi-focus) 30%, transparent);
   outline-offset: 0;
+}
+
+.spg-modal-box.spg-export-dialog {
+  width: min(100%, 46rem);
+}
+
+.spg-export-preview {
+  max-height: 15rem;
+  margin-top: 0.75em;
+  overflow: auto;
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: var(--spgi-input-radius);
+}
+
+.spg-export-preview:focus-visible {
+  border-color: var(--spgi-focus);
+  outline: 2px solid color-mix(in srgb, var(--spgi-focus) 30%, transparent);
+  outline-offset: 0;
+}
+
+.spg-export-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8em;
+}
+
+.spg-export-preview th,
+.spg-export-preview td {
+  padding: 0.4em 0.7em;
+  border-bottom: 1px solid var(--spgi-border-strong);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.spg-export-preview th {
+  position: sticky;
+  top: 0;
+  background: var(--spgi-hover-bg);
+  color: var(--spgi-muted);
+  font-weight: 600;
+}
+
+.spg-export-preview tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.spg-export-preview p,
+.spg-export-more {
+  margin: 0;
+  padding: 0.6em 0.7em;
+  color: var(--spgi-muted);
+  font-size: 0.85em;
+}
+
+.spg-export-more:empty {
+  display: none;
 }
 
 .spg-export-count {

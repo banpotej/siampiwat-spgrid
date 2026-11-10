@@ -19,7 +19,7 @@ const DEFAULT_DEBOUNCE = 200;
  *   columnFilters: () => import('../types.js').FilterState['columnFilters'],
  *   columns: () => import('../types.js').Column[],
  *   visible: () => import('../types.js').Row[],
- *   exportCount: (search: string | undefined) => number,
+ *   exportRows: (search: string | undefined) => import('../types.js').Row[],
  *   emit: (event: any, payload: any) => void,
  * }} host What the grid keeps private.
  * @returns {() => void} Removes every listener.
@@ -47,8 +47,10 @@ export function bindGridControls(grid, shell, options, labels, host) {
         clearAll: labels.clearAll,
         search: labels.exportSearch,
         rowCount: labels.exportRowCount,
+        previewMore: labels.exportPreviewMore,
+        previewEmpty: labels.exportPreviewEmpty,
       };
-      const search = { value: grid.getFilter()?.search ?? '', count: host.exportCount };
+      const search = { value: grid.getFilter()?.search ?? '', rows: host.exportRows };
       openExportDialog(/** @type {HTMLElement} */ (root), columns, dialog, search, (choice) => {
         if (choice) grid.exportExcel(choice);
       });

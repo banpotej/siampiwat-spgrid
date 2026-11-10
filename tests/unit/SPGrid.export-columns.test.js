@@ -222,3 +222,66 @@ describe('exportColumnSelect search box', () => {
     expect(el.querySelectorAll('tbody tr')).toHaveLength(3);
   });
 });
+
+describe('exportColumnSelect preview', () => {
+  const many = Array.from({ length: 25 }, (_, i) => ({
+    name: i === 3 ? '<b>Eve</b>' : `Person ${i}`,
+    qty: i,
+    note: i % 2 ? 'odd' : 'even',
+  }));
+  /** @param {HTMLElement} modal */
+  const body = (modal) => [...modal.querySelectorAll('.spg-export-preview tbody tr')];
+  /** @param {HTMLElement} modal */
+  const heads = (modal) =>
+    [...modal.querySelectorAll('.spg-export-preview th')].map((th) => th.textContent);
+  /** @param {HTMLElement} modal @param {string} value */
+  const type = (modal, value) => {
+    const input = /** @type {HTMLInputElement} */ (modal.querySelector('.spg-export-search'));
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  it('shows the first 10 rows of the export and says how many follow', () => {
+    const { el } = make({ rows: many, exportColumnSelect: true });
+    const modal = modalOf(el);
+    expect(body(modal)).toHaveLength(10);
+    expect(modal.querySelector('.spg-export-more')?.textContent).toBe('… and 15 more rows');
+    expect(modal.querySelector('.spg-export-count')?.textContent).toBe('25 rows will be exported');
+  });
+
+  it('follows the search box and says so when nothing matches', () => {
+    const { el } = make({ rows: many, exportColumnSelect: true });
+    const modal = modalOf(el);
+    type(modal, 'person 17');
+    expect(body(modal)).toHaveLength(1);
+    expect(modal.querySelector('.spg-export-more')?.textContent).toBe('');
+    type(modal, 'zzz');
+    expect(body(modal)).toHaveLength(0);
+    expect(modal.querySelector('.spg-export-preview')?.textContent).toBe('No rows match');
+  });
+
+  it('shows only the ticked fields and follows the ticks', () => {
+    const { el } = make({ rows: many, exportColumnSelect: true });
+    const modal = modalOf(el);
+    expect(heads(modal)).toEqual(['Name', 'Qty', 'Note']);
+    const qty = /** @type {HTMLInputElement} */ (modal.querySelector('input[data-key=qty]'));
+    qty.checked = false;
+    qty.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(heads(modal)).toEqual(['Name', 'Note']);
+    /** @type {HTMLButtonElement} */ (modal.querySelector('[data-bulk=none]')).click();
+    expect(modal.querySelector('.spg-export-preview table')).toBeNull();
+  });
+
+  it('escapes cell text and leaves the grid alone', () => {
+    const { el } = make({ rows: many, exportColumnSelect: true });
+    const modal = modalOf(el);
+    expect(modal.querySelector('.spg-export-preview b')).toBeNull();
+    expect(modal.querySelector('.spg-export-preview')?.textContent).toContain('<b>Eve</b>');
+  });
+
+  it('writes a Date as an ISO string, like the file does', () => {
+    const when = new Date('2026-11-04T00:00:00Z');
+    const { el } = make({ rows: [{ name: 'Ada', qty: when, note: '' }], exportColumnSelect: true });
+    expect(body(modalOf(el))[0].textContent).toContain('2026-11-04T00:00:00.000Z');
+  });
+});

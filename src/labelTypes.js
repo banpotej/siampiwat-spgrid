@@ -20,6 +20,8 @@
  * @property {string} [exportFields] Title of the modal that lists the fields to export (`exportColumnSelect` option); default 'Choose fields to export'.
  * @property {string} [exportSearch] Label of the search box in that modal, which narrows the rows to export; default 'Rows to export (search)'.
  * @property {(count: number) => string} [exportRowCount] Line under that search box; default '12 rows will be exported'.
+ * @property {(more: number) => string} [exportPreviewMore] Line under the preview table when more rows follow; default '… and 50 more rows'.
+ * @property {string} [exportPreviewEmpty] Text of the preview when no row is left; default 'No rows match'.
  * @property {string} [columns] aria-label and tooltip of the Settings button (see `columnPicker`); default 'Settings'.
  * @property {string} [columnsSection] Heading of the column list in the settings modal; default 'Columns'.
  * @property {string} [selectAll] Button under the column list that shows every column; default 'Select all'.

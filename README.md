@@ -258,6 +258,7 @@ grid.destroy();
 - `npm run test:e2e` – Playwright end-to-end test
 - `npm run check` – lint, typecheck, unit test และ build
 - `npm run pack:site` – build landing page แล้วสร้าง `release/spgrid-site.zip` (มี `index.html` อยู่ที่ราก) สำหรับอัปโหลดเป็น static file ขึ้น Cloudflare (Workers & Pages › Upload assets) หรือ static host อื่นด้วยมือ ไม่มี CI deploy อัตโนมัติแล้ว
+- `npm run deploy:site` – แตก `release/spgrid-site.zip` แล้วอัปโหลดขึ้น Cloudflare (Worker ชื่อตาม `wrangler.jsonc`) ด้วย `wrangler deploy` (ดึงผ่าน `npx` ไม่ได้เป็น dependency ของโปรเจกต์) ครั้งแรกจะเปิดเบราว์เซอร์ให้ login หรือตั้ง `CLOUDFLARE_API_TOKEN` และ `CLOUDFLARE_ACCOUNT_ID` สำหรับรันโดยไม่มีหน้าจอ เพิ่ม `-Pack` เพื่อ build + zip ก่อน หรือ `-DryRun` เพื่อลองโดยไม่ deploy จริง (`powershell -File deploy-site.ps1 -Pack -DryRun`)
 
 ## ไอคอนและธีม
 

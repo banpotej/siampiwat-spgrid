@@ -5,6 +5,9 @@ let seq = 0;
 
 const FOCUSABLE = 'input:not(:disabled), button:not(:disabled)';
 
+/** Rows the preview table shows; the count line still says how many will be exported. */
+export const PREVIEW_ROWS = 10;
+
 /**
  * @typedef {object} ExportDialogLabels
  * @property {string} title
@@ -15,12 +18,14 @@ const FOCUSABLE = 'input:not(:disabled), button:not(:disabled)';
  * @property {string} clearAll
  * @property {string} search Label of the search box.
  * @property {(count: number) => string} rowCount Text of the line under the search box.
+ * @property {(more: number) => string} previewMore Text under the preview when more rows follow it.
+ * @property {string} previewEmpty Text of the preview when no row is left.
  */
 
 /**
  * @typedef {object} ExportSearch The rows part of the dialog.
  * @property {string} value Text the box starts with (the grid's search text).
- * @property {(search: string | undefined) => number} count Rows an export would write; `undefined`: with the grid's own filter.
+ * @property {(search: string | undefined) => import('../types.js').Row[]} rows Rows an export would write; `undefined`: with the grid's own filter.
  */
 
 /**
@@ -30,8 +35,8 @@ const FOCUSABLE = 'input:not(:disabled), button:not(:disabled)';
  */
 
 /**
- * Open the "fields to export" modal: a search box that narrows the rows (with the number of rows left), and one
- * checkbox per data column, all ticked. Export is disabled while nothing is ticked. Esc, a click on the backdrop and
+ * Open the "fields to export" modal: a search box that narrows the rows (with the number of rows left), a preview of
+ * the first rows as the file will hold them (only the ticked fields), and one checkbox per data column, all ticked. Export is disabled while nothing is ticked. Esc, a click on the backdrop and
  * Cancel dismiss it.
  *
  * @param {HTMLElement} root Element that carries the theme tokens (`.spg-root`); the dialog is added inside it.
@@ -52,11 +57,13 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
   const overlay = document.createElement('div');
   overlay.className = 'spg-modal';
   overlay.innerHTML =
-    `<div class="spg-modal-box spg-settings" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
+    `<div class="spg-modal-box spg-settings spg-export-dialog" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
     `<h2 class="spg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
     `<div class="spg-settings-body"><section>` +
     `<label class="spg-settings-field"><span>${escapeHtml(labels.search)}</span><input type="search" class="spg-export-search" autocomplete="off"></label>` +
-    `<p class="spg-export-count" aria-live="polite"></p></section><section>` +
+    `<p class="spg-export-count" aria-live="polite"></p>` +
+    `<div class="spg-export-preview" tabindex="0"></div>` +
+    `<p class="spg-export-more"></p></section><section>` +
     `<div class="spg-settings-list">${rows}</div>` +
     `<div class="spg-settings-bulk"><button type="button" class="spg-settings-link" data-bulk="all">${escapeHtml(labels.selectAll)}</button>` +
     `<button type="button" class="spg-settings-link" data-bulk="none">${escapeHtml(labels.clearAll)}</button></div></section></div>` +
@@ -75,7 +82,34 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
   const countLine = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-count'));
   input.value = rowSearch.value;
   const changed = () => (input.value === rowSearch.value ? undefined : input.value);
-  const syncCount = () => (countLine.textContent = labels.rowCount(rowSearch.count(changed())));
+  const previewBox = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-preview'));
+  const moreLine = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-more'));
+  /** @param {unknown} value */
+  const cell = (value) => {
+    // A Date is written to the file as an ISO string, so it reads the same here.
+    if (value instanceof Date) return Number.isNaN(+value) ? '' : value.toISOString();
+    return escapeHtml(value === null || value === undefined ? '' : String(value));
+  };
+  // The count, and a table of the first rows with the ticked fields (raw values, as the file holds them).
+  const syncCount = () => {
+    const found = rowSearch.rows(changed());
+    const shown = columns.filter((_, i) => boxes[i].checked);
+    countLine.textContent = labels.rowCount(found.length);
+    const more = found.length - PREVIEW_ROWS;
+    moreLine.textContent = more > 0 ? labels.previewMore(more) : '';
+    if (found.length === 0 || shown.length === 0) {
+      previewBox.innerHTML = found.length === 0 ? `<p>${escapeHtml(labels.previewEmpty)}</p>` : '';
+      return;
+    }
+    const head = shown
+      .map((c) => `<th>${escapeHtml(c.label.replace(/\s*\n\s*/g, ' / '))}</th>`)
+      .join('');
+    const body = found
+      .slice(0, PREVIEW_ROWS)
+      .map((row) => `<tr>${shown.map((c) => `<td>${cell(row[c.key])}</td>`).join('')}</tr>`)
+      .join('');
+    previewBox.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  };
   syncCount();
 
   const opener = /** @type {HTMLElement | null} */ (document.activeElement);
@@ -107,7 +141,10 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
     }
   };
   overlay.addEventListener('keydown', onKey);
-  overlay.addEventListener('change', syncOk);
+  overlay.addEventListener('change', () => {
+    syncOk();
+    syncCount();
+  });
   input.addEventListener('input', syncCount);
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !okBtn.disabled) {
@@ -120,6 +157,7 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
       const all = /** @type {HTMLElement} */ (button).dataset.bulk === 'all';
       for (const box of boxes) box.checked = all;
       syncOk();
+      syncCount();
     });
   }
   overlay.addEventListener('click', (event) => event.target === overlay && close(false));

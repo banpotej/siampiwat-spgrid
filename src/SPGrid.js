@@ -64,9 +64,8 @@ export class SPGrid {
       columnFilters: () => this.#state.get().filter?.columnFilters,
       columns: () => this.#state.get().columns,
       visible: () => this.#visible,
-      exportCount: (search) =>
-        exportRows(this.#state.get(), { locale: this.#locale, hidden: this.#hidden.get(), search })
-          .length,
+      exportRows: (search) =>
+        exportRows(this.#state.get(), { locale: this.#locale, hidden: this.#hidden.get(), search }),
       emit: (event, payload) => this.#events.emit(event, payload),
     });
     this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
