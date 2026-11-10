@@ -1,7 +1,7 @@
 # Roadmap
 
 - **Phase 0 (เสร็จแล้ว):** เครื่องมือพัฒนา, การเรนเดอร์ตารางแบบ static พื้นฐาน, การทดสอบ, เอกสาร
-- **Phase 1:**
+- **Phase 1 (เสร็จแล้ว):**
   - [x] sort core
   - [x] sort UI
   - [x] filter core
@@ -17,4 +17,13 @@
   - [x] line style setting (`lineStyle`, `lineStyleToggle`: default, solid, dashed, dotted)
   - [x] freeze columns (`freezeColumns`, `freezeColumnsToggle`: the first columns stay put while the table scrolls sideways)
   - [x] row grouping (`groupBy`, `groupByToggle`: multi-level, collapsible group headers)
-- **ภายหลัง:** ปรับขนาด/จัดลำดับคอลัมน์ใหม่, virtual scrolling, การเลือกแถว (selection), ปรับปรุง accessibility
+  - [x] ปรับขนาดคอลัมน์ (`resizableColumns`, `columnWidthStorageKey`)
+  - [x] จัดลำดับคอลัมน์ใหม่ (`reorderableColumns`, `columnOrderStorageKey`, `setColumnOrder`, `onColumnOrderChange`)
+  - [x] export Excel (`exportButton`, `exportExcel()`)
+  - [x] ธีม Lavender (opt-in) และตัวแปร `--spg-header-bg-image`
+- **Phase 2 (ถัดไป):** เรียงตามลำดับความสำคัญ
+  - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
+  - [ ] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด, `aria-selected`, roving tabindex (ทำควบคู่กับ selection)
+- **ภายหลัง (ยังไม่ตัดสินใจ):**
+  - โหมดข้อมูลจาก server (sort, filter, pagination ฝั่ง server)
+  - virtual scrolling (ชนกับ grouping, freeze columns และความสูงแถวที่ไม่คงที่)
