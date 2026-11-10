@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Tooling: `deploy-site.ps1` (`npm run deploy:site`) extracts `release/spgrid-site.zip` and deploys it to Cloudflare with `wrangler deploy` (worker name and compatibility date from `wrangler.jsonc`; `-Pack` builds the zip first, `-DryRun` deploys nothing). Wrangler is fetched by `npx`, not added as a dependency. No `src/` change.
+- Internal: `src/core/conditions.js`, a pure condition filter for the coming multi-condition (advanced) filter: `filterByConditions(rows, tree, columns)`, `normalizeConditions` and `operatorsFor`. A tree is a condition (`{ key, op, value }`) or a group (`{ logic: 'and' | 'or', conditions }`, nestable); the operators depend on the column kind (text, number, date, enum, boolean). Not wired to the grid and not exported yet, so nothing changes for users.
 - Internal: search and filter handling moved from `SPGrid` into `FilterControl` (`src/render/filterControl.js`). No behavior change.
 
 ## [2.0.5] - 2026-11-09

@@ -22,6 +22,11 @@
   - [x] export Excel (`exportButton`, `exportExcel()`)
   - [x] ธีม Lavender (opt-in) และตัวแปร `--spg-header-bg-image`
 - **Phase 2 (ถัดไป):** เรียงตามลำดับความสำคัญ
+  - [ ] ตัวกรองขั้นสูงแบบหลายเงื่อนไข (ฟิลด์ + ตัวดำเนินการ + ค่า, AND/OR, ซ้อนกลุ่มได้): ทำทีละขั้น
+    - [x] core: `src/core/conditions.js` (`filterByConditions`, `normalizeConditions`, `operatorsFor`) ยังไม่ต่อกับตารางและยังไม่ export จาก `src/index.js`
+    - [ ] state + API (`setAdvancedFilter`, `getAdvancedFilter`), event `filterChange`, ชิปใน filter summary, `resetView()`, ต่อเข้า `computeView`
+    - [ ] UI: modal ตัวสร้างเงื่อนไข
+    - [ ] จำค่าใน `localStorage`
   - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
   - [ ] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด, `aria-selected`, roving tabindex (ทำควบคู่กับ selection)
 - **ภายหลัง (ยังไม่ตัดสินใจ):**
