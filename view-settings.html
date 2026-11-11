@@ -20,49 +20,76 @@
         <h1>ตัวอย่าง: ตั้งค่าหน้าตาจากโค้ด</h1>
       </header>
       <div id="controls" class="view-controls" role="group" aria-label="ตั้งค่าหน้าตา">
-        <div class="group" role="group" aria-label="ชุดค่าสำเร็จรูป">
-          <button type="button" data-preset="compact">กะทัดรัด</button>
-          <button type="button" data-preset="audit">ตรวจสอบ</button>
-          <button type="button" data-preset="plain">เรียบ</button>
-        </div>
-        <label class="check"><input type="checkbox" name="striped" /> แถวสลับสี</label>
-        <label class="check"><input type="checkbox" name="wrapped" /> ตัดคำขึ้นบรรทัดใหม่</label>
-        <label>
-          เส้นตาราง
-          <select name="gridLines">
-            <option value="default">default</option>
-            <option value="horizontal">horizontal</option>
-            <option value="vertical">vertical</option>
-            <option value="both">both</option>
-            <option value="none">none</option>
-          </select>
-        </label>
-        <label>
-          ลักษณะเส้น
-          <select name="lineStyle">
-            <option value="default">default</option>
-            <option value="solid">solid</option>
-            <option value="dashed">dashed</option>
-            <option value="dotted">dotted</option>
-          </select>
-        </label>
-        <label>
-          ตรึงคอลัมน์
-          <input type="number" name="freezeColumns" min="0" max="3" step="1" />
-        </label>
-        <label>
-          จัดกลุ่มตาม
-          <select id="group-by">
-            <option value="">ไม่จัดกลุ่ม</option>
-            <option value="department">แผนก</option>
-            <option value="office">สถานที่ทำงาน</option>
-            <option value="active">สถานะ</option>
-          </select>
-        </label>
-        <button type="button" id="invalid">ลองค่าที่ไม่ถูกต้อง</button>
+        <section class="vc-section vc-wide" aria-labelledby="vc-presets">
+          <h2 id="vc-presets">ชุดค่าสำเร็จรูป</h2>
+          <div class="vc-row vc-segmented" role="group" aria-labelledby="vc-presets">
+            <button type="button" data-preset="compact">กะทัดรัด</button>
+            <button type="button" data-preset="audit">ตรวจสอบ</button>
+            <button type="button" data-preset="plain">เรียบ</button>
+          </div>
+        </section>
+        <section class="vc-section" aria-labelledby="vc-options">
+          <h2 id="vc-options">ตัวเลือก</h2>
+          <div class="vc-row">
+            <label class="vc-switch"
+              ><input type="checkbox" name="striped" /><span>แถวสลับสี</span></label
+            >
+            <label class="vc-switch"
+              ><input type="checkbox" name="wrapped" /><span>ตัดคำขึ้นบรรทัดใหม่</span></label
+            >
+          </div>
+        </section>
+        <section class="vc-section" aria-labelledby="vc-lines">
+          <h2 id="vc-lines">เส้นตาราง</h2>
+          <div class="vc-row">
+            <label>
+              <span>รูปแบบ</span>
+              <select name="gridLines">
+                <option value="default">default</option>
+                <option value="horizontal">horizontal</option>
+                <option value="vertical">vertical</option>
+                <option value="both">both</option>
+                <option value="none">none</option>
+              </select>
+            </label>
+            <label>
+              <span>ลักษณะเส้น</span>
+              <select name="lineStyle">
+                <option value="default">default</option>
+                <option value="solid">solid</option>
+                <option value="dashed">dashed</option>
+                <option value="dotted">dotted</option>
+              </select>
+            </label>
+          </div>
+        </section>
+        <section class="vc-section" aria-labelledby="vc-layout">
+          <h2 id="vc-layout">โครงตาราง</h2>
+          <div class="vc-row">
+            <label>
+              <span>ตรึงคอลัมน์</span>
+              <input type="number" name="freezeColumns" min="0" max="3" step="1" />
+            </label>
+            <label>
+              <span>จัดกลุ่มตาม</span>
+              <select id="group-by">
+                <option value="">ไม่จัดกลุ่ม</option>
+                <option value="department">แผนก</option>
+                <option value="office">สถานที่ทำงาน</option>
+                <option value="active">สถานะ</option>
+              </select>
+            </label>
+          </div>
+        </section>
+        <section class="vc-section" aria-labelledby="vc-test">
+          <h2 id="vc-test">ทดสอบ error</h2>
+          <div class="vc-row">
+            <button type="button" id="invalid" class="vc-danger">ลองค่าที่ไม่ถูกต้อง</button>
+          </div>
+        </section>
       </div>
       <div id="grid"></div>
-      <pre id="log" role="status" aria-live="polite"></pre>
+      <pre id="log" class="view-log" role="status" aria-live="polite"></pre>
       <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
         <details>
           <summary>คำอธิบายตัวอย่าง</summary>

@@ -7,7 +7,7 @@ export const EXAMPLES = [
   {
     href: '/purchase-order.html',
     title: 'รายการใบสั่งซื้อ (Purchase Order)',
-    nav: 'ตัวอย่าง',
+    nav: 'ใบสั่งซื้อ',
     description:
       'ตารางเต็มรูปแบบ: ค้นหา ตัวกรองขั้นสูง เรียงลำดับ จัดกลุ่ม แบ่งหน้า ส่งออก Excel และปุ่มดำเนินการต่อแถว',
   },
@@ -43,7 +43,30 @@ function link(href, text, className) {
   return a;
 }
 
-/** Fill `<nav id="site-nav">` with the brand link and one link per example. */
+/** The "ตัวอย่าง" dropdown: one `<details>` listing every example, so the top bar stays short as examples are added. */
+function examplesMenu() {
+  const menu = document.createElement('details');
+  menu.className = 'nav-menu';
+  const summary = document.createElement('summary');
+  summary.textContent = 'ตัวอย่าง';
+  const list = document.createElement('div');
+  list.className = 'nav-menu-list';
+  list.append(...EXAMPLES.map((example) => link(example.href, example.nav)));
+  if (list.querySelector('[aria-current]')) summary.setAttribute('aria-current', 'page');
+  menu.append(summary, list);
+  // Close on Escape (focus goes back to the button) and on a click anywhere else.
+  menu.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !menu.open) return;
+    menu.open = false;
+    summary.focus();
+  });
+  document.addEventListener('click', (event) => {
+    if (!menu.contains(/** @type {Node} */ (event.target))) menu.open = false;
+  });
+  return menu;
+}
+
+/** Fill `<nav id="site-nav">` with the brand link, the guides and the examples menu. */
 export function renderNav() {
   const nav = document.getElementById('site-nav');
   if (!nav) return;
@@ -53,6 +76,6 @@ export function renderNav() {
     link(HOME, 'SPGrid', 'brand'),
     link(QUICK_START, 'Quick Start'),
     link(FOR_AGENTS, 'สำหรับ Claude Code'),
-    ...EXAMPLES.map((example) => link(example.href, example.nav)),
+    examplesMenu(),
   );
 }

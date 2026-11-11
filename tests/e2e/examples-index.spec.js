@@ -87,7 +87,12 @@ test('the nav is on every example page, marks the current one, and leads home', 
 }) => {
   await page.goto('/purchase-order.html');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await expect(nav.getByRole('link', { name: 'ตัวอย่าง' })).toHaveAttribute('aria-current', 'page');
+  await expect(nav.locator('summary')).toHaveAttribute('aria-current', 'page');
+  await nav.locator('summary').click();
+  await expect(nav.getByRole('link', { name: 'ใบสั่งซื้อ' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
 
   await nav.getByRole('link', { name: 'SPGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);
@@ -255,4 +260,32 @@ test('the Claude Code page has its own page, reachable from the landing page and
     'aria-current',
     'page',
   );
+});
+
+test('the examples sit in one dropdown that lists every example and closes again', async ({
+  page,
+}) => {
+  await page.goto('/quick-start.html');
+  const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
+  const menu = nav.locator('.nav-menu');
+  await expect(menu).not.toHaveAttribute('open', '');
+  await expect(nav.getByRole('link', { name: 'ใบสั่งซื้อ' })).toBeHidden();
+
+  await menu.locator('summary').click();
+  await expect(menu.getByRole('link')).toHaveText([
+    'ใบสั่งซื้อ',
+    'ธีมลาเวนเดอร์',
+    'รายการงาน',
+    'ตั้งค่าจากโค้ด',
+  ]);
+
+  await page.keyboard.press('Escape');
+  await expect(menu).not.toHaveAttribute('open', '');
+  await menu.locator('summary').click();
+  await page.mouse.click(1000, 600);
+  await expect(menu).not.toHaveAttribute('open', '');
+
+  await menu.locator('summary').click();
+  await menu.getByRole('link', { name: 'รายการงาน' }).click();
+  await expect(page).toHaveURL(/\/worklist\.html$/);
 });
