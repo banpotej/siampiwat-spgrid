@@ -1,4 +1,4 @@
-import { SPGrid } from '/src/index.js';
+import { SPGrid, thaiLabels } from '/src/index.js';
 
 const rows = [
   { id: 1, name: 'สมชาย ใจดี', department: 'บัญชี', position: 'หัวหน้าแผนก', active: 'ใช้งาน' },
@@ -55,8 +55,28 @@ new SPGrid(grid, {
   rowKey: 'id',
   rows,
   columns,
+  searchable: true,
+  searchColumnSelect: true,
+  searchButton: true,
+  searchDebounce: 50,
+  columnPicker: true,
+  resetButton: true,
+  columnStorageKey: 'lavender-theme',
   striped: true,
+  stripedToggle: true,
+  stripedStorageKey: 'lavender-theme',
+  textWrapToggle: true,
+  textWrapStorageKey: 'lavender-theme',
   gridLines: 'both',
+  gridLinesToggle: true,
+  gridLinesStorageKey: 'lavender-theme',
+  groupByToggle: true,
+  groupByStorageKey: 'lavender-theme',
+  lineStyleToggle: true,
+  lineStyleStorageKey: 'lavender-theme',
+  freezeColumnsToggle: true,
+  freezeColumnsStorageKey: 'lavender-theme',
+  labels: thaiLabels,
   onAction: ({ action, row }) => {
     document.getElementById('log').textContent = `${action}: ${row.name}`;
   },

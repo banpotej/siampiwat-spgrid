@@ -74,3 +74,13 @@ test('a grid without the theme keeps the default look', async ({ page }) => {
   await expect(page.locator('.spg-root')).toHaveCSS('border-top-left-radius', '8px');
   await expect(page.locator('.spg-root')).toHaveCSS('border-top-color', 'rgb(229, 231, 235)');
 });
+
+test('the lavender example has search and a Settings modal like the PO list', async ({ page }) => {
+  await page.goto('/theme-lavender.html');
+  await page.getByRole('searchbox').fill('บัญชี');
+  await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
+  await expect(page.locator('tbody tr')).toHaveCount(2);
+
+  await page.getByRole('button', { name: 'ตั้งค่า' }).click();
+  await expect(page.locator('.spg-settings')).toBeVisible();
+});

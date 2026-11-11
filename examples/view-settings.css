@@ -1,0 +1,48 @@
+/* View settings example: the controls that call setViewSettings(). */
+.view-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px 16px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 14px;
+}
+.view-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #334155;
+}
+.view-controls label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.view-controls select,
+.view-controls input[type='number'],
+.view-controls button {
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+.view-controls input[type='number'] {
+  width: 5em;
+}
+.view-controls button {
+  cursor: pointer;
+}
+.view-controls button:hover {
+  background: #eef2ff;
+}
+.view-controls .group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}

@@ -24,6 +24,13 @@ export const EXAMPLES = [
     description:
       'แสดงข้อมูลเป็นรายการ: คอลัมน์เดียวหลายบรรทัดด้วย render หัวกลุ่มพร้อมจำนวน "n งาน" และซ่อนหัวตาราง',
   },
+  {
+    href: '/view-settings.html',
+    title: 'ตั้งค่าหน้าตาจากโค้ด',
+    nav: 'ตั้งค่าจากโค้ด',
+    description:
+      'สั่งค่าใน modal ตั้งค่าจากโค้ด: getViewSettings / setViewSettings ชุดค่าสำเร็จรูป การจัดกลุ่ม และการจำค่าด้วย StorageKey',
+  },
 ];
 
 /** @param {string} href @param {string} text @param {string} [className] */

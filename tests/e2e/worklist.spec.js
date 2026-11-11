@@ -35,3 +35,18 @@ test('a group collapses and a task opens on double-click', async ({ page }) => {
   await page.locator('.spg-group-toggle').click();
   await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(0);
 });
+
+test('the group button fills its header row edge to edge', async ({ page }) => {
+  await page.goto('/worklist.html');
+  const cell = await page.locator('tr.spg-group-row td').boundingBox();
+  const button = await page.locator('.spg-group-toggle').boundingBox();
+  expect(button?.x).toBeCloseTo(cell?.x ?? -1, 0);
+  expect(button?.width).toBeCloseTo(cell?.width ?? -1, 0);
+});
+
+test('the worklist has a Settings modal that changes the look', async ({ page }) => {
+  await page.goto('/worklist.html');
+  await page.getByRole('button', { name: 'ตั้งค่า' }).click();
+  await expect(page.locator('.spg-settings')).toBeVisible();
+  await expect(page.locator('tr.spg-group-row')).toHaveCount(1);
+});

@@ -1,4 +1,4 @@
-import { SPGrid, escapeHtml } from '/src/index.js';
+import { SPGrid, escapeHtml, thaiLabels } from '/src/index.js';
 
 const rows = [
   {
@@ -76,7 +76,16 @@ new SPGrid(document.getElementById('grid'), {
   groupBy: ['status'],
   hiddenColumns: ['status'],
   gridLines: 'horizontal',
-  labels: { groupCount: (count) => `${count} งาน` },
+  // The settings modal: the options below add its switches, the storage keys remember each choice.
+  stripedToggle: true,
+  stripedStorageKey: 'worklist',
+  textWrapToggle: true,
+  textWrapStorageKey: 'worklist',
+  gridLinesToggle: true,
+  gridLinesStorageKey: 'worklist',
+  lineStyleToggle: true,
+  lineStyleStorageKey: 'worklist',
+  labels: { ...thaiLabels, groupCount: (count) => `${count} งาน` },
   onRowActivate: ({ row }) => {
     document.getElementById('log').textContent = `เปิดงาน: ${row.code}`;
   },

@@ -6,7 +6,8 @@
   background: var(--spgi-header-bg);
 }
 
-.spg-group-row td {
+/* Beats `.spg-table td:first-child` / `:last-child`, which would pad the cell and leave the button short of both ends. */
+.spg-table tbody tr.spg-group-row td {
   padding: 0;
   font-weight: 600;
 }
