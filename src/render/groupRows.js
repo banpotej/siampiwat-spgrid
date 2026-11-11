@@ -6,6 +6,7 @@ import { renderIcon } from './icons.js';
 /** @typedef {import('../types.js').Column} Column */
 /** @typedef {import('../types.js').IconName} IconName */
 /** @typedef {import('../core/group.js').GroupHeader} GroupHeader */
+/** @typedef {import('../labelTypes.js').GroupInfo} GroupInfo */
 
 /**
  * @typedef {object} GroupView How the rows are grouped.
@@ -20,7 +21,7 @@ import { renderIcon } from './icons.js';
  * shows its badge. Escaped like any cell.
  *
  * @param {GroupHeader} header
- * @param {{ group: GroupView, span: number, icons: Record<IconName, string>, labels: { yes: string, no: string, groupCount: (count: number) => string }, locale?: string }} opts
+ * @param {{ group: GroupView, span: number, icons: Record<IconName, string>, labels: { yes: string, no: string, groupCount: (count: number, group: GroupInfo) => string }, locale?: string }} opts
  *   `span`: how many columns the row covers.
  * @returns {string}
  */
@@ -34,6 +35,6 @@ export function renderGroupHeader(header, { group, span, icons, labels, locale }
     `<tr class="spg-group-row" data-group-id="${escapeHtml(header.id)}" data-level="${header.level}" style="--spg-group-level:${header.level}">` +
     `<td colspan="${Math.max(span, 1)}"><button type="button" class="spg-group-toggle" aria-expanded="${open}">` +
     `${renderIcon(icons, 'chevron_right', 'spg-group-icon')}<span class="spg-group-value">${value}</span>` +
-    ` <span class="spg-group-count">${escapeHtml(labels.groupCount(header.count))}</span></button></td></tr>`
+    ` <span class="spg-group-count">${escapeHtml(labels.groupCount(header.count, { level: header.level, column: header.column, rows: header.rows }))}</span></button></td></tr>`
   );
 }

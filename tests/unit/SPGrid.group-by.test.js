@@ -321,8 +321,31 @@ describe('groupByToggle', () => {
       'Engineering 2 งาน <b>',
       'Product 2 งาน <b>',
     ]);
-    expect(groupCount).toHaveBeenCalledWith(2);
+    expect(groupCount).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ level: 0, column: 'dept' }),
+    );
     expect(el.querySelector('.spg-group-count b')).toBeNull();
+  });
+
+  it('tells labels.groupCount the level and the rows of each group', () => {
+    const seen =
+      /** @type {{ level: number, column: string, count: number, rows: number }[]} */ ([]);
+    make({
+      groupBy: ['dept', 'status'],
+      labels: {
+        groupCount: (
+          /** @type {number} */ count,
+          /** @type {import('../../src/labelTypes.js').GroupInfo} */ { level, column, rows },
+        ) => {
+          seen.push({ level, column, count, rows: rows.length });
+          return String(count);
+        },
+      },
+    });
+    expect(seen.some((g) => g.level === 0 && g.column === 'dept')).toBe(true);
+    expect(seen.some((g) => g.level === 1 && g.column === 'status')).toBe(true);
+    expect(seen.every((g) => g.rows === g.count)).toBe(true);
   });
 
   it('uses the Thai labels', () => {

@@ -25,23 +25,73 @@
   font-weight: 600;
 }
 
+/* The document header: a neutral band under the tinted one, with its count right after the text. */
+.worklist .spg-table tbody tr.spg-group-row[data-level='1'],
+.worklist .spg-table tbody tr.spg-group-row[data-level='1']:hover {
+  background: #f6f4ef;
+}
+.worklist tr[data-level='1'] .spg-group-toggle {
+  gap: 0.6em;
+  font-weight: 400;
+}
+.worklist tr[data-level='1'] .spg-group-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+.worklist tr[data-level='1'] .spg-group-count {
+  margin-inline-start: 0;
+  font-size: 12px;
+}
+.doc-code {
+  color: #0f172a;
+  font:
+    600 13px/1.5 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+.doc-meta {
+  color: #6b6155;
+  font-size: 12px;
+}
+
 .task {
   display: grid;
   gap: 1px;
+  padding-inline-start: 1.5em;
+}
+.task-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
 }
 .task-code {
-  color: #475569;
+  color: #6b6155;
   font:
-    12px/1.5 ui-monospace,
+    11px/1.5 ui-monospace,
     'Cascadia Code',
     Consolas,
     monospace;
 }
 .task-title {
-  color: #0f172a;
-  font-weight: 500;
+  color: #3b2a12;
+  font-weight: 600;
+}
+.task-qty {
+  color: #6b6155;
+  font-size: 12px;
 }
 .task-meta {
   color: #7a6a58;
+  font-size: 12px;
+}
+.task-pieces {
+  margin: 2px 0 0;
+  padding-inline-start: 1.25em;
+  color: #0f172a;
+}
+.task-type {
+  color: #6b6155;
   font-size: 12px;
 }

@@ -13,6 +13,7 @@ import { sortRows } from './sort.js';
  * @property {string} id Identifies the group (its path of values); stable across renders.
  * @property {Row} first The group's first row; its cell for `column` is what the header shows.
  * @property {number} count Rows of the group in the list.
+ * @property {Row[]} rows The rows of the group in the list, in order.
  */
 
 /**
@@ -108,7 +109,15 @@ export function groupItems(rows, keys, collapsed = new Set()) {
       if (l > level)
         path += `${JSON.stringify(keys[l])}=${JSON.stringify(groupValue(row[keys[l]]))};`;
       /** @type {GroupHeader} */
-      const header = { type: 'group', level: l, column: keys[l], id: path, first: row, count: 0 };
+      const header = {
+        type: 'group',
+        level: l,
+        column: keys[l],
+        id: path,
+        first: row,
+        count: 0,
+        rows: [],
+      };
       open[l] = header;
       if (l <= hiddenFrom) {
         hiddenFrom = collapsed.has(path) ? l : Infinity;
@@ -116,7 +125,10 @@ export function groupItems(rows, keys, collapsed = new Set()) {
       }
     }
     open.length = keys.length;
-    for (const header of open) header.count += 1;
+    for (const header of open) {
+      header.count += 1;
+      header.rows.push(row);
+    }
     if (hiddenFrom === Infinity) items.push({ type: 'row', row, index });
   });
   return items;

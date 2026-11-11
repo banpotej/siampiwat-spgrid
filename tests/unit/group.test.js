@@ -93,6 +93,17 @@ describe('groupItems', () => {
     ]);
   });
 
+  it('gives each header the rows of its group', () => {
+    const headers = groupItems(ordered, ['dept', 'status']).filter((i) => i.type === 'group');
+    expect(headers.map((h) => h.rows.map((r) => r.name))).toEqual([
+      ['b', 'd'],
+      ['b', 'd'],
+      ['c', 'a', 'e'],
+      ['c'],
+      ['a', 'e'],
+    ]);
+  });
+
   it('is just the rows, with their positions, when nothing is grouped', () => {
     expect(groupItems(rows, [])).toEqual(rows.map((row, index) => ({ type: 'row', row, index })));
   });

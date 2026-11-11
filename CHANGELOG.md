@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `labels.groupCount` now also receives `{ level, column, rows }` as a second argument (`level` 0 is the outermost group, `rows` the group's rows), so each `groupBy` level can word its count differently, e.g. "4 เอกสาร · 6 รายการ" on the outer band and "· 3 รายการ" on a document. Existing one-argument functions keep working.
+- The worklist example now shows documents nested under the band (`groupBy: ['status', 'doc']`): each document header shows its code, floor/zone and receipt time, and each item shows its category, quantity, place and a bullet list of pieces, with a search box, filter chips and paging (5 items per page; the counts in the headers are for the page).
 - Example page `view-settings.html` (`examples/view-settings.js`, `examples/view-settings.css`): drives the look of a grid from code with `getViewSettings()` / `setViewSettings()` (presets, one control per setting, a bad value that changes nothing) and `setGroupBy()`, with no `*Toggle` option and `*StorageKey` options that remember each choice. It is on the landing page and in the nav.
 - Example page `worklist.html` (`examples/worklist.js`, `examples/worklist.css`): data shown as a list — one `render` column with three lines per row, a `groupBy` header with the count as "n งาน" (`labels.groupCount`), and the header row visually hidden. It is on the landing page and in the nav.
 - `labels.groupCount`: a function `(count) => string` for the row count in a group header (`groupBy`); default `(3)` as before, e.g. `` n => `${n} งาน` `` for "16 งาน". The text is escaped.

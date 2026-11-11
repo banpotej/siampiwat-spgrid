@@ -26,15 +26,18 @@
           <summary>คำอธิบายตัวอย่าง</summary>
           <div class="intro-body">
             <p>
-              แสดงข้อมูลเป็นรายการ ไม่ใช่ตารางหลายคอลัมน์: คอลัมน์เดียวใช้ <code>render</code>
-              สร้างสามบรรทัดจากทั้งแถว (รหัส ชื่อ สถานที่และวันที่) หัวกลุ่มมาจาก
-              <code>groupBy</code> และจำนวน "งาน" มาจาก <code>labels.groupCount</code>
+              แสดงข้อมูลเป็นรายการ ไม่ใช่ตารางหลายคอลัมน์: คอลัมน์เดียวใช้
+              <code>render</code> สร้างรายการจากทั้งแถว (รหัส หมวด จำนวน สถานที่ วันที่
+              และรายการชิ้น) หัวกลุ่มสองระดับ (สถานะ › เอกสาร) มาจาก
+              <code>groupBy</code> โดยคอลัมน์กลุ่มซ่อนไว้และใช้ <code>render</code>
+              สร้างข้อความหัวกลุ่ม ส่วนจำนวนของแต่ละระดับมาจาก
+              <code>labels.groupCount(count, { level, rows })</code>
               ส่วนแถวหัวตารางถูกซ่อนด้วย CSS (ยังอ่านได้ด้วย screen reader)
               การค้นหาครอบคลุมเฉพาะคอลัมน์ที่แสดง
             </p>
             <pre tabindex="0"><code>new SPGrid(grid, {
-  columns, rows, groupBy: ['status'], hiddenColumns: ['status'],
-  labels: { groupCount: (n) => `${n} งาน` },
+  columns, rows, groupBy: ['status', 'doc'], hiddenColumns: ['status', 'doc'],
+  labels: { groupCount: (n, { level }) => (level === 0 ? `${n} รายการ` : `· ${n} รายการ`) },
 });</code></pre>
           </div>
         </details>

@@ -1,6 +1,13 @@
 // @ts-check
 
 /**
+ * @typedef {object} GroupInfo Which group a header (`groupBy`) is for; the second argument of `labels.groupCount`.
+ * @property {number} level 0 for the outermost group.
+ * @property {string} column Key of the column this level groups by.
+ * @property {import('./types.js').Row[]} rows The group's rows in the list.
+ */
+
+/**
  * @typedef {object} Labels
  * @property {string} [search] aria-label of the search box; default 'Search'.
  * @property {string} [empty] Text shown when there are no rows; default 'No data'.
@@ -56,8 +63,9 @@
  * @property {string} [resetView] Text of the Reset view button and title of its confirm dialog (`resetButton`); default 'Reset view'.
  * @property {(text: string) => string} [removeFilter] aria-label of a filter chip's remove button, given the chip's
  *   text (`filterSummary`); default 'Remove filter <text>'.
- * @property {(count: number) => string} [groupCount] Count in a group header (`groupBy`), given how many rows of the
- *   group are on the page; default '(3)'.
+ * @property {(count: number, group: GroupInfo) => string} [groupCount] Count in a group header (`groupBy`), given how
+ *   many rows of the group are on the page and which group it is (`level`, `column`, `rows`), so each level can word
+ *   its count differently; default '(3)'.
  * @property {(shown: number, total: number) => string} [filterSummary] Count shown beside the filter chips
  *   (`filterSummary`); default 'Found 12 of 250'.
  * @property {string} [toggleDescription] aria-label and tooltip of the button that hides or shows `description`;

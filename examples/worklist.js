@@ -1,70 +1,98 @@
 import { SPGrid, escapeHtml, thaiLabels } from '/src/index.js';
 
+// One row per item. The document an item belongs to (`doc`, with its floor, zone and receipt time) is a group level.
+const item = (id, doc, floor, zone, received, n, category, place, asked, pieces) => ({
+  id,
+  status: 'pending',
+  doc,
+  floor,
+  zone,
+  received,
+  code: `${doc}-${n}`,
+  category,
+  qty: pieces.length,
+  place,
+  asked,
+  pieces,
+});
+
 const rows = [
-  {
-    id: 1,
-    code: 'OS26-F00122-03',
-    title: 'ร่มพับ สีแดงเลือดหมู ด้ามดำ',
-    place: 'ห้อง L&F',
-    asked: 'วันนี้ 11:48',
-  },
-  {
-    id: 2,
-    code: 'OS26-F00122-02',
-    title: 'กระเป๋าเป้สะพายหลัง สีกรมท่า',
-    place: 'ห้อง L&F',
-    asked: 'วันนี้ 11:48',
-  },
-  {
-    id: 3,
-    code: 'OS26-F00122-01',
-    title: 'สมาร์ทโฟน สีดำ เคสใส',
-    place: 'ห้อง L&F',
-    asked: 'วันนี้ 11:47',
-  },
-  {
-    id: 4,
-    code: 'OS26-F00118-01',
-    title: 'กระเป๋าสตางค์หนังสีน้ำตาล ใบยาว',
-    place: 'ห้อง L&F',
-    asked: 'เมื่อวาน 14:48',
-  },
-  {
-    id: 5,
-    code: 'OS26-F00117-01',
-    title: 'สมาร์ทโฟน Samsung Galaxy S24 สีดำ',
-    place: 'ห้อง L&F',
-    asked: 'เมื่อวาน 14:43',
-  },
-  {
-    id: 6,
-    code: 'OS26-F00116-01',
-    title: 'โน้ตบุ๊ก 14 นิ้ว สีเทา พร้อมที่ชาร์จ',
-    place: 'ห้องเก็บของ L&F',
-    asked: 'เมื่อวาน 14:35',
-  },
-  {
-    id: 7,
-    code: 'OS26-F00115-01',
-    title: 'โทรศัพท์มือถือ สมาร์ทโฟน สีน้ำเงินเข้ม',
-    place: 'ห้องเก็บของ L&F',
-    asked: 'เมื่อวาน 14:22',
-  },
-].map((row) => ({ ...row, status: 'pending' }));
+  item(
+    1,
+    'OS26-F00122',
+    1,
+    'A',
+    'วันนี้ 11:45',
+    '01',
+    'อิเล็กทรอนิกส์',
+    'ห้อง L&F',
+    'วันนี้ 11:47',
+    [['สมาร์ทโฟน สีดำ เคสใส', 'โทรศัพท์มือถือ']],
+  ),
+  item(2, 'OS26-F00122', 1, 'A', 'วันนี้ 11:45', '02', 'ทั่วไป', 'ห้อง L&F', 'วันนี้ 11:48', [
+    ['กระเป๋าเป้สะพายหลัง สีกรมท่า', 'กระเป๋า'],
+  ]),
+  item(3, 'OS26-F00122', 1, 'A', 'วันนี้ 11:45', '03', 'ทั่วไป', 'ห้อง L&F', 'วันนี้ 11:48', [
+    ['ร่มพับ สีแดงเลือดหมู ด้ามดำ', 'ร่ม'],
+  ]),
+  item(4, 'OS26-F00118', 1, 'A', 'เมื่อวาน 14:47', '01', 'มีค่า', 'ห้อง L&F', 'เมื่อวาน 14:48', [
+    ['กระเป๋าสตางค์หนังสีน้ำตาล ใบยาว', 'กระเป๋าสตางค์ (มีเงินสด)'],
+  ]),
+  item(
+    5,
+    'OS26-F00117',
+    2,
+    'B',
+    'เมื่อวาน 14:42',
+    '01',
+    'อิเล็กทรอนิกส์',
+    'ห้อง L&F',
+    'เมื่อวาน 14:43',
+    [['สมาร์ทโฟน Samsung Galaxy S24 สีดำ', 'โทรศัพท์มือถือ']],
+  ),
+  item(
+    6,
+    'OS26-F00116',
+    3,
+    'C',
+    'เมื่อวาน 14:34',
+    '01',
+    'อิเล็กทรอนิกส์',
+    'ห้องเก็บของ L&F',
+    'เมื่อวาน 14:35',
+    [['โน้ตบุ๊ก 14 นิ้ว สีเทา พร้อมที่ชาร์จ', 'โน้ตบุ๊ก']],
+  ),
+];
+
+const distinct = (list, key) => new Set(list.map((row) => row[key])).size;
 
 const columns = [
-  // The group column: its cell is the text of the group header. It is hidden, so it takes no column of its own.
-  { key: 'status', label: 'สถานะ', render: () => 'Worklist — รออนุมัติ' },
+  // The group columns: their cells are the text of the group headers (a header shows the cell of its first row).
+  // Both are hidden, so they take no column of their own.
+  { key: 'status', label: 'สถานะ', render: () => 'Worklist — รออนุมัติ (เอกสาร › รายการ › ชิ้น)' },
   {
-    // One cell per row, three lines, built from the whole row. Every piece of data goes through escapeHtml.
-    key: 'title',
-    label: 'งาน',
-    render: (_title, row) =>
+    key: 'doc',
+    label: 'เอกสาร',
+    render: (doc, row) =>
+      `<span class="doc-code">${escapeHtml(doc)}</span>` +
+      `<span class="doc-meta">ชั้น ${escapeHtml(row.floor)} โซน ${escapeHtml(row.zone)} · รับเมื่อ ${escapeHtml(row.received)}</span>`,
+  },
+  {
+    // One cell per row, built from the whole row. Every piece of data goes through escapeHtml.
+    key: 'code',
+    label: 'รายการ',
+    render: (_code, row) =>
       `<div class="task">` +
-      `<code class="task-code">${escapeHtml(row.code)}</code>` +
-      `<strong class="task-title">${escapeHtml(row.title)}</strong>` +
-      `<span class="task-meta">สถานที่เก็บ: ${escapeHtml(row.place)}</span>` +
-      `<span class="task-meta">วันที่ขอ ${escapeHtml(row.asked)}</span>` +
+      `<div class="task-head"><code class="task-code">${escapeHtml(row.code)}</code>` +
+      `<strong class="task-title">หมวด: ${escapeHtml(row.category)}</strong>` +
+      `<span class="task-qty">${escapeHtml(row.qty)} ชิ้น</span></div>` +
+      `<span class="task-meta">สถานที่เก็บ: ${escapeHtml(row.place)} · วันที่ขอ ${escapeHtml(row.asked)}</span>` +
+      `<ul class="task-pieces">${row.pieces
+        .map(
+          ([name, type]) =>
+            `<li>${escapeHtml(name)} <span class="task-type">(${escapeHtml(type)})</span></li>`,
+        )
+        .join('')}</ul>` +
       `</div>`,
   },
 ];
@@ -73,9 +101,16 @@ new SPGrid(document.getElementById('grid'), {
   rowKey: 'id',
   rows,
   columns,
-  groupBy: ['status'],
-  hiddenColumns: ['status'],
+  // Newest document first: a group column the sort is on follows the sort's direction.
+  defaultSort: { key: 'doc', direction: 'desc' },
+  groupBy: ['status', 'doc'],
+  hiddenColumns: ['status', 'doc'],
   gridLines: 'horizontal',
+  searchable: true,
+  filterSummary: true,
+  pageSize: 5,
+  pageSizeOptions: [5, 10, 20],
+  pageSizeStorageKey: 'worklist',
   // The settings modal: the options below add its switches, the storage keys remember each choice.
   stripedToggle: true,
   stripedStorageKey: 'worklist',
@@ -85,8 +120,13 @@ new SPGrid(document.getElementById('grid'), {
   gridLinesStorageKey: 'worklist',
   lineStyleToggle: true,
   lineStyleStorageKey: 'worklist',
-  labels: { ...thaiLabels, groupCount: (count) => `${count} งาน` },
+  labels: {
+    ...thaiLabels,
+    // The count is worded per level: documents and items for the outer band, items for a document.
+    groupCount: (count, { level, rows }) =>
+      level === 0 ? `${distinct(rows, 'doc')} เอกสาร · ${count} รายการ` : `· ${count} รายการ`,
+  },
   onRowActivate: ({ row }) => {
-    document.getElementById('log').textContent = `เปิดงาน: ${row.code}`;
+    document.getElementById('log').textContent = `เปิดรายการ: ${row.code}`;
   },
 });

@@ -75,7 +75,7 @@ function renderHeaderCell(column, sort, icons, resize, reorder) {
  * @param {Column[]} columns
  * @param {Row[]} rows Already in display order.
  * @param {SortState} sort
- * @param {{ empty: string, yes: string, no: string, groupCount: (count: number) => string }} labels `empty` is shown in a full-width row when there are no rows.
+ * @param {{ empty: string, yes: string, no: string, groupCount: (count: number, group: import('../labelTypes.js').GroupInfo) => string }} labels `empty` is shown in a full-width row when there are no rows.
  * @param {Record<IconName, string>} icons
  * @param {string} [rowKey] Field to expose as `data-row-id`.
  * @param {string} [locale] For formatting `date` and `number` cells.
