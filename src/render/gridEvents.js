@@ -63,3 +63,23 @@ export function emitChanges(events, grid, { state, prev, before, after }) {
     events.emit('pageChange', { page: after.page, pageSize: after.pageSize });
   }
 }
+
+/**
+ * Render the grid on every state change, emit what changed, and remember a page that was clamped into range so it
+ * does not spring back later.
+ *
+ * @param {import('../core/state.js').State<GridState>} state
+ * @param {ReturnType<typeof createGridEvents>} events
+ * @param {{ render: () => void, getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null }} grid
+ * @param {() => PageResult | null} paging The page the last render showed.
+ * @returns {() => void} Unsubscribe.
+ */
+export function watchState(state, events, grid, paging) {
+  return state.subscribe((next, prev) => {
+    const before = paging();
+    grid.render();
+    const after = paging();
+    emitChanges(events, grid, { state: next, prev, before, after });
+    if (after && after.page !== next.page) state.set({ page: after.page });
+  });
+}

@@ -270,6 +270,15 @@
  */
 
 /**
+ * @typedef {object} ViewSettings The look of the table, as `getViewSettings()` reports it and `setViewSettings()` takes it.
+ * @property {boolean} [striped] Zebra rows.
+ * @property {boolean} [wrapped] Long cell text wraps onto more lines.
+ * @property {GridLines} [gridLines] Which lines the table draws.
+ * @property {LineStyle} [lineStyle] How those lines are drawn.
+ * @property {number} [freezeColumns] How many leading columns stay in place while the table scrolls sideways.
+ */
+
+/**
  * @typedef {object} ExportOptions
  * @property {string} [filename] Download name; default 'export.xlsx' (`.xlsx` is appended when missing).
  * @property {string} [sheetName] Worksheet name; default 'Sheet1'. Characters Excel forbids are replaced.

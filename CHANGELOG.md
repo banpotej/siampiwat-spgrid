@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `getViewSettings()` / `setViewSettings(settings)`: read and change the look of the table from code, as the settings modal does: `striped`, `wrapped`, `gridLines`, `lineStyle` and `freezeColumns`. They work without the matching `*Toggle` option, leave out settings unchanged, save to `localStorage` when the `*StorageKey` option is set, and throw `TypeError` / `RangeError` for a bad value (changing nothing). New type `ViewSettings`.
+
 ## [2.0.6] - 2026-11-10
 
 ### Added

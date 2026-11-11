@@ -6,8 +6,24 @@ import { askConfirm } from './confirm.js';
 import { bindAdvancedFilter } from './advancedFilter.js';
 import { bindControls } from './controls.js';
 import { openExportDialog } from './exportDialog.js';
+import { exportRows } from './exportExcel.js';
+import { previewCount } from './conditionPreview.js';
 
 const DEFAULT_DEBOUNCE = 200;
+
+/**
+ * What the toolbar needs to count and list the rows an export would hold, bound to the grid's live state.
+ *
+ * @param {() => import('../types.js').GridState} state
+ * @param {string | undefined} locale
+ * @param {{ get: () => string[] }} hidden
+ */
+export const exportHost = (state, locale, hidden) => ({
+  /** @param {import('../types.js').GridState['conditions']} conditions */
+  previewCount: (conditions) => previewCount(state(), { locale, hidden: hidden.get() }, conditions),
+  /** @param {string | undefined} search */
+  exportRows: (search) => exportRows(state(), { locale, hidden: hidden.get(), search }),
+});
 
 /**
  * Wire the toolbar, pager, action cells, column picker and filter chips of one grid to its public methods.
@@ -18,7 +34,6 @@ const DEFAULT_DEBOUNCE = 200;
  * @param {Required<import('../types.js').Labels>} labels
  * @param {{
  *   applyFilter: (filter: import('../types.js').FilterState | null) => void,
- *   columnFilters: () => import('../types.js').FilterState['columnFilters'],
  *   columns: () => import('../types.js').Column[],
  *   visible: () => import('../types.js').Row[],
  *   exportRows: (search: string | undefined) => import('../types.js').Row[],
@@ -32,7 +47,8 @@ export function bindGridControls(grid, shell, options, labels, host) {
   const unbindControls = bindControls(shell, {
     debounce: options.searchDebounce ?? DEFAULT_DEBOUNCE,
     submit: options.searchButton === true,
-    onSearch: (search) => host.applyFilter({ search, columnFilters: host.columnFilters() }),
+    onSearch: (search) =>
+      host.applyFilter({ search, columnFilters: grid.getFilter()?.columnFilters }),
     onColumn: (key) => grid.setSearchColumn(key),
     onExport: () => {
       if (options.exportColumnSelect !== true) return void grid.exportExcel();
@@ -120,9 +136,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
         }),
       }),
       onApply: ({ hidden, sort, view, groupBy }) => {
-        const frozen = shell.view?.get().freezeColumns;
-        if (view) shell.view?.apply(view);
-        if (shell.view?.get().freezeColumns !== frozen) grid.render();
+        if (view && shell.view?.apply(view)) grid.render();
         if (hidden !== undefined) grid.setHiddenColumns(hidden);
         if (sort !== undefined) grid.setSort(sort);
         if (groupBy !== undefined) grid.setGroupBy(groupBy);

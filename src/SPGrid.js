@@ -4,13 +4,13 @@ import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
 import { changedGroupBy } from './core/group.js';
 import { createState } from './core/state.js';
-import { bindGridControls } from './render/gridControls.js';
-import { createGridEvents, emitChanges } from './render/gridEvents.js';
+import { bindGridControls, exportHost } from './render/gridControls.js';
+import { createGridEvents, watchState } from './render/gridEvents.js';
 import { assertOptions, initialState, initialView, mountParts } from './render/gridSetup.js';
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
-import { exportExcel, exportRows } from './render/exportExcel.js';
-import { previewCount } from './render/conditionPreview.js';
+import { assertViewFlags } from './render/viewToggles.js';
+import { exportExcel } from './render/exportExcel.js';
 import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
@@ -31,6 +31,7 @@ export class SPGrid {
   /** @type {FilterControl} */ #filter;
   /** @type {HiddenColumns} */ #hidden;
   /** @type {ColumnOrder} */ #order;
+  /** @type {import('./render/viewToggles.js').ViewSettingsControl} */ #view;
   #reorderable;
   /** @type {import('./types.js').PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
@@ -38,6 +39,7 @@ export class SPGrid {
   #visible = [];
   #unbindControls = () => {};
   #destroyed = false;
+  #getState = () => this.#state.get();
 
   /**
    * @param {HTMLElement} container
@@ -54,37 +56,22 @@ export class SPGrid {
     this.#events = createGridEvents(options);
     const { labels, shell, renderer } = mountParts(container, options);
     this.#renderer = renderer;
+    this.#view = /** @type {import('./render/viewToggles.js').ViewSettingsControl} */ (shell.view);
     this.#hidden = new HiddenColumns(options, shell, (keys) => {
-      // A search limited to a column that just got hidden goes back to every visible column.
       if (keys.includes(this.getSearchColumn() ?? '')) this.setSearchColumn(null);
       this.render();
       this.#events.emit('columnsChange', keys);
     });
     this.#unbindControls = bindGridControls(this, shell, options, labels, {
       applyFilter: (filter) => this.#filter.apply(filter),
-      columnFilters: () => this.#state.get().filter?.columnFilters,
       columns: () => this.#state.get().columns,
       visible: () => this.#visible,
-      previewCount: (conditions) =>
-        previewCount(
-          this.#state.get(),
-          { locale: this.#locale, hidden: this.#hidden.get() },
-          conditions,
-        ),
-      exportRows: (search) =>
-        exportRows(this.#state.get(), { locale: this.#locale, hidden: this.#hidden.get(), search }),
+      ...exportHost(this.#getState, this.#locale, this.#hidden),
       emit: (event, payload) => this.#events.emit(event, payload),
     });
     this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
     this.#filter = new FilterControl(shell, this.#state);
-    this.#unsubscribe = this.#state.subscribe((state, prev) => {
-      const before = this.#paging;
-      this.render();
-      const after = this.#paging;
-      emitChanges(this.#events, this, { state, prev, before, after });
-      // Remember a page that was clamped into range, so it does not spring back later.
-      if (after && after.page !== state.page) this.#state.set({ page: after.page });
-    });
+    this.#unsubscribe = watchState(this.#state, this.#events, this, () => this.#paging);
     this.render();
   }
 
@@ -124,8 +111,8 @@ export class SPGrid {
   }
 
   /**
-   * Limit the global search to one column (also moves the select, if rendered). Resets to page 1.
-   * @param {string | null} key Data column key, or null to search every column.
+   * Limit the global search to one column (moves the select too); resets to page 1.
+   * @param {string | null} key Data column key, or null for every column.
    * @throws {RangeError} key is not a data column
    */
   setSearchColumn(key) {
@@ -133,8 +120,7 @@ export class SPGrid {
   }
 
   /**
-   * Also writes `search` into the search box; global search only covers `options.columns` (or `getSearchColumn()`).
-   * Resets to page 1.
+   * Also writes `search` into the search box (it covers `options.columns` or `getSearchColumn()`); resets to page 1.
    * @param {FilterState | null} filter `{ search, columnFilters }` or null to clear.
    * @throws {RangeError} a `columnFilters` key is not a column
    */
@@ -148,8 +134,8 @@ export class SPGrid {
   }
 
   /**
-   * Filter by conditions (field + operator + value, combined with AND / OR) on top of the search and the column filters.
-   * Conditions with a blank value are dropped; `null` clears. Resets to page 1; also applies to `exportExcel()`.
+   * Filter by conditions (field + operator + value, AND / OR) on top of the search and column filters; blank values
+   * are dropped, `null` clears. Resets to page 1; also applies to `exportExcel()`.
    * @param {import('./types.js').ConditionGroup | import('./types.js').Condition | null} tree
    * @throws {RangeError} unknown or action column, an operator the column does not take, or a `logic` other than and / or
    * @throws {TypeError} a malformed condition
@@ -164,8 +150,7 @@ export class SPGrid {
   }
 
   /**
-   * Clamped into range. No-op while pagination is off.
-   * @param {number} page 1-based
+   * @param {number} page 1-based, clamped into range; no-op while pagination is off.
    */
   setPage(page) {
     if (this.#destroyed || this.#state.get().pageSize === null) return;
@@ -217,14 +202,29 @@ export class SPGrid {
     if (next) this.#state.set({ groupBy: next, page: 1 });
   }
 
+  /** @returns {Required<import('./types.js').ViewSettings>} A copy of the look settings now in effect. */
+  getViewSettings() {
+    return this.#view.all();
+  }
+
+  /**
+   * Change the look as the settings modal does (no `*Toggle` option needed); omitted settings stay; saved per `*StorageKey`.
+   * @param {import('./types.js').ViewSettings} settings
+   * @throws {TypeError} `striped` or `wrapped` is not a boolean
+   * @throws {RangeError} `gridLines`, `lineStyle` or `freezeColumns` is not an allowed value
+   */
+  setViewSettings(settings) {
+    assertViewFlags(settings);
+    if (!this.#destroyed && this.#view.apply(settings)) this.render();
+  }
+
   /** @returns {string[]} The key of every column (action columns too) in display order. */
   getColumnOrder() {
     return this.#order.get();
   }
 
   /**
-   * Show the columns in this order; columns left out follow in their original order. Saved when
-   * `columnOrderStorageKey` is set.
+   * Show the columns in this order, the rest after them; saved when `columnOrderStorageKey` is set.
    * @param {string[]} keys
    * @throws {RangeError} a key is not a column
    */
