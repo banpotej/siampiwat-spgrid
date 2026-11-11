@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Example page `worklist.html` (`examples/worklist.js`, `examples/worklist.css`): data shown as a list — one `render` column with three lines per row, a `groupBy` header with the count as "n งาน" (`labels.groupCount`), and the header row visually hidden. It is on the landing page and in the nav.
+- `labels.groupCount`: a function `(count) => string` for the row count in a group header (`groupBy`); default `(3)` as before, e.g. `` n => `${n} งาน` `` for "16 งาน". The text is escaped.
 - `getViewSettings()` / `setViewSettings(settings)`: read and change the look of the table from code, as the settings modal does: `striped`, `wrapped`, `gridLines`, `lineStyle` and `freezeColumns`. They work without the matching `*Toggle` option, leave out settings unchanged, save to `localStorage` when the `*StorageKey` option is set, and throw `TypeError` / `RangeError` for a bad value (changing nothing). New type `ViewSettings`.
 
 ## [2.0.6] - 2026-11-10

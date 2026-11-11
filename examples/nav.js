@@ -17,6 +17,13 @@ export const EXAMPLES = [
     nav: 'ธีมลาเวนเดอร์',
     description: 'ธีมสีม่วงอ่อน: หัวตารางไล่เฉด แถวสลับสี เส้นขอบครบทุกเซลล์ และปุ่ม action สีทึบ',
   },
+  {
+    href: '/worklist.html',
+    title: 'รายการงาน (Worklist)',
+    nav: 'รายการงาน',
+    description:
+      'แสดงข้อมูลเป็นรายการ: คอลัมน์เดียวหลายบรรทัดด้วย render หัวกลุ่มพร้อมจำนวน "n งาน" และซ่อนหัวตาราง',
+  },
 ];
 
 /** @param {string} href @param {string} text @param {string} [className] */

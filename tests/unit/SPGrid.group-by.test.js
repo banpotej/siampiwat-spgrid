@@ -313,6 +313,18 @@ describe('groupByToggle', () => {
     expect(grid.getGroupBy()).toEqual(['dept', 'status', 'name']);
   });
 
+  it('formats the count in a group header with labels.groupCount', () => {
+    const groupCount = vi.fn((/** @type {number} */ n) => `${n} งาน <b>`);
+    const { el } = make({ groupBy: ['dept'], labels: { groupCount } });
+    expect(headers(el).map((h) => h.text)).toEqual([
+      '<i>X</i> 1 งาน <b>',
+      'Engineering 2 งาน <b>',
+      'Product 2 งาน <b>',
+    ]);
+    expect(groupCount).toHaveBeenCalledWith(2);
+    expect(el.querySelector('.spg-group-count b')).toBeNull();
+  });
+
   it('uses the Thai labels', () => {
     const { el } = make({ groupByToggle: true, labels: thaiLabels });
     open(el);

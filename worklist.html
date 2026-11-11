@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง: รายการงาน (Worklist)</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/worklist.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง: รายการงาน (Worklist)</h1>
+      </header>
+      <div id="grid" class="worklist"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              แสดงข้อมูลเป็นรายการ ไม่ใช่ตารางหลายคอลัมน์: คอลัมน์เดียวใช้ <code>render</code>
+              สร้างสามบรรทัดจากทั้งแถว (รหัส ชื่อ สถานที่และวันที่) หัวกลุ่มมาจาก
+              <code>groupBy</code> และจำนวน "งาน" มาจาก <code>labels.groupCount</code>
+              ส่วนแถวหัวตารางถูกซ่อนด้วย CSS (ยังอ่านได้ด้วย screen reader)
+              การค้นหาครอบคลุมเฉพาะคอลัมน์ที่แสดง
+            </p>
+            <pre tabindex="0"><code>new SPGrid(grid, {
+  columns, rows, groupBy: ['status'], hiddenColumns: ['status'],
+  labels: { groupCount: (n) => `${n} งาน` },
+});</code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="worklist.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/worklist.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/worklist.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

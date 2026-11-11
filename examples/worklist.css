@@ -1,0 +1,47 @@
+/* Worklist example: a one-column list. The header row stays for screen readers but is not drawn. */
+.worklist .spg-table thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* The group header: a tinted band with the count at the end. */
+.worklist .spg-table tbody tr.spg-group-row,
+.worklist .spg-table tbody tr.spg-group-row:hover {
+  background: #faecd9;
+}
+.worklist .spg-group-toggle {
+  color: #7c4a12;
+}
+.worklist .spg-group-toggle:hover {
+  background: #f5dfbd;
+}
+.worklist .spg-group-count {
+  margin-inline-start: auto;
+  color: #7c4a12;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.task {
+  display: grid;
+  gap: 1px;
+}
+.task-code {
+  color: #475569;
+  font:
+    12px/1.5 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+}
+.task-title {
+  color: #0f172a;
+  font-weight: 500;
+}
+.task-meta {
+  color: #7a6a58;
+  font-size: 12px;
+}

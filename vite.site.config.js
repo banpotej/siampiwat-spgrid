@@ -38,6 +38,7 @@ export default defineConfig({
         'basic.html',
         'purchase-order.html',
         'theme-lavender.html',
+        'worklist.html',
       ].map((f) => resolve(f)),
     },
   },
