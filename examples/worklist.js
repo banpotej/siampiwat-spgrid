@@ -24,6 +24,8 @@ const item = (id, doc, floor, zone, received, n, category, place, asked, pieces)
   place,
   asked,
   askedAt: timeOf(asked),
+  // An item has no end time: the calendar gives it an hour, enough for its code, time and category.
+  askedEnd: new Date(timeOf(asked).getTime() + 60 * 60000),
   pieces,
   // The pieces as plain text, for search, filter and export.
   piecesText: pieces.map(([name, type]) => `${name} (${type})`).join(', '),
@@ -177,6 +179,7 @@ const grid = new SPGrid(document.getElementById('grid'), {
   // The search and the filters follow the switch; paging and the group headers show in the list only.
   calendar: {
     start: 'askedAt',
+    end: 'askedEnd',
     title: 'code',
     subtitle: 'category',
     hours: [9, 17],
