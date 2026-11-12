@@ -13,7 +13,6 @@ const timeOf = (text) => {
 // One row per item. The document an item belongs to (`doc`, with its floor, zone and receipt time) is a group level.
 const item = (id, doc, floor, zone, received, n, category, place, asked, pieces) => ({
   id,
-  status: 'pending',
   doc,
   floor,
   zone,
@@ -79,12 +78,19 @@ const rows = [
   ),
 ];
 
-const distinct = (list, key) => new Set(list.map((row) => row[key])).size;
+// Small icons (Material Symbols paths) for the place and the request time; constants, no user data.
+const icon = (path) =>
+  `<svg class="task-icon" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="${path}"/></svg>`;
+const PIN = icon(
+  'M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z',
+);
+const CLOCK = icon(
+  'm612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z',
+);
 
 const columns = [
-  // The group columns: their cells are the text of the group headers (a header shows the cell of its first row).
-  // Both are hidden, so they take no column of their own.
-  { key: 'status', label: 'สถานะ', render: () => 'Worklist — รออนุมัติ (เอกสาร › รายการ › ชิ้น)' },
+  // The group column: its cells are the text of the document headers (a header shows the cell of its first row).
+  // It is hidden, so it takes no column of its own.
   {
     key: 'doc',
     label: 'เอกสาร',
@@ -97,17 +103,21 @@ const columns = [
     key: 'code',
     label: 'รายการ',
     render: (_code, row) =>
-      `<div class="task">` +
+      // data-cat picks the colour of the card (see worklist.css).
+      `<div class="task" data-cat="${escapeHtml(row.category)}">` +
       `<div class="task-head"><code class="task-code">${escapeHtml(row.code)}</code>` +
-      `<strong class="task-title">หมวด: ${escapeHtml(row.category)}</strong>` +
+      `<strong class="task-title" title="หมวด">${escapeHtml(row.category)}</strong>` +
       `<span class="task-qty">${escapeHtml(row.qty)} ชิ้น</span></div>` +
-      `<span class="task-meta">สถานที่เก็บ: ${escapeHtml(row.place)} · วันที่ขอ ${escapeHtml(row.asked)}</span>` +
       `<ul class="task-pieces">${row.pieces
         .map(
           ([name, type]) =>
-            `<li>${escapeHtml(name)} <span class="task-type">(${escapeHtml(type)})</span></li>`,
+            `<li><span class="task-name">${escapeHtml(name)}</span> <span class="task-type">${escapeHtml(type)}</span></li>`,
         )
         .join('')}</ul>` +
+      `<div class="task-meta">` +
+      `<span class="task-place" title="สถานที่เก็บ">${PIN}${escapeHtml(row.place)}</span>` +
+      `<span class="task-asked" title="วันที่ขอ">${CLOCK}${escapeHtml(row.asked)}</span>` +
+      `</div>` +
       `</div>`,
   },
   // Data columns the list does not draw (hidden): the search, the filters, the export and the details sheet use them.
@@ -143,9 +153,8 @@ const grid = new SPGrid(document.getElementById('grid'), {
   columns,
   // Newest document first: a group column the sort is on follows the sort's direction.
   defaultSort: { key: 'doc', direction: 'desc' },
-  groupBy: ['status', 'doc'],
+  groupBy: ['doc'],
   hiddenColumns: [
-    'status',
     'doc',
     'category',
     'floor',
@@ -157,7 +166,7 @@ const grid = new SPGrid(document.getElementById('grid'), {
     'piecesText',
   ],
   gridLines: 'horizontal',
-  title: 'รายการงาน',
+  title: 'Worklist — รออนุมัติ',
   searchable: true,
   searchColumnSelect: true,
   searchButton: true,
@@ -202,9 +211,8 @@ const grid = new SPGrid(document.getElementById('grid'), {
   lineStyleStorageKey: 'worklist',
   labels: {
     ...thaiLabels,
-    // The count is worded per level: documents and items for the outer band, items for a document.
-    groupCount: (count, { level, rows }) =>
-      level === 0 ? `${distinct(rows, 'doc')} เอกสาร · ${count} รายการ` : `· ${count} รายการ`,
+    // The count of a document header: its items, right after the text.
+    groupCount: (count) => `· ${count} รายการ`,
   },
   onRowActivate: ({ row }) => {
     log.textContent = `เปิดรายการ: ${row.code}`; // textContent: never parsed as HTML

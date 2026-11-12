@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Worklist example: line items are cards. A bar, the category badge and the piece types take a colour from the category (`data-cat`), the code is a chip, the quantity a dark pill at the end, the piece name is the largest text, and the place and request time sit on one muted line with small icons (no labels; the tooltips name them). Example only, no `src/` change.
+- Worklist example: the title "Worklist — รออนุมัติ" is now the grid `title`, no longer an outer `groupBy` band; the rows are grouped by document only (`groupBy: ['doc']`, count `· n รายการ`). The `status` field and column are gone from the example. Example only, no `src/` change.
 - Example pages (`purchase-order`, `theme-lavender`, `worklist`, `calendar`, `view-settings`) now have a collapsed "Prompt สำหรับ Claude Code" section above the source code: a ready prompt to give Claude Code to build a page like that example in a project that uses SPGrid, with a copy button (`examples/prompt-card.js`, the texts in `examples/prompts.js`; text only, through `textContent`). Replace the `[bracketed]` parts with the real page. No `src/` change.
 
 ## [2.0.12] - 2026-11-12

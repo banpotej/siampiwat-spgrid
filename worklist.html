@@ -28,11 +28,12 @@
             <p>
               แสดงข้อมูลเป็นรายการ ไม่ใช่ตารางหลายคอลัมน์: คอลัมน์เดียวใช้
               <code>render</code> สร้างรายการจากทั้งแถว (รหัส หมวด จำนวน สถานที่ วันที่
-              และรายการชิ้น) หัวกลุ่มสองระดับ (สถานะ › เอกสาร) มาจาก
-              <code>groupBy</code> โดยคอลัมน์กลุ่มซ่อนไว้และใช้ <code>render</code>
-              สร้างข้อความหัวกลุ่ม ส่วนจำนวนของแต่ละระดับมาจาก
-              <code>labels.groupCount(count, { level, rows })</code>
-              ส่วนแถวหัวตารางถูกซ่อนด้วย CSS (ยังอ่านได้ด้วย screen reader)
+              และรายการชิ้น) หัวกลุ่มเอกสารมาจาก <code>groupBy</code> โดยคอลัมน์กลุ่มซ่อนไว้และใช้
+              <code>render</code>
+              สร้างข้อความหัวกลุ่ม ส่วนจำนวนรายการในหัวกลุ่มมาจาก
+              <code>labels.groupCount(count)</code>
+              ชื่อรายการ ("Worklist — รออนุมัติ") เป็น <code>title</code> ของตาราง
+              ไม่ได้เป็นหัวกลุ่ม ส่วนแถวหัวตารางถูกซ่อนด้วย CSS (ยังอ่านได้ด้วย screen reader)
               การค้นหาครอบคลุมเฉพาะคอลัมน์ที่แสดง
             </p>
             <p>
@@ -42,8 +43,8 @@
               สลับจากโค้ดได้ด้วย <code>setView('calendar')</code>
             </p>
             <pre tabindex="0"><code>new SPGrid(grid, {
-  columns, rows, groupBy: ['status', 'doc'], hiddenColumns: ['status', 'doc'],
-  labels: { groupCount: (n, { level }) => (level === 0 ? `${n} รายการ` : `· ${n} รายการ`) },
+  columns, rows, title: 'Worklist — รออนุมัติ', groupBy: ['doc'], hiddenColumns: ['doc'],
+  labels: { groupCount: (n) => `· ${n} รายการ` },
   calendar: { start: 'askedAt', title: 'code', subtitle: 'category' },
   defaultView: 'grid', viewToggle: true,
 });</code></pre>

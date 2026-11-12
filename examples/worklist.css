@@ -7,41 +7,23 @@
   clip-path: inset(50%);
 }
 
-/* The group header: a tinted band with the count at the end. */
+/* The document header: a neutral band with its count right after the text. */
 .worklist .spg-table tbody tr.spg-group-row,
 .worklist .spg-table tbody tr.spg-group-row:hover {
-  background: #faecd9;
-}
-.worklist .spg-group-toggle {
-  color: #7c4a12;
-}
-.worklist .spg-group-toggle:hover {
-  background: #f5dfbd;
-}
-.worklist .spg-group-count {
-  margin-inline-start: auto;
-  color: #7c4a12;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* The document header: a neutral band under the tinted one, with its count right after the text. */
-.worklist .spg-table tbody tr.spg-group-row[data-level='1'],
-.worklist .spg-table tbody tr.spg-group-row[data-level='1']:hover {
   background: #f6f4ef;
 }
-.worklist tr[data-level='1'] .spg-group-toggle {
+.worklist .spg-group-toggle {
   gap: 0.6em;
   font-weight: 400;
 }
-.worklist tr[data-level='1'] .spg-group-value {
+.worklist .spg-group-value {
   display: inline-flex;
   align-items: baseline;
   gap: 0.6em;
 }
-.worklist tr[data-level='1'] .spg-group-count {
-  margin-inline-start: 0;
+.worklist .spg-group-count {
   font-size: 12px;
+  font-weight: 600;
 }
 .doc-code {
   color: #0f172a;
@@ -57,41 +39,107 @@
 }
 
 .task {
+  --cat: #64748b;
+  --cat-bg: #eef1f5;
   display: grid;
-  gap: 1px;
-  padding-inline-start: 1.5em;
+  gap: 6px;
+  margin: 2px 12px 2px 1.25em;
+  padding: 8px 12px 8px 14px;
+  border: 1px solid #e7e2d8;
+  border-inline-start: 4px solid var(--cat);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+/* The category sets the colour of the card's bar, its badge and the piece types. */
+.task[data-cat='อิเล็กทรอนิกส์'] {
+  --cat: #2b5fd9;
+  --cat-bg: #e8eefc;
+}
+.task[data-cat='ทั่วไป'] {
+  --cat: #2f8a57;
+  --cat-bg: #e3f3ea;
+}
+.task[data-cat='มีค่า'] {
+  --cat: #b8710c;
+  --cat-bg: #fcefd2;
 }
 .task-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.6em;
 }
 .task-code {
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: #f1ede6;
   color: #6b6155;
   font:
-    11px/1.5 ui-monospace,
+    11px/1.6 ui-monospace,
     'Cascadia Code',
     Consolas,
     monospace;
 }
 .task-title {
-  color: #3b2a12;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--cat-bg);
+  color: var(--cat);
+  font-size: 12px;
   font-weight: 600;
 }
+/* The quantity is a pill at the end of the line. */
 .task-qty {
-  color: #6b6155;
+  margin-inline-start: auto;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: #3b2a12;
+  color: #fff;
   font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* The pieces are the data that matters: the name is the largest text of the card. */
+.task-pieces {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.task-pieces li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.task-name {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 600;
+}
+.task-type {
+  margin-inline-start: auto;
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--cat-bg);
+  color: var(--cat);
+  font-size: 11px;
+  white-space: nowrap;
 }
 .task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
   color: #7a6a58;
   font-size: 12px;
 }
-.task-pieces {
-  margin: 2px 0 0;
-  padding-inline-start: 1.25em;
-  color: #0f172a;
+.task-place,
+.task-asked {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
-.task-type {
-  color: #6b6155;
-  font-size: 12px;
+.task-icon {
+  flex: none;
+  color: #a89a88;
 }

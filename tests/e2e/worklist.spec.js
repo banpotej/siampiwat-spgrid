@@ -1,14 +1,13 @@
 import { expect, test } from '@playwright/test';
 
-test('the worklist example nests documents under one band, each with its own count', async ({
+test('the worklist example groups the items by document, each with its own count', async ({
   page,
 }) => {
   await page.goto('/worklist.html');
+  await expect(page.locator('.spg-title')).toHaveText('Worklist — รออนุมัติ');
   const headers = page.locator('tr.spg-group-row');
-  await expect(headers).toHaveCount(4);
-  await expect(headers.first()).toContainText('Worklist — รออนุมัติ');
-  await expect(headers.first().locator('.spg-group-count')).toHaveText('3 เอกสาร · 5 รายการ');
-  const doc = headers.nth(1);
+  await expect(headers).toHaveCount(3);
+  const doc = headers.first();
   await expect(doc.locator('.doc-code')).toHaveText('OS26-F00122');
   await expect(doc.locator('.doc-meta')).toHaveText('ชั้น 1 โซน A · รับเมื่อ วันนี้ 11:45');
   await expect(doc.locator('.spg-group-count')).toHaveText('· 3 รายการ');
@@ -17,13 +16,14 @@ test('the worklist example nests documents under one band, each with its own cou
   await expect(tasks).toHaveCount(5);
   const first = tasks.first();
   await expect(first.locator('.task-code')).toHaveText('OS26-F00122-01');
-  await expect(first.locator('.task-title')).toHaveText('หมวด: อิเล็กทรอนิกส์');
+  await expect(first.locator('.task-title')).toHaveText('อิเล็กทรอนิกส์');
+  await expect(first).toHaveAttribute('data-cat', 'อิเล็กทรอนิกส์');
   await expect(first.locator('.task-qty')).toHaveText('1 ชิ้น');
-  await expect(first.locator('.task-meta')).toHaveText(
-    'สถานที่เก็บ: ห้อง L&F · วันที่ขอ วันนี้ 11:47',
-  );
+  await expect(first.locator('.task-place')).toHaveText('ห้อง L&F');
+  await expect(first.locator('.task-place')).toHaveAttribute('title', 'สถานที่เก็บ');
+  await expect(first.locator('.task-asked')).toHaveText('วันนี้ 11:47');
   await expect(first.locator('.task-pieces li')).toHaveText([
-    'สมาร์ทโฟน สีดำ เคสใส (โทรศัพท์มือถือ)',
+    'สมาร์ทโฟน สีดำ เคสใส โทรศัพท์มือถือ',
   ]);
 });
 
@@ -40,8 +40,8 @@ test('a group collapses and an item opens on double-click', async ({ page }) => 
   await page.locator('tbody tr[data-row-index]').first().dblclick();
   await expect(page.locator('#log')).toHaveText('เปิดรายการ: OS26-F00122-01');
   await page.keyboard.press('Escape');
-  await page.locator('.spg-group-toggle').first().click();
-  await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(0);
+  await page.locator('.spg-group-toggle').first().click(); // the first document, with 3 of the 5 items
+  await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(2);
 });
 
 test('the group button fills its header row edge to edge', async ({ page }) => {
@@ -56,7 +56,7 @@ test('the worklist has a Settings modal that changes the look', async ({ page })
   await page.goto('/worklist.html');
   await page.getByRole('button', { name: 'ตั้งค่า' }).click();
   await expect(page.locator('.spg-settings')).toBeVisible();
-  await expect(page.locator('tr.spg-group-row')).toHaveCount(4);
+  await expect(page.locator('tr.spg-group-row')).toHaveCount(3);
 });
 
 test('the worklist pages its items and filters them by search', async ({ page }) => {
