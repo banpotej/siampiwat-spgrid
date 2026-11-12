@@ -8,17 +8,23 @@ const PREFIX = 'spgrid:columnOrder:';
 
 /**
  * The order the columns are shown in: validates changes and remembers them in localStorage (when a storage
- * key is given). Every change method returns whether the order actually changed.
+ * key is given). Every change method returns whether the order actually changed; `onChange` is called with the new
+ * keys after each change.
  */
 export class ColumnOrder {
   #columns;
   #storageKey;
+  #onChange;
   /** @type {string[]} */ #keys;
 
-  /** @param {Pick<import('../types.js').SPGridOptions, 'columns' | 'columnOrderStorageKey'>} options */
-  constructor({ columns, columnOrderStorageKey: storageKey }) {
+  /**
+   * @param {Pick<import('../types.js').SPGridOptions, 'columns' | 'columnOrderStorageKey'>} options
+   * @param {(keys: string[]) => void} [onChange]
+   */
+  constructor({ columns, columnOrderStorageKey: storageKey }, onChange = () => {}) {
     this.#columns = columns;
     this.#storageKey = storageKey;
+    this.#onChange = onChange;
     const saved = storageKey === undefined ? undefined : readJson(PREFIX + storageKey);
     this.#keys = restoreOrder(columns, saved);
   }
@@ -62,6 +68,7 @@ export class ColumnOrder {
     if (next.join('\n') === this.#keys.join('\n')) return false;
     this.#keys = next;
     if (this.#storageKey !== undefined) writeJson(PREFIX + this.#storageKey, next);
+    this.#onChange(this.get());
     return true;
   }
 }

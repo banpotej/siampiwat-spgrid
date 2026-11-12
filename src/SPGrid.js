@@ -10,11 +10,9 @@ import { assertOptions, initialState, initialView, mountParts } from './render/g
 import { ColumnOrder } from './render/columnOrder.js';
 import { HiddenColumns } from './render/hiddenColumns.js';
 import { assertViewFlags } from './render/viewToggles.js';
-import { exportExcel } from './render/exportExcel.js';
 import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
-/** @typedef {import('./types.js').Row} Row */
 /** @typedef {import('./types.js').SortState} SortState */
 /** @typedef {import('./types.js').FilterState} FilterState */
 /** @typedef {import('./types.js').GridEvents} GridEvents */
@@ -22,9 +20,7 @@ import './spgrid.css';
 export class SPGrid {
   /** @type {HTMLElement} */ #container;
   /** @type {import('./core/state.js').State<import('./types.js').GridState>} */ #state;
-  /** @type {() => void} */ #unsubscribe;
   /** @type {ReturnType<typeof createGridEvents>} */ #events;
-  #locale;
   /** @type {import('./render/gridRenderer.js').GridRenderer} */ #renderer;
   /** @type {{ pageSize: number | null, sort: SortState, groupBy: string[] }} The `pageSize`, `defaultSort` and `groupBy` options, which `resetView()` goes back to. */
   #initial;
@@ -35,11 +31,12 @@ export class SPGrid {
   #reorderable;
   /** @type {import('./types.js').PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
-  /** @type {Row[]} Rows currently shown (after filter, sort and paging), in display order. */
+  /** @type {import('./types.js').Row[]} Rows currently shown (after filter, sort and paging), in display order. */
   #visible = [];
+  /** @type {() => void} */ #unsubscribe;
   #unbindControls = () => {};
   #destroyed = false;
-  #getState = () => this.#state.get();
+  /** @type {ReturnType<typeof exportHost>} */ #export;
 
   /**
    * @param {HTMLElement} container
@@ -49,8 +46,10 @@ export class SPGrid {
   constructor(container, options) {
     assertOptions(container, options);
     this.#container = container;
-    this.#locale = options.locale;
-    this.#order = new ColumnOrder(options);
+    this.#order = new ColumnOrder(options, (keys) => {
+      this.#state.set({ columns: this.#order.columns() });
+      this.#events.emit('columnOrderChange', keys);
+    });
     this.#reorderable = options.reorderableColumns === true;
     this.#initial = initialView(options);
     this.#events = createGridEvents(options);
@@ -62,11 +61,11 @@ export class SPGrid {
       this.render();
       this.#events.emit('columnsChange', keys);
     });
+    this.#export = exportHost(() => this.#state.get(), options.locale, this.#hidden);
     this.#unbindControls = bindGridControls(this, shell, options, labels, {
       applyFilter: (filter) => this.#filter.apply(filter),
-      columns: () => this.#state.get().columns,
+      ...this.#export,
       visible: () => this.#visible,
-      ...exportHost(this.#getState, this.#locale, this.#hidden),
       emit: (event, payload) => this.#events.emit(event, payload),
     });
     this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
@@ -75,7 +74,7 @@ export class SPGrid {
     this.render();
   }
 
-  /** @param {Row[]} rows */
+  /** @param {import('./types.js').Row[]} rows */
   setRows(rows) {
     this.#state.set({ rows });
   }
@@ -149,9 +148,7 @@ export class SPGrid {
     return this.#paging?.page ?? 1;
   }
 
-  /**
-   * @param {number} page 1-based, clamped into range; no-op while pagination is off.
-   */
+  /** @param {number} page 1-based, clamped into range; no-op while pagination is off. */
   setPage(page) {
     if (this.#destroyed || this.#state.get().pageSize === null) return;
     this.#state.set({ page: clampPage(page, this.#paging?.totalPages ?? 1) });
@@ -202,6 +199,22 @@ export class SPGrid {
     if (next) this.#state.set({ groupBy: next, page: 1 });
   }
 
+  /** @returns {'grid' | 'calendar'} What the grid shows now; always `'grid'` without the `calendar` option. */
+  getView() {
+    return this.#renderer.view;
+  }
+
+  /**
+   * Switch between the table and the calendar like the `viewToggle` button; search, filters and sort stay.
+   * @param {'grid' | 'calendar'} view
+   * @throws {RangeError} unknown, or `'calendar'` without the `calendar` option
+   */
+  setView(view) {
+    if (this.#destroyed || !this.#renderer.setView(view)) return;
+    this.render();
+    this.#events.emit('viewChange', view);
+  }
+
   /** @returns {Required<import('./types.js').ViewSettings>} A copy of the look settings now in effect. */
   getViewSettings() {
     return this.#view.all();
@@ -229,7 +242,7 @@ export class SPGrid {
    * @throws {RangeError} a key is not a column
    */
   setColumnOrder(keys) {
-    if (!this.#destroyed) this.#reorder(() => this.#order.set(keys));
+    if (!this.#destroyed) this.#order.set(keys);
   }
 
   /**
@@ -248,11 +261,7 @@ export class SPGrid {
    * @returns {Blob} The generated file.
    */
   exportExcel(options = {}) {
-    return exportExcel(this.#state.get(), {
-      locale: this.#locale,
-      hidden: this.#hidden.get(),
-      ...options,
-    });
+    return this.#export.exportFile(options);
   }
 
   /** Back to the starting view: no search, the `defaultSort` option, the `hiddenColumns` and `pageSize` options, page 1. */
@@ -262,7 +271,7 @@ export class SPGrid {
     this.setSearchColumn(null);
     this.#state.set({ ...this.#initial, conditions: null, page: 1 });
     this.#hidden.reset();
-    this.#reorder(() => this.#order.reset());
+    this.#order.reset();
   }
 
   render() {
@@ -273,9 +282,7 @@ export class SPGrid {
       hidden: this.#hidden.get(),
       filter: this.getFilter(),
       sort: { getSort: () => this.getSort(), setSort: (sort) => this.setSort(sort) },
-      reorder: this.#reorderable
-        ? (key, target, after) => this.#reorder(() => this.#order.move(key, target, after))
-        : null,
+      reorder: this.#reorderable ? this.#order.move.bind(this.#order) : null,
     });
     this.#paging = paging;
     this.#visible = rows;
@@ -288,12 +295,5 @@ export class SPGrid {
     this.#renderer.destroy();
     this.#events.clear();
     this.#container.innerHTML = '';
-  }
-
-  /** @param {() => boolean} change Changes the order; true when it did. */
-  #reorder(change) {
-    if (!change()) return;
-    this.#state.set({ columns: this.#order.columns() });
-    this.#events.emit('columnOrderChange', this.#order.get());
   }
 }

@@ -65,7 +65,7 @@ const toolButton = (className, label, icon, icons) =>
  * focus or caret; only the hosts' content is updated.
  *
  * @param {{
- *   searchable: boolean, searchLabel: string, clearLabel: string, searchButtonLabel: string | null, exportLabel: string | null, advancedLabel: string | null,
+ *   searchable: boolean, searchLabel: string, clearLabel: string, searchButtonLabel: string | null, exportLabel: string | null, advancedLabel: string | null, viewLabel: string | null,
  *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, groupToggleLabel: string | null, summary: boolean,
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null,
@@ -81,6 +81,7 @@ export function renderShell({
   searchButtonLabel,
   exportLabel,
   advancedLabel,
+  viewLabel,
   refreshLabel,
   groupToggleLabel,
   resizable,
@@ -112,6 +113,7 @@ export function renderShell({
         `<button type="button" class="spg-search-reset" aria-label="${escapeHtml(clearLabel)}" title="${escapeHtml(clearLabel)}">${renderIcon(icons, 'close')}</button>`;
   // Right of the search box: [Refresh] [Export] [Settings], each only when turned on.
   const tools =
+    toolButton('spg-tool-btn spg-view-toggle', viewLabel, 'calendar_today', icons) +
     toolButton('spg-tool-btn spg-refresh', refreshLabel, 'refresh', icons) +
     toolButton('spg-tool-btn spg-group-all', groupToggleLabel, 'unfold_less', icons) +
     toolButton('spg-tool-btn spg-advfilter', advancedLabel, 'filter_list', icons) +
@@ -161,7 +163,7 @@ export function renderShell({
  *
  * @param {HTMLElement} container
  * @param {import('../types.js').SPGridOptions} options
- * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, advancedFilter: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, collapseAllGroups: string, toggleDescription: string }} labels
+ * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, advancedFilter: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, collapseAllGroups: string, toggleDescription: string, viewCalendar: string }} labels
  * @param {Record<IconName, string>} icons
  */
 export function mountShell(container, options, labels, icons) {
@@ -184,6 +186,7 @@ export function mountShell(container, options, labels, icons) {
     searchButtonLabel: options.searchButton === true ? labels.searchButton : null,
     exportLabel: options.exportButton === true ? labels.exportExcel : null,
     advancedLabel: options.advancedFilter === true ? labels.advancedFilter : null,
+    viewLabel: options.viewToggle === true ? labels.viewCalendar : null,
     refreshLabel: options.refreshButton === true ? labels.refresh : null,
     groupToggleLabel: options.groupToggleAllButton === true ? labels.collapseAllGroups : null,
     title: options.title ?? null,
@@ -239,6 +242,9 @@ export function mountShell(container, options, labels, icons) {
       container.querySelector('div.spg-toolbar:has(.spg-columns-btn)')
     ),
     summary: /** @type {HTMLElement | null} */ (container.querySelector('div.spg-summary')),
+    viewButton: /** @type {HTMLButtonElement | null} */ (
+      container.querySelector('button.spg-view-toggle')
+    ),
     refreshButton: /** @type {HTMLButtonElement | null} */ (
       container.querySelector('button.spg-refresh')
     ),

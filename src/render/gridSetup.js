@@ -11,6 +11,7 @@ import { resolveIcons } from './icons.js';
 import { resolveLabels } from './labels.js';
 import { loadPageSize } from './pageSizeStore.js';
 import { loadSort } from './sortStore.js';
+import { assertView } from './viewMode.js';
 import { GRID_LINES, LINE_STYLES } from './viewToggles.js';
 import { mountShell } from './toolbar.js';
 
@@ -18,7 +19,7 @@ import { mountShell } from './toolbar.js';
  * @param {unknown} container
  * @param {import('../types.js').SPGridOptions} options
  * @throws {TypeError} `container` is not an HTMLElement
- * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, `freezeColumns` is not a whole number, or `calendar` is not valid (see `assertCalendar`)
+ * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, `freezeColumns` is not a whole number, `calendar` is not valid (see `assertCalendar`), `defaultView` is unknown or `'calendar'` without `calendar`, or `viewToggle` is on without `calendar`
  */
 export function assertOptions(container, options) {
   if (!(container instanceof HTMLElement)) {
@@ -36,6 +37,10 @@ export function assertOptions(container, options) {
     throw new RangeError(`SPGrid: freezeColumns must be a whole number, 0 or more`);
   }
   if (options.calendar !== undefined) assertCalendar(options.calendar);
+  if (options.defaultView !== undefined) assertView(options.defaultView, !!options.calendar);
+  if (options.viewToggle === true && !options.calendar) {
+    throw new RangeError('SPGrid: viewToggle needs the calendar option');
+  }
 }
 
 /**
@@ -62,6 +67,7 @@ export function mountParts(container, options) {
     calendar:
       options.calendar &&
       new CalendarView(options.calendar, { labels, icons, locale: options.locale }),
+    view: options.defaultView,
   });
   return { labels, shell, renderer };
 }

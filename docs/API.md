@@ -74,6 +74,9 @@
 - `options.density?: 'compact' | 'comfortable'` – ระยะห่างในเซลล์ (ค่าเริ่มต้น `'comfortable'`)
 - `options.stickyHeader?: boolean` – ให้หัวตารางค้างด้านบนเมื่อเลื่อน
 - `options.calendar?: CalendarOptions` – แสดงแถวเป็นนัดหมายบนปฏิทิน (สัปดาห์ สัปดาห์ทำงาน วัน หรือกำหนดการ) แทนตาราง ดู [Calendar](#calendar)
+- `options.viewToggle?: boolean` – แสดงปุ่มบน toolbar (`<button class="spg-tool-btn spg-view-toggle">`) ที่สลับระหว่างตารางกับ [Calendar](#calendar) ปุ่มแสดงไอคอนและชื่อของมุมมองที่จะไปต่อ (`calendar_today` / `labels.viewCalendar` ขณะแสดงตาราง, `view_column` / `labels.viewGrid` ขณะแสดงปฏิทิน) ต้องใช้คู่กับ `calendar` (ไม่มีจะโยน `RangeError`) ค่าเริ่มต้น `false`
+- `options.defaultView?: 'grid' | 'calendar'` – มุมมองแรกของกริดที่มี `calendar` ค่าเริ่มต้น `'calendar'` (เหมือนเดิมเมื่อไม่มี `viewToggle`) ใส่ `'grid'` เพื่อเริ่มที่ตาราง ค่าอื่น หรือ `'calendar'` โดยไม่มี `calendar` โยน `RangeError`
+- `options.onViewChange?: (view) => void` – เรียกเมื่อมุมมองเปลี่ยน (เหมือน `on('viewChange', fn)`)
 - `options.maxHeight?: number | string` – ความสูงสูงสุดของพื้นที่ตาราง (ตัวเลข = px หรือความยาว CSS เช่น `'20rem'`)
   ตารางที่สูงกว่านี้จะเลื่อนภายในกรอบ ใช้คู่กับ `stickyHeader` ถ้าอยากให้หัวตารางค้าง ค่านี้ถูกตั้งผ่าน CSSOM
   จึงใส่ CSS อื่นแทรกเข้ามาไม่ได้
@@ -103,6 +106,7 @@
   | `collapseAllGroups` / `expandAllGroups`  | aria-label และ tooltip ของปุ่ม Collapse all / Expand all (`groupToggleAllButton`)              | `'Collapse all'` / `'Expand all'`                |
 
 | `refresh` | aria-label และ tooltip ของปุ่ม Refresh (`refreshButton`) | `'Refresh'` |
+| `viewGrid` / `viewCalendar` | aria-label และ tooltip ของปุ่มสลับมุมมอง (`viewToggle`) ขณะแสดงปฏิทิน / ขณะแสดงตาราง | `'Show as table'` / `'Show as calendar'` |
 | `resetView` | aria-label และ tooltip ของปุ่ม Reset view (`resetButton`) | `'Reset view'` |
 | `columnSettings` | หัวข้อของ modal ตั้งค่า (`columnPicker`) | `'Column settings'` |
 | `selectAll` / `clearAll` | ปุ่มเลือกทั้งหมด / ล้างทั้งหมด (เหลือคอลัมน์แรกไว้) ใต้รายการคอลัมน์ใน modal ตั้งค่า | `'Select all'` / `'Clear all'` |
@@ -375,7 +379,7 @@ grid.getGroupBy(); // ['status']
 
 ### Input Group
 
-ส่วนค้นหาเป็น Input Group เดียว `<div class="spg-input-group">` เรียงจากซ้าย: select เลือกคอลัมน์ (ถ้าเปิด `searchColumnSelect`), ช่องค้นหา, ปุ่ม Search และปุ่ม Clear search (ถ้าเปิด `searchButton`) ปุ่ม Refresh (`refreshButton`), ปุ่ม Reset view (`resetButton`), ปุ่ม Export (`exportButton`) และปุ่มเลือกคอลัมน์ (`columnPicker`) ตามลำดับนี้ (เฉพาะที่เปิด) เชื่อมขอบติดกัน โค้งเฉพาะมุมนอก ส่วนที่ไม่ได้เปิดจะไม่ถูกเรนเดอร์ (ถ้าไม่เปิดอะไรเลยจะเหลือแค่ช่องค้นหา)
+ส่วนค้นหาเป็น Input Group เดียว `<div class="spg-input-group">` เรียงจากซ้าย: select เลือกคอลัมน์ (ถ้าเปิด `searchColumnSelect`), ช่องค้นหา, ปุ่ม Search และปุ่ม Clear search (ถ้าเปิด `searchButton`) ปุ่มสลับมุมมอง (`viewToggle`), ปุ่ม Refresh (`refreshButton`), ปุ่ม Reset view (`resetButton`), ปุ่ม Export (`exportButton`) และปุ่มเลือกคอลัมน์ (`columnPicker`) ตามลำดับนี้ (เฉพาะที่เปิด) เชื่อมขอบติดกัน โค้งเฉพาะมุมนอก ส่วนที่ไม่ได้เปิดจะไม่ถูกเรนเดอร์ (ถ้าไม่เปิดอะไรเลยจะเหลือแค่ช่องค้นหา)
 เมื่อ container กว้างไม่เกิน 520px ช่องค้นหาจะขึ้นบรรทัดของตัวเองและส่วนที่เหลือเรียงต่อด้านล่าง โดยแต่ละส่วนมีมุมโค้งครบ
 ลำดับ Tab ตามลำดับที่เห็น
 
@@ -482,7 +486,8 @@ new SPGrid(el, {
 - `onRowActivate` / `rowActivate` ยิงเมื่อ**คลิก**นัดหรือกด Enter ขณะโฟกัสที่นัด (ไม่ต้องดับเบิลคลิก เพื่อใช้บนจอสัมผัสได้) นัดแต่ละอันมี `tabindex="0"`, class `spg-cal-event`, `data-row-index` และ `title` เป็นเวลากับชื่อเรื่อง
 - ข้อความของปุ่มมาจาก `labels`: `calendarToday`, `calendarPrev`, `calendarNext`, `calendarViews`, `calendarAgenda`, `calendarDay`, `calendarWorkWeek`, `calendarWeek`, `calendarNoEvents` (`thaiLabels` มีครบ)
 - ปรับหน้าตาด้วย CSS variable: ความสูงต่อชั่วโมง `--spg-cal-hour-height` (ค่าเริ่มต้น `3.5rem`) สีนัดอิง `--spg-accent`; ตั้ง `--spg-cal-max-height` (เช่น `40rem`) ให้ตารางเวลาเลื่อนในกรอบโดยชื่อวันค้างอยู่ด้านบน
-- ยังไม่มี: เมธอด `getCalendarView()` / `setCalendarView()` และ event ตอนเปลี่ยนมุมมอง, มุมมองเดือน, นัดตลอดวัน, สีตามค่าของแถว, ลาก/ปรับขนาดนัด, นัดซ้ำ, time zone (ดู `docs/ROADMAP.md`)
+- สลับกับตารางได้ด้วย `viewToggle` / `setView()` (ดู `options.viewToggle`) ตัวอย่างที่ `worklist.html`
+- ยังไม่มี: เมธอด `getCalendarView()` / `setCalendarView()` และ event ตอนเปลี่ยนมุมมองของปฏิทิน (agenda / day / week), มุมมองเดือน, นัดตลอดวัน, สีตามค่าของแถว, ลาก/ปรับขนาดนัด, นัดซ้ำ, time zone (ดู `docs/ROADMAP.md`)
 
 ### Pagination
 
@@ -618,6 +623,9 @@ new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
 - `on('refresh', fn)` – รับเหตุการณ์เมื่อกดปุ่ม Refresh (ไม่มี payload) คืนฟังก์ชัน unsubscribe
 - `getHiddenColumns()` – key ของคอลัมน์ที่ซ่อนอยู่ เรียงตามลำดับคอลัมน์ (สำเนา)
 - `setHiddenColumns(keys)` – ซ่อน **เฉพาะ** คอลัมน์ข้อมูลใน `keys` (ที่เหลือแสดง) อัปเดตแผงเลือกคอลัมน์ และบันทึกถ้ามี `columnStorageKey`; โยน `RangeError` ถ้า key ไม่ใช่คอลัมน์ข้อมูล (รวมคอลัมน์ action) หรือซ่อนครบทุกคอลัมน์ คอลัมน์ที่ซ่อนจะไม่ถูกค้นหา (ทั้งการค้นทุกคอลัมน์และตัวเลือกใน `searchColumnSelect`) และ `exportExcel()` ส่งออกแถวชุดเดียวกับที่กริดแสดง แต่ยังเรียงด้วยคอลัมน์นั้นได้และอยู่ในไฟล์ที่ส่งออก
+- `getView()` – มุมมองที่แสดงอยู่: `'grid'` หรือ `'calendar'` (กริดที่ไม่มี `calendar` เป็น `'grid'` เสมอ)
+- `setView(view)` – สลับระหว่างตารางกับปฏิทินเหมือนกดปุ่ม `viewToggle` (ใช้ได้แม้ไม่ได้เปิดปุ่ม) ข้อความค้นหา ตัวกรอง และการเรียงคงเดิม; หน้า pager และการจัดกลุ่มกลับมาเมื่อกลับไปตาราง ส่วนมุมมองและวันที่ของปฏิทินจำไว้ โยน `RangeError` ถ้า `view` ไม่รู้จัก หรือเป็น `'calendar'` ทั้งที่ไม่มี `calendar` ไม่ทำอะไรถ้าเป็นมุมมองเดิม
+- `on('viewChange', fn)` – รับ `'grid' | 'calendar'` ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `getViewSettings()` – หน้าตาของตารางที่มีผลอยู่: `{ striped, wrapped, gridLines, lineStyle, freezeColumns }` (สำเนา; คืนครบทั้งห้าค่าเสมอ ไม่ว่าจะเปิด `*Toggle` หรือไม่)
 - `setViewSettings(settings)` – เปลี่ยนหน้าตาจากโค้ดเหมือนที่ผู้ใช้ทำใน modal ตั้งค่า ใช้ได้แม้ไม่ได้เปิด `*Toggle` ที่เกี่ยวข้อง ค่าที่ไม่ได้ส่งมาคงเดิม แต่ละค่าบันทึกลง `localStorage` ถ้ามี `*StorageKey` ของมัน โยน `TypeError` ถ้า `striped` / `wrapped` ไม่ใช่ boolean และ `RangeError` ถ้า `gridLines` / `lineStyle` ไม่อยู่ในค่าที่รองรับ หรือ `freezeColumns` ไม่ใช่จำนวนเต็ม 0 ขึ้นไป (ไม่เปลี่ยนอะไรเลยถ้ามีค่าใดไม่ถูกต้อง) ดูตัวอย่างที่ `view-settings.html` (ชุดค่าสำเร็จรูป, ควบคุมทีละค่า, จัดกลุ่มด้วย `setGroupBy()`)
 - `getColumnOrder()` – key ของทุกคอลัมน์ (รวมคอลัมน์ action) ตามลำดับที่แสดง

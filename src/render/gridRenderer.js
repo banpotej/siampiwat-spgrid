@@ -13,6 +13,7 @@ import { renderIcon } from './icons.js';
 import { renderPager } from './pager.js';
 import { renderSummary } from './summary.js';
 import { renderTable } from './table.js';
+import { ViewMode } from './viewMode.js';
 
 /** @typedef {import('../types.js').GridState} GridState */
 /** @typedef {import('../types.js').Column} Column */
@@ -30,8 +31,9 @@ export class GridRenderer {
   #pageSizeOptions;
   #highlight;
   #activatable;
-  /** @type {CalendarView | null} The calendar mode (`calendar` option): it draws the rows instead of the table. */
+  /** @type {CalendarView | null} The calendar (`calendar` option): it draws the rows instead of the table while `#mode` is on it. */
   #calendar;
+  #mode;
   #unbindCalendar = () => {};
   /** @type {ColumnResizer | null} */ #resizer = null;
   #unbindResize = () => {};
@@ -53,7 +55,8 @@ export class GridRenderer {
    *   labels: ReturnType<typeof import('./labels.js').resolveLabels>,
    *   icons: ReturnType<typeof import('./icons.js').resolveIcons>,
    *   rowKey?: string, locale?: string, pageSizeOptions?: number[], highlight?: boolean, resizable?: boolean,
-   *   widthStorageKey?: string, activatable?: boolean, calendar?: CalendarView | null }} opts
+   *   widthStorageKey?: string, activatable?: boolean, calendar?: CalendarView | null,
+   *   view?: import('./viewMode.js').ViewName }} opts
    */
   constructor({
     shell,
@@ -67,6 +70,7 @@ export class GridRenderer {
     widthStorageKey,
     activatable = false,
     calendar = null,
+    view,
   }) {
     this.#shell = shell;
     this.#labels = labels;
@@ -77,6 +81,7 @@ export class GridRenderer {
     this.#highlight = highlight;
     this.#activatable = activatable;
     this.#calendar = calendar;
+    this.#mode = new ViewMode(view, calendar !== null);
     if (calendar) this.#unbindCalendar = this.#bindCalendar(calendar);
     if (resizable) {
       this.#resizer = new ColumnResizer(shell.host, widthStorageKey, () => this.#freeze());
@@ -104,13 +109,14 @@ export class GridRenderer {
   render(state, { columns, hidden, filter, sort, reorder }) {
     this.#last = [state, { columns, hidden, filter, sort, reorder }];
     this.#unbindHeader();
+    const calendar = this.#mode.view === 'calendar' ? this.#calendar : null;
     // A calendar shows every event of the days it covers: no paging, no group headers.
-    const shown = this.#calendar ? { ...state, pageSize: null, groupBy: [] } : state;
+    const shown = calendar ? { ...state, pageSize: null, groupBy: [] } : state;
     const view = computeView(shown, { locale: this.#locale, hidden });
     const { host, status, summary, pagerHost } = this.#shell;
     const { rows, paging } = view;
     host.innerHTML =
-      this.#calendar?.render(rows) ??
+      calendar?.render(rows) ??
       renderTable(
         columns,
         rows,
@@ -138,7 +144,7 @@ export class GridRenderer {
     this.#observer?.disconnect();
     const table = host.querySelector('table');
     if (table) this.#observer?.observe(table);
-    if (this.#highlight && filter?.search && !this.#calendar) {
+    if (this.#highlight && filter?.search && !calendar) {
       const locale = this.#locale ?? DEFAULT_LOCALE;
       highlightSearch(host, columns, toWords(filter.search, locale), {
         locale,
@@ -151,6 +157,7 @@ export class GridRenderer {
       .filter((item) => item.type === 'group')
       .map((item) => item.id);
     this.#syncToggleAll();
+    this.#mode.syncButton(this.#shell.viewButton, this.#labels, this.#icons);
     status.textContent = rows.length === 0 ? this.#labels.empty : '';
     const unbindSort = bindHeaderEvents(host, sort);
     const unbindReorder = reorder ? bindHeaderReorder(host, reorder) : () => {};
@@ -181,6 +188,20 @@ export class GridRenderer {
       : '';
     if (pagerHtml !== this.#pagerHtml) pagerHost.innerHTML = this.#pagerHtml = pagerHtml;
     return view;
+  }
+
+  /** @returns {import('./viewMode.js').ViewName} What the grid shows: the table or the calendar. */
+  get view() {
+    return this.#mode.view;
+  }
+
+  /**
+   * @param {import('./viewMode.js').ViewName} view Draw again to show it.
+   * @returns {boolean} True when the mode changed.
+   * @throws {RangeError} an unknown view, or `'calendar'` without the `calendar` option
+   */
+  setView(view) {
+    return this.#mode.set(view);
   }
 
   destroy() {

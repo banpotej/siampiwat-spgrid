@@ -35,9 +35,17 @@
               ส่วนแถวหัวตารางถูกซ่อนด้วย CSS (ยังอ่านได้ด้วย screen reader)
               การค้นหาครอบคลุมเฉพาะคอลัมน์ที่แสดง
             </p>
+            <p>
+              ปุ่มที่ปลายแถบเครื่องมือสลับเป็นมุมมองปฏิทิน (<code>viewToggle</code>)
+              โดยแต่ละรายการเป็นนัดที่เวลาวันที่ขอ (<code>askedAt</code>)
+              คำค้นและตัวกรองคงอยู่เมื่อสลับ ส่วนการแบ่งหน้าและหัวกลุ่มแสดงเฉพาะมุมมองรายการ
+              สลับจากโค้ดได้ด้วย <code>setView('calendar')</code>
+            </p>
             <pre tabindex="0"><code>new SPGrid(grid, {
   columns, rows, groupBy: ['status', 'doc'], hiddenColumns: ['status', 'doc'],
   labels: { groupCount: (n, { level }) => (level === 0 ? `${n} รายการ` : `· ${n} รายการ`) },
+  calendar: { start: 'askedAt', title: 'code', subtitle: 'category' },
+  defaultView: 'grid', viewToggle: true,
 });</code></pre>
           </div>
         </details>

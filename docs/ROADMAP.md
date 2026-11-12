@@ -29,7 +29,8 @@
     - [ ] จำค่าใน `localStorage`
   - [ ] โหมดปฏิทิน (`calendar`): แสดงแถวเป็นนัดหมายตามเวลา ทำทีละขั้น
     - [x] รอบแรก (อ่านอย่างเดียว): มุมมอง Agenda / Day / Work week / Week, ปุ่มก่อนหน้า-ถัดไป-วันนี้, นัดที่ซ้อนกันแบ่งคอลัมน์, เส้นเวลาปัจจุบัน, คลิกนัดแล้วเรียก `onRowActivate`; ใช้ search / filter เดิมได้
-    - [ ] เมธอด `getCalendarView()` / `setCalendarView()` และ event เมื่อเปลี่ยนมุมมองหรือช่วงวัน
+    - [x] สลับระหว่างตารางกับปฏิทิน: `viewToggle`, `defaultView`, `getView()` / `setView()`, event `viewChange`
+    - [ ] เมธอด `getCalendarView()` / `setCalendarView()` และ event เมื่อเปลี่ยนมุมมองหรือช่วงวันของปฏิทิน
     - [ ] มุมมองเดือน, นัดตลอดวัน, สีตามค่าของแถว
     - [ ] ลากย้าย/ปรับขนาดนัด, สร้างนัดจากการคลิกช่องว่าง, นัดซ้ำ (recurring), time zone
   - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`

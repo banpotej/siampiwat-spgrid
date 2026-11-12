@@ -13,7 +13,7 @@ import { bindSummaryEvents } from './summary.js';
  * @param {ReturnType<typeof import('./toolbar.js').mountShell>} shell
  * @param {{
  *   debounce: number, submit: boolean, onSearch: (search: string) => void, onColumn: (key: string | null) => void,
- *   onExport: () => void, onRefresh: () => void,
+ *   onExport: () => void, onRefresh: () => void, onView: () => void,
  *   columnPicker: Parameters<typeof bindColumnPicker>[1],
  *   onRemoveFilter: Parameters<typeof bindSummaryEvents>[1],
  *   pager: { getPage: () => number, setPage: (page: number) => void, setPageSize: (size: number) => void },
@@ -31,6 +31,7 @@ export function bindControls(
     onColumn,
     onExport,
     onRefresh,
+    onView,
     columnPicker,
     onRemoveFilter,
     pager,
@@ -63,6 +64,7 @@ export function bindControls(
   if (shell.summary) unbind.push(bindSummaryEvents(shell.summary, onRemoveFilter));
   for (const [button, onClick] of /** @type {const} */ ([
     [shell.exportButton, onExport],
+    [shell.viewButton, onView],
     [shell.refreshButton, onRefresh],
   ])) {
     if (!button) continue;

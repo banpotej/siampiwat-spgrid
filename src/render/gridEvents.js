@@ -26,6 +26,7 @@ export function createGridEvents(options) {
       'columnsChange',
       'columnOrderChange',
       'groupByChange',
+      'viewChange',
       'refresh',
     ]),
   );
@@ -37,6 +38,7 @@ export function createGridEvents(options) {
   if (options.onRefresh) events.on('refresh', options.onRefresh);
   if (options.onColumnsChange) events.on('columnsChange', options.onColumnsChange);
   if (options.onColumnOrderChange) events.on('columnOrderChange', options.onColumnOrderChange);
+  if (options.onViewChange) events.on('viewChange', options.onViewChange);
   if (options.onGroupByChange) events.on('groupByChange', options.onGroupByChange);
   events.on('groupByChange', (keys) => saveGroupBy(options.groupByStorageKey, keys));
   events.on('pageChange', ({ pageSize }) => savePageSize(options.pageSizeStorageKey, pageSize));

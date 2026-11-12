@@ -1,5 +1,15 @@
 import { SPGrid, escapeHtml, showDetails, thaiLabels } from '/src/index.js';
 
+// "วันนี้ 11:47" / "เมื่อวาน 14:48" as a Date: the calendar view needs a real time (the list shows the text).
+const timeOf = (text) => {
+  const [day, clock] = text.split(' ');
+  const [hours, minutes] = clock.split(':').map(Number);
+  const date = new Date();
+  date.setDate(date.getDate() - (day === 'วันนี้' ? 0 : 1));
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
 // One row per item. The document an item belongs to (`doc`, with its floor, zone and receipt time) is a group level.
 const item = (id, doc, floor, zone, received, n, category, place, asked, pieces) => ({
   id,
@@ -13,6 +23,7 @@ const item = (id, doc, floor, zone, received, n, category, place, asked, pieces)
   qty: pieces.length,
   place,
   asked,
+  askedAt: timeOf(asked),
   pieces,
   // The pieces as plain text, for search, filter and export.
   piecesText: pieces.map(([name, type]) => `${name} (${type})`).join(', '),
@@ -162,6 +173,18 @@ const grid = new SPGrid(document.getElementById('grid'), {
   sortStorageKey: 'worklist',
   groupByToggle: true,
   groupByStorageKey: 'worklist',
+  // The toolbar button switches the list to a calendar of the same rows: an item is an event at its request time.
+  // The search and the filters follow the switch; paging and the group headers show in the list only.
+  calendar: {
+    start: 'askedAt',
+    title: 'code',
+    subtitle: 'category',
+    hours: [9, 17],
+    views: ['day', 'workWeek', 'week', 'agenda'],
+    view: 'day',
+  },
+  defaultView: 'grid',
+  viewToggle: true,
   pageSize: 5,
   pageSizeOptions: [5, 10, 20],
   pageSizeStorageKey: 'worklist',

@@ -83,3 +83,24 @@ test('the advanced filter reaches the hidden fields, such as the category', asyn
   await page.getByRole('button', { name: 'ตัวกรองขั้นสูง' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
 });
+
+test('the worklist switches between the list and a calendar of the same items', async ({
+  page,
+}) => {
+  await page.goto('/worklist.html');
+  await page.getByRole('searchbox').fill('F00122');
+  await page.getByRole('searchbox').press('Enter');
+  await page.getByRole('button', { name: 'แสดงเป็นปฏิทิน' }).click();
+  await expect(page.locator('table')).toHaveCount(0);
+  await expect(page.locator('.spg-cal-event')).toHaveCount(3);
+  await expect(page.locator('.spg-cal-event-title').first()).toHaveText(/OS26-F00122-0\d/);
+
+  await page.locator('.spg-cal-event').first().click();
+  await expect(page.locator('#log')).toContainText('เปิดรายการ: OS26-F00122-0');
+  await page.keyboard.press('Escape');
+
+  await page.getByRole('button', { name: 'แสดงเป็นตาราง' }).click();
+  await expect(page.locator('.spg-cal')).toHaveCount(0);
+  await expect(page.getByRole('searchbox')).toHaveValue('F00122');
+  await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(3);
+});

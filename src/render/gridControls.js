@@ -6,7 +6,7 @@ import { askConfirm } from './confirm.js';
 import { bindAdvancedFilter } from './advancedFilter.js';
 import { bindControls } from './controls.js';
 import { openExportDialog } from './exportDialog.js';
-import { exportRows } from './exportExcel.js';
+import { exportExcel, exportRows } from './exportExcel.js';
 import { previewCount } from './conditionPreview.js';
 
 const DEFAULT_DEBOUNCE = 200;
@@ -19,10 +19,13 @@ const DEFAULT_DEBOUNCE = 200;
  * @param {{ get: () => string[] }} hidden
  */
 export const exportHost = (state, locale, hidden) => ({
+  columns: () => state().columns,
   /** @param {import('../types.js').GridState['conditions']} conditions */
   previewCount: (conditions) => previewCount(state(), { locale, hidden: hidden.get() }, conditions),
   /** @param {string | undefined} search */
   exportRows: (search) => exportRows(state(), { locale, hidden: hidden.get(), search }),
+  /** @param {import('../types.js').ExportOptions} options */
+  exportFile: (options) => exportExcel(state(), { locale, hidden: hidden.get(), ...options }),
 });
 
 /**
@@ -37,6 +40,7 @@ export const exportHost = (state, locale, hidden) => ({
  *   columns: () => import('../types.js').Column[],
  *   visible: () => import('../types.js').Row[],
  *   exportRows: (search: string | undefined) => import('../types.js').Row[],
+ *   exportFile: (options: import('../types.js').ExportOptions) => Blob,
  *   previewCount: (conditions: import('../types.js').GridState['conditions']) => { shown: number, total: number },
  *   emit: (event: any, payload: any) => void,
  * }} host What the grid keeps private.
@@ -76,6 +80,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
       });
     },
     onRefresh: () => host.emit('refresh', undefined),
+    onView: () => grid.setView(grid.getView() === 'grid' ? 'calendar' : 'grid'),
     onRemoveFilter: (part) => {
       if (part.type === 'condition' || part.type === 'conditions') {
         const index = part.type === 'condition' ? part.index : null;

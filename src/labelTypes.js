@@ -79,6 +79,8 @@
  * @property {string} [calendarWorkWeek] View button 'workWeek'; default 'Work week'.
  * @property {string} [calendarWeek] View button 'week'; default 'Week'.
  * @property {string} [calendarNoEvents] Text of an empty day in the agenda; default 'No events'.
+ * @property {string} [viewGrid] aria-label and tooltip of the view button (`viewToggle`) while the calendar shows, for the click that goes back to the table; default 'Show as table'.
+ * @property {string} [viewCalendar] aria-label and tooltip of the view button (`viewToggle`) while the table shows, for the click that opens the calendar; default 'Show as calendar'.
  * @property {string} [toggleDescription] aria-label and tooltip of the button that hides or shows `description`;
  *   default 'Show or hide description'.
  * @property {string} [stripedRows] Text of the `stripedToggle` switch; default 'Striped rows'.
