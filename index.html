@@ -97,7 +97,7 @@
             สร้างไฟล์เองด้วย <code>npm run pack:release</code> แล้วนำไปไว้บนที่ที่เปิดผ่าน URL ได้
             <pre
               tabindex="0"
-            ><code>npm install https://github.com/banpotej/siampiwat-spgrid/releases/download/v2.0.9/siampiwat-spgrid-2.0.9.tgz</code></pre>
+            ><code>npm install https://github.com/banpotej/siampiwat-spgrid/releases/download/v<span class="pkg-version">2.0.10</span>/siampiwat-spgrid-<span class="pkg-version">2.0.10</span>.tgz</code></pre>
             <h3>ข. จาก git URL</h3>
             npm จะ build ให้ตอนติดตั้ง (สคริปต์ <code>prepare</code>) จึงต้องมี git บนเครื่องปลายทาง
             <pre tabindex="0"><code>npm install github:banpotej/siampiwat-spgrid
@@ -112,10 +112,10 @@ npm install github:banpotej/siampiwat-spgrid#main   # ระบุ branch หร
             <pre tabindex="0"><code># ใน repo spgrid
 npm install
 npm run build
-npm pack              # ได้ไฟล์ siampiwat-spgrid-2.0.9.tgz
+npm pack              # ได้ไฟล์ siampiwat-spgrid-<span class="pkg-version">2.0.10</span>.tgz
 
 # ในโปรเจกต์ที่จะใช้
-npm install ../siampiwat-spgrid/siampiwat-spgrid-2.0.9.tgz</code></pre>
+npm install ../siampiwat-spgrid/siampiwat-spgrid-<span class="pkg-version">2.0.10</span>.tgz</code></pre>
           </li>
           <li>
             <strong>ดาวน์โหลดเป็นไฟล์ .zip</strong>
@@ -140,10 +140,10 @@ npm install ../siampiwat-spgrid/siampiwat-spgrid-2.0.9.tgz</code></pre>
             </span>
             <pre
               tabindex="0"
-            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.9</span>/dist/spgrid.css" /&gt;
+            ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.10</span>/dist/spgrid.css" /&gt;
 &lt;div id="app"&gt;&lt;/div&gt;
 &lt;script type="module"&gt;
-  import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.9</span>/dist/spgrid.js';
+  import { SPGrid } from 'https://cdn.jsdelivr.net/npm/@siampiwat/spgrid@<span class="npm-version">2.0.10</span>/dist/spgrid.js';
 
   new SPGrid(document.getElementById('app'), {
     rowKey: 'id',
@@ -246,6 +246,7 @@ const grid = new SPGrid(document.querySelector('#app'), {
       import { addCopyButtons } from '/examples/copy-code.js';
       import pkg from '/package.json';
 
+      for (const el of document.querySelectorAll('.pkg-version')) el.textContent = pkg.version;
       renderNav();
       addCopyButtons(document.querySelector('.install'));
       // Show the repo version at once, then swap in the latest one on npm. The download links below
