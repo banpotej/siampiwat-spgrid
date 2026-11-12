@@ -91,6 +91,12 @@ main {
 #source {
   margin-top: 32px;
 }
+#prompt {
+  margin-top: 32px;
+}
+#prompt + #source {
+  margin-top: 16px;
+}
 .source-card {
   overflow: hidden;
   border-radius: 12px;
@@ -157,6 +163,25 @@ main {
   counter-reset: line;
 }
 #source pre:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: -2px;
+}
+/* The prompt is prose: it wraps, with no line numbers. */
+#prompt pre {
+  max-height: 28rem;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  color: #e2e8f0;
+  font:
+    13px/1.7 ui-monospace,
+    'Cascadia Code',
+    Consolas,
+    monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#prompt pre:focus-visible {
   outline: 2px solid #60a5fa;
   outline-offset: -2px;
 }

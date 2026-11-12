@@ -42,6 +42,19 @@
           </div>
         </details>
       </section>
+      <section id="prompt" data-prompt="calendar" aria-labelledby="prompt-title">
+        <details class="source-toggle">
+          <summary><h2 id="prompt-title">Prompt สำหรับ Claude Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">Claude Code prompt</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
       <section id="source" data-src="calendar.js" aria-labelledby="source-title">
         <details class="source-toggle">
           <summary><h2 id="source-title">Source Code</h2></summary>
@@ -61,6 +74,7 @@
       import { renderNav } from '/examples/nav.js';
       renderNav();
     </script>
+    <script type="module" src="/examples/prompt-card.js"></script>
     <script type="module" src="/examples/source-viewer.js"></script>
   </body>
 </html>
