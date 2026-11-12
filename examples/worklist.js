@@ -1,4 +1,4 @@
-import { SPGrid, escapeHtml, thaiLabels } from '/src/index.js';
+import { SPGrid, escapeHtml, showDetails, thaiLabels } from '/src/index.js';
 
 // One row per item. The document an item belongs to (`doc`, with its floor, zone and receipt time) is a group level.
 const item = (id, doc, floor, zone, received, n, category, place, asked, pieces) => ({
@@ -14,6 +14,8 @@ const item = (id, doc, floor, zone, received, n, category, place, asked, pieces)
   place,
   asked,
   pieces,
+  // The pieces as plain text, for search, filter and export.
+  piecesText: pieces.map(([name, type]) => `${name} (${type})`).join(', '),
 });
 
 const rows = [
@@ -95,19 +97,70 @@ const columns = [
         .join('')}</ul>` +
       `</div>`,
   },
+  // Data columns the list does not draw (hidden): the search, the filters, the export and the details sheet use them.
+  { key: 'category', label: 'หมวด', sortable: true },
+  { key: 'floor', label: 'ชั้น', type: 'number', sortable: true },
+  { key: 'zone', label: 'โซน', sortable: true },
+  { key: 'received', label: 'รับเมื่อ' },
+  { key: 'qty', label: 'จำนวน (ชิ้น)', type: 'number', sortable: true },
+  { key: 'place', label: 'สถานที่เก็บ', sortable: true },
+  { key: 'asked', label: 'วันที่ขอ' },
+  { key: 'piecesText', label: 'รายการชิ้น' },
 ];
 
-new SPGrid(document.getElementById('grid'), {
+const log = document.getElementById('log');
+
+// The details sheet: double-click an item, or Enter on a focused one.
+const details = {
+  root: document.getElementById('grid'),
+  labels: thaiLabels,
+  locale: 'th-TH',
+  title: (row) => row.code,
+  wide: ['piecesText'],
+  groups: [
+    ['รายการ', ['category', 'qty', 'piecesText']],
+    ['เอกสาร', ['doc', 'floor', 'zone', 'received']],
+    ['การเก็บ', ['place', 'asked']],
+  ],
+};
+
+const grid = new SPGrid(document.getElementById('grid'), {
   rowKey: 'id',
   rows,
   columns,
   // Newest document first: a group column the sort is on follows the sort's direction.
   defaultSort: { key: 'doc', direction: 'desc' },
   groupBy: ['status', 'doc'],
-  hiddenColumns: ['status', 'doc'],
+  hiddenColumns: [
+    'status',
+    'doc',
+    'category',
+    'floor',
+    'zone',
+    'received',
+    'qty',
+    'place',
+    'asked',
+    'piecesText',
+  ],
   gridLines: 'horizontal',
+  title: 'รายการงาน',
   searchable: true,
+  searchColumnSelect: true,
+  searchButton: true,
+  searchDebounce: 50,
+  exportButton: true,
+  exportColumnSelect: true,
+  advancedFilter: true,
+  columnPicker: true,
+  columnStorageKey: 'worklist',
   filterSummary: true,
+  resetButton: true,
+  refreshButton: true,
+  onRefresh: () => grid.setRows([...rows]),
+  sortStorageKey: 'worklist',
+  groupByToggle: true,
+  groupByStorageKey: 'worklist',
   pageSize: 5,
   pageSizeOptions: [5, 10, 20],
   pageSizeStorageKey: 'worklist',
@@ -127,6 +180,8 @@ new SPGrid(document.getElementById('grid'), {
       level === 0 ? `${distinct(rows, 'doc')} เอกสาร · ${count} รายการ` : `· ${count} รายการ`,
   },
   onRowActivate: ({ row }) => {
-    document.getElementById('log').textContent = `เปิดรายการ: ${row.code}`;
+    log.textContent = `เปิดรายการ: ${row.code}`; // textContent: never parsed as HTML
+    showDetails(row, columns, details);
   },
 });
+window.addEventListener('pagehide', () => grid.destroy(), { once: true });

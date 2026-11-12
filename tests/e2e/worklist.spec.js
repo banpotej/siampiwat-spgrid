@@ -39,6 +39,7 @@ test('a group collapses and an item opens on double-click', async ({ page }) => 
   await page.goto('/worklist.html');
   await page.locator('tbody tr[data-row-index]').first().dblclick();
   await expect(page.locator('#log')).toHaveText('เปิดรายการ: OS26-F00122-01');
+  await page.keyboard.press('Escape');
   await page.locator('.spg-group-toggle').first().click();
   await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(0);
 });
@@ -64,6 +65,21 @@ test('the worklist pages its items and filters them by search', async ({ page })
   await page.getByRole('button', { name: 'ถัดไป' }).click();
   await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(1);
   await page.getByRole('searchbox').fill('F00118');
+  await page.getByRole('searchbox').press('Enter');
   await expect(page.locator('tbody tr[data-row-index]')).toHaveCount(1);
   await expect(page.locator('.task-code')).toHaveText('OS26-F00118-01');
+});
+
+test('the worklist has the toolbar of the purchase order list', async ({ page }) => {
+  await page.goto('/worklist.html');
+  for (const name of ['ส่งออก Excel', 'ตัวกรองขั้นสูง', 'โหลดข้อมูลใหม่']) {
+    await expect(page.getByRole('button', { name: new RegExp(name) })).toBeVisible();
+  }
+  await expect(page.getByRole('button', { name: /ค้นหา/ }).first()).toBeVisible();
+});
+
+test('the advanced filter reaches the hidden fields, such as the category', async ({ page }) => {
+  await page.goto('/worklist.html');
+  await page.getByRole('button', { name: 'ตัวกรองขั้นสูง' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
 });
