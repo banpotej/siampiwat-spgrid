@@ -43,7 +43,7 @@ test('the upgrade guide covers using and releasing, and the nav reaches both pag
   await expect(use).toContainText('npm update @siampiwat/spgrid');
   await expect(use).toContainText('npm install @siampiwat/spgrid@latest');
   const release = page.getByRole('region', { name: /ออกเวอร์ชันใหม่/ });
-  await expect(release).toContainText(String.raw`.elease.ps1 -Bump minor`);
+  await expect(release).toContainText('.\\release.ps1 -Bump minor');
   await expect(release).toContainText('deploy-site.ps1 -Pack');
   expect(await page.locator('.install pre').count()).toBe(
     await page.locator('.code-block').count(),

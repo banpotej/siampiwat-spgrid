@@ -44,7 +44,7 @@ if (git tag --list "v$current") {
 }
 
 # Fail before anything changes: a release needs entries under [Unreleased].
-if ((Get-Content CHANGELOG.md -Raw) -notmatch '## \[Unreleased\]\s+###') {
+if ((Get-Content CHANGELOG.md -Raw -Encoding UTF8) -notmatch '## \[Unreleased\]\s+###') {
     Write-Host '[ERROR] Cannot release: CHANGELOG.md has no entries under [Unreleased].' -ForegroundColor Red
     Write-Host 'Add at least one bullet under "## [Unreleased]" and run .\release.ps1 again.' -ForegroundColor Yellow
     exit 1
@@ -69,7 +69,7 @@ foreach ($file in 'README.md', 'index.html') {
 }
 
 # Turn [Unreleased] into the new version section.
-$changelog = Get-Content CHANGELOG.md -Raw
+$changelog = Get-Content CHANGELOG.md -Raw -Encoding UTF8
 $heading = "## [Unreleased]`n`n## [$version] - {0:yyyy-MM-dd}" -f (Get-Date)
 $changelog = $changelog -replace '## \[Unreleased\]', $heading
 [IO.File]::WriteAllText("$PSScriptRoot\CHANGELOG.md", $changelog, (New-Object Text.UTF8Encoding($false)))

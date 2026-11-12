@@ -16,6 +16,7 @@ import { renderTable } from './table.js';
 
 /** @typedef {import('../types.js').GridState} GridState */
 /** @typedef {import('../types.js').Column} Column */
+/** @typedef {import('./calendarView.js').CalendarView} CalendarView */
 
 /**
  * Draws the grid's changing parts (table, empty text, filter summary, pager) into the static shell.
@@ -29,6 +30,9 @@ export class GridRenderer {
   #pageSizeOptions;
   #highlight;
   #activatable;
+  /** @type {CalendarView | null} The calendar mode (`calendar` option): it draws the rows instead of the table. */
+  #calendar;
+  #unbindCalendar = () => {};
   /** @type {ColumnResizer | null} */ #resizer = null;
   #unbindResize = () => {};
   #pagerHtml = '';
@@ -49,7 +53,7 @@ export class GridRenderer {
    *   labels: ReturnType<typeof import('./labels.js').resolveLabels>,
    *   icons: ReturnType<typeof import('./icons.js').resolveIcons>,
    *   rowKey?: string, locale?: string, pageSizeOptions?: number[], highlight?: boolean, resizable?: boolean,
-   *   widthStorageKey?: string, activatable?: boolean }} opts
+   *   widthStorageKey?: string, activatable?: boolean, calendar?: CalendarView | null }} opts
    */
   constructor({
     shell,
@@ -62,6 +66,7 @@ export class GridRenderer {
     resizable = false,
     widthStorageKey,
     activatable = false,
+    calendar = null,
   }) {
     this.#shell = shell;
     this.#labels = labels;
@@ -71,6 +76,8 @@ export class GridRenderer {
     this.#pageSizeOptions = pageSizeOptions;
     this.#highlight = highlight;
     this.#activatable = activatable;
+    this.#calendar = calendar;
+    if (calendar) this.#unbindCalendar = this.#bindCalendar(calendar);
     if (resizable) {
       this.#resizer = new ColumnResizer(shell.host, widthStorageKey, () => this.#freeze());
       this.#unbindResize = this.#resizer.bind();
@@ -97,25 +104,29 @@ export class GridRenderer {
   render(state, { columns, hidden, filter, sort, reorder }) {
     this.#last = [state, { columns, hidden, filter, sort, reorder }];
     this.#unbindHeader();
-    const view = computeView(state, { locale: this.#locale, hidden });
+    // A calendar shows every event of the days it covers: no paging, no group headers.
+    const shown = this.#calendar ? { ...state, pageSize: null, groupBy: [] } : state;
+    const view = computeView(shown, { locale: this.#locale, hidden });
     const { host, status, summary, pagerHost } = this.#shell;
     const { rows, paging } = view;
-    host.innerHTML = renderTable(
-      columns,
-      rows,
-      state.sort,
-      this.#labels,
-      this.#icons,
-      this.#rowKey,
-      this.#locale,
-      {
-        enabled: this.#resizer !== null,
-        widths: this.#resizer?.widths ?? null,
-        label: this.#labels.resizeColumn,
-      },
-      reorder !== null,
-      { keys: state.groupBy, collapsed: this.#collapsed, columns: state.columns },
-    );
+    host.innerHTML =
+      this.#calendar?.render(rows) ??
+      renderTable(
+        columns,
+        rows,
+        state.sort,
+        this.#labels,
+        this.#icons,
+        this.#rowKey,
+        this.#locale,
+        {
+          enabled: this.#resizer !== null,
+          widths: this.#resizer?.widths ?? null,
+          label: this.#labels.resizeColumn,
+        },
+        reorder !== null,
+        { keys: state.groupBy, collapsed: this.#collapsed, columns: state.columns },
+      );
     if (this.#activatable) {
       // Rows are Tab stops that Enter activates (see rowActivate.js); the class gives them the pointer cursor.
       for (const tr of host.querySelectorAll('tbody tr[data-row-index]')) {
@@ -127,7 +138,7 @@ export class GridRenderer {
     this.#observer?.disconnect();
     const table = host.querySelector('table');
     if (table) this.#observer?.observe(table);
-    if (this.#highlight && filter?.search) {
+    if (this.#highlight && filter?.search && !this.#calendar) {
       const locale = this.#locale ?? DEFAULT_LOCALE;
       highlightSearch(host, columns, toWords(filter.search, locale), {
         locale,
@@ -136,7 +147,7 @@ export class GridRenderer {
         whole: searchKind(state.columns.find((c) => c.key === filter.searchColumn)) !== 'text',
       });
     }
-    this.#groupIds = groupItems(rows, state.groupBy)
+    this.#groupIds = groupItems(rows, shown.groupBy)
       .filter((item) => item.type === 'group')
       .map((item) => item.id);
     this.#syncToggleAll();
@@ -173,11 +184,31 @@ export class GridRenderer {
   }
 
   destroy() {
+    this.#unbindCalendar();
     this.#unbindHeader();
     this.#unbindResize();
     this.#unbindGroups();
     this.#unbindGroupAll();
     this.#observer?.disconnect();
+  }
+
+  /**
+   * A click on a calendar button changes the view or the day: draw again and keep focus on the button that was used.
+   * @param {CalendarView} calendar
+   * @returns {() => void} Unbind.
+   */
+  #bindCalendar(calendar) {
+    const { host } = this.#shell;
+    /** @param {MouseEvent} event */
+    const onClick = (event) => {
+      const used = calendar.handle(event.target);
+      if (used === null || !this.#last) return;
+      this.render(...this.#last);
+      const button = host.querySelector(used);
+      if (button instanceof HTMLElement) button.focus();
+    };
+    host.addEventListener('click', onClick);
+    return () => host.removeEventListener('click', onClick);
   }
 
   /** Freeze the leading columns the root's `data-freeze` asks for (none when it is absent). */

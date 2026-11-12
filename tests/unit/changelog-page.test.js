@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   parseChangelog,
@@ -105,5 +106,23 @@ describe('release rendering', () => {
     expect(el.querySelector('summary')?.textContent).toContain('ล่าสุด');
     expect(el.querySelector('.release-badge.breaking')).not.toBeNull();
     expect(el.querySelectorAll('li')).toHaveLength(4);
+  });
+});
+
+describe('CHANGELOG.md', () => {
+  // release.ps1 once read the file in the system code page and wrote it back as UTF-8, which turned
+  // every Thai string into mojibake that grew at each release (the file reached 32 MB).
+  const text = readFileSync('CHANGELOG.md', 'utf8');
+
+  it('stays small and free of mojibake', () => {
+    expect(text.length).toBeLessThan(500_000);
+    expect(text).not.toMatch(/[\u0080-\u009f\ufffd]/);
+  });
+
+  it('parses into releases, newest first, with the latest one numbered', () => {
+    const releases = parseChangelog(text);
+    expect(releases[0].version).toBe('Unreleased');
+    expect(releases[1].version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(releases.at(-1)?.version).toBe('1.0.1');
   });
 });

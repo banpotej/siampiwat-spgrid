@@ -70,6 +70,15 @@
  *   its count differently; default '(3)'.
  * @property {(shown: number, total: number) => string} [filterSummary] Count shown beside the filter chips
  *   (`filterSummary`); default 'Found 12 of 250'.
+ * @property {string} [calendarToday] Today button of the calendar (`calendar` option); default 'Today'.
+ * @property {string} [calendarPrev] aria-label of the calendar's previous day / week button; default 'Previous'.
+ * @property {string} [calendarNext] aria-label of the calendar's next day / week button; default 'Next'.
+ * @property {string} [calendarViews] aria-label of the group of calendar view buttons; default 'Calendar view'.
+ * @property {string} [calendarAgenda] View button 'agenda'; default 'Agenda'.
+ * @property {string} [calendarDay] View button 'day'; default 'Day'.
+ * @property {string} [calendarWorkWeek] View button 'workWeek'; default 'Work week'.
+ * @property {string} [calendarWeek] View button 'week'; default 'Week'.
+ * @property {string} [calendarNoEvents] Text of an empty day in the agenda; default 'No events'.
  * @property {string} [toggleDescription] aria-label and tooltip of the button that hides or shows `description`;
  *   default 'Show or hide description'.
  * @property {string} [stripedRows] Text of the `stripedToggle` switch; default 'Striped rows'.

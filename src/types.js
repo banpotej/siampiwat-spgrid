@@ -270,6 +270,8 @@
  * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
  * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);
  *   taller tables scroll inside it.
+ * @property {import('./calendarTypes.js').CalendarOptions} [calendar] Show the rows as events on a calendar (week, work week,
+ *   day or agenda) instead of a table; search and filters still apply, paging and grouping do not. See `CalendarOptions`.
  */
 
 /**

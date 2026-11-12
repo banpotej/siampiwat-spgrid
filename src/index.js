@@ -13,4 +13,6 @@ export { escapeHtml } from './utils/escape.js';
 /** @typedef {import('./types.js').GridLines} GridLines */
 /** @typedef {import('./types.js').LineStyle} LineStyle */
 /** @typedef {import('./types.js').ExportOptions} ExportOptions */
+/** @typedef {import('./calendarTypes.js').CalendarOptions} CalendarOptions */
+/** @typedef {import('./calendarTypes.js').CalendarViewName} CalendarViewName */
 /** @typedef {import('./render/detailsModal.js').DetailsOptions} DetailsOptions */

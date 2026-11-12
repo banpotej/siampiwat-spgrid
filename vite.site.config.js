@@ -42,6 +42,7 @@ export default defineConfig({
         'theme-lavender.html',
         'worklist.html',
         'view-settings.html',
+        'calendar.html',
       ].map((f) => resolve(f)),
     },
   },

@@ -3,6 +3,7 @@ import { dataKeys } from '../core/columns.js';
 import { normalizeGroupBy } from '../core/group.js';
 import { assertPageSize } from '../core/paginate.js';
 import { normalizeSort } from '../core/sort.js';
+import { assertCalendar, CalendarView } from './calendarView.js';
 import { isFreezeCount } from './frozenColumns.js';
 import { GridRenderer } from './gridRenderer.js';
 import { loadGroupBy } from './groupByStore.js';
@@ -17,7 +18,7 @@ import { mountShell } from './toolbar.js';
  * @param {unknown} container
  * @param {import('../types.js').SPGridOptions} options
  * @throws {TypeError} `container` is not an HTMLElement
- * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, or `freezeColumns` is not a whole number
+ * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer,, `gridLines` / `lineStyle` is unknown, `freezeColumns` is not a whole number, or `calendar` is not valid (see `assertCalendar`)
  */
 export function assertOptions(container, options) {
   if (!(container instanceof HTMLElement)) {
@@ -34,6 +35,7 @@ export function assertOptions(container, options) {
   if (options.freezeColumns !== undefined && !isFreezeCount(options.freezeColumns)) {
     throw new RangeError(`SPGrid: freezeColumns must be a whole number, 0 or more`);
   }
+  if (options.calendar !== undefined) assertCalendar(options.calendar);
 }
 
 /**
@@ -57,6 +59,9 @@ export function mountParts(container, options) {
     resizable: options.resizableColumns === true,
     widthStorageKey: options.columnWidthStorageKey,
     activatable: options.onRowActivate !== undefined,
+    calendar:
+      options.calendar &&
+      new CalendarView(options.calendar, { labels, icons, locale: options.locale }),
   });
   return { labels, shell, renderer };
 }

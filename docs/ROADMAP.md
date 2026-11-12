@@ -27,6 +27,11 @@
     - [x] state + API (`setAdvancedFilter`, `getAdvancedFilter`), event `filterChange`, ชิปใน filter summary, `resetView()`, ต่อเข้า `computeView` และ export
     - [x] UI: ปุ่ม `advancedFilter` และ modal ตัวสร้างเงื่อนไข (ชั้นเดียว AND/OR) ใช้ในตัวอย่าง Purchase Order
     - [ ] จำค่าใน `localStorage`
+  - [ ] โหมดปฏิทิน (`calendar`): แสดงแถวเป็นนัดหมายตามเวลา ทำทีละขั้น
+    - [x] รอบแรก (อ่านอย่างเดียว): มุมมอง Agenda / Day / Work week / Week, ปุ่มก่อนหน้า-ถัดไป-วันนี้, นัดที่ซ้อนกันแบ่งคอลัมน์, เส้นเวลาปัจจุบัน, คลิกนัดแล้วเรียก `onRowActivate`; ใช้ search / filter เดิมได้
+    - [ ] เมธอด `getCalendarView()` / `setCalendarView()` และ event เมื่อเปลี่ยนมุมมองหรือช่วงวัน
+    - [ ] มุมมองเดือน, นัดตลอดวัน, สีตามค่าของแถว
+    - [ ] ลากย้าย/ปรับขนาดนัด, สร้างนัดจากการคลิกช่องว่าง, นัดซ้ำ (recurring), time zone
   - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
   - [ ] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด, `aria-selected`, roving tabindex (ทำควบคู่กับ selection)
 - **ภายหลัง (ยังไม่ตัดสินใจ):**

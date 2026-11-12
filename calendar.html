@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง: ปฏิทิน (Calendar)</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง: ปฏิทิน (Calendar)</h1>
+      </header>
+      <div id="grid" style="--spg-cal-hour-height: 5rem"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              ข้อมูลเดียวกับรายการของหาย: เอกสารที่รับเข้าแต่ละใบเป็นนัดหมายตามเวลารับ และทุกวันครบ
+              30 วันจะมีนัด
+              <code>ย้าย Stock</code> ตอน 09:00 (กดถัดไปสี่ครั้งเพื่อดูเดือนธันวาคม) ใส่ option
+              <code>calendar</code> บอกว่าฟิลด์ไหนเป็นเวลาเริ่ม (<code>start</code>) เวลาสิ้นสุด
+              (<code>end</code>) ชื่อเรื่อง และสถานที่ มีมุมมอง กำหนดการ / วัน / สัปดาห์ทำงาน /
+              สัปดาห์ นัดที่เวลาซ้อนกันจะแบ่งความกว้าง ค้นหาและตัวกรองใช้ได้เหมือนตาราง
+              คลิกนัดหรือกด Enter เพื่อเรียก <code>onRowActivate</code> (ที่นี่เปิดรายละเอียดด้วย
+              <code>showDetails</code>)
+            </p>
+            <pre tabindex="0"><code>new SPGrid(grid, {
+  columns, rows,
+  calendar: { start: 'start', end: 'end', title: 'subject', subtitle: 'place' },
+  onRowActivate: ({ row }) => open(row),
+});</code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="calendar.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/calendar.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/calendar.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

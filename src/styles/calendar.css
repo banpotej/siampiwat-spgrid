@@ -1,0 +1,233 @@
+/* Calendar mode (the `calendar` option): a bar, then a time grid of day columns, or an agenda list.
+   Colours come from the same tokens as the table; --spg-cal-hour-height sets the height of one hour and
+   --spg-cal-max-height the height at which the time grid scrolls (its day names stay on top). */
+.spg-cal {
+  --spgi-cal-hour: var(--spg-cal-hour-height, 3.5rem);
+  --spgi-cal-gutter: 3.25rem;
+  --spgi-cal-event-bg: color-mix(in srgb, var(--spgi-accent) 14%, var(--spgi-bg));
+  color: var(--spgi-text);
+}
+
+.spg-cal-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 8px 0 12px;
+}
+
+.spg-cal-nav,
+.spg-cal-views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.spg-cal-title {
+  margin-inline-start: 6px;
+  font-size: 1.05em;
+  font-weight: 600;
+}
+
+.spg-cal-btn {
+  min-height: var(--spgi-control-h);
+  padding: 0 14px;
+  border: 1px solid var(--spgi-border-strong);
+  border-radius: 999px;
+  background: var(--spgi-bg);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.spg-cal-btn:hover {
+  background: var(--spgi-hover-bg);
+}
+
+.spg-cal-btn[aria-pressed='true'] {
+  border-color: var(--spgi-accent);
+  background: var(--spgi-cal-event-bg);
+  font-weight: 600;
+}
+
+.spg-cal-btn:focus-visible,
+.spg-cal-event:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
+}
+
+.spg-cal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spgi-control-h);
+  padding: 0;
+}
+
+/* Time grid: the head and the body share one column template, so day names sit over their columns. */
+.spg-cal-scroll {
+  overflow: auto;
+  max-height: var(--spg-cal-max-height, none);
+  border: 1px solid var(--spgi-border);
+  border-radius: var(--spgi-radius);
+}
+
+.spg-cal-head,
+.spg-cal-body {
+  display: grid;
+  grid-template-columns: var(--spgi-cal-gutter) repeat(var(--spg-cal-days), minmax(0, 1fr));
+}
+
+.spg-cal-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1px solid var(--spgi-border);
+  background: var(--spgi-header-bg);
+  color: var(--spgi-header-text);
+}
+
+.spg-cal-dayhead {
+  padding: 8px 4px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.spg-cal-dayhead.is-today {
+  color: var(--spgi-accent);
+}
+
+.spg-cal-body {
+  height: calc(var(--spg-cal-hours) * var(--spgi-cal-hour));
+}
+
+.spg-cal-hours {
+  position: relative;
+}
+
+.spg-cal-hour {
+  position: absolute;
+  inset-inline-end: 6px;
+  transform: translateY(-50%);
+  color: var(--spgi-muted);
+  font-size: 0.75em;
+}
+
+.spg-cal-hour:first-child {
+  transform: none;
+}
+
+.spg-cal-col {
+  position: relative;
+  border-inline-start: 1px solid var(--spgi-border);
+  background-image: linear-gradient(var(--spgi-border) 1px, transparent 1px);
+  background-size: 100% calc(100% / var(--spg-cal-hours));
+}
+
+.spg-cal-col.is-today {
+  background-color: color-mix(in srgb, var(--spgi-accent) 4%, var(--spgi-bg));
+}
+
+.spg-cal-now {
+  position: absolute;
+  inset-inline: 0;
+  z-index: 1;
+  height: 2px;
+  background: var(--spgi-accent);
+  pointer-events: none;
+}
+
+/* Events: a box in the grid (positioned inline), or a row in the agenda. */
+.spg-cal-event {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding: 3px 6px;
+  border-inline-start: 4px solid var(--spgi-accent);
+  border-radius: 4px;
+  background: var(--spgi-cal-event-bg);
+  font-size: 0.85em;
+  line-height: 1.3;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.spg-cal-col > .spg-cal-event {
+  position: absolute;
+  box-sizing: border-box;
+  border-block: 1px solid var(--spgi-bg);
+  border-inline-end: 1px solid var(--spgi-bg);
+}
+
+/* A short box has room for one line: cut the title with an ellipsis instead of in the middle of a word. */
+.spg-cal-event.is-short .spg-cal-event-title {
+  flex: none; /* an overflow:hidden flex item would otherwise shrink to nothing */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spg-cal-event.is-short .spg-cal-event-sub {
+  display: none; /* no room: a half-cut line looks broken */
+}
+
+.spg-cal-event:hover {
+  filter: brightness(0.97);
+}
+
+.spg-cal-event-title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.spg-cal-event-time,
+.spg-cal-event-sub {
+  color: var(--spgi-muted);
+  font-size: 0.9em;
+}
+
+/* Agenda */
+.spg-cal-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.spg-cal-agenda-head {
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--spgi-border);
+  font-weight: 600;
+}
+
+.spg-cal-agenda-day {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spg-cal-empty {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  color: var(--spgi-empty);
+}
+
+@media (max-width: 640px) {
+  .spg-cal {
+    --spgi-cal-gutter: 2.5rem;
+  }
+
+  .spg-cal-event-time,
+  .spg-cal-event-sub {
+    display: none;
+  }
+
+  .spg-cal-agenda .spg-cal-event-time,
+  .spg-cal-agenda .spg-cal-event-sub {
+    display: inline;
+  }
+}

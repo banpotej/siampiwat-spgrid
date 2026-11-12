@@ -33,6 +33,13 @@ export const EXAMPLES = [
     description:
       'สั่งค่าใน modal ตั้งค่าจากโค้ด: getViewSettings / setViewSettings ชุดค่าสำเร็จรูป การจัดกลุ่ม และการจำค่าด้วย StorageKey',
   },
+  {
+    href: '/calendar.html',
+    title: 'ปฏิทิน (Calendar)',
+    nav: 'ปฏิทิน',
+    description:
+      'แสดงแถวเป็นนัดหมายตามเวลา: มุมมองกำหนดการ / วัน / สัปดาห์ทำงาน / สัปดาห์ นัดที่ซ้อนกันแบ่งคอลัมน์ ค้นหาได้ และคลิกนัดเพื่อเปิดรายละเอียด',
+  },
 ];
 
 /** @param {string} href @param {string} text @param {string} [className] */
