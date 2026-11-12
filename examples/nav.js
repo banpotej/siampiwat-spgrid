@@ -2,6 +2,8 @@
 export const HOME = '/';
 export const QUICK_START = '/quick-start.html';
 export const FOR_AGENTS = '/for-agents.html';
+export const UPGRADE = '/upgrade.html';
+export const CHANGELOG = '/changelog.html';
 
 export const EXAMPLES = [
   {
@@ -76,6 +78,8 @@ export function renderNav() {
     link(HOME, 'SPGrid', 'brand'),
     link(QUICK_START, 'Quick Start'),
     link(FOR_AGENTS, 'สำหรับ Claude Code'),
+    link(UPGRADE, 'อัปเดตเวอร์ชัน'),
+    link(CHANGELOG, 'Changelog'),
     examplesMenu(),
   );
 }

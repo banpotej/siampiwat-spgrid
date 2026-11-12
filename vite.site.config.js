@@ -35,6 +35,8 @@ export default defineConfig({
         'index.html',
         'quick-start.html',
         'for-agents.html',
+        'upgrade.html',
+        'changelog.html',
         'basic.html',
         'purchase-order.html',
         'theme-lavender.html',

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ประวัติการเปลี่ยนแปลง | SPGrid</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/landing.css" />
+    <link rel="stylesheet" href="/examples/changelog.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <section class="install changelog" aria-labelledby="changelog-title">
+        <h2 id="changelog-title">ประวัติการเปลี่ยนแปลง</h2>
+        <p>
+          สิ่งที่เปลี่ยนในแต่ละเวอร์ชัน ใหม่สุดอยู่บนสุด อ่านก่อนอัปเดต รายการที่มีป้าย
+          <strong>BREAKING</strong> คือสิ่งที่ต้องแก้โค้ดเดิม ดูขั้นตอนอัปเดตที่
+          <a href="/upgrade.html">คู่มืออัปเดตเวอร์ชัน</a>
+        </p>
+        <div class="changelog-actions">
+          <button type="button" id="expand-all">ขยายทั้งหมด</button>
+          <button type="button" id="collapse-all">ย่อทั้งหมด</button>
+        </div>
+        <div id="releases"></div>
+      </section>
+      <footer class="site-footer">SPGrid · <a href="/">กลับหน้าหลัก</a></footer>
+    </main>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      import { parseChangelog, renderRelease } from '/examples/changelog.js';
+      import markdown from '/CHANGELOG.md?raw';
+
+      renderNav();
+      // "Unreleased" is shown only when it holds entries; the first numbered release is the latest.
+      const releases = parseChangelog(markdown).filter(
+        (r) => r.version !== 'Unreleased' || r.sections.some((s) => s.items.length),
+      );
+      const latest = releases.find((r) => /^\d/.test(r.version));
+      const host = document.getElementById('releases');
+      host.append(
+        ...releases.map((r, i) => renderRelease(r, { open: i < 2, latest: r === latest })),
+      );
+      const setAll = (open) => {
+        for (const el of host.querySelectorAll('details')) el.open = open;
+      };
+      document.getElementById('expand-all').addEventListener('click', () => setAll(true));
+      document.getElementById('collapse-all').addEventListener('click', () => setAll(false));
+      // Open the release a link points at (changelog.html#v2-0-11).
+      const target = host.querySelector(`[id="${location.hash.slice(1)}"]`);
+      if (target instanceof HTMLDetailsElement) {
+        target.open = true;
+        target.scrollIntoView();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+/* changelog.html: one collapsible card per release. Uses the landing page colours (landing.css). */
+.changelog > p {
+  color: var(--sp-muted);
+}
+
+.release {
+  margin: 0 0 12px;
+  border: 1px solid var(--sp-line);
+  border-left: 4px solid var(--sp-gold);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.release > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.release > summary:focus-visible {
+  outline: 2px solid var(--sp-ultramarine);
+  outline-offset: 2px;
+}
+
+.release-version {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--sp-purple);
+}
+
+.release time {
+  color: var(--sp-muted);
+  font-size: 0.9rem;
+}
+
+.release-badge {
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--sp-purple);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.release-badge.breaking {
+  background: #b3261e;
+}
+
+.release h3 {
+  margin: 12px 16px 4px;
+  font-size: 0.95rem;
+  color: var(--sp-purple);
+}
+
+.release h3.breaking {
+  color: #b3261e;
+}
+
+.release ul {
+  margin: 0 0 12px;
+  padding: 0 16px 0 36px;
+}
+
+.release li {
+  margin: 6px 0;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.release code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--sp-surface);
+  font-size: 0.88em;
+}
+
+.changelog-actions {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.changelog-actions button {
+  padding: 6px 14px;
+  border: 1px solid var(--sp-line);
+  border-radius: 8px;
+  background: var(--sp-surface);
+  color: var(--sp-purple);
+  font: inherit;
+  cursor: pointer;
+}

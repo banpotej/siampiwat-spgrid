@@ -64,6 +64,7 @@ foreach ($file in 'README.md', 'index.html') {
     $text = Get-Content "$PSScriptRoot\$file" -Raw -Encoding UTF8
     $text = $text -replace '(download/v|siampiwat-spgrid-)\d+\.\d+\.\d+', "`${1}$version"
     $text = $text -replace '(spgrid@(?:<span class="npm-version">)?)\d+\.\d+\.\d+', "`${1}$version"
+    $text = $text -replace '(<span class="pkg-version">)\d+\.\d+\.\d+', "`${1}$version"
     [IO.File]::WriteAllText("$PSScriptRoot\$file", $text, (New-Object Text.UTF8Encoding($false)))
 }
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Site pages `changelog.html` (release history read from `CHANGELOG.md` at build time: one collapsible card per release, newest first, a "latest" badge, a BREAKING badge, expand/collapse all, `#vX-Y-Z` links) and `upgrade.html` (how to update SPGrid in a project that uses it, and how to cut a release and redeploy the site). Both are in the top nav and the site build. The page code is `examples/changelog.js` (a small safe markdown reader: text only through `textContent`, http(s) links only). No `src/` change.
+
+### Changed
+
+- Tooling: `release.ps1` also keeps the `pkg-version` fallback numbers of `index.html` on the new version.
+
 ## [2.0.11] - 2026-11-12
 
 ### Added
