@@ -157,6 +157,7 @@ const grid = new SPGrid(document.getElementById('grid'), {
   filterSummary: true,
   resetButton: true,
   refreshButton: true,
+  groupToggleAllButton: true,
   onRefresh: () => grid.setRows([...rows]),
   sortStorageKey: 'worklist',
   groupByToggle: true,

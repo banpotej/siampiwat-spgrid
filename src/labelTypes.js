@@ -60,6 +60,8 @@
  * @property {string} [ascending] Ascending option of the direction select; default 'Ascending'.
  * @property {string} [descending] Descending option of the direction select; default 'Descending'.
  * @property {string} [refresh] aria-label and tooltip of the Refresh button (`refreshButton`); default 'Refresh'.
+ * @property {string} [collapseAllGroups] aria-label and tooltip of the toolbar button that collapses every group (`groupToggleAllButton`); default 'Collapse all'.
+ * @property {string} [expandAllGroups] aria-label and tooltip of the same button while every group is collapsed; default 'Expand all'.
  * @property {string} [resetView] Text of the Reset view button and title of its confirm dialog (`resetButton`); default 'Reset view'.
  * @property {(text: string) => string} [removeFilter] aria-label of a filter chip's remove button, given the chip's
  *   text (`filterSummary`); default 'Remove filter <text>'.

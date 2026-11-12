@@ -355,3 +355,60 @@ describe('groupByToggle', () => {
     expect(selects(el)[0].options[0].textContent).toBe('ไม่จัดกลุ่ม');
   });
 });
+
+describe('groupToggleAllButton', () => {
+  /** @param {HTMLElement} el */
+  const allButton = (el) =>
+    /** @type {HTMLButtonElement | null} */ (el.querySelector('.spg-group-all'));
+  /** @param {HTMLElement} el */
+  const openStates = (el) =>
+    [...el.querySelectorAll('.spg-group-toggle')].map((b) => b.getAttribute('aria-expanded'));
+
+  it('is not rendered unless the option is on', () => {
+    const { el } = make({ groupBy: ['dept'] });
+    expect(allButton(el)).toBeNull();
+  });
+
+  it('is hidden while ungrouped and shown once the rows are grouped', () => {
+    const { el, grid } = make({ groupToggleAllButton: true });
+    expect(allButton(el)?.hidden).toBe(true);
+    grid.setGroupBy(['dept']);
+    expect(allButton(el)?.hidden).toBe(false);
+    grid.setGroupBy([]);
+    expect(allButton(el)?.hidden).toBe(true);
+  });
+
+  it('collapses every group, then expands every group, renaming itself', () => {
+    const { el } = make({ groupBy: ['dept', 'status'], groupToggleAllButton: true });
+    const button = /** @type {HTMLButtonElement} */ (allButton(el));
+    expect(button.getAttribute('aria-label')).toBe('Collapse all');
+    expect(button.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('unfold_less');
+    button.click();
+    expect(headers(el).map((h) => h.level)).toEqual([0, 0, 0]);
+    expect(names(el)).toEqual([]);
+    expect(openStates(el)).toEqual(['false', 'false', 'false']);
+    expect(allButton(el)?.getAttribute('aria-label')).toBe('Expand all');
+    expect(allButton(el)?.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe(
+      'unfold_more',
+    );
+    allButton(el)?.click();
+    expect(headers(el).length).toBeGreaterThan(2);
+    expect(names(el)).toHaveLength(5);
+    expect(allButton(el)?.getAttribute('aria-label')).toBe('Collapse all');
+  });
+
+  it('collapses the rest when only some groups are collapsed', () => {
+    const { el } = make({ groupBy: ['dept'], groupToggleAllButton: true });
+    toggle(el, 0).click();
+    expect(allButton(el)?.getAttribute('aria-label')).toBe('Collapse all');
+    allButton(el)?.click();
+    expect(openStates(el)).toEqual(['false', 'false', 'false']);
+  });
+
+  it('uses the Thai labels', () => {
+    const { el } = make({ groupBy: ['dept'], groupToggleAllButton: true, labels: thaiLabels });
+    expect(allButton(el)?.getAttribute('aria-label')).toBe('ย่อทุกกลุ่ม');
+    allButton(el)?.click();
+    expect(allButton(el)?.getAttribute('aria-label')).toBe('ขยายทุกกลุ่ม');
+  });
+});

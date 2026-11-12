@@ -66,7 +66,7 @@ const toolButton = (className, label, icon, icons) =>
  *
  * @param {{
  *   searchable: boolean, searchLabel: string, clearLabel: string, searchButtonLabel: string | null, exportLabel: string | null, advancedLabel: string | null,
- *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, summary: boolean,
+ *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, groupToggleLabel: string | null, summary: boolean,
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null,
  *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, lineStyle: import('../types.js').LineStyle, compact: boolean,
@@ -82,6 +82,7 @@ export function renderShell({
   exportLabel,
   advancedLabel,
   refreshLabel,
+  groupToggleLabel,
   resizable,
   wrapped,
   title,
@@ -112,6 +113,7 @@ export function renderShell({
   // Right of the search box: [Refresh] [Export] [Settings], each only when turned on.
   const tools =
     toolButton('spg-tool-btn spg-refresh', refreshLabel, 'refresh', icons) +
+    toolButton('spg-tool-btn spg-group-all', groupToggleLabel, 'unfold_less', icons) +
     toolButton('spg-tool-btn spg-advfilter', advancedLabel, 'filter_list', icons) +
     toolButton('spg-export', exportLabel, 'download', icons);
   // One input group: [column select] [search box] [Search] [Clear search] [tools], joined edge to edge.
@@ -159,7 +161,7 @@ export function renderShell({
  *
  * @param {HTMLElement} container
  * @param {import('../types.js').SPGridOptions} options
- * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, advancedFilter: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, toggleDescription: string }} labels
+ * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, advancedFilter: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, collapseAllGroups: string, toggleDescription: string }} labels
  * @param {Record<IconName, string>} icons
  */
 export function mountShell(container, options, labels, icons) {
@@ -183,6 +185,7 @@ export function mountShell(container, options, labels, icons) {
     exportLabel: options.exportButton === true ? labels.exportExcel : null,
     advancedLabel: options.advancedFilter === true ? labels.advancedFilter : null,
     refreshLabel: options.refreshButton === true ? labels.refresh : null,
+    groupToggleLabel: options.groupToggleAllButton === true ? labels.collapseAllGroups : null,
     title: options.title ?? null,
     description: options.description ?? null,
     toggleLabel: labels.toggleDescription,
@@ -238,6 +241,9 @@ export function mountShell(container, options, labels, icons) {
     summary: /** @type {HTMLElement | null} */ (container.querySelector('div.spg-summary')),
     refreshButton: /** @type {HTMLButtonElement | null} */ (
       container.querySelector('button.spg-refresh')
+    ),
+    groupToggleButton: /** @type {HTMLButtonElement | null} */ (
+      container.querySelector('button.spg-group-all')
     ),
     advancedButton: /** @type {HTMLButtonElement | null} */ (
       container.querySelector('button.spg-advfilter')

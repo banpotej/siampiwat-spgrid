@@ -39,6 +39,7 @@ describe('built-in icons', () => {
         'arrow_upward',
         'arrow_downward',
         'unfold_more',
+        'unfold_less',
         'chevron_left',
         'chevron_right',
         'first_page',

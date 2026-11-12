@@ -1,6 +1,7 @@
 // @ts-check
 import { searchKind } from '../core/columns.js';
 import { toWords, DEFAULT_LOCALE } from '../core/filter.js';
+import { groupItems } from '../core/group.js';
 import { computeView } from '../core/view.js';
 import { ColumnResizer } from './columnResize.js';
 import { freezeColumns } from './frozenColumns.js';
@@ -8,6 +9,7 @@ import { highlightSearch } from './highlight.js';
 import { bindHeaderEvents } from './headerEvents.js';
 import { bindGroupToggle } from './groupEvents.js';
 import { bindHeaderReorder } from './headerReorder.js';
+import { renderIcon } from './icons.js';
 import { renderPager } from './pager.js';
 import { renderSummary } from './summary.js';
 import { renderTable } from './table.js';
@@ -35,6 +37,9 @@ export class GridRenderer {
   /** @type {Parameters<GridRenderer['render']> | null} The last render's arguments, to draw again after a group toggles. */
   #last = null;
   #unbindGroups;
+  #unbindGroupAll = () => {};
+  /** @type {string[]} Ids of the group headers on the current page, collapsed or not. */
+  #groupIds = [];
   #unbindHeader = () => {};
   /** @type {ResizeObserver | null} Re-measures the frozen columns when the table's size changes (a window resize, a late font). */
   #observer = null;
@@ -71,6 +76,12 @@ export class GridRenderer {
       this.#unbindResize = this.#resizer.bind();
     }
     this.#unbindGroups = bindGroupToggle(shell.host, (id) => this.#toggleGroup(id));
+    const all = shell.groupToggleButton;
+    if (all) {
+      const onClick = () => this.#toggleAll();
+      all.addEventListener('click', onClick);
+      this.#unbindGroupAll = () => all.removeEventListener('click', onClick);
+    }
     if (typeof ResizeObserver !== 'undefined')
       this.#observer = new ResizeObserver(() => this.#freeze());
   }
@@ -125,6 +136,10 @@ export class GridRenderer {
         whole: searchKind(state.columns.find((c) => c.key === filter.searchColumn)) !== 'text',
       });
     }
+    this.#groupIds = groupItems(rows, state.groupBy)
+      .filter((item) => item.type === 'group')
+      .map((item) => item.id);
+    this.#syncToggleAll();
     status.textContent = rows.length === 0 ? this.#labels.empty : '';
     const unbindSort = bindHeaderEvents(host, sort);
     const unbindReorder = reorder ? bindHeaderReorder(host, reorder) : () => {};
@@ -161,6 +176,7 @@ export class GridRenderer {
     this.#unbindHeader();
     this.#unbindResize();
     this.#unbindGroups();
+    this.#unbindGroupAll();
     this.#observer?.disconnect();
   }
 
@@ -168,6 +184,30 @@ export class GridRenderer {
   #freeze() {
     const { host } = this.#shell;
     freezeColumns(host, Number(host.closest('.spg-root')?.getAttribute('data-freeze') ?? 0));
+  }
+
+  /** True while some group on the page is open. */
+  #anyOpen() {
+    return this.#groupIds.some((id) => !this.#collapsed.has(id));
+  }
+
+  /** Show the Collapse all / Expand all button only while grouped, named for what a click does now. */
+  #syncToggleAll() {
+    const button = this.#shell.groupToggleButton;
+    if (!button) return;
+    button.hidden = this.#groupIds.length === 0;
+    const open = this.#anyOpen();
+    const label = open ? this.#labels.collapseAllGroups : this.#labels.expandAllGroups;
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.innerHTML = renderIcon(this.#icons, open ? 'unfold_less' : 'unfold_more');
+  }
+
+  /** Collapse every group on the page, or expand every group when none is open. */
+  #toggleAll() {
+    if (this.#anyOpen()) for (const id of this.#groupIds) this.#collapsed.add(id);
+    else this.#collapsed.clear();
+    if (this.#last) this.render(...this.#last);
   }
 
   /** Collapse or expand a group and draw the table again, keeping focus on the group's button. @param {string} id */

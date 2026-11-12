@@ -67,7 +67,7 @@
 
 /**
  * Names of the built-in icons (Material Symbols); see `options.icons`.
- * @typedef {'arrow_upward' | 'arrow_downward' | 'unfold_more' | 'chevron_left' | 'chevron_right' | 'first_page' | 'last_page' | 'search' | 'close' | 'inbox' | 'visibility' | 'edit' | 'delete' | 'cancel' | 'check' | 'download' | 'calendar_today' | 'view_column' | 'restart_alt' | 'refresh' | 'stripes' | 'wrap_text' | 'settings' | 'filter_list'} IconName
+ * @typedef {'arrow_upward' | 'arrow_downward' | 'unfold_more' | 'unfold_less' | 'chevron_left' | 'chevron_right' | 'first_page' | 'last_page' | 'search' | 'close' | 'inbox' | 'visibility' | 'edit' | 'delete' | 'cancel' | 'check' | 'download' | 'calendar_today' | 'view_column' | 'restart_alt' | 'refresh' | 'stripes' | 'wrap_text' | 'settings' | 'filter_list'} IconName
  */
 
 /**
@@ -183,6 +183,9 @@
  *   `resetView()` itself never asks.
  * @property {boolean} [refreshButton] Render a "Refresh" button in the toolbar that emits `refresh`; the app reloads
  *   its data and calls `setRows()`. Default false.
+ * @property {boolean} [groupToggleAllButton] Render a "Collapse all" / "Expand all" button in the toolbar that folds or
+ *   unfolds every group header (`groupBy`). It shows only while the rows are grouped, and offers Expand all once every
+ *   group on the page is collapsed. Default false.
  * @property {() => void} [onRefresh] Called when the Refresh button is clicked (same as `on('refresh', fn)`).
  * @property {boolean} [columnPicker] Render a "Settings" button in the toolbar (works without `searchable`) that opens
  *   a modal with a checkbox per data column to show or hide it and, for `sortable` columns, a sort column and

@@ -56,6 +56,8 @@ const DEFAULT_LABELS = {
   ascending: 'Ascending',
   descending: 'Descending',
   refresh: 'Refresh',
+  collapseAllGroups: 'Collapse all',
+  expandAllGroups: 'Expand all',
   resetView: 'Reset view',
   confirmReset:
     'Reset the view? Search, sorting, hidden columns and rows per page go back to their defaults.',
@@ -146,6 +148,8 @@ export const thaiLabels = {
   ascending: 'น้อยไปมาก',
   descending: 'มากไปน้อย',
   refresh: 'โหลดข้อมูลใหม่',
+  collapseAllGroups: 'ย่อทุกกลุ่ม',
+  expandAllGroups: 'ขยายทุกกลุ่ม',
   resetView: 'รีเซ็ตมุมมอง',
   confirmReset:
     'รีเซ็ตมุมมอง? การค้นหา การเรียง คอลัมน์ที่ซ่อน และจำนวนแถวต่อหน้าจะกลับเป็นค่าเริ่มต้น',
