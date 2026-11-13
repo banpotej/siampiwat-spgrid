@@ -36,7 +36,7 @@ test('the upgrade guide covers using and releasing, and the nav reaches both pag
 }) => {
   await page.goto('/');
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await nav.getByRole('link', { name: 'อัปเดตเวอร์ชัน' }).click();
+  await nav.getByRole('link', { name: 'คู่มืออัปเดตเวอร์ชัน' }).click();
   await expect(page).toHaveURL(/\/upgrade\.html$/);
 
   const use = page.getByRole('region', { name: 'อัปเดต SPGrid ในโปรเจกต์ที่ใช้งาน' });
@@ -51,7 +51,7 @@ test('the upgrade guide covers using and releasing, and the nav reaches both pag
 
   await page.getByRole('link', { name: 'ประวัติการเปลี่ยนแปลง' }).first().click();
   await expect(page).toHaveURL(/\/changelog\.html$/);
-  await expect(nav.getByRole('link', { name: 'Changelog' })).toHaveAttribute(
+  await expect(nav.getByRole('link', { name: 'ประวัติการเปลี่ยนแปลง' })).toHaveAttribute(
     'aria-current',
     'page',
   );

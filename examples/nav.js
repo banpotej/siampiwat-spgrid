@@ -1,4 +1,5 @@
 // Shared by every example page: the list of examples (one place to add a new one) and the top nav.
+// A menu entry is the title of its page (the example titles are the page headings without "ตัวอย่าง:").
 export const HOME = '/';
 export const QUICK_START = '/quick-start.html';
 export const FOR_AGENTS = '/for-agents.html';
@@ -9,48 +10,54 @@ export const EXAMPLES = [
   {
     href: '/purchase-order.html',
     title: 'รายการใบสั่งซื้อ (Purchase Order)',
-    nav: 'ใบสั่งซื้อ',
     description:
       'ตารางเต็มรูปแบบ: ค้นหา ตัวกรองขั้นสูง เรียงลำดับ จัดกลุ่ม แบ่งหน้า ส่งออก Excel และปุ่มดำเนินการต่อแถว',
   },
   {
-    href: '/theme-lavender.html',
-    title: 'ธีมลาเวนเดอร์',
-    nav: 'ธีมลาเวนเดอร์',
-    description: 'ธีมสีม่วงอ่อน: หัวตารางไล่เฉด แถวสลับสี เส้นขอบครบทุกเซลล์ และปุ่ม action สีทึบ',
+    href: '/theme-default.html',
+    title: 'ธีมสีเริ่มต้น (Default)',
+    description:
+      'สีเริ่มต้นของ SPGrid โดยไม่ใส่ class ธีม: หัวตารางสีเทาเรียบ ขอบมน 8px แถวสลับสี เส้นขอบครบทุกเซลล์ และปุ่ม action สีทึบ',
+  },
+  {
+    href: '/theme-gold.html',
+    title: 'ธีมสีทอง (Siam Piwat Solid Gold)',
+    description:
+      'ธีมสีทองประจำแบรนด์ #a28448: หัวตารางไล่เฉดทอง แถวสลับโทนครีม ข้อความบนพื้นทองเป็นสีเข้ม และมีชุดสีโหมดมืด',
+  },
+  {
+    href: '/theme-purple.html',
+    title: 'ธีมสีม่วง (Siam Piwat Purple)',
+    description:
+      'ธีมสีม่วงประจำแบรนด์ #3a2d4b: หัวตารางไล่เฉดม่วงอ่อน แถวสลับโทนม่วงนวล ข้อความบนพื้นม่วงเป็นสีขาว และมีชุดสีโหมดมืด',
   },
   {
     href: '/worklist.html',
     title: 'รายการงาน (Worklist)',
-    nav: 'รายการงาน',
     description:
       'แสดงข้อมูลเป็นรายการ: คอลัมน์เดียวหลายบรรทัดด้วย render หัวกลุ่มพร้อมจำนวน "n งาน" และซ่อนหัวตาราง',
   },
   {
     href: '/recent-receipts.html',
     title: 'รับเข้าล่าสุด (Recent receipts)',
-    nav: 'รับเข้าล่าสุด',
     description:
       'การ์ดรายการสั้น ๆ: ชื่อการ์ดกับจำนวนรายการ (rowCount) ไม่มีหัวตาราง (showHeader: false) เซลล์หลายบรรทัดด้วย render และ badge ชิดขวา',
   },
   {
     href: '/status-summary.html',
     title: 'สรุปตามสถานะ (Status summary)',
-    nav: 'สรุปตามสถานะ',
     description:
       'การ์ดสรุปเป็นแถบบาร์: ชื่อสถานะ แถบความยาวตามจำนวนที่สร้างด้วย render และตัวเลขชิดขวา ไม่มีหัวตารางและเส้นคั่น',
   },
   {
     href: '/view-settings.html',
     title: 'ตั้งค่าหน้าตาจากโค้ด',
-    nav: 'ตั้งค่าจากโค้ด',
     description:
       'สั่งค่าใน modal ตั้งค่าจากโค้ด: getViewSettings / setViewSettings ชุดค่าสำเร็จรูป การจัดกลุ่ม และการจำค่าด้วย StorageKey',
   },
   {
     href: '/calendar.html',
     title: 'ปฏิทิน (Calendar)',
-    nav: 'ปฏิทิน',
     description:
       'แสดงแถวเป็นนัดหมายตามเวลา: มุมมองกำหนดการ / วัน / สัปดาห์ทำงาน / สัปดาห์ นัดที่ซ้อนกันแบ่งคอลัมน์ ค้นหาได้ และคลิกนัดเพื่อเปิดรายละเอียด',
   },
@@ -74,7 +81,7 @@ function examplesMenu() {
   summary.textContent = 'ตัวอย่าง';
   const list = document.createElement('div');
   list.className = 'nav-menu-list';
-  list.append(...EXAMPLES.map((example) => link(example.href, example.nav)));
+  list.append(...EXAMPLES.map((example) => link(example.href, example.title)));
   if (list.querySelector('[aria-current]')) summary.setAttribute('aria-current', 'page');
   menu.append(summary, list);
   // Close on Escape (focus goes back to the button) and on a click anywhere else.
@@ -97,10 +104,10 @@ export function renderNav() {
   nav.setAttribute('aria-label', 'เมนูตัวอย่าง');
   nav.replaceChildren(
     link(HOME, 'SPGrid', 'brand'),
-    link(QUICK_START, 'Quick Start'),
+    link(QUICK_START, 'Quick Start (Next.js)'),
     link(FOR_AGENTS, 'สำหรับ Claude Code'),
-    link(UPGRADE, 'อัปเดตเวอร์ชัน'),
-    link(CHANGELOG, 'Changelog'),
+    link(UPGRADE, 'คู่มืออัปเดตเวอร์ชัน'),
+    link(CHANGELOG, 'ประวัติการเปลี่ยนแปลง'),
     examplesMenu(),
   );
 }

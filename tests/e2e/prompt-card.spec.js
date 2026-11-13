@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 
 const PAGES = [
   'purchase-order',
-  'theme-lavender',
+  'theme-default',
+  'theme-gold',
+  'theme-purple',
   'worklist',
   'recent-receipts',
   'status-summary',
@@ -26,9 +28,9 @@ for (const name of PAGES) {
   });
 }
 
-test('the prompt of the lavender page names its theme class', async ({ page }) => {
-  await page.goto('/theme-lavender.html');
-  await expect(page.locator('#prompt code')).toContainText('spg-theme-lavender');
+test('the prompt of the default page says to use no theme class', async ({ page }) => {
+  await page.goto('/theme-default.html');
+  await expect(page.locator('#prompt code')).toContainText('ไม่ใส่ class ธีมใดๆ');
 });
 
 test('the copy button copies the whole prompt', async ({ page, context }) => {

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง: ธีมสีเริ่มต้น (Default)</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง: ธีมสีเริ่มต้น (Default)</h1>
+      </header>
+      <div id="grid"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              สีเริ่มต้นของ SPGrid ไม่ต้องใส่ class ธีมใดๆ หัวตารางสีเทาเรียบ ขอบมน 8px
+              และปุ่มสีทึบใช้คู่ class โทน + <code>spg-action-solid</code> ธีมอื่นเปิดเพิ่มได้ด้วย
+              class เช่น <code>spg-theme-lavender</code> ที่ element ของตาราง
+            </p>
+            <pre tabindex="0"><code>grid.classList.add('spg-theme-default');
+new SPGrid(grid, { columns, rows, striped: true, gridLines: 'both' });
+
+// ปุ่ม action สีทึบ: คู่ class โทน + spg-action-solid
+{ name: 'edit', label: 'แก้ไข', className: 'spg-action-warning spg-action-solid' }</code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="prompt" data-prompt="theme-default" aria-labelledby="prompt-title">
+        <details class="source-toggle">
+          <summary><h2 id="prompt-title">Prompt สำหรับ Claude Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">Claude Code prompt</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="theme-default.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/theme-default.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/theme-default.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/prompt-card.js"></script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

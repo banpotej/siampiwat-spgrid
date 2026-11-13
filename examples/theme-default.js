@@ -47,11 +47,8 @@ const columns = [
   },
 ];
 
-// The theme is a class on the element that holds the grid; nothing else in the options changes.
-const grid = document.getElementById('grid');
-grid.classList.add('spg-theme-lavender');
-
-new SPGrid(grid, {
+// No theme class: the grid keeps the default colours.
+new SPGrid(document.getElementById('grid'), {
   rowKey: 'id',
   rows,
   columns,
@@ -61,21 +58,21 @@ new SPGrid(grid, {
   searchDebounce: 50,
   columnPicker: true,
   resetButton: true,
-  columnStorageKey: 'lavender-theme',
+  columnStorageKey: 'default-theme',
   striped: true,
   stripedToggle: true,
-  stripedStorageKey: 'lavender-theme',
+  stripedStorageKey: 'default-theme',
   textWrapToggle: true,
-  textWrapStorageKey: 'lavender-theme',
+  textWrapStorageKey: 'default-theme',
   gridLines: 'both',
   gridLinesToggle: true,
-  gridLinesStorageKey: 'lavender-theme',
+  gridLinesStorageKey: 'default-theme',
   groupByToggle: true,
-  groupByStorageKey: 'lavender-theme',
+  groupByStorageKey: 'default-theme',
   lineStyleToggle: true,
-  lineStyleStorageKey: 'lavender-theme',
+  lineStyleStorageKey: 'default-theme',
   freezeColumnsToggle: true,
-  freezeColumnsStorageKey: 'lavender-theme',
+  freezeColumnsStorageKey: 'default-theme',
   labels: thaiLabels,
   onAction: ({ action, row }) => {
     document.getElementById('log').textContent = `${action}: ${row.name}`;

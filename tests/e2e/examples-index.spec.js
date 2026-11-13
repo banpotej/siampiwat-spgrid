@@ -4,7 +4,7 @@ test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
   const cards = page.locator('#examples');
-  await expect(cards.getByRole('link')).toHaveCount(7);
+  await expect(cards.getByRole('link')).toHaveCount(9);
   await cards.getByRole('link', { name: /Purchase Order/ }).click();
   await expect(page).toHaveURL(/\/purchase-order\.html$/);
 });
@@ -89,10 +89,9 @@ test('the nav is on every example page, marks the current one, and leads home', 
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
   await expect(nav.locator('summary')).toHaveAttribute('aria-current', 'page');
   await nav.locator('summary').click();
-  await expect(nav.getByRole('link', { name: 'ใบสั่งซื้อ' })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
+  await expect(
+    nav.getByRole('link', { name: 'รายการใบสั่งซื้อ (Purchase Order)' }),
+  ).toHaveAttribute('aria-current', 'page');
 
   await nav.getByRole('link', { name: 'SPGrid' }).click();
   await expect(page).toHaveURL(/localhost:5173\/$/);
@@ -224,7 +223,7 @@ test('the Next.js quick start has its own page, reachable from the landing page 
 }) => {
   await page.goto('/');
   await expect(page.getByRole('region', { name: 'Quick Start (Next.js)' })).toHaveCount(0);
-  await page.getByRole('link', { name: 'Quick Start (Next.js)' }).click();
+  await page.locator('a.cta', { hasText: 'Quick Start (Next.js)' }).click();
   await expect(page).toHaveURL(/\/quick-start\.html$/);
 
   const quickstart = page.getByRole('region', { name: 'Quick Start (Next.js)' });
@@ -234,7 +233,7 @@ test('the Next.js quick start has its own page, reachable from the landing page 
   await expect(quickstart.locator('.code-block')).toHaveCount(3);
 
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
-  await expect(nav.getByRole('link', { name: 'Quick Start' })).toHaveAttribute(
+  await expect(nav.getByRole('link', { name: 'Quick Start (Next.js)' })).toHaveAttribute(
     'aria-current',
     'page',
   );
@@ -269,17 +268,19 @@ test('the examples sit in one dropdown that lists every example and closes again
   const nav = page.getByRole('navigation', { name: 'เมนูตัวอย่าง' });
   const menu = nav.locator('.nav-menu');
   await expect(menu).not.toHaveAttribute('open', '');
-  await expect(nav.getByRole('link', { name: 'ใบสั่งซื้อ' })).toBeHidden();
+  await expect(nav.getByRole('link', { name: 'รายการใบสั่งซื้อ (Purchase Order)' })).toBeHidden();
 
   await menu.locator('summary').click();
   await expect(menu.getByRole('link')).toHaveText([
-    'ใบสั่งซื้อ',
-    'ธีมลาเวนเดอร์',
-    'รายการงาน',
-    'รับเข้าล่าสุด',
-    'สรุปตามสถานะ',
-    'ตั้งค่าจากโค้ด',
-    'ปฏิทิน',
+    'รายการใบสั่งซื้อ (Purchase Order)',
+    'ธีมสีเริ่มต้น (Default)',
+    'ธีมสีทอง (Siam Piwat Solid Gold)',
+    'ธีมสีม่วง (Siam Piwat Purple)',
+    'รายการงาน (Worklist)',
+    'รับเข้าล่าสุด (Recent receipts)',
+    'สรุปตามสถานะ (Status summary)',
+    'ตั้งค่าหน้าตาจากโค้ด',
+    'ปฏิทิน (Calendar)',
   ]);
 
   await page.keyboard.press('Escape');
@@ -289,6 +290,6 @@ test('the examples sit in one dropdown that lists every example and closes again
   await expect(menu).not.toHaveAttribute('open', '');
 
   await menu.locator('summary').click();
-  await menu.getByRole('link', { name: 'รายการงาน' }).click();
+  await menu.getByRole('link', { name: 'รายการงาน (Worklist)' }).click();
   await expect(page).toHaveURL(/\/worklist\.html$/);
 });

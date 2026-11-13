@@ -18,10 +18,32 @@ export const PROMPTS = {
 
 ${RULES}`,
 
-  'theme-lavender': `${PREAMBLE}
+  'theme-default': `${PREAMBLE}
 
-สร้างหน้า [ชื่อหน้า] ด้วยธีมลาเวนเดอร์ เหมือนตัวอย่าง "ธีมลาเวนเดอร์" ของ SPGrid
-- เปิดธีมด้วย container.classList.add('spg-theme-lavender') ที่ element ที่ส่งให้ new SPGrid() เท่านั้น ห้ามเขียน CSS ทับสีของไลบรารี
+สร้างหน้า [ชื่อหน้า] ด้วยสีเริ่มต้น เหมือนตัวอย่าง "ธีมสีเริ่มต้น (Default)" ของ SPGrid
+- ไม่ใส่ class ธีมใดๆ ที่ element ที่ส่งให้ new SPGrid() และห้ามเขียน CSS ทับสีของไลบรารี
+- ข้อมูล: [ที่มา] คอลัมน์ [ชื่อ ชนิด และคอลัมน์ที่ sortable] คอลัมน์สถานะใช้ type: 'badge' กับ badges: { <ค่า>: { tone: 'success' | 'neutral' } }
+- ปุ่มการดำเนินการ [เช่น แก้ไข, ลบ] ใน _actions ใช้ className 'spg-action-warning spg-action-solid' (แก้ไข) และ 'spg-action-danger spg-action-solid' (ลบ) จัดการใน onAction (ลบต้องถามยืนยัน)
+- options: searchable, searchColumnSelect, searchButton, searchDebounce: 50, columnPicker, resetButton, striped: true, gridLines: 'both', labels: thaiLabels
+- ปุ่มตั้งค่า: stripedToggle, textWrapToggle, gridLinesToggle, lineStyleToggle, groupByToggle, freezeColumnsToggle และ *StorageKey ชื่อ [ชื่อหน้า] ทุกตัว
+
+${RULES}`,
+
+  'theme-gold': `${PREAMBLE}
+
+สร้างหน้า [ชื่อหน้า] ด้วยธีมสีทอง (Siam Piwat Solid Gold) เหมือนตัวอย่าง "ธีมสีทอง (Siam Piwat Solid Gold)" ของ SPGrid
+- เปิดธีมด้วย container.classList.add('spg-theme-gold') ที่ element ที่ส่งให้ new SPGrid() เท่านั้น ห้ามเขียน CSS ทับสีของไลบรารี
+- ข้อมูล: [ที่มา] คอลัมน์ [ชื่อ ชนิด และคอลัมน์ที่ sortable] คอลัมน์สถานะใช้ type: 'badge' กับ badges: { <ค่า>: { tone: 'success' | 'neutral' } }
+- ปุ่มการดำเนินการ [เช่น แก้ไข, ลบ] ใน _actions ใช้ className 'spg-action-warning spg-action-solid' (แก้ไข) และ 'spg-action-danger spg-action-solid' (ลบ) จัดการใน onAction (ลบต้องถามยืนยัน)
+- options: searchable, searchColumnSelect, searchButton, searchDebounce: 50, columnPicker, resetButton, striped: true, gridLines: 'both', labels: thaiLabels
+- ปุ่มตั้งค่า: stripedToggle, textWrapToggle, gridLinesToggle, lineStyleToggle, groupByToggle, freezeColumnsToggle และ *StorageKey ชื่อ [ชื่อหน้า] ทุกตัว
+
+${RULES}`,
+
+  'theme-purple': `${PREAMBLE}
+
+สร้างหน้า [ชื่อหน้า] ด้วยธีมสีม่วง (Siam Piwat Purple) เหมือนตัวอย่าง "ธีมสีม่วง (Siam Piwat Purple)" ของ SPGrid
+- เปิดธีมด้วย container.classList.add('spg-theme-purple') ที่ element ที่ส่งให้ new SPGrid() เท่านั้น ห้ามเขียน CSS ทับสีของไลบรารี
 - ข้อมูล: [ที่มา] คอลัมน์ [ชื่อ ชนิด และคอลัมน์ที่ sortable] คอลัมน์สถานะใช้ type: 'badge' กับ badges: { <ค่า>: { tone: 'success' | 'neutral' } }
 - ปุ่มการดำเนินการ [เช่น แก้ไข, ลบ] ใน _actions ใช้ className 'spg-action-warning spg-action-solid' (แก้ไข) และ 'spg-action-danger spg-action-solid' (ลบ) จัดการใน onAction (ลบต้องถามยืนยัน)
 - options: searchable, searchColumnSelect, searchButton, searchDebounce: 50, columnPicker, resetButton, striped: true, gridLines: 'both', labels: thaiLabels

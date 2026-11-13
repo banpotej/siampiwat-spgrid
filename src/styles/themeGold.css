@@ -1,0 +1,55 @@
+/*
+ * Siam Piwat Solid Gold theme (opt-in), brand colour #a28448. Add class "spg-theme-gold" (or data-spg-theme="gold") to
+ * .spg-root or any ancestor, e.g. the element you pass to new SPGrid(). It only sets the public --spg-* variables, so a
+ * grid without the class is untouched, and any --spg-* you set closer to the grid still wins.
+ * The accent is the brand gold itself, so the text on it is dark (--spg-accent-contrast): white on #a28448 is 3.5:1.
+ * Dark follows tokens.css: prefers-color-scheme, [data-theme="dark"] on an ancestor, [data-theme="light"] forces light.
+ * Pair it with options { striped: true, gridLines: 'both' }.
+ */
+:is(.spg-theme-gold, [data-spg-theme='gold']) {
+  --spg-border-color: #e3d8bf;
+  --spg-input-border: #cdbd97;
+  --spg-header-color: #3b3322;
+  --spg-header-bg-image: linear-gradient(#fff, #f1e8d2);
+  --spg-stripe-bg: #faf6ec;
+  --spg-row-hover-bg: #f5eedc;
+  --spg-sort-hover-bg: #efe5cc;
+  --spg-accent: #a28448;
+  --spg-accent-contrast: #0b1220;
+  --spg-focus-color: #a28448;
+  --spg-radius: 4px;
+}
+
+/* The header text follows --spg-header-color here (the default theme keeps it muted). */
+:is(.spg-theme-gold, [data-spg-theme='gold']) .spg-table th {
+  color: var(--spgi-header-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :is(.spg-theme-gold, [data-spg-theme='gold']):not([data-theme='light'] *, [data-theme='light']) {
+    --spg-bg: #17140d;
+    --spg-border-color: #4a4026;
+    --spg-input-border: #8a7a52;
+    --spg-header-color: #f6f0e0;
+    --spg-header-bg-image: linear-gradient(#211c10, #342c19);
+    --spg-stripe-bg: #1e1a0f;
+    --spg-row-hover-bg: #2b2415;
+    --spg-sort-hover-bg: #362d19;
+    --spg-accent: #d4b97a;
+    --spg-focus-color: #e0c98f;
+  }
+}
+
+[data-theme='dark'] :is(.spg-theme-gold, [data-spg-theme='gold']),
+:is(.spg-theme-gold, [data-spg-theme='gold'])[data-theme='dark'] {
+  --spg-bg: #17140d;
+  --spg-border-color: #4a4026;
+  --spg-input-border: #8a7a52;
+  --spg-header-color: #f6f0e0;
+  --spg-header-bg-image: linear-gradient(#211c10, #342c19);
+  --spg-stripe-bg: #1e1a0f;
+  --spg-row-hover-bg: #2b2415;
+  --spg-sort-hover-bg: #362d19;
+  --spg-accent: #d4b97a;
+  --spg-focus-color: #e0c98f;
+}

@@ -600,6 +600,24 @@ container.classList.add('spg-theme-lavender');
 new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
 ```
 
+#### ธีม Gold (Siam Piwat Solid Gold)
+
+ธีมสีทองประจำแบรนด์ `#a28448` (ไม่เปิดเอง เหมือน Lavender) เปิดด้วย class `spg-theme-gold` หรือ `data-spg-theme="gold"` ที่ `.spg-root` หรือ element แม่ ตั้งเฉพาะตัวแปร `--spg-*` สาธารณะ จึงไม่กระทบตารางที่ไม่ใช้ธีม และตัวแปรที่ตั้งใกล้ตารางกว่ายังมีผลก่อน ใช้สีทองเป็น accent โดยตรง ข้อความบนพื้นทองจึงเป็นสีเข้ม (`--spg-accent-contrast: #0b1220` ได้ 5.3:1 ส่วนตัวหนังสือสีทองบนพื้นขาวได้ 3.5:1 เหมาะกับไอคอน เส้น และตัวหนาใหญ่) มีชุดสีโหมดมืดตาม `prefers-color-scheme` / `data-theme="dark"`
+
+```js
+container.classList.add('spg-theme-gold');
+new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
+```
+
+#### ธีม Purple (Siam Piwat Purple)
+
+ธีมสีม่วงประจำแบรนด์ `#3a2d4b` (ไม่เปิดเอง เหมือน Lavender และ Gold) เปิดด้วย class `spg-theme-purple` หรือ `data-spg-theme="purple"` ที่ `.spg-root` หรือ element แม่ ตั้งเฉพาะตัวแปร `--spg-*` สาธารณะ จึงไม่กระทบตารางที่ไม่ใช้ธีม และตัวแปรที่ตั้งใกล้ตารางกว่ายังมีผลก่อน ใช้สีม่วงเป็น accent โดยตรง ข้อความบนพื้นม่วงจึงเป็นสีขาว (`--spg-accent-contrast: #ffffff` ได้ 12.4:1) โหมดมืดตาม `prefers-color-scheme` / `data-theme="dark"` เปลี่ยน accent เป็นม่วงอ่อน (`#c4b3dd`) และข้อความบน accent เป็นสีเข้ม
+
+```js
+container.classList.add('spg-theme-purple');
+new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
+```
+
 ### Methods
 
 - `setRows(rows)` – แทนที่ข้อมูลทั้งหมดและเรนเดอร์ใหม่ (การเรียงที่ใช้อยู่ยังคงอยู่)

@@ -15,8 +15,13 @@ main {
   font-size: 14px;
   line-height: 1.6;
 }
+/* The panels under the grid (description, prompt, source) are 16px apart, whichever of them are on the page. */
 .intro-note {
   margin: 24px 0 0;
+}
+.intro-note + #prompt,
+.intro-note + #source {
+  margin-top: 16px;
 }
 .intro h1 {
   margin: 0 0 12px;

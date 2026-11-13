@@ -1,0 +1,61 @@
+/*
+ * Siam Piwat Purple theme (opt-in), brand colour #3a2d4b. Add class "spg-theme-purple" (or data-spg-theme="purple") to
+ * .spg-root or any ancestor, e.g. the element you pass to new SPGrid(). It only sets the public --spg-* variables, so a
+ * grid without the class is untouched, and any --spg-* you set closer to the grid still wins.
+ * The accent is the brand purple itself, so the text on it is white (--spg-accent-contrast): 12.4:1 on #3a2d4b.
+ * Dark follows tokens.css: prefers-color-scheme, [data-theme="dark"] on an ancestor, [data-theme="light"] forces light.
+ * In dark the accent becomes a light lilac (the brand purple would vanish on the dark page), so the text on it is dark.
+ * Pair it with options { striped: true, gridLines: 'both' }.
+ */
+:is(.spg-theme-purple, [data-spg-theme='purple']) {
+  --spg-border-color: #ddd6e6;
+  --spg-input-border: #b9aecb;
+  --spg-header-color: #3a2d4b;
+  --spg-header-bg-image: linear-gradient(#fff, #ece7f3);
+  --spg-stripe-bg: #f8f6fb;
+  --spg-row-hover-bg: #f1edf6;
+  --spg-sort-hover-bg: #e8e1f0;
+  --spg-accent: #3a2d4b;
+  --spg-accent-contrast: #ffffff;
+  --spg-focus-color: #3a2d4b;
+  --spg-radius: 4px;
+}
+
+/* The header text follows --spg-header-color here (the default theme keeps it muted). */
+:is(.spg-theme-purple, [data-spg-theme='purple']) .spg-table th {
+  color: var(--spgi-header-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :is(.spg-theme-purple, [data-spg-theme='purple']):not(
+    [data-theme='light'] *,
+    [data-theme='light']
+  ) {
+    --spg-bg: #15111c;
+    --spg-border-color: #3f3450;
+    --spg-input-border: #7d6e96;
+    --spg-header-color: #f1ecf7;
+    --spg-header-bg-image: linear-gradient(#1d1727, #2e2440);
+    --spg-stripe-bg: #1b1623;
+    --spg-row-hover-bg: #261e32;
+    --spg-sort-hover-bg: #302640;
+    --spg-accent: #c4b3dd;
+    --spg-accent-contrast: #1a1325;
+    --spg-focus-color: #d3c5e8;
+  }
+}
+
+[data-theme='dark'] :is(.spg-theme-purple, [data-spg-theme='purple']),
+:is(.spg-theme-purple, [data-spg-theme='purple'])[data-theme='dark'] {
+  --spg-bg: #15111c;
+  --spg-border-color: #3f3450;
+  --spg-input-border: #7d6e96;
+  --spg-header-color: #f1ecf7;
+  --spg-header-bg-image: linear-gradient(#1d1727, #2e2440);
+  --spg-stripe-bg: #1b1623;
+  --spg-row-hover-bg: #261e32;
+  --spg-sort-hover-bg: #302640;
+  --spg-accent: #c4b3dd;
+  --spg-accent-contrast: #1a1325;
+  --spg-focus-color: #d3c5e8;
+}
