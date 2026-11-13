@@ -29,6 +29,24 @@ ${RULES}`,
 
 ${RULES}`,
 
+  'recent-receipts': `${PREAMBLE}
+
+สร้างหน้า [ชื่อหน้า เช่น รับเข้าล่าสุด] เป็นการ์ดรายการสั้น ๆ เหมือนตัวอย่าง "รับเข้าล่าสุด (Recent receipts)" ของ SPGrid
+- ชื่อการ์ดใส่เป็น title จำนวนรายการที่มุมขวาใช้ rowCount: true (ข้อความมาจาก labels.rowCount) ไม่มีแถวหัวตารางด้วย showHeader: false และ gridLines: 'horizontal' ใช้ labels: thaiLabels
+- ข้อมูล: [ที่มา] ฟิลด์ [รายการฟิลด์ เช่น code, name, category, qty, receivedAt (Date), status]
+- สองคอลัมน์: คอลัมน์ render สร้างข้อความหลายบรรทัดจากทั้งแถว (รหัสแบบ monospace, ชื่อตัวหนา, หมวด · จำนวน, เวลา "วันนี้ 17:40" / "เมื่อวาน 16:41" คำนวณเองใน render) และคอลัมน์ type: 'badge' align: 'right' กับ badges: { <ค่า>: { tone, label } }
+
+${RULES}`,
+
+  'status-summary': `${PREAMBLE}
+
+สร้างหน้า [ชื่อหน้า เช่น สรุปตามสถานะ] เป็นการ์ดสรุปแบบแถบบาร์ เหมือนตัวอย่าง "สรุปตามสถานะ (Status summary)" ของ SPGrid
+- ชื่อการ์ดใส่เป็น title บรรทัดรองใส่เป็น description ไม่มีแถวหัวตารางด้วย showHeader: false และไม่มีเส้นคั่นด้วย gridLines: 'none' ใช้ labels: thaiLabels
+- ข้อมูล: [ที่มา] หนึ่งแถวต่อสถานะ ฟิลด์ label, count, color
+- สามคอลัมน์: ชื่อสถานะ, แถบบาร์ที่สร้างด้วย render (รางสีจาง กับแถบสีที่ความกว้าง = count / ค่าสูงสุด คำนวณเป็นตัวเลข ส่วนสีผ่าน escapeHtml; count เป็น 0 ให้แสดงรางว่าง) และ count ชิดขวา (type: 'number', align: 'right')
+
+${RULES}`,
+
   worklist: `${PREAMBLE}
 
 สร้างหน้า [ชื่อหน้า เช่น รายการงาน] แสดงข้อมูลเป็นรายการ (ไม่ใช่ตารางหลายคอลัมน์) เหมือนตัวอย่าง "รายการงาน (Worklist)" ของ SPGrid

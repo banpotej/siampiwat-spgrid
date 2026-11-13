@@ -1,12 +1,3 @@
-/* Worklist example: a one-column list. The header row stays for screen readers but is not drawn. */
-.worklist .spg-table thead {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-
 /* The document header: a neutral band with its count right after the text. */
 .worklist .spg-table tbody tr.spg-group-row,
 .worklist .spg-table tbody tr.spg-group-row:hover {

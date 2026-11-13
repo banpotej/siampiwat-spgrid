@@ -4,7 +4,7 @@ test('landing page lists each example as a card', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('SPGrid');
   const cards = page.locator('#examples');
-  await expect(cards.getByRole('link')).toHaveCount(5);
+  await expect(cards.getByRole('link')).toHaveCount(7);
   await cards.getByRole('link', { name: /Purchase Order/ }).click();
   await expect(page).toHaveURL(/\/purchase-order\.html$/);
 });
@@ -276,6 +276,8 @@ test('the examples sit in one dropdown that lists every example and closes again
     'ใบสั่งซื้อ',
     'ธีมลาเวนเดอร์',
     'รายการงาน',
+    'รับเข้าล่าสุด',
+    'สรุปตามสถานะ',
     'ตั้งค่าจากโค้ด',
     'ปฏิทิน',
   ]);

@@ -22,6 +22,14 @@
   margin-inline-end: auto;
 }
 
+.spg-count {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--spgi-muted);
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
 .spg-title {
   margin: 0;
   color: var(--spgi-header-text);

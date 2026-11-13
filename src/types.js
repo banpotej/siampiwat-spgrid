@@ -173,6 +173,10 @@
  *   x on a chip removes that filter. Default false.
  * @property {string} [title] Name of the grid, shown at the start (left) of the toolbar as an `<h2 class="spg-title">`
  *   (escaped; the toolbar is rendered for it even without a search box). Default none.
+ * @property {boolean} [rowCount] Show how many rows match the search and filters (all pages, e.g. "5 รายการ") as a
+ *   `<span class="spg-count">` at the end of the toolbar (rendered for it even without a search box); the text is `labels.rowCount`. Default false.
+ * @property {boolean} [showHeader] Set `false` to hide the header row (it stays in the DOM, visually hidden, so screen
+ *   readers still read it); for a list-like grid with one `render` column. Default true.
  * @property {string} [description] Text under the grid name (escaped), shown in a strip below the toolbar; a button
  *   next to the name hides or shows it (starts shown). Default none.
  * @property {boolean} [resetButton] Add a "Reset view" button to the settings modal that calls `resetView()` (after asking, see

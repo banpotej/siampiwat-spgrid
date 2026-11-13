@@ -167,6 +167,8 @@ const grid = new SPGrid(document.getElementById('grid'), {
   ],
   gridLines: 'horizontal',
   title: 'Worklist — รออนุมัติ',
+  rowCount: true,
+  showHeader: false,
   searchable: true,
   searchColumnSelect: true,
   searchButton: true,

@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test';
 
-const PAGES = ['purchase-order', 'theme-lavender', 'worklist', 'calendar', 'view-settings'];
+const PAGES = [
+  'purchase-order',
+  'theme-lavender',
+  'worklist',
+  'recent-receipts',
+  'status-summary',
+  'calendar',
+  'view-settings',
+];
 
 for (const name of PAGES) {
   test(`${name}: the Claude Code prompt starts hidden and shows when opened`, async ({ page }) => {

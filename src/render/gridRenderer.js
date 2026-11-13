@@ -113,8 +113,9 @@ export class GridRenderer {
     // A calendar shows every event of the days it covers: no paging, no group headers.
     const shown = calendar ? { ...state, pageSize: null, groupBy: [] } : state;
     const view = computeView(shown, { locale: this.#locale, hidden });
-    const { host, status, summary, pagerHost } = this.#shell;
+    const { host, status, summary, pagerHost, count } = this.#shell;
     const { rows, paging } = view;
+    if (count) count.textContent = this.#labels.rowCount(view.total);
     host.innerHTML =
       calendar?.render(rows) ??
       renderTable(

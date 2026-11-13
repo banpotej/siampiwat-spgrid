@@ -68,6 +68,8 @@
  * @property {(count: number, group: GroupInfo) => string} [groupCount] Count in a group header (`groupBy`), given how
  *   many rows of the group are on the page and which group it is (`level`, `column`, `rows`), so each level can word
  *   its count differently; default '(3)'.
+ * @property {(count: number) => string} [rowCount] Text of the row counter (`rowCount` option), given how many rows match the
+ *   search and filters (all pages); default '12 rows'.
  * @property {(shown: number, total: number) => string} [filterSummary] Count shown beside the filter chips
  *   (`filterSummary`); default 'Found 12 of 250'.
  * @property {string} [calendarToday] Today button of the calendar (`calendar` option); default 'Today'.

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง: สรุปตามสถานะ (Status summary)</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/status-summary.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง: สรุปตามสถานะ (Status summary)</h1>
+      </header>
+      <div id="grid" class="summary"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              การ์ดสรุปเป็นแถบบาร์: ชื่อการ์ดเป็น <code>title</code> และบรรทัดรองเป็น
+              <code>description</code> ไม่มีแถวหัวตาราง (<code>showHeader: false</code>)
+              และไม่มีเส้นคั่น (<code>gridLines: 'none'</code>) แต่ละแถวมีสามคอลัมน์: ชื่อสถานะ
+              แถบบาร์ที่สร้างด้วย <code>render</code> (ความกว้างคือสัดส่วนของจำนวนต่อค่าสูงสุด
+              สีมาจากข้อมูลและผ่าน <code>escapeHtml</code>) และจำนวนชิดขวา จำนวน 0 แสดงรางว่าง
+            </p>
+            <pre tabindex="0"><code>new SPGrid(grid, {
+  columns, rows, title: 'สรุป 2 ปี แยกตามสถานะ',
+  description: 'นับเป็นรายการ — แยกตามสถานะปัจจุบัน (ย้อนหลัง 2 ปี)',
+  showHeader: false, gridLines: 'none', labels: thaiLabels,
+});</code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="prompt" data-prompt="status-summary" aria-labelledby="prompt-title">
+        <details class="source-toggle">
+          <summary><h2 id="prompt-title">Prompt สำหรับ Claude Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">Claude Code prompt</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="status-summary.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/status-summary.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/status-summary.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/prompt-card.js"></script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

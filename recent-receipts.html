@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ตัวอย่าง: รับเข้าล่าสุด (Recent receipts)</title>
+    <link rel="stylesheet" href="/examples/page.css" />
+    <link rel="stylesheet" href="/examples/recent-receipts.css" />
+  </head>
+  <body>
+    <main>
+      <nav id="site-nav"></nav>
+      <header class="intro">
+        <h1>ตัวอย่าง: รับเข้าล่าสุด (Recent receipts)</h1>
+      </header>
+      <div id="grid" class="receipts"></div>
+      <pre id="log" role="status" aria-live="polite"></pre>
+      <section class="intro intro-note" aria-label="คำอธิบายตัวอย่าง">
+        <details>
+          <summary>คำอธิบายตัวอย่าง</summary>
+          <div class="intro-body">
+            <p>
+              การ์ดรายการสั้น ๆ: ชื่อการ์ดเป็น <code>title</code> จำนวนรายการที่มุมขวาเป็น
+              <code>rowCount: true</code> (ข้อความมาจาก <code>labels.rowCount</code>)
+              ไม่มีแถวหัวตารางเพราะตั้ง <code>showHeader: false</code> แต่ละแถวมีสองคอลัมน์: คอลัมน์
+              <code>render</code> สร้างข้อความหลายบรรทัด (รหัส ชื่อ หมวด · จำนวน เวลา) และคอลัมน์
+              <code>type: 'badge'</code> ที่ชิดขวา เวลาแบบ "วันนี้ 17:40" / "เมื่อวาน 16:41"
+              คำนวณในฟังก์ชัน <code>render</code> เองจากฟิลด์ที่เป็น Date
+            </p>
+            <pre tabindex="0"><code>new SPGrid(grid, {
+  columns, rows, title: 'รับเข้าล่าสุด (นับเป็นรายการ)',
+  rowCount: true, showHeader: false, gridLines: 'horizontal',
+  labels: thaiLabels,
+});</code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="prompt" data-prompt="recent-receipts" aria-labelledby="prompt-title">
+        <details class="source-toggle">
+          <summary><h2 id="prompt-title">Prompt สำหรับ Claude Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">Claude Code prompt</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+      <section id="source" data-src="recent-receipts.js" aria-labelledby="source-title">
+        <details class="source-toggle">
+          <summary><h2 id="source-title">Source Code</h2></summary>
+          <div class="source-card">
+            <div class="source-head">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="file">examples/recent-receipts.js</span>
+              <button type="button">คัดลอก</button>
+            </div>
+            <pre tabindex="0"><code></code></pre>
+          </div>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/examples/recent-receipts.js"></script>
+    <script type="module">
+      import { renderNav } from '/examples/nav.js';
+      renderNav();
+    </script>
+    <script type="module" src="/examples/prompt-card.js"></script>
+    <script type="module" src="/examples/source-viewer.js"></script>
+  </body>
+</html>

@@ -41,6 +41,8 @@ export default defineConfig({
         'purchase-order.html',
         'theme-lavender.html',
         'worklist.html',
+        'recent-receipts.html',
+        'status-summary.html',
         'view-settings.html',
         'calendar.html',
       ].map((f) => resolve(f)),

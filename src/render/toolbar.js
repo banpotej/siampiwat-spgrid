@@ -68,7 +68,7 @@ const toolButton = (className, label, icon, icons) =>
  *   searchable: boolean, searchLabel: string, clearLabel: string, searchButtonLabel: string | null, exportLabel: string | null, advancedLabel: string | null, viewLabel: string | null,
  *   resizable: boolean, wrapped: boolean, title: string | null, description: string | null, toggleLabel: string, refreshLabel: string | null, groupToggleLabel: string | null, summary: boolean,
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
- *   settingsLabel: string | null,
+ *   settingsLabel: string | null, rowCount: boolean, showHeader: boolean,
  *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, lineStyle: import('../types.js').LineStyle, compact: boolean,
  *   stickyHeader: boolean, scroll: boolean, freezeColumns: number,
  * }} opts
@@ -97,6 +97,8 @@ export function renderShell({
   dateFromLabel,
   dateToLabel,
   settingsLabel,
+  rowCount,
+  showHeader,
   icons,
   striped,
   gridLines,
@@ -140,13 +142,17 @@ export function renderShell({
       ? `<div class="spg-heading">${title ? `<h2 class="spg-title">${escapeHtml(title)}</h2>` : ''}${toggle}</div>`
       : '';
   const desc = description ? `<div class="spg-desc">${escapeHtml(description)}</div>` : '';
-  const toolbar = group || heading ? `<div class="spg-toolbar">${heading}${group}</div>` : '';
+  // The row counter (text filled in on every render) closes the toolbar at its end edge.
+  const count = rowCount ? '<span class="spg-count" aria-live="polite"></span>' : '';
+  const toolbar =
+    group || heading || count ? `<div class="spg-toolbar">${heading}${group}${count}</div>` : '';
   const root = [
     'spg-root',
     compact ? 'spg-compact' : '',
     striped ? 'spg-striped' : '',
     wrapped ? '' : 'spg-nowrap',
     resizable ? 'spg-resizable' : '',
+    showHeader ? '' : 'spg-no-head',
     gridLinesClass(gridLines),
     lineStyleClass(lineStyle),
     stickyHeader ? 'spg-sticky' : '',
@@ -203,6 +209,8 @@ export function mountShell(container, options, labels, icons) {
     dateFromLabel: labels.dateFrom,
     dateToLabel: labels.dateTo,
     settingsLabel: hasSettings ? labels.columns : null,
+    rowCount: options.rowCount === true,
+    showHeader: options.showHeader !== false,
     icons,
     striped: loadFlag(STRIPED_PREFIX, options.stripedStorageKey, options.striped === true),
     wrapped: loadFlag(TEXT_WRAP_PREFIX, options.textWrapStorageKey, options.textWrap !== false),
@@ -238,6 +246,7 @@ export function mountShell(container, options, labels, icons) {
     groupColumns: options.groupByToggle === true ? dataColumns(options.columns) : null,
     view: createViewSettings(container.querySelector('.spg-root'), options),
     toolbar: /** @type {HTMLElement | null} */ (container.querySelector('div.spg-toolbar')),
+    count: container.querySelector('span.spg-count'),
     columnPicker: /** @type {HTMLElement | null} */ (
       container.querySelector('div.spg-toolbar:has(.spg-columns-btn)')
     ),

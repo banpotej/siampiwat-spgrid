@@ -27,6 +27,20 @@ export const EXAMPLES = [
       'แสดงข้อมูลเป็นรายการ: คอลัมน์เดียวหลายบรรทัดด้วย render หัวกลุ่มพร้อมจำนวน "n งาน" และซ่อนหัวตาราง',
   },
   {
+    href: '/recent-receipts.html',
+    title: 'รับเข้าล่าสุด (Recent receipts)',
+    nav: 'รับเข้าล่าสุด',
+    description:
+      'การ์ดรายการสั้น ๆ: ชื่อการ์ดกับจำนวนรายการ (rowCount) ไม่มีหัวตาราง (showHeader: false) เซลล์หลายบรรทัดด้วย render และ badge ชิดขวา',
+  },
+  {
+    href: '/status-summary.html',
+    title: 'สรุปตามสถานะ (Status summary)',
+    nav: 'สรุปตามสถานะ',
+    description:
+      'การ์ดสรุปเป็นแถบบาร์: ชื่อสถานะ แถบความยาวตามจำนวนที่สร้างด้วย render และตัวเลขชิดขวา ไม่มีหัวตารางและเส้นคั่น',
+  },
+  {
     href: '/view-settings.html',
     title: 'ตั้งค่าหน้าตาจากโค้ด',
     nav: 'ตั้งค่าจากโค้ด',

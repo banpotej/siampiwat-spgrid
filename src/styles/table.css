@@ -241,3 +241,12 @@
   outline: 2px solid var(--spgi-focus);
   outline-offset: -2px;
 }
+
+/* `showHeader: false`: the header row is not drawn but stays for screen readers. */
+.spg-no-head .spg-table thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

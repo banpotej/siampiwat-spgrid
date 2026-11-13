@@ -1,0 +1,60 @@
+/* Status summary example: a card whose rows are a label, a bar and a count. */
+.summary {
+  max-width: 40em;
+  overflow: hidden;
+  border: 1px solid var(--spg-border-color, #e5e7eb);
+  border-radius: 16px;
+  background: var(--spg-bg, #fff);
+}
+.summary .spg-toolbar {
+  padding: 1.1em 1.5em 0.2em;
+}
+.summary .spg-title {
+  font-size: 1.1em;
+  font-weight: 700;
+}
+.summary .spg-desc {
+  border: 0;
+  padding: 0 1.5em 0.6em;
+  color: var(--spg-muted-color, #4b5563);
+  font-size: 0.85em;
+}
+.summary .spg-table td {
+  padding: 0.3em 0.5em;
+  border: 0;
+  vertical-align: middle;
+}
+.summary .spg-table td:first-child {
+  width: 12em;
+  padding-inline-start: 1.5em;
+  color: var(--spg-muted-color, #4b5563);
+  font-size: 0.9em;
+}
+.summary .spg-table td:last-child {
+  width: 5em;
+  padding-inline-end: 1.5em;
+  text-align: right;
+  font-weight: 700;
+}
+
+.summary .spg-table {
+  width: 100%;
+}
+.bar-track {
+  min-width: 8em;
+  height: 1.4em;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spg-muted-color, #4b5563) 10%, transparent);
+}
+.bar-fill {
+  width: var(--w);
+  min-width: 1.4em;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--c);
+}
+/* A count of 0 draws an empty track, not a dot. */
+.bar-fill[style*='--w:0%'] {
+  display: none;
+}
