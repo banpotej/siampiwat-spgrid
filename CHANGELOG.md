@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - หน้าตัวอย่าง "ธีมลาเวนเดอร์" (`/theme-lavender.html`) เปลี่ยนเป็น "ธีมสีเริ่มต้น (Default)" (`/theme-default.html`) ไม่ใส่ class ธีมใดๆ ธีม `spg-theme-lavender` ในไลบรารียังใช้ได้เหมือนเดิม
 
+## [2.0.17] - 2026-11-13
+
+### Changed
+
+- หน้าเว็บ (`index.html`) และ README แสดงเวอร์ชัน 2.0.17 ในตัวอย่างคำสั่งติดตั้งและ CDN ไม่มีการเปลี่ยนแปลงใน `src/`
+
 ## [2.0.15] - 2026-11-13
 
 ### Added
