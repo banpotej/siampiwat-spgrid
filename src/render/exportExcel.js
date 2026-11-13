@@ -77,9 +77,36 @@ export function exportExcel(
   { locale, hidden, filename = 'export.xlsx', sheetName, columns, search },
 ) {
   const blob = buildExcelBlob(state, { locale, sheetName, hidden, columns, search });
-  downloadBlob(blob, /\.xlsx$/i.test(filename) ? filename : `${filename}.xlsx`);
+  downloadBlob(blob, cleanFilename(filename));
   return blob;
 }
+
+// eslint-disable-next-line no-control-regex
+const UNSAFE_NAME_CHARS = /[\\/:*?"<>|\u0000-\u001f]/g;
+
+/**
+ * A safe download name: characters a file name cannot hold are dropped, `.xlsx` is added when missing, and a name
+ * that is empty after that falls back to 'export.xlsx'.
+ *
+ * @param {unknown} name
+ * @returns {string}
+ */
+export function cleanFilename(name) {
+  const stem = String(name ?? '')
+    .replace(UNSAFE_NAME_CHARS, '')
+    .trim()
+    .replace(/\.xlsx$/i, '')
+    .trim();
+  return `${stem || 'export'}.xlsx`;
+}
+
+/**
+ * The name the `exportFilename` option gives (a string, or a function called for each export); undefined when unset.
+ *
+ * @param {string | (() => string) | undefined} option
+ * @returns {string | undefined}
+ */
+export const resolveFilename = (option) => (typeof option === 'function' ? option() : option);
 
 /**
  * @param {Blob} blob

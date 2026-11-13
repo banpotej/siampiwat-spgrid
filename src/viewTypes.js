@@ -14,7 +14,7 @@
 
 /**
  * @typedef {object} ExportOptions
- * @property {string} [filename] Download name; default 'export.xlsx' (`.xlsx` is appended when missing).
+ * @property {string} [filename] Download name; default the `exportFilename` option, else 'export.xlsx' (`.xlsx` is appended when missing; characters a file name cannot hold are dropped).
  * @property {string} [sheetName] Worksheet name; default 'Sheet1'. Characters Excel forbids are replaced.
  * @property {string[]} [columns] Keys of the data columns to export; default every data column. They come out in the
  *   grid's column order, whatever the order here. Throws a RangeError for an empty list or a key that is not a data column.

@@ -162,6 +162,10 @@
  *   clicked or Enter is pressed in the box, not while typing (`searchDebounce` is ignored). Default false.
  * @property {boolean} [exportButton] Render an "Export Excel" button in the toolbar (works without `searchable`)
  *   that calls `exportExcel()`. Default false.
+ * @property {string | (() => string)} [exportFilename] Download name of an export (`.xlsx` is added when missing; characters a
+ *   file name cannot hold are dropped): the Export button's and `exportExcel()`'s when it gives no `filename`. A function is called
+ *   for each export, e.g. to put the date in. With `exportColumnSelect` the modal's file name box starts with it and the user can
+ *   change it. Default 'export.xlsx'.
  * @property {boolean} [exportColumnSelect] With `exportButton`: the button first opens a modal where the user ticks the
  *   fields (data columns) to export and can narrow the rows with a search box (starting with the grid's search text),
  *   then calls `exportExcel({ columns, search })`. Default false (exports every column and the grid's rows).

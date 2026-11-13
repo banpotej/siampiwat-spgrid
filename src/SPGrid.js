@@ -61,7 +61,7 @@ export class SPGrid {
       this.render();
       this.#events.emit('columnsChange', keys);
     });
-    this.#export = exportHost(() => this.#state.get(), options.locale, this.#hidden);
+    this.#export = exportHost(() => this.#state.get(), options, this.#hidden);
     this.#unbindControls = bindGridControls(this, shell, options, labels, {
       applyFilter: (filter) => this.#filter.apply(filter),
       ...this.#export,

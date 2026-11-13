@@ -6,7 +6,7 @@ import { askConfirm } from './confirm.js';
 import { bindAdvancedFilter } from './advancedFilter.js';
 import { bindControls } from './controls.js';
 import { openExportDialog } from './exportDialog.js';
-import { exportExcel, exportRows } from './exportExcel.js';
+import { cleanFilename, exportExcel, exportRows, resolveFilename } from './exportExcel.js';
 import { previewCount } from './conditionPreview.js';
 
 const DEFAULT_DEBOUNCE = 200;
@@ -15,17 +15,23 @@ const DEFAULT_DEBOUNCE = 200;
  * What the toolbar needs to count and list the rows an export would hold, bound to the grid's live state.
  *
  * @param {() => import('../types.js').GridState} state
- * @param {string | undefined} locale
+ * @param {import('../types.js').SPGridOptions} options `locale` and `exportFilename` (the download name when an export gives none).
  * @param {{ get: () => string[] }} hidden
  */
-export const exportHost = (state, locale, hidden) => ({
+export const exportHost = (state, { locale, exportFilename: filename }, hidden) => ({
   columns: () => state().columns,
   /** @param {import('../types.js').GridState['conditions']} conditions */
   previewCount: (conditions) => previewCount(state(), { locale, hidden: hidden.get() }, conditions),
   /** @param {string | undefined} search */
   exportRows: (search) => exportRows(state(), { locale, hidden: hidden.get(), search }),
   /** @param {import('../types.js').ExportOptions} options */
-  exportFile: (options) => exportExcel(state(), { locale, hidden: hidden.get(), ...options }),
+  exportFile: (options) =>
+    exportExcel(state(), {
+      locale,
+      hidden: hidden.get(),
+      ...(filename !== undefined && { filename: resolveFilename(filename) }),
+      ...options,
+    }),
 });
 
 /**
@@ -75,9 +81,20 @@ export function bindGridControls(grid, shell, options, labels, host) {
         previewEmpty: labels.exportPreviewEmpty,
       };
       const search = { value: grid.getFilter()?.search ?? '', rows: host.exportRows };
-      openExportDialog(/** @type {HTMLElement} */ (root), columns, dialog, search, (choice) => {
-        if (choice) grid.exportExcel(choice);
-      });
+      const file = {
+        label: labels.exportFilename,
+        value: cleanFilename(resolveFilename(options.exportFilename)).replace(/\.xlsx$/i, ''),
+      };
+      openExportDialog(
+        /** @type {HTMLElement} */ (root),
+        columns,
+        dialog,
+        search,
+        (choice) => {
+          if (choice) grid.exportExcel(choice);
+        },
+        file,
+      );
     },
     onRefresh: () => host.emit('refresh', undefined),
     onView: () => grid.setView(grid.getView() === 'grid' ? 'calendar' : 'grid'),

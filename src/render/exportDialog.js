@@ -32,6 +32,7 @@ export const PREVIEW_ROWS = 10;
  * @typedef {object} ExportChoice
  * @property {string[]} columns Ticked column keys.
  * @property {string} [search] The box's text, only when the user changed it from `ExportSearch.value`.
+ * @property {string} [filename] The file name box's text, only when the user changed it and left it filled.
  */
 
 /**
@@ -44,9 +45,10 @@ export const PREVIEW_ROWS = 10;
  * @param {ExportDialogLabels} labels
  * @param {ExportSearch} rowSearch
  * @param {(choice: ExportChoice | null) => void} onClose Called once, with the choice on Export and null otherwise.
+ * @param {{ label: string, value: string }} [file] The file name box: its label and the name it starts with (no extension).
  * @returns {() => void} Dismiss the dialog (as Cancel).
  */
-export function openExportDialog(root, columns, labels, rowSearch, onClose) {
+export function openExportDialog(root, columns, labels, rowSearch, onClose, file) {
   const id = `spg-export-${++seq}`;
   const rows = columns
     .map(
@@ -60,6 +62,9 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
     `<div class="spg-modal-box spg-settings spg-export-dialog" role="dialog" aria-modal="true" aria-labelledby="${id}">` +
     `<h2 class="spg-modal-title" id="${id}">${escapeHtml(labels.title)}</h2>` +
     `<div class="spg-settings-body"><section>` +
+    (file
+      ? `<label class="spg-settings-field"><span>${escapeHtml(file.label)}</span><input type="text" class="spg-export-name" autocomplete="off" spellcheck="false"></label>`
+      : '') +
     `<label class="spg-settings-field"><span>${escapeHtml(labels.search)}</span><input type="search" class="spg-export-search" autocomplete="off"></label>` +
     `<p class="spg-export-count" aria-live="polite"></p>` +
     `<div class="spg-export-preview" tabindex="0"></div>` +
@@ -81,6 +86,15 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
   const input = /** @type {HTMLInputElement} */ (overlay.querySelector('.spg-export-search'));
   const countLine = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-count'));
   input.value = rowSearch.value;
+  const nameInput = /** @type {HTMLInputElement | null} */ (
+    overlay.querySelector('.spg-export-name')
+  );
+  if (nameInput && file) nameInput.value = file.value;
+  /** The typed name, only when it differs from the starting one and is not empty. */
+  const typedName = () => {
+    const name = nameInput?.value.trim();
+    return name && name !== file?.value ? name : undefined;
+  };
   const changed = () => (input.value === rowSearch.value ? undefined : input.value);
   const previewBox = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-preview'));
   const moreLine = /** @type {HTMLElement} */ (overlay.querySelector('.spg-export-more'));
@@ -120,7 +134,16 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
     overlay.remove();
     opener?.focus?.();
     const search = changed();
-    onClose(exportNow ? { columns: keys, ...(search !== undefined && { search }) } : null);
+    const filename = typedName();
+    onClose(
+      exportNow
+        ? {
+            columns: keys,
+            ...(search !== undefined && { search }),
+            ...(filename !== undefined && { filename }),
+          }
+        : null,
+    );
   };
   /** @param {KeyboardEvent} event */
   const onKey = (event) => {
@@ -146,12 +169,14 @@ export function openExportDialog(root, columns, labels, rowSearch, onClose) {
     syncCount();
   });
   input.addEventListener('input', syncCount);
-  input.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && !okBtn.disabled) {
-      event.preventDefault();
-      close(true);
-    }
-  });
+  for (const field of [input, nameInput]) {
+    field?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !okBtn.disabled) {
+        event.preventDefault();
+        close(true);
+      }
+    });
+  }
   for (const button of overlay.querySelectorAll('[data-bulk]')) {
     button.addEventListener('click', () => {
       const all = /** @type {HTMLElement} */ (button).dataset.bulk === 'all';

@@ -38,6 +38,7 @@
  *   filter chips; default 'contains', 'at least', 'between', ...
  * @property {string} [conditionAnd] Word between the parts of an AND group in a filter chip; default 'and'.
  * @property {string} [conditionOr] Word between the parts of an OR group in a filter chip; default 'or'.
+ * @property {string} [exportFilename] Label of the file name box in that modal; default 'File name'.
  * @property {string} [exportSearch] Label of the search box in that modal, which narrows the rows to export; default 'Rows to export (search)'.
  * @property {(count: number) => string} [exportRowCount] Line under that search box; default '12 rows will be exported'.
  * @property {(more: number) => string} [exportPreviewMore] Line under the preview table when more rows follow; default '… and 50 more rows'.
