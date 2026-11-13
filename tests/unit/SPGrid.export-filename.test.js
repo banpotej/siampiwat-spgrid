@@ -50,7 +50,7 @@ describe('exportFilename option', () => {
 
   it('keeps an .xlsx the name already has, whatever its case', () => {
     make({ exportFilename: 'a.XLSX' }).grid.exportExcel();
-    expect(clicked).toEqual(['a.xlsx']);
+    expect(clicked).toEqual(['a.XLSX']);
   });
 
   it('is called for each export when it is a function', () => {

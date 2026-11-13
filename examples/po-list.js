@@ -104,6 +104,8 @@ const grid = new SPGrid(document.getElementById('grid'), {
   searchable: true,
   exportButton: true,
   exportColumnSelect: true,
+  // The download name, with today's date (called for each export). The dialog's "ชื่อไฟล์" box starts with it.
+  exportFilename: () => `purchase-orders-${new Date().toISOString().slice(0, 10)}`,
   advancedFilter: true,
   columnPicker: true,
   filterSummary: true,

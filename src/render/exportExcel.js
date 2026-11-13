@@ -92,12 +92,11 @@ const UNSAFE_NAME_CHARS = /[\\/:*?"<>|\u0000-\u001f]/g;
  * @returns {string}
  */
 export function cleanFilename(name) {
-  const stem = String(name ?? '')
+  const clean = String(name ?? '')
     .replace(UNSAFE_NAME_CHARS, '')
-    .trim()
-    .replace(/\.xlsx$/i, '')
     .trim();
-  return `${stem || 'export'}.xlsx`;
+  if (/\.xlsx$/i.test(clean) && clean.length > 5) return clean;
+  return `${clean.replace(/\.xlsx$/i, '') || 'export'}.xlsx`;
 }
 
 /**

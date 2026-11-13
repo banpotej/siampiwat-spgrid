@@ -268,3 +268,22 @@ test('a row opens its details on double-click or Enter, and looks clickable', as
   await row.getByRole('button', { name: 'View' }).dispatchEvent('dblclick');
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
+
+test('the export is named by exportFilename, and the dialog lets the user change the name', async ({
+  page,
+}) => {
+  await page.goto('/purchase-order.html');
+  await page.locator('button.spg-export').click();
+  const name = page.locator('.spg-export-name');
+  await expect(name).toHaveValue(/^purchase-orders-\d{4}-\d{2}-\d{2}$/);
+
+  const first = page.waitForEvent('download');
+  await page.locator('.spg-modal-ok').click();
+  expect((await first).suggestedFilename()).toMatch(/^purchase-orders-\d{4}-\d{2}-\d{2}\.xlsx$/);
+
+  await page.locator('button.spg-export').click();
+  await name.fill('my-report');
+  const second = page.waitForEvent('download');
+  await page.locator('.spg-modal-ok').click();
+  expect((await second).suggestedFilename()).toBe('my-report.xlsx');
+});
