@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Calendar week view: overlapping events are too narrow to read, so the hovered or focused one now expands to the full day width above its neighbours.
+
+## [2.0.14] - 2026-11-13
+
+### Changed
+
+- Site page (`index.html`) and README now show version 2.0.14 in the install and CDN snippets. No `src/` change.
+
 ## [2.0.13] - 2026-11-13
 
 ### Added

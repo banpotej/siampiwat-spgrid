@@ -246,7 +246,7 @@ export class CalendarView {
   #box(seg, offset, total) {
     const top = pct((seg.from - offset) / total);
     const height = pct((seg.to - seg.from) / total);
-    return ` style="top:${top};height:${height};left:${pct(seg.col / seg.cols)};width:${pct(1 / seg.cols)}"`;
+    return ` style="top:${top};height:${height};--spg-cal-h:${height};left:${pct(seg.col / seg.cols)};width:${pct(1 / seg.cols)}"`;
   }
 
   /** @param {number[]} days @param {CalendarEvent[]} events */

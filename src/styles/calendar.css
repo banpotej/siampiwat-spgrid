@@ -179,6 +179,29 @@
   filter: brightness(0.97);
 }
 
+/* Side-by-side boxes are too narrow to read: the hovered or focused one rises over its neighbours at full width. */
+.spg-cal-col > .spg-cal-event:hover,
+.spg-cal-col > .spg-cal-event:focus-visible {
+  z-index: 3;
+  left: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: var(--spg-cal-h);
+  overflow: visible;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+
+.spg-cal-col > .spg-cal-event.is-short:hover .spg-cal-event-title,
+.spg-cal-col > .spg-cal-event.is-short:focus-visible .spg-cal-event-title {
+  overflow: visible;
+  white-space: normal;
+}
+
+.spg-cal-col > .spg-cal-event.is-short:hover .spg-cal-event-sub,
+.spg-cal-col > .spg-cal-event.is-short:focus-visible .spg-cal-event-sub {
+  display: block;
+}
+
 .spg-cal-event-title {
   font-weight: 600;
   overflow-wrap: anywhere;

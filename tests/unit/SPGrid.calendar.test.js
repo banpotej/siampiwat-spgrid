@@ -101,6 +101,14 @@ describe('calendar mode', () => {
     ]);
   });
 
+  it('keeps each box height in a variable so a hovered box can grow back to full width', () => {
+    const { el } = make();
+    const box = /** @type {HTMLElement} */ (
+      el.querySelector('[data-day="2026-11-10"] .spg-cal-event')
+    );
+    expect(box.style.getPropertyValue('--spg-cal-h')).toBe(box.style.height);
+  });
+
   it('does not use the table options: no pager, no group headers', () => {
     const { el } = make({ pageSize: 2, groupBy: ['place'] });
     expect(el.querySelector('.spg-pager')).toBeNull();
