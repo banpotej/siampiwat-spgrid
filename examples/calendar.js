@@ -145,6 +145,7 @@ const grid = new SPGrid(container, {
     subtitle: 'place',
     date: '2026-11-11',
     hours: [9, 17],
+    views: ['agenda', 'day', 'workWeek', 'week', 'month'],
   },
   // A click on an event (or Enter on it) reports its row.
   onRowActivate: ({ row }) => {

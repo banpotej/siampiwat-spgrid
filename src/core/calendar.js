@@ -11,7 +11,10 @@ export const CALENDAR_VIEWS = /** @type {CalendarViewName[]} */ ([
   'day',
   'workWeek',
   'week',
+  'month',
 ]);
+/** The views offered when `calendar.views` is not set ('month' is opt-in). */
+export const DEFAULT_VIEWS = CALENDAR_VIEWS.filter((v) => v !== 'month');
 
 const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
 const DEFAULT_MINUTES = 30; // an event without an end (or ending before it starts)
@@ -47,7 +50,8 @@ export function addDays(time, count) {
 
 /**
  * The days a view shows, as local midnights: one for 'day', else the week around `anchor` (Monday to Friday for
- * 'workWeek'). 'agenda' lists the same days as 'week'.
+ * 'workWeek'). 'agenda' lists the same days as 'week'. 'month' gives whole weeks, from the one holding the 1st to the one
+ * holding the last day of the month.
  *
  * @param {CalendarViewName} view
  * @param {number} anchor Any moment inside the day or week to show.
@@ -58,6 +62,14 @@ export function visibleDays(view, anchor, firstDay = 0) {
   const day = startOfDay(anchor);
   if (view === 'day') return [day];
   const offset = (new Date(day).getDay() - firstDay + 7) % 7;
+  if (view === 'month') {
+    const date = new Date(day);
+    const gridStart = addDays(day, -date.getDate() + 1);
+    const gridOffset = (new Date(gridStart).getDay() - firstDay + 7) % 7;
+    const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime();
+    const weeks = Math.ceil((gridOffset + new Date(monthEnd).getDate()) / 7);
+    return Array.from({ length: weeks * 7 }, (_, i) => addDays(gridStart, i - gridOffset));
+  }
   const first = addDays(day, -offset);
   const week = Array.from({ length: 7 }, (_, i) => addDays(first, i));
   return view === 'workWeek' ? week.filter((d) => ![0, 6].includes(new Date(d).getDay())) : week;
@@ -67,9 +79,18 @@ export function visibleDays(view, anchor, firstDay = 0) {
  * @param {CalendarViewName} view
  * @param {number} anchor
  * @param {1 | -1} direction
- * @returns {number} One day away for 'day', else one week.
+ * @returns {number} One day away for 'day', one month for 'month' (the day number is kept, or the month's last day), else
+ *   one week.
  */
 export function shiftAnchor(view, anchor, direction) {
+  if (view === 'month') {
+    const date = new Date(anchor);
+    const target = new Date(date.getFullYear(), date.getMonth() + direction, 1);
+    const last = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+    target.setHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+    target.setDate(Math.min(date.getDate(), last));
+    return target.getTime();
+  }
   return addDays(anchor, (view === 'day' ? 1 : 7) * direction);
 }
 

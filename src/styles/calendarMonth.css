@@ -1,0 +1,103 @@
+/* Month: weekday names, then a cell per day with its first events as one-line chips. */
+.spg-cal-month {
+  border: 1px solid var(--spgi-border);
+  border-radius: var(--spgi-radius);
+  overflow: hidden;
+}
+
+.spg-cal-month-head,
+.spg-cal-month-body {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.spg-cal-month-head {
+  border-bottom: 1px solid var(--spgi-border);
+  background: var(--spgi-header-bg);
+  color: var(--spgi-header-text);
+}
+
+.spg-cal-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  min-height: 6.5rem;
+  padding: 4px;
+  border-inline-start: 1px solid var(--spgi-border);
+  border-top: 1px solid var(--spgi-border);
+}
+
+.spg-cal-cell:nth-child(7n + 1) {
+  border-inline-start: 0;
+}
+
+.spg-cal-cell:nth-child(-n + 7) {
+  border-top: 0;
+}
+
+.spg-cal-cell.is-outside {
+  color: var(--spgi-muted);
+  background: color-mix(in srgb, var(--spgi-muted) 6%, var(--spgi-bg));
+}
+
+.spg-cal-cell.is-today {
+  background: color-mix(in srgb, var(--spgi-accent) 6%, var(--spgi-bg));
+}
+
+.spg-cal-cell > .spg-cal-daynum {
+  align-self: flex-end;
+  padding: 0 4px;
+  font-size: 0.85em;
+}
+
+.spg-cal-cell.is-today > .spg-cal-daynum {
+  color: var(--spgi-accent);
+  font-weight: 700;
+}
+
+.spg-cal-chip {
+  display: block;
+  padding: 1px 4px;
+  border-inline-start-width: 3px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.spg-cal-chip-time {
+  color: var(--spgi-muted);
+}
+
+.spg-cal-more {
+  align-self: flex-start;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--spgi-muted);
+  font: inherit;
+  font-size: 0.8em;
+}
+
+button.spg-cal-more {
+  cursor: pointer;
+}
+
+button.spg-cal-more:hover {
+  color: var(--spgi-accent);
+  text-decoration: underline;
+}
+
+button.spg-cal-more:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+}
+
+@media (max-width: 640px) {
+  .spg-cal-cell {
+    min-height: 4.5rem;
+  }
+
+  .spg-cal-chip-time {
+    display: none;
+  }
+}

@@ -51,6 +51,19 @@ describe('days', () => {
     expect(dayNumbers(visibleDays('week', at(8), 1))).toEqual([2, 3, 4, 5, 6, 7, 8]); // Sunday: the week before
   });
 
+  it('shows whole weeks around the month, and moves by a month', () => {
+    // November 2026: Sunday the 1st to Monday the 30th, so five weeks from Sun 1 (Oct 2026 ends Sat 31).
+    const nov = dayNumbers(visibleDays('month', at(12)));
+    expect(nov).toHaveLength(35);
+    expect(nov[0]).toBe(1);
+    expect(nov[34]).toBe(5); // Dec 5
+    expect(dayNumbers(visibleDays('month', at(12), 1))[0]).toBe(26); // Monday first: Oct 26
+    expect(dayNumbers(visibleDays('month', at(12), 1))).toHaveLength(42); // the 30th is a Monday: six weeks
+    expect(new Date(shiftAnchor('month', at(12), 1)).getMonth()).toBe(11);
+    expect(new Date(shiftAnchor('month', new Date(2026, 0, 31).getTime(), 1)).getDate()).toBe(28); // Feb has no 31st
+    expect(new Date(shiftAnchor('month', at(12), -1)).getMonth()).toBe(9);
+  });
+
   it('moves by a day in the day view and by a week otherwise', () => {
     expect(shiftAnchor('day', at(12), 1)).toBe(at(13));
     expect(shiftAnchor('day', at(12), -1)).toBe(at(11));

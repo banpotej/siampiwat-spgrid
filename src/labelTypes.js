@@ -81,6 +81,8 @@
  * @property {string} [calendarDay] View button 'day'; default 'Day'.
  * @property {string} [calendarWorkWeek] View button 'workWeek'; default 'Work week'.
  * @property {string} [calendarWeek] View button 'week'; default 'Week'.
+ * @property {string} [calendarMonth] View button 'month'; default 'Month'.
+ * @property {(more: number) => string} [calendarMore] Link in a month cell that holds more events than it shows; default '+3 more'.
  * @property {string} [calendarNoEvents] Text of an empty day in the agenda; default 'No events'.
  * @property {string} [viewGrid] aria-label and tooltip of the view button (`viewToggle`) while the calendar shows, for the click that goes back to the table; default 'Show as table'.
  * @property {string} [viewCalendar] aria-label and tooltip of the view button (`viewToggle`) while the table shows, for the click that opens the calendar; default 'Show as calendar'.

@@ -1,6 +1,7 @@
 // @ts-check
 import {
   CALENDAR_VIEWS,
+  DEFAULT_VIEWS,
   daySegments,
   hourRange,
   normalizeEvents,
@@ -12,6 +13,7 @@ import {
 } from '../core/calendar.js';
 import { DEFAULT_LOCALE } from '../core/filter.js';
 import { escapeHtml } from '../utils/escape.js';
+import { dayId, renderMonth, rangeTitle } from './calendarMonth.js';
 import { renderIcon } from './icons.js';
 
 /** @typedef {import('../calendarTypes.js').CalendarOptions} CalendarOptions */
@@ -19,15 +21,12 @@ import { renderIcon } from './icons.js';
 /** @typedef {import('../core/calendar.js').CalendarEvent} CalendarEvent */
 /** @typedef {import('../core/calendar.js').PlacedSegment} PlacedSegment */
 
+const MAX_WEIGHT = 3; // a day with overlapping events grows to this many normal columns; beyond it the boxes narrow
 const SHORT_MINUTES = 45; // a box shorter than this gets one line for its title
 const pad = (/** @type {number} */ n) => String(n).padStart(2, '0');
 const clock = (/** @type {number} */ time) => {
   const date = new Date(time);
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-};
-const dayId = (/** @type {number} */ day) => {
-  const date = new Date(day);
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 /** A share of the grid as a CSS percentage, rounded so the markup stays short. */
 const pct = (/** @type {number} */ part) => `${Math.round(part * 100000) / 1000}%`;
@@ -95,7 +94,7 @@ export class CalendarView {
     this.#labels = labels;
     this.#icons = icons;
     this.#locale = locale ?? DEFAULT_LOCALE;
-    this.#views = options.views ?? CALENDAR_VIEWS;
+    this.#views = options.views ?? DEFAULT_VIEWS;
     this.#view = options.view ?? (this.#views.includes('week') ? 'week' : this.#views[0]);
     this.#anchor = toTime(options.date) ?? Date.now();
   }
@@ -108,10 +107,19 @@ export class CalendarView {
    *   click was on something else.
    */
   handle(target) {
-    const button = target instanceof Element ? target.closest('[data-cal], [data-cal-view]') : null;
+    const button =
+      target instanceof Element
+        ? target.closest('[data-cal], [data-cal-view], [data-cal-day]')
+        : null;
     if (!button) return null;
     const action = button.getAttribute('data-cal');
     const view = button.getAttribute('data-cal-view');
+    const day = button.getAttribute('data-cal-day'); // "+N more" of a month cell: open that day
+    if (day && toTime(day) !== null) {
+      this.#anchor = /** @type {number} */ (toTime(day));
+      this.#view = 'day';
+      return '[data-cal-view="day"]';
+    }
     if (action === 'today') this.#anchor = Date.now();
     else if (action === 'prev' || action === 'next') {
       this.#anchor = shiftAnchor(this.#view, this.#anchor, action === 'next' ? 1 : -1);
@@ -128,9 +136,24 @@ export class CalendarView {
   render(rows) {
     const days = visibleDays(this.#view, this.#anchor, this.#options.firstDay);
     const events = normalizeEvents(rows, this.#options);
+    const now = Date.now();
+    const view = this.#view;
+    const month = { days, anchor: this.#anchor, events, now, locale: this.#locale };
     const body =
-      this.#view === 'agenda' ? this.#agenda(days, events) : this.#grid(days, events, Date.now());
+      view === 'agenda'
+        ? this.#agenda(days, events)
+        : view === 'month'
+          ? renderMonth({ ...month, ...this.#monthParts() })
+          : this.#grid(days, events, now);
     return `<div class="spg-cal" data-view="${this.#view}">${this.#bar(days)}${body}</div>`;
+  }
+
+  #monthParts() {
+    return {
+      title: this.#options.title,
+      canOpenDay: this.#views.includes('day'),
+      moreLabel: this.#labels.calendarMore,
+    };
   }
 
   /** @param {number[]} days */
@@ -141,6 +164,7 @@ export class CalendarView {
       day: l.calendarDay,
       workWeek: l.calendarWorkWeek,
       week: l.calendarWeek,
+      month: l.calendarMonth,
     });
     const nav = (/** @type {'prev' | 'next'} */ action, /** @type {string} */ label) =>
       `<button type="button" class="spg-cal-btn spg-cal-icon" data-cal="${action}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${renderIcon(this.#icons, action === 'prev' ? 'chevron_left' : 'chevron_right')}</button>`;
@@ -154,42 +178,26 @@ export class CalendarView {
       `<div class="spg-cal-bar"><div class="spg-cal-nav">` +
       `<button type="button" class="spg-cal-btn" data-cal="today">${escapeHtml(l.calendarToday)}</button>` +
       `${nav('prev', l.calendarPrev)}${nav('next', l.calendarNext)}` +
-      `<span class="spg-cal-title" aria-live="polite">${escapeHtml(this.#title(days))}</span></div>` +
+      `<span class="spg-cal-title" aria-live="polite">${escapeHtml(rangeTitle(this.#view, days, this.#anchor, this.#locale))}</span></div>` +
       `<div class="spg-cal-views" role="group" aria-label="${escapeHtml(l.calendarViews)}">${views}</div></div>`
     );
-  }
-
-  /** @param {number[]} days @returns {string} The range shown, e.g. "8–14 พ.ย. 2569" or the date of a single day. */
-  #title(days) {
-    if (days.length === 1) {
-      return new Intl.DateTimeFormat(this.#locale, {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }).format(days[0]);
-    }
-    return new Intl.DateTimeFormat(this.#locale, {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).formatRange(days[0], days[days.length - 1]);
   }
 
   /**
    * @param {CalendarEvent} event
    * @param {string} [style] Inline position of a box in the time grid.
    * @param {boolean} [short] A box too short for more than one line: its title does not wrap.
+   * @param {boolean} [narrow] A box sharing its width with more than its day column grew for: the title wraps, the time and subtitle wait for hover.
    * @returns {string}
    */
-  #event(event, style = '', short = false) {
+  #event(event, style = '', short = false, narrow = false) {
     const { row } = event;
     const { title, subtitle } = this.#options;
     const time = `${clock(event.start)}–${clock(event.end)}`;
     const text = String(row[title] ?? '');
     const place = subtitle ? String(row[subtitle] ?? '') : '';
     return (
-      `<div class="spg-cal-event${short ? ' is-short' : ''}" tabindex="0" data-row-index="${event.index}"${style} title="${escapeHtml(`${time} ${text}`)}">` +
+      `<div class="spg-cal-event${short ? ' is-short' : ''}${narrow ? ' is-narrow' : ''}" tabindex="0" data-row-index="${event.index}"${style} title="${escapeHtml(`${time} ${text}`)}">` +
       `<span class="spg-cal-event-title">${escapeHtml(text)}</span>` +
       `<span class="spg-cal-event-time">${time}</span>` +
       (place ? `<span class="spg-cal-event-sub">${escapeHtml(place)}</span>` : '') +
@@ -202,6 +210,10 @@ export class CalendarView {
     const placed = days.map((day) => placeSegments(daySegments(events, day)));
     const [first, last] = hourRange(placed.flat(), this.#options.hours);
     const total = (last - first) * 60;
+    const weights = placed.map((p) => Math.min(MAX_WEIGHT, Math.max(1, ...p.map((s) => s.cols))));
+    const tracks = weights
+      .map((w) => `minmax(calc(var(--spg-cal-day-min-width, 0px) * ${w}), ${w}fr)`)
+      .join(' ');
     const today = startOfDay(now);
     const weekday = new Intl.DateTimeFormat(this.#locale, { weekday: 'short' });
     const number = new Intl.DateTimeFormat(this.#locale, { day: 'numeric' });
@@ -224,6 +236,7 @@ export class CalendarView {
               seg.event,
               this.#box(seg, first * 60, total),
               seg.to - seg.from < SHORT_MINUTES,
+              seg.cols > MAX_WEIGHT,
             ),
           )
           .join('');
@@ -236,7 +249,7 @@ export class CalendarView {
       })
       .join('');
     return (
-      `<div class="spg-cal-scroll" style="--spg-cal-days:${days.length};--spg-cal-hours:${last - first}">` +
+      `<div class="spg-cal-scroll" style="--spg-cal-days:${days.length};--spg-cal-weights:${weights.reduce((a, b) => a + b, 0)};--spg-cal-tracks:${tracks};--spg-cal-hours:${last - first}">` +
       `<div class="spg-cal-head"><span class="spg-cal-corner"></span>${heads}</div>` +
       `<div class="spg-cal-body"><div class="spg-cal-hours">${hours}</div>${columns}</div></div>`
     );

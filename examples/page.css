@@ -411,3 +411,12 @@ main {
 .source-toggle .source-card {
   margin: 0 12px 12px;
 }
+
+/* The calendar page: wide enough that overlapping events stay readable. */
+main:has(.spg-cal),
+body:has(.spg-cal) main {
+  max-width: 1600px;
+}
+body:has(.spg-cal) {
+  --spg-cal-day-min-width: 10rem;
+}

@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Calendar month view: add `'month'` to `calendar.views` (or open on it with `view: 'month'`; opt-in, the default views are unchanged). It draws the whole weeks of the month, dimming days of the neighbouring months, with the first three events of each day as one-line chips (click one for `onRowActivate`) and a "+N more" link that opens that day in the day view (a plain text when `day` is not among `views`). Previous / Next move a month. New labels `calendarMonth` and `calendarMore(n)` (also in `thaiLabels`). `CalendarViewName` gains `'month'`; `visibleDays` and `shiftAnchor` handle it. The styles are in `src/styles/calendarMonth.css`.
+
 ### Fixed
 
-- Calendar week view: overlapping events are too narrow to read, so the hovered or focused one now expands to the full day width above its neighbours.
+- Calendar week view: overlapping events are too narrow to read, so the hovered or focused one now expands to the full day width above its neighbours. A day with overlapping events now gets a wider column (one extra column's width per overlapping box, up to 3), so its boxes are as wide as the other days' and show their time. Only a box sharing its width with more than 3 others (`is-narrow`) uses tighter padding and a smaller font, wraps its title over up to three lines instead of one cut line, and shows the time and subtitle only on hover or focus. New CSS variable `--spg-cal-day-min-width` (default `0px`, no change) sets the narrowest a normal day column may get (a wider day keeps its share); the time grid scrolls sideways below it. The calendar example page is now 1600px wide with a 10rem minimum day column.
 
 ## [2.0.14] - 2026-11-13
 

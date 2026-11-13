@@ -31,7 +31,7 @@ describe('calendar option checks', () => {
   });
 
   it('rejects unknown views, a view that is not offered, and bad numbers', () => {
-    expect(build({ view: 'month' })).toThrow(RangeError);
+    expect(build({ view: 'year' })).toThrow(RangeError);
     expect(build({ views: ['day', 'year'] })).toThrow(RangeError);
     expect(build({ views: [] })).toThrow(RangeError);
     expect(build({ views: ['day'], view: 'week' })).toThrow(RangeError);

@@ -101,6 +101,14 @@ describe('calendar mode', () => {
     ]);
   });
 
+  it('gives a day with overlapping events a wider column, and keeps the others at one', () => {
+    const { el } = make();
+    const scroll = /** @type {HTMLElement} */ (el.querySelector('.spg-cal-scroll'));
+    expect(scroll.style.getPropertyValue('--spg-cal-weights')).toBe('8'); // 7 days + 1 for the overlap
+    expect(scroll.style.getPropertyValue('--spg-cal-tracks')).toContain('2fr');
+    expect(el.querySelector('.spg-cal-event.is-narrow')).toBeNull(); // two boxes fit in a double column
+  });
+
   it('keeps each box height in a variable so a hovered box can grow back to full width', () => {
     const { el } = make();
     const box = /** @type {HTMLElement} */ (
@@ -282,5 +290,58 @@ describe('with the grid features', () => {
     const { el, grid } = make();
     grid.destroy();
     expect(el.innerHTML).toBe('');
+  });
+});
+
+describe('month view', () => {
+  const month = { views: ['day', 'month'], view: 'month' };
+
+  it('is opt-in, titled by the month, with a cell per day of whole weeks', () => {
+    expect(
+      [...make().el.querySelectorAll('[data-cal-view]')].map((b) =>
+        b.getAttribute('data-cal-view'),
+      ),
+    ).not.toContain('month');
+    const { el } = make({}, month);
+    expect(el.querySelector('.spg-cal-title')?.textContent).toBe('November 2026');
+    expect(el.querySelectorAll('.spg-cal-cell')).toHaveLength(35);
+    expect(el.querySelector('[data-day="2026-11-01"]')?.classList.contains('is-outside')).toBe(
+      false,
+    );
+    expect(el.querySelector('[data-day="2026-12-01"]')?.classList.contains('is-outside')).toBe(
+      true,
+    );
+    const titles = [...el.querySelectorAll('[data-day="2026-11-10"] .spg-cal-event-title')];
+    expect(titles.map((t) => t.textContent)).toEqual(['Change meeting', 'Migrate API']);
+  });
+
+  it('lists three events a day, then +N more that opens the day', () => {
+    const many = Array.from({ length: 5 }, (_, i) => ({
+      id: 10 + i,
+      subject: `E${i}`,
+      place: '',
+      from: at(20, 9 + i),
+      to: at(20, 10 + i),
+    }));
+    const { el } = make({ rows: many }, month);
+    expect(el.querySelectorAll('[data-day="2026-11-20"] .spg-cal-chip')).toHaveLength(3);
+    const more = /** @type {HTMLElement} */ (el.querySelector('.spg-cal-more'));
+    expect(more.textContent).toBe('+2 more');
+    more.click();
+    expect(el.querySelector('.spg-cal-title')?.textContent).toContain('Friday');
+    expect(el.querySelector('[data-cal-view="day"]')?.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('moves a month at a time and activates an event on click', () => {
+    const onRowActivate = vi.fn();
+    const { el } = make({ onRowActivate }, month);
+    click(el, '[data-cal="next"]');
+    expect(el.querySelector('.spg-cal-title')?.textContent).toBe('December 2026');
+    click(el, '[data-cal="prev"]');
+    click(el, '[data-cal="prev"]');
+    expect(el.querySelector('.spg-cal-title')?.textContent).toBe('October 2026');
+    click(el, '[data-cal="next"]');
+    click(el, '[data-day="2026-11-09"] .spg-cal-event');
+    expect(onRowActivate).toHaveBeenCalledTimes(1);
   });
 });
