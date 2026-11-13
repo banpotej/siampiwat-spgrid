@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.13] - 2026-11-13
+
 ### Added
 
 - Purchase Order example: the Excel export is named `purchase-orders-<date>.xlsx` (`exportFilename` as a function), and the export dialog's file name box starts with that name. Example only, no `src/` change.
