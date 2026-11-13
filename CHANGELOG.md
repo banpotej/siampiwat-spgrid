@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.15] - 2026-11-13
+
 ### Added
 
 - Calendar month view: add `'month'` to `calendar.views` (or open on it with `view: 'month'`; opt-in, the default views are unchanged). It draws the whole weeks of the month, dimming days of the neighbouring months, with the first three events of each day as one-line chips (click one for `onRowActivate`) and a "+N more" link that opens that day in the day view (a plain text when `day` is not among `views`). Previous / Next move a month. New labels `calendarMonth` and `calendarMore(n)` (also in `thaiLabels`). `CalendarViewName` gains `'month'`; `visibleDays` and `shiftAnchor` handle it. The styles are in `src/styles/calendarMonth.css`.
