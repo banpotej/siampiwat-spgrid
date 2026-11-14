@@ -2,7 +2,7 @@
 
 /** @typedef {import('../calendarTypes.js').CalendarViewName} CalendarViewName */
 /** @typedef {import('../types.js').Row} Row */
-/** @typedef {{ index: number, row: Row, start: number, end: number }} CalendarEvent `index`: position in the rows given. */
+/** @typedef {{ index: number, row: Row, start: number, end: number, allDay?: boolean }} CalendarEvent `index`: position in the rows given; an all-day event runs from midnight of its first day to midnight after its last. */
 /** @typedef {{ event: CalendarEvent, from: number, to: number }} DaySegment `from` / `to`: minutes since midnight. */
 /** @typedef {DaySegment & { col: number, cols: number }} PlacedSegment The side-by-side column of an overlapping event. */
 
@@ -94,21 +94,34 @@ export function shiftAnchor(view, anchor, direction) {
   return addDays(anchor, (view === 'day' ? 1 : 7) * direction);
 }
 
+/** @param {unknown} value @returns {boolean} true, 1, or the text true / 1 / yes. */
+const isTrue = (value) =>
+  value === true ||
+  value === 1 ||
+  (typeof value === 'string' && /^(true|1|yes)$/i.test(value.trim()));
+
 /**
  * The rows that have a readable start as events, in the order given. An end that is missing, unreadable or not after the
- * start becomes 30 minutes after it.
+ * start becomes 30 minutes after it. A row whose `allDay` field is true lasts whole days: from the day of its start to the
+ * day of its end, both included (one day without a usable end).
  *
  * @param {Row[]} rows
- * @param {{ start: string, end?: string }} fields Row fields holding the times.
+ * @param {{ start: string, end?: string, allDay?: string }} fields Row fields holding the times and the all-day flag.
  * @returns {CalendarEvent[]}
  */
-export function normalizeEvents(rows, { start, end }) {
+export function normalizeEvents(rows, { start, end, allDay }) {
   /** @type {CalendarEvent[]} */
   const events = [];
   rows.forEach((row, index) => {
     const from = toTime(row[start]);
     if (from === null) return;
     const to = end === undefined ? null : toTime(row[end]);
+    if (allDay !== undefined && isTrue(row[allDay])) {
+      const first = startOfDay(from);
+      const last = to !== null && to > from ? startOfDay(to) : first;
+      events.push({ index, row, start: first, end: addDays(last, 1), allDay: true });
+      return;
+    }
     const last = to !== null && to > from ? to : from + DEFAULT_MINUTES * 60000;
     events.push({ index, row, start: from, end: last });
   });
@@ -116,8 +129,22 @@ export function normalizeEvents(rows, { start, end }) {
 }
 
 /**
- * The part of each event that falls on `day`, clipped to that day, earliest first (an event over midnight gives a
- * segment on each of its days).
+ * The all-day events that touch `day`, earliest start first.
+ *
+ * @param {CalendarEvent[]} events
+ * @param {number} day Local midnight.
+ * @returns {CalendarEvent[]}
+ */
+export function allDayOn(events, day) {
+  const next = addDays(day, 1);
+  return events
+    .filter((e) => e.allDay && e.end > day && e.start < next)
+    .sort((a, b) => a.start - b.start || a.index - b.index);
+}
+
+/**
+ * The part of each timed event that falls on `day`, clipped to that day, earliest first (an event over midnight gives a
+ * segment on each of its days). All-day events are left to `allDayOn`.
  *
  * @param {CalendarEvent[]} events
  * @param {number} day Local midnight.
@@ -128,7 +155,7 @@ export function daySegments(events, day) {
   /** @type {DaySegment[]} */
   const segments = [];
   for (const event of events) {
-    if (event.end <= day || event.start >= next) continue;
+    if (event.allDay || event.end <= day || event.start >= next) continue;
     const from = (Math.max(event.start, day) - day) / 60000;
     const to = (Math.min(event.end, next) - day) / 60000;
     const top = Math.min(from, 1440 - MIN_MINUTES);

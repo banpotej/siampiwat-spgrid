@@ -14,13 +14,25 @@ const rows = createPurchaseOrders().map((po) => ({
 const columns = [
   {
     key: '_actions',
-    ariaLabel: 'การดำเนินการ',
+    label: 'การดำเนินการ',
+    // Each button says what it does, in Thai, beside its icon (showLabel). The main action (ดู) takes the accent tone and
+    // the one that destroys (ยกเลิก) is red, so the two never look alike; ยกเลิก is left out of the rows that cannot be cancelled.
     actions: [
-      { name: 'view', label: 'View', icon: 'visibility' },
+      {
+        name: 'view',
+        label: 'ดู',
+        title: 'ดูรายละเอียดใบสั่งซื้อ',
+        icon: 'visibility',
+        showLabel: true,
+        className: 'spg-action-primary',
+      },
       {
         name: 'cancel',
-        label: 'Cancel',
+        label: 'ยกเลิก',
+        title: 'ยกเลิกใบสั่งซื้อ',
         icon: 'cancel',
+        showLabel: true,
+        className: 'spg-action-danger',
         visible: (r) => r.canCancel,
       },
     ],
@@ -107,6 +119,15 @@ const grid = new SPGrid(document.getElementById('grid'), {
   // The download name, with today's date (called for each export). The dialog's "ชื่อไฟล์" box starts with it.
   exportFilename: () => `purchase-orders-${new Date().toISOString().slice(0, 10)}`,
   advancedFilter: true,
+  advancedFilterStorageKey: 'purchase-orders', // the conditions the user built are still there next visit
+  buttonLabels: true, // each toolbar button shows its Thai name, not only a tooltip
+  clearFiltersButton: true, // one button for "clear the search and every filter"
+  // Tick rows to act on several at once: the bar over the table says how many, and exports just those.
+  selectable: true,
+  selectionActions: [{ name: 'export', label: 'ส่งออกที่เลือก', primary: true }],
+  onSelectionAction: ({ action }) => {
+    if (action === 'export') grid.exportExcel({ selectedOnly: true });
+  },
   columnPicker: true,
   filterSummary: true,
   resetButton: true,

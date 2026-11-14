@@ -1,16 +1,11 @@
 // @ts-check
-import { daySegments, startOfDay } from '../core/calendar.js';
+import { allDayOn, daySegments, startOfDay } from '../core/calendar.js';
 import { escapeHtml } from '../utils/escape.js';
+import { chipHtml, pad } from './calendarEvents.js';
 
 /** @typedef {import('../core/calendar.js').CalendarEvent} CalendarEvent */
 
 const MAX_CHIPS = 3; // events a day cell lists before "+N more"
-const pad = (/** @type {number} */ n) => String(n).padStart(2, '0');
-const clock = (/** @type {number} */ time) => {
-  const date = new Date(time);
-  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-};
-
 /** @param {number} day Local midnight. @returns {string} 'YYYY-MM-DD'. */
 export const dayId = (day) => {
   const date = new Date(day);
@@ -25,13 +20,13 @@ export const dayId = (day) => {
  * @param {number} parts.anchor Any moment of the month shown; days of other months are dimmed.
  * @param {CalendarEvent[]} parts.events
  * @param {number} parts.now
- * @param {string} parts.title Row field shown as the title.
+ * @param {import('./calendarEvents.js').EventLook} parts.look How an event is drawn (title field, colours).
  * @param {string} [parts.locale]
  * @param {boolean} parts.canOpenDay Whether the "+N more" link can open the day view.
  * @param {(more: number) => string} parts.moreLabel
  * @returns {string}
  */
-export function renderMonth({ days, anchor, events, now, title, locale, canOpenDay, moreLabel }) {
+export function renderMonth({ days, anchor, events, now, look, locale, canOpenDay, moreLabel }) {
   const month = new Date(anchor).getMonth();
   const today = startOfDay(now);
   const weekday = new Intl.DateTimeFormat(locale, { weekday: 'short' });
@@ -42,19 +37,12 @@ export function renderMonth({ days, anchor, events, now, title, locale, canOpenD
     .join('');
   const cells = days
     .map((day) => {
-      const segments = daySegments(events, day);
-      const chips = segments
+      const list = [...allDayOn(events, day), ...daySegments(events, day).map((s) => s.event)];
+      const chips = list
         .slice(0, MAX_CHIPS)
-        .map(({ event }) => {
-          const text = String(event.row[title] ?? '');
-          const time = clock(event.start);
-          return (
-            `<div class="spg-cal-event spg-cal-chip" tabindex="0" data-row-index="${event.index}" title="${escapeHtml(`${time} ${text}`)}">` +
-            `<span class="spg-cal-chip-time">${time}</span> <span class="spg-cal-event-title">${escapeHtml(text)}</span></div>`
-          );
-        })
+        .map((event) => chipHtml(event, look))
         .join('');
-      const more = segments.length - MAX_CHIPS;
+      const more = list.length - MAX_CHIPS;
       const moreText = escapeHtml(moreLabel(more));
       const link =
         more <= 0

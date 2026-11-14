@@ -3,14 +3,10 @@ import { dataKeys } from './core/columns.js';
 import { assertPageSize, clampPage } from './core/paginate.js';
 import { normalizeSort } from './core/sort.js';
 import { changedGroupBy } from './core/group.js';
-import { createState } from './core/state.js';
-import { bindGridControls, exportHost } from './render/gridControls.js';
-import { createGridEvents, watchState } from './render/gridEvents.js';
-import { assertOptions, initialState, initialView, mountParts } from './render/gridSetup.js';
-import { ColumnOrder } from './render/columnOrder.js';
-import { HiddenColumns } from './render/hiddenColumns.js';
+import { assertOptions } from './render/gridSetup.js';
+import { createGridEvents } from './render/gridEvents.js';
+import { wireGrid } from './render/gridWiring.js';
 import { assertViewFlags } from './render/viewToggles.js';
-import { FilterControl } from './render/filterControl.js';
 import './spgrid.css';
 
 /** @typedef {import('./types.js').SortState} SortState */
@@ -18,65 +14,58 @@ import './spgrid.css';
 /** @typedef {import('./types.js').GridEvents} GridEvents */
 
 export class SPGrid {
-  /** @type {HTMLElement} */ #container;
   /** @type {import('./core/state.js').State<import('./types.js').GridState>} */ #state;
   /** @type {ReturnType<typeof createGridEvents>} */ #events;
   /** @type {import('./render/gridRenderer.js').GridRenderer} */ #renderer;
-  /** @type {{ pageSize: number | null, sort: SortState, groupBy: string[] }} The `pageSize`, `defaultSort` and `groupBy` options, which `resetView()` goes back to. */
-  #initial;
-  /** @type {FilterControl} */ #filter;
-  /** @type {HiddenColumns} */ #hidden;
-  /** @type {ColumnOrder} */ #order;
+  /** @type {import('./render/filterControl.js').FilterControl} */ #filter;
+  /** @type {import('./render/hiddenColumns.js').HiddenColumns} */ #hidden;
+  /** @type {import('./render/columnOrder.js').ColumnOrder} */ #order;
   /** @type {import('./render/viewToggles.js').ViewSettingsControl} */ #view;
+  /** @type {import('./render/selectionControl.js').SelectionControl} */ #selection;
   #reorderable;
   /** @type {import('./types.js').PageResult | null} Last rendered page; null while pagination is off. */
   #paging = null;
   /** @type {import('./types.js').Row[]} Rows currently shown (after filter, sort and paging), in display order. */
   #visible = [];
-  /** @type {() => void} */ #unsubscribe;
-  #unbindControls = () => {};
+  /** @type {() => void} */ #destroy;
+  /** @type {() => void} */ #reset;
   #destroyed = false;
-  /** @type {ReturnType<typeof exportHost>} */ #export;
+  /** @type {ReturnType<typeof wireGrid>['exporter']} */ #export;
 
   /**
    * @param {HTMLElement} container
    * @param {import('./types.js').SPGridOptions} options
-   * @throws {RangeError} `pageSize` or an entry of `pageSizeOptions` is not a positive integer
    */
   constructor(container, options) {
     assertOptions(container, options);
-    this.#container = container;
-    this.#order = new ColumnOrder(options, (keys) => {
-      this.#state.set({ columns: this.#order.columns() });
-      this.#events.emit('columnOrderChange', keys);
-    });
     this.#reorderable = options.reorderableColumns === true;
-    this.#initial = initialView(options);
     this.#events = createGridEvents(options);
-    const { labels, shell, renderer } = mountParts(container, options);
-    this.#renderer = renderer;
-    this.#view = /** @type {import('./render/viewToggles.js').ViewSettingsControl} */ (shell.view);
-    this.#hidden = new HiddenColumns(options, shell, (keys) => {
-      if (keys.includes(this.getSearchColumn() ?? '')) this.setSearchColumn(null);
-      this.render();
-      this.#events.emit('columnsChange', keys);
-    });
-    this.#export = exportHost(() => this.#state.get(), options, this.#hidden);
-    this.#unbindControls = bindGridControls(this, shell, options, labels, {
-      applyFilter: (filter) => this.#filter.apply(filter),
-      ...this.#export,
-      visible: () => this.#visible,
-      emit: (event, payload) => this.#events.emit(event, payload),
-    });
-    this.#state = createState(initialState(options, this.#order.columns(), this.#initial));
-    this.#filter = new FilterControl(shell, this.#state);
-    this.#unsubscribe = watchState(this.#state, this.#events, this, () => this.#paging);
+    const shown = { paging: () => this.#paging, visible: () => this.#visible };
+    const parts = wireGrid(this, container, options, shown, this.#events);
+    ({ state: this.#state, renderer: this.#renderer } = parts);
+    ({ filter: this.#filter, hidden: this.#hidden, selection: this.#selection } = parts);
+    ({ order: this.#order, view: this.#view, exporter: this.#export } = parts);
+    ({ destroy: this.#destroy, reset: this.#reset } = parts);
     this.render();
   }
 
   /** @param {import('./types.js').Row[]} rows */
   setRows(rows) {
-    this.#state.set({ rows });
+    this.#state.set({ rows, selected: this.#selection.pruned(rows) });
+  }
+
+  /** @returns {import('./types.js').Row[]} The selected rows (`selectable` option) in row order; the grid's own row objects. */
+  getSelectedRows() {
+    return this.#selection.rows();
+  }
+
+  /**
+   * Select exactly these rows, matched by `rowKey` (else identity); fires `selectionChange` if that changes anything.
+   * @param {import('./types.js').Row[]} rows
+   * @throws {RangeError} no `selectable` option, or several rows in 'single' mode
+   */
+  setSelectedRows(rows) {
+    if (!this.#destroyed) this.#selection.set(rows);
   }
 
   /** @returns {SortState} A copy of the current sort, or null when unsorted. */
@@ -88,8 +77,7 @@ export class SPGrid {
   /**
    * Resets to page 1.
    * @param {SortState} sort
-   * @throws {TypeError} direction is not 'asc' or 'desc'
-   * @throws {RangeError} key is not a column
+   * @throws {TypeError | RangeError} direction is not 'asc' or 'desc', or key is not a column
    */
   setSort(sort) {
     if (this.#destroyed) return;
@@ -136,8 +124,7 @@ export class SPGrid {
    * Filter by conditions (field + operator + value, AND / OR) on top of the search and column filters; blank values
    * are dropped, `null` clears. Resets to page 1; also applies to `exportExcel()`.
    * @param {import('./types.js').ConditionGroup | import('./types.js').Condition | null} tree
-   * @throws {RangeError} unknown or action column, an operator the column does not take, or a `logic` other than and / or
-   * @throws {TypeError} a malformed condition
+   * @throws {RangeError | TypeError} unknown or action column, an operator the column does not take, a `logic` other than and / or, or a malformed condition
    */
   setAdvancedFilter(tree) {
     if (!this.#destroyed) this.#filter.setConditions(tree);
@@ -215,6 +202,24 @@ export class SPGrid {
     this.#events.emit('viewChange', view);
   }
 
+  /** @returns {import('./calendarTypes.js').CalendarState | null} The open calendar view and day range; null without `calendar`. */
+  getCalendarView() {
+    return this.#renderer.calendar?.state ?? null;
+  }
+
+  /**
+   * Open a calendar view and / or day (omitted parts stay); fires `calendarChange` if the range differs.
+   * @param {{ view?: import('./calendarTypes.js').CalendarViewName, date?: Date | string | number }} next
+   * @throws {RangeError} no `calendar` option, a `view` not in `calendar.views`, or an unreadable `date`
+   */
+  setCalendarView(next) {
+    if (this.#destroyed) return;
+    if (!this.#renderer.calendar)
+      throw new RangeError('SPGrid: setCalendarView needs the calendar option');
+    this.#renderer.calendar.set(next);
+    this.render();
+  }
+
   /** @returns {Required<import('./types.js').ViewSettings>} A copy of the look settings now in effect. */
   getViewSettings() {
     return this.#view.all();
@@ -266,12 +271,7 @@ export class SPGrid {
 
   /** Back to the starting view: no search, the `defaultSort` option, the `hiddenColumns` and `pageSize` options, page 1. */
   resetView() {
-    if (this.#destroyed) return;
-    this.setFilter(null);
-    this.setSearchColumn(null);
-    this.#state.set({ ...this.#initial, conditions: null, page: 1 });
-    this.#hidden.reset();
-    this.#order.reset();
+    if (!this.#destroyed) this.#reset();
   }
 
   render() {
@@ -290,10 +290,6 @@ export class SPGrid {
 
   destroy() {
     this.#destroyed = true;
-    this.#unbindControls();
-    this.#unsubscribe();
-    this.#renderer.destroy();
-    this.#events.clear();
-    this.#container.innerHTML = '';
+    this.#destroy();
   }
 }

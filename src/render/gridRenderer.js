@@ -11,6 +11,8 @@ import { bindGroupToggle } from './groupEvents.js';
 import { bindHeaderReorder } from './headerReorder.js';
 import { renderIcon } from './icons.js';
 import { renderPager } from './pager.js';
+import { bindRowNavigation, keepFocus, prepareRows } from './rowNavigation.js';
+import { selectView, syncSelectAll } from './selectColumn.js';
 import { renderSummary } from './summary.js';
 import { renderTable } from './table.js';
 import { ViewMode } from './viewMode.js';
@@ -31,6 +33,11 @@ export class GridRenderer {
   #pageSizeOptions;
   #highlight;
   #activatable;
+  /** @type {import('../core/selection.js').SelectMode | null} How rows can be selected (the `selectable` option); null: they cannot. */
+  #select;
+  /** Position (on the page) of the row that holds the roving tab stop. */
+  #current = 0;
+  #unbindNav = () => {};
   /** @type {CalendarView | null} The calendar (`calendar` option): it draws the rows instead of the table while `#mode` is on it. */
   #calendar;
   #mode;
@@ -55,7 +62,8 @@ export class GridRenderer {
    *   labels: ReturnType<typeof import('./labels.js').resolveLabels>,
    *   icons: ReturnType<typeof import('./icons.js').resolveIcons>,
    *   rowKey?: string, locale?: string, pageSizeOptions?: number[], highlight?: boolean, resizable?: boolean,
-   *   widthStorageKey?: string, activatable?: boolean, calendar?: CalendarView | null,
+   *   widthStorageKey?: string, activatable?: boolean, selectable?: import('../core/selection.js').SelectMode | null,
+   *   calendar?: CalendarView | null,
    *   view?: import('./viewMode.js').ViewName }} opts
    */
   constructor({
@@ -69,6 +77,7 @@ export class GridRenderer {
     resizable = false,
     widthStorageKey,
     activatable = false,
+    selectable = null,
     calendar = null,
     view,
   }) {
@@ -80,6 +89,10 @@ export class GridRenderer {
     this.#pageSizeOptions = pageSizeOptions;
     this.#highlight = highlight;
     this.#activatable = activatable;
+    this.#select = selectable;
+    if (activatable || selectable) {
+      this.#unbindNav = bindRowNavigation(shell.host, (position) => (this.#current = position));
+    }
     this.#calendar = calendar;
     this.#mode = new ViewMode(view, calendar !== null);
     if (calendar) this.#unbindCalendar = this.#bindCalendar(calendar);
@@ -116,6 +129,10 @@ export class GridRenderer {
     const { host, status, summary, pagerHost, count } = this.#shell;
     const { rows, paging } = view;
     if (count) count.textContent = this.#labels.rowCount(view.total);
+    const select = this.#select
+      ? selectView(this.#select, state.selected, rows, this.#rowKey, this.#labels)
+      : undefined;
+    const restoreFocus = keepFocus(host);
     host.innerHTML =
       calendar?.render(rows) ??
       renderTable(
@@ -133,14 +150,14 @@ export class GridRenderer {
         },
         reorder !== null,
         { keys: state.groupBy, collapsed: this.#collapsed, columns: state.columns },
+        select,
       );
-    if (this.#activatable) {
-      // Rows are Tab stops that Enter activates (see rowActivate.js); the class gives them the pointer cursor.
-      for (const tr of host.querySelectorAll('tbody tr[data-row-index]')) {
-        tr.classList.add('spg-activatable');
-        tr.setAttribute('tabindex', '0');
-      }
+    if (this.#activatable || select) {
+      // Rows have one Tab stop between them and Enter / Space / arrow keys act on the row (rowActivate.js, selectionEvents.js).
+      this.#current = prepareRows(host, { activatable: this.#activatable, current: this.#current });
     }
+    if (select) syncSelectAll(host, select.page);
+    restoreFocus();
     this.#freeze();
     this.#observer?.disconnect();
     const table = host.querySelector('table');
@@ -152,6 +169,7 @@ export class GridRenderer {
         only: filter.searchColumn,
         // An enum or date column's search picks a value or a range: every shown row matches, so the whole cell is marked.
         whole: searchKind(state.columns.find((c) => c.key === filter.searchColumn)) !== 'text',
+        offset: select ? 1 : 0,
       });
     }
     this.#groupIds = groupItems(rows, shown.groupBy)
@@ -205,8 +223,14 @@ export class GridRenderer {
     return this.#mode.set(view);
   }
 
+  /** @returns {CalendarView | null} The `calendar` option's view, or null without one. */
+  get calendar() {
+    return this.#calendar;
+  }
+
   destroy() {
     this.#unbindCalendar();
+    this.#unbindNav();
     this.#unbindHeader();
     this.#unbindResize();
     this.#unbindGroups();
@@ -236,7 +260,8 @@ export class GridRenderer {
   /** Freeze the leading columns the root's `data-freeze` asks for (none when it is absent). */
   #freeze() {
     const { host } = this.#shell;
-    freezeColumns(host, Number(host.closest('.spg-root')?.getAttribute('data-freeze') ?? 0));
+    const count = Number(host.closest('.spg-root')?.getAttribute('data-freeze') ?? 0);
+    freezeColumns(host, count > 0 && this.#select ? count + 1 : count); // the selection column is frozen too
   }
 
   /** True while some group on the page is open. */

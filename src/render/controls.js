@@ -3,6 +3,7 @@ import { bindActionEvents } from './actionEvents.js';
 import { bindColumnPicker } from './columnPicker.js';
 import { bindPagerEvents } from './pagerEvents.js';
 import { bindRowActivate } from './rowActivate.js';
+import { bindSelection } from './selectionEvents.js';
 import { bindSearchEvents } from './searchEvents.js';
 import { bindSummaryEvents } from './summary.js';
 
@@ -19,6 +20,7 @@ import { bindSummaryEvents } from './summary.js';
  *   pager: { getPage: () => number, setPage: (page: number) => void, setPageSize: (size: number) => void },
  *   actions: Omit<Parameters<typeof bindActionEvents>[1], never>,
  *   rowActivate?: Parameters<typeof bindRowActivate>[1],
+ *   selection?: Parameters<typeof bindSelection>[1],
  * }} grid
  * @returns {() => void}
  */
@@ -37,6 +39,7 @@ export function bindControls(
     pager,
     actions,
     rowActivate,
+    selection,
   },
 ) {
   const unbind = [
@@ -48,6 +51,7 @@ export function bindControls(
     bindActionEvents(shell.host, actions),
   ];
   if (rowActivate) unbind.push(bindRowActivate(shell.host, rowActivate));
+  if (selection) unbind.push(bindSelection(shell.host, selection));
   if (shell.toolbar && shell.search) {
     unbind.push(
       bindSearchEvents(shell.toolbar, shell.search, {

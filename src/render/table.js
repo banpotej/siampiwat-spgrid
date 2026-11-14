@@ -5,6 +5,12 @@ import { escapeHtml } from '../utils/escape.js';
 import { renderCell, renderLabel, widthAttr } from './cells.js';
 import { renderGroupHeader } from './groupRows.js';
 import { renderIcon } from './icons.js';
+import {
+  renderSelectCell,
+  renderSelectHead,
+  SELECT_WIDTH,
+  selectRowAttrs,
+} from './selectColumn.js';
 
 /** @typedef {import('../types.js').Column} Column */
 /** @typedef {import('../types.js').Row} Row */
@@ -82,6 +88,7 @@ function renderHeaderCell(column, sort, icons, resize, reorder) {
  * @param {ResizeView} [resize]
  * @param {boolean} [reorder] Header cells can be dragged to reorder the columns.
  * @param {import('./groupRows.js').GroupView} [group] Put a collapsible header row before each group of `rows`.
+ * @param {import('./selectColumn.js').SelectView} [select] Add the leading selection column (see `selectable`).
  * @returns {string}
  */
 export function renderTable(
@@ -95,40 +102,48 @@ export function renderTable(
   resize = { enabled: false, widths: null, label: String },
   reorder = false,
   group = { keys: [], collapsed: new Set(), columns },
+  select,
 ) {
-  const head = columns.map((c) => renderHeaderCell(c, sort, icons, resize, reorder)).join('');
+  const extra = select ? 1 : 0; // the selection column
+  const head =
+    (select ? renderSelectHead(select, resize.widths !== null) : '') +
+    columns.map((c) => renderHeaderCell(c, sort, icons, resize, reorder)).join('');
   const body =
     rows.length === 0
-      ? `<tr class="spg-empty"><td colspan="${Math.max(columns.length, 1)}"><div class="spg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(labels.empty)}</span></div></td></tr>`
+      ? `<tr class="spg-empty"><td colspan="${Math.max(columns.length + extra, 1)}"><div class="spg-empty-content">${renderIcon(icons, 'inbox')}<span>${escapeHtml(labels.empty)}</span></div></td></tr>`
       : groupItems(rows, group.keys, group.collapsed)
           .map((item) => {
             if (item.type === 'group') {
               return renderGroupHeader(item, {
                 group,
-                span: columns.length,
+                span: columns.length + extra,
                 icons,
                 labels,
                 locale,
               });
             }
             const { row, index } = item;
-            const cells = columns
-              .map((c) => {
-                const cls = [alignClass(c), isActionColumn(c) ? 'spg-action-cell' : '']
-                  .filter(Boolean)
-                  .join(' ');
-                return `<td${cls ? ` class="${cls}"` : ''}>${renderCell(c, row, icons, { labels, locale })}</td>`;
-              })
-              .join('');
+            const cells =
+              (select ? renderSelectCell(row, select) : '') +
+              columns
+                .map((c) => {
+                  const cls = [alignClass(c), isActionColumn(c) ? 'spg-action-cell' : '']
+                    .filter(Boolean)
+                    .join(' ');
+                  return `<td${cls ? ` class="${cls}"` : ''}>${renderCell(c, row, icons, { labels, locale })}</td>`;
+                })
+                .join('');
             const id = rowKey !== undefined ? row[rowKey] : undefined;
             const idAttr =
               id === undefined || id === null ? '' : ` data-row-id="${escapeHtml(id)}"`;
-            return `<tr data-row-index="${index}"${idAttr}>${cells}</tr>`;
+            const state = select ? selectRowAttrs(row, select) : '';
+            return `<tr data-row-index="${index}"${idAttr}${state}>${cells}</tr>`;
           })
           .join('');
   const { widths } = resize;
   const total = widths
-    ? columns.reduce((sum, c) => sum + (widths.get(c.key) ?? FALLBACK_WIDTH), 0)
+    ? columns.reduce((sum, c) => sum + (widths.get(c.key) ?? FALLBACK_WIDTH), 0) +
+      (select ? SELECT_WIDTH : 0)
     : 0;
   const tableAttrs = widths
     ? ` class="spg-table spg-fixed" style="width:${total}px"`

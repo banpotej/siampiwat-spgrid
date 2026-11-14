@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // examples/purchase-order.html: one action column with View and Cancel (cells are plain text; no column.render yet).
+// The list is selectable, so every row starts with a checkbox cell: the data columns are td 2, 3, ... (th[data-key] skips it).
 // Columns: 1 Actions, 2 RFQ, 3 PO, 4 Description, 5 Submitted, 6 Type, 7 Status, 8 Vendor, ...
 test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontally', async ({
   page,
@@ -15,7 +16,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
     await dateHeader.click();
   }
   await expect(dateHeader).toHaveAttribute('aria-sort', 'descending');
-  const dates = (await rows.locator('td:nth-child(5)').allTextContents()).map((d) => Date.parse(d));
+  const dates = (await rows.locator('td:nth-child(6)').allTextContents()).map((d) => Date.parse(d));
   expect(dates).toEqual([...dates].sort((a, b) => b - a));
 
   const search = page.getByRole('searchbox');
@@ -27,7 +28,7 @@ test('renders 10 rows, sorts by date, searches by vendor and scrolls horizontall
   // Poll: rows are re-rendered synchronously, but keep the assertion robust against timing.
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(9)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
@@ -46,9 +47,9 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   // Cancel is offered exactly for completed orders without an RFQ number.
   for (let i = 0; i < (await rows.count()); i++) {
     const row = rows.nth(i);
-    const completed = (await row.locator('td:nth-child(7)').textContent()) === 'เสร็จสิ้น';
-    const noRfq = ((await row.locator('td:nth-child(2)').textContent()) ?? '').trim() === '';
-    await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(
+    const completed = (await row.locator('td:nth-child(8)').textContent()) === 'เสร็จสิ้น';
+    const noRfq = ((await row.locator('td:nth-child(3)').textContent()) ?? '').trim() === '';
+    await expect(row.getByRole('button', { name: 'ยกเลิก', exact: true })).toHaveCount(
       completed && noRfq ? 1 : 0,
     );
   }
@@ -57,14 +58,14 @@ test('View and Cancel report the clicked row; Cancel only where allowed', async 
   await page.getByRole('columnheader', { name: /เลขที่ใบสั่งซื้อ/ }).click();
   await page.getByRole('button', { name: '2', exact: true }).click();
   const third = rows.nth(2);
-  const po = await third.locator('td:nth-child(3)').textContent();
-  await third.getByRole('button', { name: 'View' }).click();
+  const po = await third.locator('td:nth-child(4)').textContent();
+  await third.getByRole('button', { name: 'ดู', exact: true }).click();
   await expect(page.locator('.spg-modal')).toContainText(po?.trim() ?? '');
   await expect(log).toHaveText('');
   await page.keyboard.press('Escape');
 
-  const cancel = page.getByRole('button', { name: 'Cancel' }).first();
-  const cancelPo = await cancel.locator('xpath=ancestor::tr/td[3]').textContent();
+  const cancel = page.getByRole('button', { name: 'ยกเลิก', exact: true }).first();
+  const cancelPo = await cancel.locator('xpath=ancestor::tr/td[4]').textContent();
   await cancel.click();
   const confirm = page.getByRole('alertdialog');
   await expect(confirm).toContainText(cancelPo?.trim() ?? '');
@@ -83,7 +84,7 @@ test('Enter in the search box also searches (Search button mode)', async ({ page
   await page.keyboard.press('Enter');
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(9)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
@@ -98,16 +99,16 @@ test('Clear search button empties the box and restores all rows', async ({ page 
   await page.getByRole('button', { name: 'ค้นหา', exact: true }).click();
   await expect
     .poll(async () => {
-      const vendors = await rows.locator('td:nth-child(8)').allTextContents();
+      const vendors = await rows.locator('td:nth-child(9)').allTextContents();
       return vendors.length > 0 && vendors.every((v) => v.includes('ลานนา'));
     })
     .toBe(true);
   const filteredCount = await rows.count();
 
-  await page.getByRole('button', { name: 'ล้างการค้นหา' }).last().click();
+  await page.getByRole('button', { name: 'ล้างเฉพาะคำค้นหา' }).last().click();
   await expect
     .poll(async () =>
-      (await rows.locator('td:nth-child(8)').allTextContents()).some((v) => !v.includes('ลานนา')),
+      (await rows.locator('td:nth-child(9)').allTextContents()).some((v) => !v.includes('ลานนา')),
     )
     .toBe(true);
   expect(filteredCount).toBeGreaterThan(0);
@@ -120,10 +121,10 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
 }) => {
   await page.goto('/purchase-order.html');
   const row = page.locator('tbody tr').nth(2);
-  const po = (await row.locator('td:nth-child(3)').textContent())?.trim();
+  const po = (await row.locator('td:nth-child(4)').textContent())?.trim();
   const modal = page.locator('.spg-modal');
 
-  await row.getByRole('button', { name: 'View' }).click();
+  await row.getByRole('button', { name: 'ดู', exact: true }).click();
   await expect(modal.getByRole('dialog')).toContainText(po ?? '');
   await expect(modal.locator('.spg-details-head .spg-badge')).toBeVisible(); // the status sits in the header
   for (const name of ['รายละเอียด', 'ชื่อผู้ค้า']) {
@@ -134,11 +135,11 @@ test('View opens a modal with the clicked row, closed by the button, Esc or the 
   await modal.getByRole('button', { name: 'ปิด' }).click();
   await expect(modal).toHaveCount(0);
 
-  await row.getByRole('button', { name: 'View' }).click();
+  await row.getByRole('button', { name: 'ดู', exact: true }).click();
   await page.keyboard.press('Escape');
   await expect(modal).toHaveCount(0);
 
-  await row.getByRole('button', { name: 'View' }).click();
+  await row.getByRole('button', { name: 'ดู', exact: true }).click();
   await modal.click({ position: { x: 5, y: 5 } });
   await expect(modal).toHaveCount(0);
 });
@@ -211,7 +212,7 @@ test('dragging a header onto another reorders the columns and the order survives
   await page.evaluate(() => localStorage.removeItem('spgrid:columnOrder:purchase-orders'));
   await page.reload();
   const labels = async () =>
-    (await page.locator('thead th').allInnerTexts()).map((t) => t.trim().split('\n')[0]);
+    (await page.locator('thead th[data-key]').allInnerTexts()).map((t) => t.trim().split('\n')[0]);
   const before = await labels();
   expect(before.length).toBeGreaterThan(3);
 
@@ -235,7 +236,7 @@ test('the details modal keeps Tab inside and gives focus back to the View button
   page,
 }) => {
   await page.goto('/purchase-order.html');
-  const view = page.locator('tbody tr').first().getByRole('button', { name: 'View' });
+  const view = page.locator('tbody tr').first().getByRole('button', { name: 'ดู', exact: true });
   await view.click();
   const modal = page.getByRole('dialog');
   await expect(modal.getByRole('button', { name: 'ปิด' })).toBeFocused();
@@ -250,10 +251,10 @@ test('the details modal keeps Tab inside and gives focus back to the View button
 test('a row opens its details on double-click or Enter, and looks clickable', async ({ page }) => {
   await page.goto('/purchase-order.html');
   const row = page.locator('tbody tr').nth(1);
-  const po = (await row.locator('td:nth-child(3)').textContent())?.trim() ?? '';
+  const po = (await row.locator('td:nth-child(4)').textContent())?.trim() ?? '';
   await expect(row).toHaveCSS('cursor', 'pointer');
 
-  await row.locator('td:nth-child(3)').dblclick();
+  await row.locator('td:nth-child(4)').dblclick();
   await expect(page.getByRole('dialog')).toContainText(po);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -265,7 +266,7 @@ test('a row opens its details on double-click or Enter, and looks clickable', as
   await expect(row).toBeFocused(); // focus went back to where it was
 
   // A double-click on a button is left to the button: no second modal opens on top of the one it opened.
-  await row.getByRole('button', { name: 'View' }).dispatchEvent('dblclick');
+  await row.getByRole('button', { name: 'ดู', exact: true }).dispatchEvent('dblclick');
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 

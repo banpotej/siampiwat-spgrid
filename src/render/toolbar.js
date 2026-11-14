@@ -5,6 +5,7 @@ import { renderColumnPicker } from './columnPicker.js';
 import { renderIcon } from './icons.js';
 import { loadFreezeColumns } from './frozenColumns.js';
 import { renderSearchAlternatives } from './searchValue.js';
+import { selectionBarFor } from './selectionBar.js';
 import {
   createViewSettings,
   gridLinesClass,
@@ -70,7 +71,7 @@ const toolButton = (className, label, icon, icons) =>
  *   searchColumns: { key: string, label: string }[] | null, searchColumnLabel: string, allColumnsLabel: string, allValuesLabel: string, dateFromLabel: string, dateToLabel: string,
  *   settingsLabel: string | null, rowCount: boolean, showHeader: boolean,
  *   icons: Record<IconName, string>, striped: boolean, gridLines: import('../types.js').GridLines, lineStyle: import('../types.js').LineStyle, compact: boolean,
- *   stickyHeader: boolean, scroll: boolean, freezeColumns: number,
+ *   stickyHeader: boolean, scroll: boolean, freezeColumns: number, buttonLabels: boolean, selectionBar: string, clearFiltersLabel: string | null,
  * }} opts
  * @returns {string}
  */
@@ -107,6 +108,9 @@ export function renderShell({
   stickyHeader,
   scroll,
   freezeColumns,
+  buttonLabels,
+  selectionBar,
+  clearFiltersLabel,
 }) {
   const buttons =
     searchButtonLabel === null
@@ -119,6 +123,7 @@ export function renderShell({
     toolButton('spg-tool-btn spg-refresh', refreshLabel, 'refresh', icons) +
     toolButton('spg-tool-btn spg-group-all', groupToggleLabel, 'unfold_less', icons) +
     toolButton('spg-tool-btn spg-advfilter', advancedLabel, 'filter_list', icons) +
+    toolButton('spg-tool-btn spg-clear-filters', clearFiltersLabel, 'cancel', icons) +
     toolButton('spg-export', exportLabel, 'download', icons);
   // One input group: [column select] [search box] [Search] [Clear search] [tools], joined edge to edge.
   // Without a search box the tools stand alone in the toolbar.
@@ -149,6 +154,7 @@ export function renderShell({
   const root = [
     'spg-root',
     compact ? 'spg-compact' : '',
+    buttonLabels ? 'spg-btn-labels' : '',
     striped ? 'spg-striped' : '',
     wrapped ? '' : 'spg-nowrap',
     resizable ? 'spg-resizable' : '',
@@ -161,7 +167,7 @@ export function renderShell({
     .join(' ');
   const wrap = `spg-table-wrap${scroll ? ' spg-scroll' : ''}`;
   const freeze = freezeColumns > 0 ? ` data-freeze="${freezeColumns}"` : '';
-  return `<div class="${root}"${freeze}>${toolbar}${desc}${summary ? '<div class="spg-summary" aria-live="polite" hidden></div>' : ''}<div class="${wrap}"></div><div class="spg-pager-host"></div><div class="spg-status" role="status" aria-live="polite"></div></div>`;
+  return `<div class="${root}"${freeze}>${toolbar}${desc}${summary ? '<div class="spg-summary" aria-live="polite" hidden></div>' : ''}${selectionBar}<div class="${wrap}"></div><div class="spg-pager-host"></div><div class="spg-status" role="status" aria-live="polite"></div></div>`;
 }
 
 /**
@@ -169,7 +175,7 @@ export function renderShell({
  *
  * @param {HTMLElement} container
  * @param {import('../types.js').SPGridOptions} options
- * @param {{ search: string, clear: string, searchButton: string, exportExcel: string, advancedFilter: string, searchColumn: string, allColumns: string, allValues: string, dateFrom: string, dateTo: string, columns: string, refresh: string, collapseAllGroups: string, toggleDescription: string, viewCalendar: string }} labels
+ * @param {Required<import('../types.js').Labels>} labels
  * @param {Record<IconName, string>} icons
  */
 export function mountShell(container, options, labels, icons) {
@@ -221,6 +227,9 @@ export function mountShell(container, options, labels, icons) {
     ),
     lineStyle: loadLineStyle(options.lineStyleStorageKey, options.lineStyle ?? 'default'),
     compact: options.density === 'compact',
+    buttonLabels: options.buttonLabels === true,
+    selectionBar: selectionBarFor(options, labels),
+    clearFiltersLabel: options.clearFiltersButton === true ? labels.clearFilters : null,
     stickyHeader: options.stickyHeader === true,
     scroll: maxHeight !== undefined,
     freezeColumns: loadFreezeColumns(options.freezeColumnsStorageKey, options.freezeColumns ?? 0),
@@ -262,6 +271,12 @@ export function mountShell(container, options, labels, icons) {
     ),
     advancedButton: /** @type {HTMLButtonElement | null} */ (
       container.querySelector('button.spg-advfilter')
+    ),
+    selectionBar: /** @type {HTMLElement | null} */ (
+      container.querySelector('div.spg-selection-bar')
+    ),
+    clearFiltersButton: /** @type {HTMLButtonElement | null} */ (
+      container.querySelector('button.spg-clear-filters')
     ),
     exportButton: /** @type {HTMLButtonElement | null} */ (
       container.querySelector('button.spg-export')

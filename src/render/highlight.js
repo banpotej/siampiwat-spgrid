@@ -42,16 +42,22 @@ function markText(cell, words, locale) {
  * @param {HTMLElement} host Holds the rendered table.
  * @param {Column[]} columns The rendered columns, in order (cell i belongs to column i).
  * @param {string[]} words Folded search words.
- * @param {{ locale?: string, only?: string | null, whole?: boolean }} [options] `only`: a column key the search is limited
+ * @param {{ locale?: string, only?: string | null, whole?: boolean, offset?: number }} [options] `offset`: cells before the first
+ *   column's (the selection column). `only`: a column key the search is limited
  *   to. `whole`: mark the whole cell (class `spg-match`) instead of the matched text; for a search on an enum column, where
  *   every shown row matches the whole cell (the cell may show a label, not the value, so its text is not compared).
  */
-export function highlightSearch(host, columns, words, { locale, only, whole = false } = {}) {
+export function highlightSearch(
+  host,
+  columns,
+  words,
+  { locale, only, whole = false, offset = 0 } = {},
+) {
   if (words.length === 0) return;
   for (const row of host.querySelectorAll('tbody tr:not(.spg-empty):not(.spg-group-row)')) {
     columns.forEach((column, i) => {
       if (isActionColumn(column) || (only && column.key !== only)) return;
-      const cell = /** @type {HTMLElement | undefined} */ (row.children[i]);
+      const cell = /** @type {HTMLElement | undefined} */ (row.children[i + offset]);
       if (!cell) return;
       if (whole) cell.classList.add('spg-match');
       else markText(cell, words, locale);

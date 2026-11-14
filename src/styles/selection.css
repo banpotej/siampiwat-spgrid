@@ -1,0 +1,54 @@
+/* `selectable`: a leading checkbox column, selected rows tinted, and a focus ring on the rows that take arrow keys. */
+.spg-table .spg-select-col,
+.spg-table .spg-select-cell {
+  width: 2.75rem;
+  min-width: 2.75rem;
+  max-width: 2.75rem;
+  padding-inline: 0;
+  text-align: center;
+}
+
+.spg-table .spg-select-col .spg-select-name {
+  font-size: 0.75em;
+  font-weight: 400;
+}
+
+.spg-table input.spg-select,
+.spg-table input.spg-select-all {
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0;
+  vertical-align: middle;
+  accent-color: var(--spgi-accent);
+  cursor: pointer;
+}
+
+.spg-table input.spg-select:focus-visible,
+.spg-table input.spg-select-all:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
+}
+
+.spg-table tbody tr.spg-focusable:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: -2px;
+}
+
+.spg-table tbody tr.is-selected td {
+  background-color: color-mix(in srgb, var(--spgi-accent) 12%, var(--spgi-bg));
+}
+
+.spg-table tbody tr.is-selected:not(.spg-empty) td.spg-frozen,
+.spg-table tbody tr.is-selected:not(.spg-empty):hover td.spg-frozen {
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--spgi-accent) 12%, transparent),
+    color-mix(in srgb, var(--spgi-accent) 12%, transparent)
+  );
+}
+
+@media (forced-colors: active) {
+  .spg-table tbody tr.is-selected td {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

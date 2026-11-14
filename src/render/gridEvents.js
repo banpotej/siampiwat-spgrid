@@ -1,5 +1,6 @@
 // @ts-check
 import { createEmitter } from '../core/emitter.js';
+import { saveConditions } from './conditionStore.js';
 import { saveGroupBy } from './groupByStore.js';
 import { savePageSize } from './pageSizeStore.js';
 import { saveSort } from './sortStore.js';
@@ -26,7 +27,10 @@ export function createGridEvents(options) {
       'columnsChange',
       'columnOrderChange',
       'groupByChange',
+      'selectionChange',
+      'selectionAction',
       'viewChange',
+      'calendarChange',
       'refresh',
     ]),
   );
@@ -38,11 +42,17 @@ export function createGridEvents(options) {
   if (options.onRefresh) events.on('refresh', options.onRefresh);
   if (options.onColumnsChange) events.on('columnsChange', options.onColumnsChange);
   if (options.onColumnOrderChange) events.on('columnOrderChange', options.onColumnOrderChange);
+  if (options.onSelectionChange) events.on('selectionChange', options.onSelectionChange);
+  if (options.onSelectionAction) events.on('selectionAction', options.onSelectionAction);
   if (options.onViewChange) events.on('viewChange', options.onViewChange);
+  if (options.onCalendarChange) events.on('calendarChange', options.onCalendarChange);
   if (options.onGroupByChange) events.on('groupByChange', options.onGroupByChange);
   events.on('groupByChange', (keys) => saveGroupBy(options.groupByStorageKey, keys));
   events.on('pageChange', ({ pageSize }) => savePageSize(options.pageSizeStorageKey, pageSize));
   events.on('sortChange', (sort) => saveSort(options.sortStorageKey, sort));
+  events.on('filterChange', (filter) =>
+    saveConditions(options.advancedFilterStorageKey, filter?.conditions ?? null),
+  );
   return events;
 }
 
@@ -50,14 +60,15 @@ export function createGridEvents(options) {
  * Emit `sortChange`, `filterChange`, `groupByChange` and `pageChange` for what differs between two states.
  *
  * @param {ReturnType<typeof createGridEvents>} events
- * @param {{ getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null }} grid
- *   Source of the public sort and filter values to report.
+ * @param {{ getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null, getSelectedRows: () => import('../types.js').Row[] }} grid
+ *   Source of the public sort, filter and selection values to report.
  * @param {{ state: GridState, prev: GridState, before: PageResult | null, after: PageResult | null }} change
  *   `before` / `after` are the rendered pages around the change.
  */
 export function emitChanges(events, grid, { state, prev, before, after }) {
   if (state.sort !== prev.sort) events.emit('sortChange', grid.getSort());
   if (state.groupBy !== prev.groupBy) events.emit('groupByChange', [...state.groupBy]);
+  if (state.selected !== prev.selected) events.emit('selectionChange', grid.getSelectedRows());
   const columnChanged = state.searchColumn !== prev.searchColumn && state.filter?.search;
   const filterChanged = state.filter !== prev.filter || state.conditions !== prev.conditions;
   if (filterChanged || columnChanged) events.emit('filterChange', grid.getFilter());
@@ -72,7 +83,7 @@ export function emitChanges(events, grid, { state, prev, before, after }) {
  *
  * @param {import('../core/state.js').State<GridState>} state
  * @param {ReturnType<typeof createGridEvents>} events
- * @param {{ render: () => void, getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null }} grid
+ * @param {{ render: () => void, getSort: () => GridState['sort'], getFilter: () => import('../types.js').FilterState | null, getSelectedRows: () => import('../types.js').Row[] }} grid
  * @param {() => PageResult | null} paging The page the last render showed.
  * @returns {() => void} Unsubscribe.
  */

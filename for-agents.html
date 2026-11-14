@@ -94,8 +94,20 @@
               </li>
               <li>ปรับหน้าตาด้วยตัวแปร <code>--spg-*</code> อย่าแก้ไฟล์ CSS ของแพ็กเกจ</li>
               <li>
-                ยังไม่รองรับ server-side paging, virtual scrolling และการเลือกแถว
-                (ข้อมูลทั้งหมดอยู่ในหน่วยความจำ)
+                ยังไม่รองรับ server-side paging และ virtual scrolling
+                (ข้อมูลทั้งหมดอยู่ในหน่วยความจำ) ส่วนการเลือกแถวมีแล้ว: <code>selectable</code>,
+                <code>selectionActions</code>
+              </li>
+              <li>
+                เมื่อเปิด <code>selectable</code> ทุกแถวมีเซลล์ checkbox นำหน้า
+                อย่าหาคอลัมน์ด้วยตำแหน่ง (<code>td:nth-child</code>) ให้ใช้ข้อมูลของแถวหรือ
+                <code>th[data-key]</code> และใส่ <code>rowKey</code> เพื่อให้การเลือกอยู่ต่อหลัง
+                <code>setRows()</code>
+              </li>
+              <li>
+                คำสั่งที่เปลี่ยนข้อมูล (อนุมัติ ยกเลิก ลบ) ใส่ <code>confirm: true</code> ใน
+                <code>selectionActions</code> และตรวจเวอร์ชันที่ติดตั้งก่อนใช้ตัวเลือกใหม่ (ดู
+                "Check the version first" ใน <code>AGENT_GUIDE.md</code>)
               </li>
             </ul>
           </li>
@@ -107,7 +119,8 @@
             ><code>- new SPGrid ไม่ throw และ container.querySelector('table') มีแถวข้อมูล
 - console ของเบราว์เซอร์ไม่มี error (RangeError จะบอกชื่อตัวเลือกที่ผิด)
 - เรียก destroy() ตอน teardown และใช้ setRows() กับข้อมูลใหม่
-- ทุก render function escape ค่าที่นำไปต่อเป็น HTML</code></pre>
+- ทุก render function escape ค่าที่นำไปต่อเป็น HTML
+- ถ้าใช้ selectable: ติ๊ก 2 แถวแล้ว getSelectedRows() ได้ 2 แถว และไม่มีโค้ดหรือเทสต์ที่หาเซลล์ด้วยตำแหน่ง</code></pre>
           </li>
         </ol>
         <p>

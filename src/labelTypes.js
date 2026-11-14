@@ -84,6 +84,16 @@
  * @property {string} [calendarMonth] View button 'month'; default 'Month'.
  * @property {(more: number) => string} [calendarMore] Link in a month cell that holds more events than it shows; default '+3 more'.
  * @property {string} [calendarNoEvents] Text of an empty day in the agenda; default 'No events'.
+ * @property {string} [selectRow] aria-label of a row's selection checkbox (`selectable`); default 'Select row'.
+ * @property {string} [selectAllRows] aria-label of the header checkbox that selects the rows of the page; default 'Select all rows on this page'.
+ * @property {(count: number) => string} [selectedCount] Text of the selection bar (`selectionActions`, or `showHeader: false`); default '3 selected'.
+ * @property {string} [clearSelection] Button of the selection bar that deselects every row; default 'Clear selection'.
+ * @property {string} [selectionActions] aria-label of the selection bar; default 'Actions for the selected rows'.
+ * @property {string} [selectAllOnPage] Label of the bar's "select all rows on this page" box, shown when the header row is not drawn; default 'Select all on this page'.
+ * @property {(action: string, count: number) => string} [confirmSelectionAction] Question of a selection action that has `confirm: true`; default 'Approve: 3 row(s)?' (the action's label comes first).
+ * @property {string} [clearFilters] Button (`clearFiltersButton`) that drops the search and every filter; default 'Clear search and filters'.
+ * @property {string} [selectColumn] Name of the selection column in 'single' mode, which has no header checkbox; default 'Select'.
+ * @property {string} [calendarAllDay] Label of the all-day row, and shown instead of the times of an all-day event; default 'All day'.
  * @property {string} [viewGrid] aria-label and tooltip of the view button (`viewToggle`) while the calendar shows, for the click that goes back to the table; default 'Show as table'.
  * @property {string} [viewCalendar] aria-label and tooltip of the view button (`viewToggle`) while the table shows, for the click that opens the calendar; default 'Show as calendar'.
  * @property {string} [toggleDescription] aria-label and tooltip of the button that hides or shows `description`;

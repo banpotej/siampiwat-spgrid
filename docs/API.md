@@ -11,12 +11,18 @@
   `data-cell-action` (เหมือน `on('action', fn)`)
 - `options.onRowActivate?: (payload: RowActivatePayload) => void` – เปิดให้แถวถูก "เปิด" ได้ และเรียกเมื่อดับเบิลคลิกแถว หรือกด Enter ขณะโฟกัสที่แถว
   (เหมือน `on('rowActivate', fn)`) ดู [Row activation](#row-activation)
+- `options.selectable?: boolean | 'single' | 'multiple'` – เพิ่มคอลัมน์ checkbox นำหน้าเพื่อเลือกแถว: `true` / `'multiple'` เลือกได้หลายแถว (checkbox ที่หัวตารางเลือก/ยกเลิกทุกแถวของหน้านั้น) หรือ `'single'` เลือกได้แถวเดียว ค่าเริ่มต้น `false` ดู [Selection](#selection)
+- `options.selectionActions?: { name, label, confirm?, primary? }[]` – ใช้คู่กับ `selectable`: แถบเหนือตารางที่แสดง "เลือกแล้ว N รายการ" ปุ่มคำสั่งเหล่านี้ และ "ล้างการเลือก" ขณะมีแถวที่เลือก (ซ่อนเมื่อไม่มี) ปุ่มยิง `selectionAction` ด้วย `{ action: name, rows }` โดย `confirm: true` ถามก่อนด้วย dialog ของไลบรารี (`labels.confirmSelectionAction(label, count)` เช่น "ต้องการอนุมัติ 2 รายการใช่หรือไม่?" ปุ่มยืนยันใช้ชื่อคำสั่ง) หรือส่งข้อความคำถามเอง (ข้อความธรรมดา ไม่ใช่ HTML) ถ้ากดยกเลิก/Esc จะไม่ยิง event และการเลือกคงเดิม `primary: true` ทำปุ่มแบบทึบ แถว `rows` อ่านหลังตอบคำถาม จึงเป็นแถวที่เลือกอยู่ ณ ตอนนั้น `label` และ `name` ถูก escape โยน `RangeError` ถ้าไม่มี `selectable` หรือชื่อซ้ำ และ `TypeError` ถ้ารายการว่างหรือขาด `name` / `label` ถ้าตั้ง `showHeader: false` (ไม่มี checkbox ที่หัวตาราง) แถบนี้จะมี "เลือกทั้งหมดในหน้านี้" และแสดงตลอด ดู [Selection](#selection)
+- `options.onSelectionAction?: ({ action, rows }) => void` – เรียกเมื่อคำสั่งของแถบทำงาน (เหมือน `on('selectionAction', fn)`)
+- `options.clearFiltersButton?: boolean` – ปุ่มบน toolbar "ล้างทั้งหมด (คำค้นหาและตัวกรอง)" (`labels.clearFilters`) ล้างข้อความค้นหา คอลัมน์ที่จำกัดการค้นหา ตัวกรองคอลัมน์ และตัวกรองขั้นสูงในครั้งเดียว ปุ่มปรากฏเฉพาะเมื่อมีอะไรกรองแถวอยู่ ไม่แตะการเรียง ขนาดหน้า และคอลัมน์ที่ซ่อน (นั่นคือ `resetView()`) ปุ่ม "ล้างเฉพาะคำค้นหา" ของ `searchButton` ล้างแค่ข้อความค้นหา ค่าเริ่มต้น `false`
+- `options.onSelectionChange?: (rows: Row[]) => void` – เรียกพร้อมแถวที่เลือกอยู่ทุกครั้งที่การเลือกเปลี่ยน (เหมือน `on('selectionChange', fn)`)
 - `options.rows?: Record<string, unknown>[]`
 - `options.locale?: string` – locale ที่ใช้เรียงสตริง (`Intl.Collator`) และแปลงเป็นตัวพิมพ์เล็กตอนค้นหา (ค่าเริ่มต้น `'th'`)
 - `options.onSortChange?: (sort: SortState) => void` – เรียกทุกครั้งที่การเรียงเปลี่ยน
 - `options.searchable?: boolean` – แสดงช่องค้นหา (`<input type="search">`) เหนือตาราง
 - `options.searchColumnSelect?: boolean` – (ใช้คู่กับ `searchable`) เพิ่ม `<select>` ข้างช่องค้นหาให้เลือกค้นเฉพาะคอลัมน์เดียว (ค่าเริ่มต้น `false` = ค้นทุกคอลัมน์)
 - `options.searchButton?: boolean` – (ใช้คู่กับ `searchable`) เพิ่มปุ่ม "Search" ข้างช่องค้นหา เมื่อเปิดจะกรองเมื่อกดปุ่มหรือกด Enter ในช่อง ไม่กรองระหว่างพิมพ์ (`searchDebounce` ไม่มีผล) ค่าเริ่มต้น `false`
+- `options.buttonLabels?: boolean` – เขียนชื่อของปุ่มบน toolbar กำกับข้างไอคอน (ค้นหา ล้างเฉพาะคำค้นหา Refresh Export Advanced filter ตั้งค่า ย่อ/ขยายทุกกลุ่ม และปุ่มสลับมุมมอง) เพื่อให้ผู้ใช้ไม่ต้องพึ่ง tooltip ข้อความคือ label ของปุ่มนั้น (`labels.*`; ใช้ `thaiLabels` เพื่อให้เป็นภาษาไทย) และเปลี่ยนตามเมื่อ label เปลี่ยน (เช่น ย่อทุกกลุ่ม ↔ ขยายทุกกลุ่ม) โดย `aria-label` / tooltip ของปุ่มคงเดิม ใช้ class `spg-btn-labels` ที่ `.spg-root` และเขียนข้อความด้วย CSS `::after` ปุ่มมีลำดับความสำคัญ: "ค้นหา" เป็นปุ่มหลักสีเต็ม (สี accent ของธีม), "ล้างเฉพาะคำค้นหา" เป็นปุ่มเงียบ (ไม่มีกรอบจนกว่าจะชี้) และปุ่มเครื่องมือเป็นสีขาวพร้อมไอคอนสี accent ปุ่มที่เปิดใช้อยู่ (`data-active` เช่น มีตัวกรองขั้นสูง) คงสีเน้นของตัวเอง เลย์เอาต์เป็นบรรทัดชื่อกริด/จำนวนแถว, บรรทัดค้นหา, บรรทัดปุ่มเครื่องมือ และกลุ่มปุ่มขึ้นบรรทัดใหม่ได้เมื่อไม่พอดีแทนการบีบช่องค้นหา ค่าเริ่มต้น `false` (ไอคอนล้วน)
 - `options.exportButton?: boolean` – แสดงปุ่ม "Export Excel" (`<button class="spg-export">` ไอคอน `download` อย่างเดียว ไม่มีข้อความ; ชื่อสำหรับ screen reader และ tooltip มาจาก `labels.exportExcel`) เป็นส่วนสุดท้ายของ Input Group ต่อจากช่องค้นหา (ถ้าไม่เปิด `searchable` จะเป็นปุ่มเดี่ยวในแถบเครื่องมือ); กดแล้วเรียก `exportExcel()` ค่าเริ่มต้น `false` สีปุ่มปรับได้ด้วย `--spg-success`
 - `options.exportFilename?: string | (() => string)` – ชื่อไฟล์ที่ดาวน์โหลดของปุ่ม Export และ `exportExcel()` ที่ไม่ได้ส่ง `filename` (เติม `.xlsx` ให้ถ้าไม่มี ตัดอักขระที่ใช้ตั้งชื่อไฟล์ไม่ได้ `\ / : * ? " < > |` ออก; ถ้าเหลือว่างใช้ `export`) ส่งเป็นฟังก์ชันได้ เรียกทุกครั้งที่ส่งออก เช่น ใส่วันที่ `() => `po-${new Date().toISOString().slice(0, 10)}`` เมื่อใช้คู่กับ `exportColumnSelect` modal จะมีช่อง "ชื่อไฟล์" (`labels.exportFilename`) เริ่มต้นด้วยชื่อนี้ (ไม่มี `.xlsx`) ให้ผู้ใช้แก้เองได้ ถ้าเว้นว่างจะใช้ชื่อเริ่มต้น ค่าเริ่มต้น `export.xlsx`
 - `options.exportColumnSelect?: boolean` – ใช้คู่กับ `exportButton`: กดปุ่ม Export แล้วเปิด modal ที่มีช่องค้นหา (`labels.exportSearch`) เริ่มต้นด้วยคำค้นของตารางตอนนั้น พร้อมบรรทัดบอกจำนวนแถวที่จะส่งออก (`labels.exportRowCount`) และตาราง Preview ของ 10 แถวแรกเฉพาะฟิลด์ที่ติ๊ก (ค่าดิบเหมือนที่จะอยู่ในไฟล์ ข้อความถูก escape; ถ้ายังมีแถวต่อ ขึ้น `labels.exportPreviewMore`, ถ้าไม่เหลือแถวขึ้น `labels.exportPreviewEmpty`) ทั้งสองส่วนอัปเดตทันทีที่พิมพ์หรือติ๊กฟิลด์ กด Enter ในช่องเพื่อส่งออกได้ แก้คำค้นแล้วเฉพาะการส่งออกครั้งนี้เปลี่ยนไป ตารางที่แสดงอยู่ไม่เปลี่ยน ถ้าไม่แก้คำค้นจะใช้ตัวกรองของตารางตามเดิม (รวมการค้นในคอลัมน์ enum/วันที่) และให้ติ๊กเลือกฟิลด์ (คอลัมน์ข้อมูล ไม่รวม action) ที่จะส่งออก ทุกฟิลด์ถูกติ๊กไว้ก่อน มีปุ่ม "เลือกทั้งหมด" / "ล้างทั้งหมด" (`labels.selectAll`, `labels.clearAll`) ปุ่มยืนยัน (ข้อความจาก `labels.exportExcel`) กดไม่ได้ถ้าไม่ได้ติ๊กอะไร; ยืนยันแล้วเรียก `exportExcel({ columns, search })` ส่วน Esc, คลิกพื้นหลัง และ Cancel ปิดโดยไม่ดาวน์โหลด ค่าเริ่มต้น `false` (กดแล้วส่งออกทุกคอลัมน์ทันที)
@@ -68,6 +74,7 @@
 - `options.groupBy?: string[]` – key ของคอลัมน์ข้อมูลที่ใช้จัดกลุ่มแถว เรียงจากชั้นนอกเข้าใน เช่น `['department', 'status']` (ค่าเริ่มต้น `[]` = ไม่จัดกลุ่ม; key ที่ไม่ใช่คอลัมน์ข้อมูลหรือซ้ำโยน `RangeError`) ดู [Row grouping](#row-grouping)
 - `options.groupByToggle?: boolean` – เพิ่มส่วน "Grouping" ใน modal Settings ที่มี select "Group by" และ "Then by" (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.groupByStorageKey?: string` – จำคอลัมน์ที่จัดกลุ่มไว้ใน `localStorage` ภายใต้ `spgrid:groupBy:<ชื่อ>` แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `groupBy` (การเลือก "ไม่จัดกลุ่ม" ก็ถูกจำ) ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; key ที่ไม่ใช่คอลัมน์แล้วหรือซ้ำจะถูกตัดทิ้ง
+- `options.advancedFilterStorageKey?: string` – จำตัวกรองขั้นสูง (`setAdvancedFilter` / ปุ่ม `advancedFilter`) ไว้ใน `localStorage` ภายใต้ `spgrid:advancedFilter:<ชื่อ>` ทุกครั้งที่เปลี่ยน แล้วคืนค่าตอนสร้างกริดครั้งถัดไป (การล้างตัวกรองก็ถูกจำ; `resetView()` ล้างและเขียนทับ) ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ตรงกับคอลัมน์หรือตัวดำเนินการแล้ว, JSON เสีย หรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย (เริ่มแบบไม่กรอง) ข้อความค้นหาและตัวกรองคอลัมน์ไม่ถูกจำ
 - `options.onGroupByChange?: (groupBy: string[]) => void` – เรียกทุกครั้งที่ชุดคอลัมน์ที่จัดกลุ่มเปลี่ยน (เหมือน `on('groupByChange', fn)`)
 - `options.gridLinesToggle?: boolean` – เพิ่ม select "Grid lines" (`<select class="spg-settings-lines-select">` ข้อความจาก `labels.gridLines`) ในหัวข้อ "Display" ของ modal Settings เพื่อให้ผู้ใช้เลือกโหมดเอง (มีผลเมื่อกด Apply) และทำให้ปุ่ม Settings แสดง (ค่าเริ่มต้น `false`)
 - `options.gridLinesStorageKey?: string` – จำโหมดเส้นไว้ใน `localStorage` ภายใต้ `spgrid:gridLines:<ชื่อ>` ทุกครั้งที่ผู้ใช้กด Apply แล้วคืนค่าตอนสร้างกริดครั้งถัดไปโดยใช้แทน `gridLines`/`bordered` ควรตั้งชื่อต่างกันในแต่ละกริด ถ้าไม่ระบุจะไม่บันทึก; ค่าที่ไม่ใช่โหมดหรือ `localStorage` ใช้ไม่ได้จะถูกเมินเฉย `resetView()` ไม่แตะค่านี้
@@ -80,6 +87,7 @@
 - `options.viewToggle?: boolean` – แสดงปุ่มบน toolbar (`<button class="spg-tool-btn spg-view-toggle">`) ที่สลับระหว่างตารางกับ [Calendar](#calendar) ปุ่มแสดงไอคอนและชื่อของมุมมองที่จะไปต่อ (`calendar_today` / `labels.viewCalendar` ขณะแสดงตาราง, `view_column` / `labels.viewGrid` ขณะแสดงปฏิทิน) ต้องใช้คู่กับ `calendar` (ไม่มีจะโยน `RangeError`) ค่าเริ่มต้น `false`
 - `options.defaultView?: 'grid' | 'calendar'` – มุมมองแรกของกริดที่มี `calendar` ค่าเริ่มต้น `'calendar'` (เหมือนเดิมเมื่อไม่มี `viewToggle`) ใส่ `'grid'` เพื่อเริ่มที่ตาราง ค่าอื่น หรือ `'calendar'` โดยไม่มี `calendar` โยน `RangeError`
 - `options.onViewChange?: (view) => void` – เรียกเมื่อมุมมองเปลี่ยน (เหมือน `on('viewChange', fn)`)
+- `options.onCalendarChange?: (state) => void` – เรียกเมื่อปฏิทินเปลี่ยนมุมมองหรือช่วงวัน (เหมือน `on('calendarChange', fn)`)
 - `options.maxHeight?: number | string` – ความสูงสูงสุดของพื้นที่ตาราง (ตัวเลข = px หรือความยาว CSS เช่น `'20rem'`)
   ตารางที่สูงกว่านี้จะเลื่อนภายในกรอบ ใช้คู่กับ `stickyHeader` ถ้าอยากให้หัวตารางค้าง ค่านี้ถูกตั้งผ่าน CSSOM
   จึงใส่ CSS อื่นแทรกเข้ามาไม่ได้
@@ -111,6 +119,9 @@
   | `collapseAllGroups` / `expandAllGroups`  | aria-label และ tooltip ของปุ่ม Collapse all / Expand all (`groupToggleAllButton`)              | `'Collapse all'` / `'Expand all'`                |
 
 | `refresh` | aria-label และ tooltip ของปุ่ม Refresh (`refreshButton`) | `'Refresh'` |
+| `selectedCount` / `clearSelection` / `selectionActions` / `selectAllOnPage` / `confirmSelectionAction` | แถบคำสั่งของการเลือก: `(count) => string`, ปุ่มล้างการเลือก, aria-label ของแถบ, "เลือกทั้งหมดในหน้านี้" (เมื่อไม่มีหัวตาราง) และคำถามยืนยัน `(action, count) => string` | `'3 selected'` / `'Clear selection'` / `'Actions for the selected rows'` / `'Select all on this page'` / `'Approve: 3 row(s)?'` |
+| `clearFilters` | ปุ่ม `clearFiltersButton` | `'Clear search and filters'` |
+| `selectRow` / `selectAllRows` / `selectColumn` | aria-label ของ checkbox ของแถว และของ checkbox ที่หัวตาราง (`selectable`) กับชื่อคอลัมน์ใน `'single'` | `'Select row'` / `'Select all rows on this page'` / `'Select'` |
 | `viewGrid` / `viewCalendar` | aria-label และ tooltip ของปุ่มสลับมุมมอง (`viewToggle`) ขณะแสดงปฏิทิน / ขณะแสดงตาราง | `'Show as table'` / `'Show as calendar'` |
 | `resetView` | aria-label และ tooltip ของปุ่ม Reset view (`resetButton`) | `'Reset view'` |
 | `columnSettings` | หัวข้อของ modal ตั้งค่า (`columnPicker`) | `'Column settings'` |
@@ -239,7 +250,7 @@ new SPGrid(el, {
 ```
 
 ปุ่มเป็นแบบ tonal: พื้นอ่อนและขอบจากโทนสีเดียว ตัวอักษรเป็นสีโทนนั้น (อ่านชัดทั้งโหมดสว่าง/มืด) ค่าเริ่มต้นเป็นโทนเทา (`--spg-neutral`) ทุกปุ่มจึงเป็นพื้นเทาสีเดียวกัน
-เลือกโทนด้วย class ใน `className`: `spg-action-danger` (แดง), `spg-action-success` (เขียว), `spg-action-neutral` (เทา), `spg-action-warning` (ส้ม/เหลือง จาก `--spg-warning`) หรือตั้ง `--spg-action-tone`
+เลือกโทนด้วย class ใน `className`: `spg-action-primary` (สีหลัก/accent ของธีม ใช้กับคำสั่งหลัก เช่น "ดู"), `spg-action-danger` (แดง), `spg-action-success` (เขียว), `spg-action-neutral` (เทา), `spg-action-warning` (ส้ม/เหลือง จาก `--spg-warning`) หรือตั้ง `--spg-action-tone`
 ถ้าต้องการปุ่มสีทึบ ให้เพิ่ม class `spg-action-solid` คู่กับคลาสโทน เช่น `className: 'spg-action-warning spg-action-solid'` ปุ่มจะเต็มสีโทน ตัวอักษรขาว (โหมดมืดใช้ตัวอักษรเข้ม `#0b1220` เพราะโทนมืดเป็นสีสว่าง) และเข้มขึ้นเล็กน้อยเมื่อ hover ยังตั้ง `--spg-action-bg` / `--spg-action-color` / `--spg-action-hover-bg` ทับได้เหมือนเดิม (`.spg-action-solid` มี specificity เป็นศูนย์)
 
 ตัวแปร CSS: `--spg-action-tone`, `--spg-action-bg`, `--spg-action-color`, `--spg-action-hover-bg`, `--spg-action-radius`, `--spg-action-padding`, `--spg-danger`, `--spg-success`, `--spg-warning`, `--spg-neutral` (ดูตารางด้านล่าง)
@@ -251,8 +262,8 @@ new SPGrid(el, {
 
 - ดับเบิลคลิกที่แถว หรือกด **Enter** ขณะที่แถวมีโฟกัส (ไม่ใช่ปุ่มในแถว) → ยิง `rowActivate` ด้วย `{ row, rowKey, originalEvent }`
   (`row` เป็น object เดิม หาจากแถวที่แสดงอยู่หลังกรอง/เรียง/แบ่งหน้า; `originalEvent` เป็น `MouseEvent` หรือ `KeyboardEvent`)
-- เมื่อตั้ง option นี้ทุก `<tr>` ในตัวตารางจะมี `tabindex="0"` และ class `spg-activatable` (เคอร์เซอร์เป็นมือชี้ และมีกรอบโฟกัส `:focus-visible`)
-  ถ้าไม่ตั้ง แถวจะไม่ interactive และไม่ยิง event
+- เมื่อตั้ง option นี้ทุก `<tr>` ในตัวตารางจะมี class `spg-activatable` (เคอร์เซอร์เป็นมือชี้ และมีกรอบโฟกัส `:focus-visible`) และโฟกัสได้แบบ **roving tabindex**: มีแถวเดียวที่เป็นจุด Tab (`tabindex="0"` คือแถวปัจจุบัน ที่เหลือ `-1`) กด Tab ครั้งเดียวผ่านทั้งตาราง และใช้ [ปุ่มลูกศร](#คีย์บอร์ดของแถว) เลื่อนระหว่างแถว
+  ถ้าไม่ตั้ง (และไม่ตั้ง `selectable`) แถวจะไม่ interactive และไม่ยิง event
 - ในโหมด [Calendar](#calendar) นัดแต่ละอันถูกเปิดด้วยการ**คลิก**หรือ Enter แทนการดับเบิลคลิก
 - ปุ่ม ลิงก์ และ form control ในแถว (รวม `[data-action]`/`[data-cell-action]`) ทำงานของตัวเองตามเดิม ดับเบิลคลิกที่ตัวเหล่านั้นไม่ยิง `rowActivate`
   ส่วนหัวตารางและแถว "ไม่มีข้อมูล" ไม่ยิง event; ดับเบิลคลิกจะล้างข้อความที่ถูกเลือกจากการดับเบิลคลิก
@@ -266,6 +277,49 @@ new SPGrid(el, {
   onRowActivate: ({ row }) => openDetails(row),
 });
 ```
+
+### Selection
+
+ตั้ง `selectable` เพื่อให้ผู้ใช้เลือกแถวได้ (เช่น เลือกหลายรายการเพื่อส่งออกหรือทำงานต่อ):
+
+```js
+const grid = new SPGrid(el, {
+  rowKey: 'id',
+  columns,
+  rows,
+  selectable: true, // หรือ 'single'
+  onSelectionChange: (rows) => (exportBtn.disabled = rows.length === 0),
+});
+grid.getSelectedRows(); // แถวที่เลือก (object เดิมของกริด) เรียงตามลำดับของ rows
+grid.setSelectedRows([{ id: 3 }]); // เลือกเฉพาะแถวนี้ (จับคู่ด้วย rowKey)
+grid.exportExcel({ selectedOnly: true });
+```
+
+- มีคอลัมน์ checkbox นำหน้าคอลัมน์ข้อมูล (`th.spg-select-col` / `td.spg-select-cell`, `input.spg-select` ในแถว, `input.spg-select-all` ที่หัวตาราง)
+  ใน `'single'` ไม่มี checkbox ที่หัวตาราง (มีเพียงชื่อคอลัมน์จาก `labels.selectColumn`) และการเลือกแถวใหม่จะแทนที่แถวเดิม
+- checkbox ที่หัวตารางเลือก/ยกเลิก**ทุกแถวของหน้าที่แสดงอยู่** (รวมแถวในกลุ่มที่ยุบ) และเป็นสถานะครึ่งหนึ่ง (`indeterminate`) เมื่อเลือกบางแถวของหน้า
+- แถวที่เลือกมี `aria-selected="true"` และ class `is-selected` (แถวอื่นมี `aria-selected="false"`) checkbox ของแต่ละแถวไม่เป็นจุด Tab (`tabindex="-1"`) ใช้ปุ่ม **Space** บนแถวที่มีโฟกัสแทน
+- การเลือกคงอยู่เมื่อเรียง กรอง หรือเปลี่ยนหน้า `setRows()` เก็บการเลือกของแถวที่ยังอยู่ (จับคู่ด้วย `rowKey`; ถ้าไม่มี `rowKey` ใช้ตัว object เอง จึงแถวใหม่ที่เป็น object ใหม่ถือว่าเป็นแถวใหม่) และตัดแถวที่หายไปออก
+  `resetView()` ไม่ล้างการเลือก; ไม่มีตัวเลือกให้จำการเลือกใน `localStorage`
+- ตัวกรอง/การเรียงไม่เปลี่ยนการเลือก `exportExcel({ selectedOnly: true })` ส่งออกเฉพาะแถวที่เลือก**ในบรรดาแถวที่การส่งออกนั้นจะมี** (ผ่านการค้นหา กรอง เรียงตามปัจจุบัน) ถ้าไม่มีแถวที่เลือกจะได้ไฟล์ที่มีแต่หัวตาราง
+- คอลัมน์ checkbox ถูก[ค้างคอลัมน์](#freeze-columns)ไปพร้อมคอลัมน์ข้อมูลเมื่อ `freezeColumns > 0` (ไม่นับรวมในจำนวนที่ตั้ง) ไม่มีผลในโหมด [Calendar](#calendar) และไม่ปรากฏในการ export / ตัวเลือกคอลัมน์
+- แถบคำสั่ง (`selectionActions`): ตัวอย่างและการยืนยันก่อนทำ ดู option ด้านบน ข้อความมาจาก `labels.selectedCount`, `clearSelection`, `selectionActions`, `selectAllOnPage`, `confirmSelectionAction`
+- ข้อความมาจาก `labels.selectRow`, `labels.selectAllRows`, `labels.selectColumn` (`thaiLabels` แปลให้แล้ว) รูปแบบปรับด้วย CSS ของ `.spg-select-col`, `tr.is-selected` และตัวแปร `--spg-accent`
+
+#### คีย์บอร์ดของแถว
+
+เมื่อแถวโฟกัสได้ (ตั้ง `onRowActivate` หรือ `selectable`) ตารางมีจุด Tab เดียวสำหรับแถวทั้งหมด (roving tabindex: แถวปัจจุบันมี `tabindex="0"` ที่เหลือ `-1`
+แถวที่ได้โฟกัสด้วยการคลิก Tab หรือปุ่มลูกศรจะกลายเป็นแถวปัจจุบัน และตำแหน่งนั้นคงอยู่เมื่อวาดตารางใหม่) ขณะโฟกัสอยู่ที่แถว (หรือ checkbox ของแถว):
+
+| ปุ่ม                  | ผล                                                                 |
+| --------------------- | ------------------------------------------------------------------ |
+| `↓` / `↑`             | ไปแถวถัดไป / ก่อนหน้า (ข้ามหัวกลุ่ม; หยุดที่แถวแรก/สุดท้ายของหน้า) |
+| `Home` / `End`        | ไปแถวแรก / สุดท้ายของหน้า                                          |
+| `PageDown` / `PageUp` | ข้ามครั้งละ 10 แถว                                                 |
+| `Space`               | เลือก/ยกเลิกแถว (เมื่อ `selectable`)                               |
+| `Enter`               | เปิดแถว (เมื่อ `onRowActivate`)                                    |
+
+ปุ่มเหล่านี้ทำงานเฉพาะเมื่อโฟกัสอยู่ที่แถวหรือ checkbox ของแถวเอง ปุ่มและ form control อื่นในแถวใช้ปุ่มตามปกติ และคีย์ที่กดร่วมกับ Ctrl / Alt / Meta ไม่ถูกใช้ ตารางที่วาดใหม่ (เช่น หลังเลือกแถว) คืนโฟกัสให้แถวหรือ checkbox ที่ถืออยู่เดิม
 
 ### Grid lines
 
@@ -399,7 +453,7 @@ _ดีไซน์ของแถบกรอง:_ select เป็น addon �
 - มีปุ่ม `<button type="button" class="spg-search-submit">` (ไอคอน `search` อย่างเดียว ไม่มีข้อความ; ชื่อสำหรับ screen reader และ tooltip มาจาก `labels.searchButton`; สีทึบตาม `--spg-accent`) ข้างช่องค้นหา
 - พิมพ์ในช่องจะไม่กรอง (ไม่มี debounce) กรองเมื่อคลิกปุ่มหรือกด Enter ในช่อง (ไม่นับ Enter ที่ใช้ยืนยันตัวอักษรของ IME)
 - ส่งข้อความว่างเท่ากับล้างตัวกรอง; ปุ่มล้าง (`close`) ยังล้างทันที; select เลือกคอลัมน์ยังกรองใหม่ทันที
-- มีปุ่มรอง `<button type="button" class="spg-search-reset">` ไอคอน `close` อย่างเดียว ไม่มีข้อความ; ชื่อและ tooltip มาจาก `labels.clear` ("Clear search" / "ล้างการค้นหา") สีเทา tonal ต่อจากปุ่มค้นหา กดแล้วล้างช่อง ล้างตัวกรองทันที และคืน focus ให้ช่อง (ไม่รีเซ็ตคอลัมน์ที่เลือก)
+- มีปุ่มรอง `<button type="button" class="spg-search-reset">` ไอคอน `close` อย่างเดียว ไม่มีข้อความ; ชื่อและ tooltip มาจาก `labels.clear` ("Clear search" / "ล้างเฉพาะคำค้นหา") สีเทา tonal ต่อจากปุ่มค้นหา กดแล้วล้างช่อง ล้างตัวกรองทันที และคืน focus ให้ช่อง (ไม่รีเซ็ตคอลัมน์ที่เลือก)
 - `filterChange` ยิงครั้งเดียวต่อการค้นหาที่ทำให้ตัวกรองเปลี่ยน
 - `setFilter()` ยังเขียนข้อความลงช่องและกรองทันทีเหมือนเดิม
 
@@ -481,7 +535,9 @@ new SPGrid(el, {
 - `view?: 'agenda' | 'day' | 'workWeek' | 'week' | 'month'` – มุมมองเริ่มต้น (ค่าเริ่มต้น `'week'`); `views?` – มุมมองที่มีปุ่มให้เลือก เรียงตามลำดับ (ค่าเริ่มต้นสี่มุมมองแรก ไม่รวม `month` ต้องใส่เองถึงจะมีมุมมองเดือน: ตารางสัปดาห์เต็มของเดือน แสดงนัดวันละไม่เกิน 3 รายการ ที่เหลือเป็นลิงก์ "+อีก N" ที่เปิดมุมมองวัน ถ้า `views` มี `day`) `workWeek` คือจันทร์–ศุกร์ `agenda` แสดงรายการของสัปดาห์เดียวกันเรียงรายวัน เฉพาะวันที่มีนัด
 - `date?: Date | string | number` – วันที่เปิดอยู่ (ค่าเริ่มต้น ตอนนี้); `firstDay?: number` – วันแรกของสัปดาห์ 0 (อาทิตย์) ถึง 6 (ค่าเริ่มต้น `0`)
 - `hours?: [number, number]` – ช่วงชั่วโมงขั้นต่ำของตารางเวลา `[from, to]` (`0 <= from < to <= 24`, ค่าเริ่มต้น `[8, 18]`) ขยายเองให้พอดีกับนัดของวันที่แสดง
-- ค่าที่ไม่ถูกต้อง (มุมมองที่ไม่รู้จัก, `view` ที่ไม่อยู่ใน `views`, `firstDay` หรือ `hours` นอกช่วง, `date` ที่อ่านไม่ได้) โยน `RangeError` ตอนสร้าง
+- `allDay?: string` – ฟิลด์ของแถวที่บอกว่าเป็นนัดตลอดวัน เมื่อค่าเป็น `true`, `1` หรือข้อความ `'true'` / `'1'` / `'yes'` (ไม่สนตัวพิมพ์) นัดตลอดวันครอบคลุมทั้งวัน ตั้งแต่วันของ `start` ถึงวันของ `end` (นับวันสุดท้ายด้วย; ไม่มี `end` ที่ใช้ได้ = วันเดียว) แสดงเป็นแถว "ตลอดวัน" ใต้ชื่อวันในมุมมองวัน / สัปดาห์ทำงาน / สัปดาห์ (แถวนี้เลื่อนตามหัวตารางและมีเฉพาะเมื่อวันที่แสดงมีนัดตลอดวัน), อยู่บนสุดของวันในมุมมองกำหนดการ (แสดงข้อความ `labels.calendarAllDay` แทนเวลา) และอยู่ก่อนนัดอื่นใน cell ของมุมมองเดือน (ไม่มีเวลา) นัดที่ข้ามหลายวันแสดงในทุกวันที่ครอบคลุม ไม่แสดงในตารางเวลา
+- `color?: string` – ฟิลด์ของแถวที่เก็บสีของนัด: สี hex (`#0a7`), ชื่อสี (`teal`) หรือ `rgb()` / `hsl()`; ถ้าตั้ง `colors` ด้วย ค่าในฟิลด์นี้จะเป็น key ไปหาสีใน `colors` แทน ค่าที่ไม่ใช่สีที่รองรับจะถูกเมินและใช้สี accent ของธีม (ไม่มีทางแทรก CSS อื่นผ่านค่านี้) `colors?: Record<string, string>` – สีของแต่ละค่าในฟิลด์ `color` เช่น `{ open: '#2e7d32', void: 'gray' }` ค่าที่ไม่อยู่ในรายการใช้สี accent สีใช้กับขอบซ้ายและพื้นหลังจางของนัดผ่าน CSS variable `--spg-cal-event-color` (ตั้งเองต่อนัดหรือทั้งหน้าได้)
+- ค่าที่ไม่ถูกต้อง (`allDay` / `color` ที่ไม่ใช่ชื่อฟิลด์, `colors` ที่ไม่ใช่ object หรือมีค่าที่ไม่ใช่สี, มุมมองที่ไม่รู้จัก, `view` ที่ไม่อยู่ใน `views`, `firstDay` หรือ `hours` นอกช่วง, `date` ที่อ่านไม่ได้) โยน `RangeError` ตอนสร้าง
 
 พฤติกรรม:
 
@@ -489,7 +545,7 @@ new SPGrid(el, {
 - นัดที่เวลาซ้อนกันแบ่งความกว้างเป็นคอลัมน์เท่า ๆ กัน เส้นเวลาปัจจุบันแสดงในคอลัมน์ของวันนี้ (คำนวณตอนวาด ไม่ขยับเอง)
 - ค้นหา คอลัมน์ที่ใช้ค้นหา ตัวกรองคอลัมน์ ตัวกรองขั้นสูง `setFilter` / `setAdvancedFilter` ใช้กับแถวชุดเดียวกัน จึงกรองนัดที่แสดง; `pageSize`, `groupBy` และการไฮไลต์คำค้นไม่มีผลในโหมดนี้ (คอลัมน์ใช้สำหรับค้นหาและ export เท่านั้น)
 - `onRowActivate` / `rowActivate` ยิงเมื่อ**คลิก**นัดหรือกด Enter ขณะโฟกัสที่นัด (ไม่ต้องดับเบิลคลิก เพื่อใช้บนจอสัมผัสได้) นัดแต่ละอันมี `tabindex="0"`, class `spg-cal-event`, `data-row-index` และ `title` เป็นเวลากับชื่อเรื่อง
-- ข้อความของปุ่มมาจาก `labels`: `calendarToday`, `calendarPrev`, `calendarNext`, `calendarViews`, `calendarAgenda`, `calendarDay`, `calendarWorkWeek`, `calendarWeek`, `calendarMonth`, `calendarMore`, `calendarNoEvents` (`thaiLabels` มีครบ)
+- ข้อความของปุ่มมาจาก `labels`: `calendarToday`, `calendarPrev`, `calendarNext`, `calendarViews`, `calendarAgenda`, `calendarDay`, `calendarWorkWeek`, `calendarWeek`, `calendarMonth`, `calendarMore`, `calendarNoEvents`, `calendarAllDay` (`thaiLabels` มีครบ)
 - ปรับหน้าตาด้วย CSS variable: ความสูงต่อชั่วโมง `--spg-cal-hour-height` (ค่าเริ่มต้น `3.5rem`) สีนัดอิง `--spg-accent`; ตั้ง `--spg-cal-max-height` (เช่น `40rem`) ให้ตารางเวลาเลื่อนในกรอบโดยชื่อวันค้างอยู่ด้านบน; ตั้ง `--spg-cal-day-min-width` (เช่น `9rem`, ค่าเริ่มต้น `0px`) กันคอลัมน์วันไม่ให้แคบกว่านี้ ถ้าแคบกว่าตารางจะเลื่อนด้านข้าง
 - สลับกับตารางได้ด้วย `viewToggle` / `setView()` (ดู `options.viewToggle`) ตัวอย่างที่ `worklist.html`
 - ยังไม่มี: เมธอด `getCalendarView()` / `setCalendarView()` และ event ตอนเปลี่ยนมุมมองของปฏิทิน (agenda / day / week), มุมมองเดือน, นัดตลอดวัน, สีตามค่าของแถว, ลาก/ปรับขนาดนัด, นัดซ้ำ, time zone (ดู `docs/ROADMAP.md`)
@@ -649,6 +705,9 @@ new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
 - `getView()` – มุมมองที่แสดงอยู่: `'grid'` หรือ `'calendar'` (กริดที่ไม่มี `calendar` เป็น `'grid'` เสมอ)
 - `setView(view)` – สลับระหว่างตารางกับปฏิทินเหมือนกดปุ่ม `viewToggle` (ใช้ได้แม้ไม่ได้เปิดปุ่ม) ข้อความค้นหา ตัวกรอง และการเรียงคงเดิม; หน้า pager และการจัดกลุ่มกลับมาเมื่อกลับไปตาราง ส่วนมุมมองและวันที่ของปฏิทินจำไว้ โยน `RangeError` ถ้า `view` ไม่รู้จัก หรือเป็น `'calendar'` ทั้งที่ไม่มี `calendar` ไม่ทำอะไรถ้าเป็นมุมมองเดิม
 - `on('viewChange', fn)` – รับ `'grid' | 'calendar'` ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
+- `getCalendarView()` – มุมมองปฏิทินที่เปิดอยู่: `{ view, date, start, end }` (สำเนา) `view` คือ `'agenda' | 'day' | 'workWeek' | 'week' | 'month'`, `date` คือช่วงเวลาที่อยู่ในวัน/สัปดาห์/เดือนที่แสดง (ส่งกลับให้ `setCalendarView` ได้), `start` คือเที่ยงคืนของวันแรกที่มุมมองครอบคลุม และ `end` คือเที่ยงคืนหลังวันสุดท้าย (ไม่รวมวันนั้น) มุมมองเดือนเริ่มที่วันแรกของสัปดาห์ที่เดือนเริ่มและจบที่สิ้นสุดสัปดาห์สุดท้ายของเดือน คืน `null` ถ้าไม่มี `calendar`
+- `setCalendarView({ view?, date? })` – เปิดมุมมองและ/หรือวันของปฏิทินเหมือนกดปุ่ม (ค่าที่ไม่ส่งคงเดิม; `date` เป็น `Date`, timestamp หรือสตริงวันที่) แล้ววาดใหม่ แม้ตอนนี้จะแสดงตารางอยู่ก็จำค่าไว้ใช้เมื่อสลับกลับ โยน `RangeError` ถ้าไม่มี `calendar`, `view` ไม่อยู่ใน `calendar.views` หรืออ่าน `date` ไม่ได้
+- `on('calendarChange', fn)` – รับ `{ view, date, start, end }` (เหมือน `getCalendarView()`) ครั้งเดียวต่อการเปลี่ยนมุมมองหรือช่วงวัน จากปุ่มของปฏิทิน (ก่อนหน้า ถัดไป วันนี้ ปุ่มมุมมอง "+N more") หรือ `setCalendarView()` ไม่เรียกถ้าไม่เปลี่ยน (เช่น เลื่อนวันภายในสัปดาห์เดิม) คืนฟังก์ชัน unsubscribe
 - `getViewSettings()` – หน้าตาของตารางที่มีผลอยู่: `{ striped, wrapped, gridLines, lineStyle, freezeColumns }` (สำเนา; คืนครบทั้งห้าค่าเสมอ ไม่ว่าจะเปิด `*Toggle` หรือไม่)
 - `setViewSettings(settings)` – เปลี่ยนหน้าตาจากโค้ดเหมือนที่ผู้ใช้ทำใน modal ตั้งค่า ใช้ได้แม้ไม่ได้เปิด `*Toggle` ที่เกี่ยวข้อง ค่าที่ไม่ได้ส่งมาคงเดิม แต่ละค่าบันทึกลง `localStorage` ถ้ามี `*StorageKey` ของมัน โยน `TypeError` ถ้า `striped` / `wrapped` ไม่ใช่ boolean และ `RangeError` ถ้า `gridLines` / `lineStyle` ไม่อยู่ในค่าที่รองรับ หรือ `freezeColumns` ไม่ใช่จำนวนเต็ม 0 ขึ้นไป (ไม่เปลี่ยนอะไรเลยถ้ามีค่าใดไม่ถูกต้อง) ดูตัวอย่างที่ `view-settings.html` (ชุดค่าสำเร็จรูป, ควบคุมทีละค่า, จัดกลุ่มด้วย `setGroupBy()`)
 - `getColumnOrder()` – key ของทุกคอลัมน์ (รวมคอลัมน์ action) ตามลำดับที่แสดง
@@ -660,10 +719,14 @@ new SPGrid(container, { columns, rows, striped: true, gridLines: 'both' });
 - `on('columnsChange', fn)` – รับ `string[]` (key ที่ซ่อน) ครั้งเดียวต่อการเปลี่ยน (ไม่เรียกถ้าไม่เปลี่ยน) คืนฟังก์ชัน unsubscribe
 - `on('action', fn)` / `on('cellClick', fn)` – ดู [Events](#events-action-และ-cellclick) คืนฟังก์ชัน unsubscribe
 - `on('rowActivate', fn)` – ดู [Row activation](#row-activation) คืนฟังก์ชัน unsubscribe
-- `exportExcel({ filename, sheetName, columns })` – ดาวน์โหลดไฟล์ `.xlsx` (สร้างในเบราว์เซอร์ ไม่ใช้ไลบรารีเพิ่ม) ของแถวที่ผ่านการค้นหา/กรอง/เรียงปัจจุบัน
+- `exportExcel({ filename, sheetName, columns, search, selectedOnly })` – ดาวน์โหลดไฟล์ `.xlsx` (สร้างในเบราว์เซอร์ ไม่ใช้ไลบรารีเพิ่ม) ของแถวที่ผ่านการค้นหา/กรอง/เรียงปัจจุบัน
   **ทุกหน้า** เฉพาะคอลัมน์ข้อมูล (ไม่รวม action) โดยแถวแรกเป็น `label` ตัวหนา; ค่าเป็นค่าดิบของแถว ไม่ใช่ผลของ `column.render`;
-  ตัวเลขและ boolean คงชนิด ส่วนอื่นเป็นข้อความ (จึงไม่ถูกตีความเป็นสูตร) `filename` ค่าเริ่มต้นคือ option `exportFilename` ถ้าไม่ตั้งก็ `export.xlsx`
+  ตัวเลขและ boolean คงชนิด ส่วนอื่นเป็นข้อความ (จึงไม่ถูกตีความเป็นสูตร) `filename` ค่าเริ่มต้นคือ option `exportFilename` ถ้าไม่ตั้งก็ `export.xlsx` `selectedOnly: true` ส่งออกเฉพาะแถวที่เลือก (ดู [Selection](#selection))
   (เติม `.xlsx` ให้ถ้าไม่มี), `sheetName` ค่าเริ่มต้น `Sheet1`; `search` คือข้อความกรองแถวเฉพาะการส่งออกครั้งนี้ (คำที่คั่นด้วยช่องว่างเป็น AND ค้นทุกคอลัมน์ข้อมูลที่ไม่ซ่อน) ใช้แทนคำค้นและ "ค้นหาใน" ของตาราง ส่วนตัวกรองรายคอลัมน์ยังใช้อยู่ `''` คือไม่ค้น ไม่ส่งมาคือใช้แถวตามที่ตารางกรองอยู่ ตารางไม่เปลี่ยน; `columns` คือ key ของคอลัมน์ข้อมูลที่จะส่งออก (ค่าเริ่มต้น: ทุกคอลัมน์) เรียงตามลำดับคอลัมน์ของตาราง ไม่ว่าจะส่งมาลำดับไหน โยน `RangeError` ถ้าเป็นลิสต์ว่าง หรือมี key ที่ไม่ใช่คอลัมน์ข้อมูล (รวมคอลัมน์ action) คืน `Blob` ของไฟล์
+- `getSelectedRows()` – แถวที่เลือกอยู่ (`selectable`; object เดิมของกริด) เรียงตามลำดับของ rows ที่ตั้งไว้ ไม่ว่าจะเรียง กรอง หรืออยู่หน้าไหน; `[]` เมื่อไม่ได้เปิด `selectable`
+- `setSelectedRows(rows)` – เลือก**เฉพาะ**แถวใน `rows` (จับคู่กับแถวของกริดด้วย `rowKey` จึงส่ง `{ id: 3 }` ได้ ถ้าไม่มี `rowKey` ใช้ตัว object เอง; แถวที่กริดไม่มีถูกเมิน) ยิง `selectionChange` ถ้ามีอะไรเปลี่ยน; `[]` = ล้างการเลือก โยน `RangeError` ถ้าไม่ได้เปิด `selectable` หรือส่งหลายแถวใน `'single'`
+- `on('selectionAction', fn)` – รับ `{ action, rows }` เมื่อคำสั่งของแถบ `selectionActions` ทำงาน (หลังผู้ใช้ยืนยันถ้ามี `confirm`) คืนฟังก์ชัน unsubscribe
+- `on('selectionChange', fn)` – รับแถวที่เลือกอยู่ (เหมือน `getSelectedRows()`) ครั้งเดียวต่อการเปลี่ยน ทั้งจากผู้ใช้ `setSelectedRows()` และการที่ `setRows()` ตัดแถวที่หายไปออก ไม่ยิงถ้าไม่เปลี่ยน คืนฟังก์ชัน unsubscribe
 - `render()` – เรนเดอร์ตารางใหม่ (ช่องค้นหาและ pager ไม่ถูกแตะถ้าเนื้อหาเท่าเดิม)
 - `destroy()` – ถอด event listener (หัวตาราง, ช่องค้นหา, pager), ยกเลิก debounce ที่ค้างอยู่ และล้างเนื้อหาใน container; หลังจากนั้นทุกเมธอดไม่ทำอะไร
 

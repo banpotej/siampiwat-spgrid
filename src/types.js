@@ -4,30 +4,9 @@
  * @typedef {Record<string, unknown>} Row
  */
 
-/**
- * @typedef {object} Column
- * @property {string} key Property of the row to display.
- * @property {string} [label] Header text; defaults to `key`.
- * @property {boolean} [sortable] Header click / Enter / Space cycles asc -> desc -> none.
- * @property {'left' | 'center' | 'right'} [align] Text alignment of the header and cells; default 'left'.
- * @property {string} [width] Any CSS width, e.g. '80px'; ignored if it contains anything but a plain length.
- * @property {string} [ariaLabel] `aria-label` of the header cell; give it to columns without a label.
- * @property {(value: unknown, row: Row) => string} [render] Cell HTML. NOT escaped: the caller must escape
- *   every piece of user data it interpolates (use `escapeHtml`). Default: the escaped value.
- * @property {'text' | 'badge' | 'date' | 'boolean' | 'number'} [type] How the cell looks (default 'text', as is):
- *   `badge` = a coloured pill (see `badges`); `date` = a Date, ISO string or timestamp formatted for the grid's
- *   locale with a calendar icon; `boolean` = a check / cross chip; `number` = formatted, right-aligned figures.
- *   Blank values show a muted dash. Ignored when `render` is set. Sorting, search and export use the raw value.
- * @property {Intl.NumberFormatOptions | Intl.DateTimeFormatOptions} [format] Options for `number` (e.g.
- *   `{ style: 'currency', currency: 'THB' }`) and `date` (default `{ dateStyle: 'medium' }`).
- * @property {(string | { value: string, label?: string })[]} [options] Makes this an enum column: the values it can take
- *   (a `badge` column's `badges` keys count too). With `searchColumnSelect`, choosing it as the search column swaps the text box
- *   for a select of these values (labels escaped) and the search matches the whole cell, not a substring. Default none.
- * @property {Record<string, { tone?: 'success' | 'danger' | 'warning' | 'info' | 'neutral', icon?: IconName,
- *   label?: string }>} [badges] For `badge`: look per value (keyed by the raw value); others are neutral.
- * @property {ActionDef[]} [actions] Makes this an action column: one button per action in each row. `key` is
- *   then only an identifier; the column is never sortable, searched or filtered.
- */
+/** @typedef {import('./columnTypes.js').Column} Column */
+
+/** @typedef {import('./selectionTypes.js').SelectionActionDef} SelectionActionDef */
 
 /**
  * @typedef {object} ActionDef
@@ -130,12 +109,13 @@
  * @property {number | null} pageSize Rows per page; null while pagination is off.
  * @property {string | null} searchColumn Column the global search is limited to; null searches every data column.
  * @property {string[]} groupBy Keys of the columns the rows are grouped by, outermost first; empty while ungrouped.
+ * @property {ReadonlySet<unknown>} selected The selected rows: each one's `rowKey` value, or the row object itself without a `rowKey`.
  */
 
 /**
  * Payload of each grid event, by name.
  * @typedef {{ sortChange: SortState, filterChange: FilterState | null, pageChange: PageState,
- *   action: ActionEventPayload, cellClick: CellClickPayload, rowActivate: RowActivatePayload, columnsChange: string[], columnOrderChange: string[], groupByChange: string[], viewChange: 'grid' | 'calendar', refresh: void }} GridEvents
+ *   action: ActionEventPayload, cellClick: CellClickPayload, rowActivate: RowActivatePayload, columnsChange: string[], columnOrderChange: string[], groupByChange: string[], selectionChange: Row[], selectionAction: { action: string, rows: Row[] }, viewChange: 'grid' | 'calendar', calendarChange: import('./calendarTypes.js').CalendarState, refresh: void }} GridEvents
  */
 
 /**
@@ -148,6 +128,20 @@
  * @property {(payload: RowActivatePayload) => void} [onRowActivate] Makes the rows activatable and is called when one
  *   is: a double-click on the row, or Enter while the row has focus (each row is then a Tab stop, with a pointer cursor).
  *   Buttons, links and form controls inside a row keep their own behaviour. Default: rows are not interactive.
+ * @property {boolean | 'single' | 'multiple'} [selectable] Add a leading checkbox column so rows can be selected: `true` / `'multiple'`
+ *   (a header checkbox selects every row on the page) or `'single'` (at most one row). Space on a focused row toggles it;
+ *   selected rows have `aria-selected="true"` and the class `is-selected`. The selection survives sorting, filtering and
+ *   paging, and is kept across `setRows()` for rows still there (matched by `rowKey`; without one, by identity). Read it with
+ *   `getSelectedRows()`, set it with `setSelectedRows()`, export it with `exportExcel({ selectedOnly: true })`. Default off.
+ * @property {SelectionActionDef[]} [selectionActions] With `selectable`: a bar over the table that shows "N selected", these buttons and
+ *   Clear selection while rows are selected. A button reports `{ action, rows }` through `onSelectionAction`, after the question when it has
+ *   `confirm`. With `showHeader: false` (no header checkbox) the bar also holds "select all on this page" and is always shown.
+ * @property {(payload: { action: string, rows: Row[] }) => void} [onSelectionAction] Called when a selection action runs (same as
+ *   `on('selectionAction', fn)`).
+ * @property {boolean} [clearFiltersButton] A toolbar button that clears the search and every filter at once (it shows only while
+ *   something filters the rows); the sort, page size and columns stay (that is `resetView()`). Default `false`.
+ * @property {(rows: Row[]) => void} [onSelectionChange] Called with the selected rows whenever the selection changes (same
+ *   as `on('selectionChange', fn)`).
  * @property {string} [locale] Locale for sorting strings and lower-casing search text; default 'th'.
  * @property {{ key: string, direction: SortDirection }} [defaultSort] Sort applied when the grid is created (and by
  *   `resetView()`); `key` must be a data column. Default: unsorted.
@@ -262,6 +256,9 @@
  *   grid its own name. Default: not remembered.
  * @property {(groupBy: string[]) => void} [onGroupByChange] Called whenever the group columns change (same as
  *   `on('groupByChange', fn)`).
+ * @property {string} [advancedFilterStorageKey] Remember the advanced filter in `localStorage` under this name (stored as
+ *   `spgrid:advancedFilter:<name>`) and restore it next time; clearing it is remembered too. A saved filter that no
+ *   longer fits the columns is ignored. Give each grid its own name. Default: not remembered.
  * @property {boolean} [gridLinesToggle] Add a "Grid lines" select to the settings modal so the user can pick the mode.
  *   Default false.
  * @property {string} [gridLinesStorageKey] Remember the grid lines choice in `localStorage` under this name (stored as
@@ -274,6 +271,9 @@
  *   can pick how many. Default false.
  * @property {string} [freezeColumnsStorageKey] Remember the frozen column count in `localStorage` under this name (stored
  *   as `spgrid:freezeColumns:<name>`) and restore it next time, ahead of `freezeColumns`. Default: not remembered.
+ * @property {boolean} [buttonLabels] Write each toolbar button's name beside its icon (Refresh, Export, Advanced filter, Settings,
+ *   Collapse all, the view and search buttons), so no button relies on its tooltip. The text is the button's label (`labels.*`,
+ *   `thaiLabels` for Thai) and follows it when the label changes. Default `false`: icon-only buttons.
  * @property {'compact' | 'comfortable'} [density] Cell padding; default 'comfortable'.
  * @property {boolean} [stickyHeader] Keep the header visible while scrolling.
  * @property {number | string} [maxHeight] Max height of the table area (a number is px, or any CSS length);
@@ -284,6 +284,8 @@
  * @property {boolean} [viewToggle] With `calendar`: render a toolbar button that switches between the table and the calendar
  *   (`getView()` / `setView()` do the same from code). Needs `calendar`. Default `false`.
  * @property {(view: 'grid' | 'calendar') => void} [onViewChange] Called when the view changes (same as `on('viewChange', fn)`).
+ * @property {(state: import('./calendarTypes.js').CalendarState) => void} [onCalendarChange] Called when the calendar opens
+ *   another view or range of days (same as `on('calendarChange', fn)`).
  */
 
 /** @typedef {import('./viewTypes.js').ViewSettings} ViewSettings */

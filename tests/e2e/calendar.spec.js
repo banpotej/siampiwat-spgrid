@@ -38,7 +38,7 @@ test('the view buttons switch between agenda, day, work week and week', async ({
   await calendar.getByRole('button', { name: 'วัน', exact: true }).click();
   await expect(calendar.locator('.spg-cal-dayhead')).toHaveCount(1);
   await calendar.getByRole('button', { name: 'กำหนดการ' }).click();
-  await expect(calendar.locator('.spg-cal-agenda-day')).toHaveCount(2); // 10 and 11 Nov
+  await expect(calendar.locator('.spg-cal-agenda-day')).toHaveCount(3); // 10, 11 and 12 Nov (the 12th has the all-day closure)
   await expect(calendar.getByRole('button', { name: 'กำหนดการ' })).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -90,4 +90,41 @@ test('the calendar fits a phone screen without sideways page scroll', async ({ p
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test('an all-day event sits in its own row above the time grid, not among the timed events', async ({
+  page,
+}) => {
+  const calendar = page.locator('.spg-cal');
+  await expect(calendar.locator('.spg-cal-allday-label')).toHaveText('ตลอดวัน');
+  const chip = calendar.locator('.spg-cal-head .spg-cal-chip');
+  await expect(chip).toHaveCount(1);
+  await expect(chip).toContainText('ปิดเคาน์เตอร์');
+  await expect(calendar.locator('.spg-cal-col .spg-cal-event.is-all-day')).toHaveCount(0);
+  // It is in the column of Thursday 12 Nov, so it lines up under that day's name.
+  const [chipBox, dayBox] = await Promise.all([
+    chip.boundingBox(),
+    calendar.locator('[data-day="2026-11-12"]').boundingBox(),
+  ]);
+  expect(
+    chipBox &&
+      dayBox &&
+      chipBox.x >= dayBox.x - 1 &&
+      chipBox.x + chipBox.width <= dayBox.x + dayBox.width + 1,
+  ).toBe(true);
+  // Clicking it reports the row like any event.
+  await chip.click();
+  await expect(page.locator('#log')).toContainText('ปิดเคาน์เตอร์');
+});
+
+test('events are coloured by status, and the all-day closure is red', async ({ page }) => {
+  const border = (/** @type {string} */ selector) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((el) => getComputedStyle(el).borderInlineStartColor);
+  expect(await border('.spg-cal-col .spg-cal-event')).toBe('rgb(46, 125, 50)'); // รับเข้า
+  expect(await border('.spg-cal-chip.is-all-day')).toBe('rgb(198, 40, 40)'); // วันหยุด
+  await page.locator('.spg-cal').getByRole('button', { name: 'เดือน' }).click();
+  expect(await border('.spg-cal-chip.is-all-day')).toBe('rgb(198, 40, 40)');
 });

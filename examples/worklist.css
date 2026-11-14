@@ -57,8 +57,9 @@
 }
 .task-head {
   display: flex;
+  flex-wrap: wrap; /* a narrow screen: the badges go to the next line instead of widening the card */
   align-items: center;
-  gap: 0.6em;
+  gap: 0.4em 0.6em;
 }
 .task-code {
   padding: 1px 7px;
@@ -120,9 +121,19 @@
 .task-meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 4px 16px;
   color: #7a6a58;
   font-size: 12px;
+}
+.task-overdue {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fde8e8;
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .task-place,
 .task-asked {
@@ -133,4 +144,35 @@
 .task-icon {
   flex: none;
   color: #a89a88;
+}
+
+/* The details button at the end of the card: outlined, with room to tap (44px high), and the keyboard focus ring. */
+.task-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 0 16px;
+  border: 1px solid #2f5fd0;
+  border-radius: 8px;
+  background: #eef3ff;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.task-detail .task-icon {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+.task-detail:hover {
+  background: #dbe6ff;
+}
+.task-detail:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
 }

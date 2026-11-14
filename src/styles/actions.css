@@ -48,6 +48,10 @@
   transform: translateY(0);
 }
 
+:where(.spg-action-primary) {
+  --spgi-action-tone: var(--spgi-accent);
+}
+
 :where(.spg-action-danger) {
   --spgi-action-tone: var(--spgi-danger);
 }

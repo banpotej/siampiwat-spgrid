@@ -157,7 +157,9 @@ describe('search button', () => {
   it('shows no Clear search button without searchButton and uses labels.clear for its name', () => {
     expect(make({ searchButton: false }).el.querySelector('.spg-search-reset')).toBeNull();
     const { el } = make({ labels: thaiLabels });
-    expect(el.querySelector('.spg-search-reset')?.getAttribute('aria-label')).toBe('ล้างการค้นหา');
+    expect(el.querySelector('.spg-search-reset')?.getAttribute('aria-label')).toBe(
+      'ล้างเฉพาะคำค้นหา',
+    );
   });
 
   it('keeps the clear button in step with the text while typing', () => {

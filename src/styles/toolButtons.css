@@ -55,3 +55,162 @@
     transform: none;
   }
 }
+
+/* `buttonLabels`: the button's name (its aria-label, so it follows label changes and the accessible name stays as is)
+   is written beside the icon. */
+.spg-btn-labels .spg-tool-btn,
+.spg-btn-labels .spg-export,
+.spg-btn-labels .spg-search-submit,
+.spg-btn-labels .spg-search-reset {
+  gap: 0.4em;
+  white-space: nowrap;
+}
+
+.spg-btn-labels .spg-tool-btn::after,
+.spg-btn-labels .spg-export::after,
+.spg-btn-labels .spg-search-submit::after,
+.spg-btn-labels .spg-search-reset::after {
+  content: attr(aria-label);
+  font-size: 0.9em;
+}
+
+/* With names beside the icons the group is wider: let it wrap instead of squeezing the search box, each part keeping
+   its own rounded border (the same look as a narrow grid, see toolbarNarrow.css). */
+.spg-btn-labels .spg-input-group {
+  flex-wrap: wrap;
+  gap: 8px;
+  box-shadow: none;
+}
+
+.spg-btn-labels .spg-input-group:focus-within {
+  box-shadow: none;
+}
+
+.spg-btn-labels .spg-input-group > *,
+.spg-btn-labels .spg-input-group .spg-search,
+.spg-btn-labels .spg-input-group .spg-search-value,
+.spg-btn-labels .spg-input-group > :first-child,
+.spg-btn-labels .spg-input-group > :last-child,
+.spg-btn-labels .spg-input-group > :first-child .spg-search,
+.spg-btn-labels .spg-input-group > :last-child .spg-search {
+  border-radius: var(--spgi-input-radius);
+}
+
+.spg-btn-labels .spg-input-group > * + * {
+  margin-inline-start: 0;
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-field {
+  flex: 1 1 14rem;
+}
+
+/* Layout with names beside the icons: the grid name and the row count share the first line, and the filter bar gets the
+   whole line below it: the search row (column, box, Search, Clear search), then every tool button in one line. */
+.spg-btn-labels .spg-toolbar {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.spg-btn-labels .spg-heading {
+  flex: 1 1 auto;
+}
+
+.spg-btn-labels .spg-count {
+  order: 1;
+}
+
+.spg-btn-labels .spg-input-group {
+  flex: 1 1 100%;
+  order: 2;
+  max-width: none;
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-field {
+  flex: 1 1 16rem;
+}
+
+/* A line break between the search row and the tools (a flex item as wide as the group, with no height). */
+.spg-btn-labels .spg-input-group::after {
+  content: '';
+  order: 3;
+  flex-basis: 100%;
+  height: 0;
+}
+
+.spg-btn-labels .spg-input-group > .spg-tool-btn,
+.spg-btn-labels .spg-input-group > .spg-export {
+  order: 4;
+}
+
+.spg-btn-labels .spg-tool-btn,
+.spg-btn-labels .spg-export {
+  padding-inline: 14px;
+}
+
+@container (max-width: 520px) {
+  .spg-btn-labels .spg-input-group > .spg-search-field {
+    flex-basis: 100%;
+  }
+}
+
+/* With names beside the icons the buttons get a hierarchy instead of one grey: Search is the main button (filled with the
+   accent), Clear search is quiet (no frame until hovered), and the tools are white buttons with an accent icon that lift
+   to a faint accent tint on hover. A tool that is on (data-active: a filter set, columns hidden) keeps its own tint. */
+.spg-btn-labels .spg-input-group > .spg-tool-btn:not([data-active]),
+.spg-btn-labels .spg-input-group > .spg-export {
+  border-color: var(--spgi-border-strong);
+  background: var(--spgi-bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  color: var(--spgi-text);
+  font-weight: 500;
+}
+
+.spg-btn-labels .spg-input-group > .spg-tool-btn .spg-icon,
+.spg-btn-labels .spg-input-group > .spg-export .spg-icon {
+  color: var(--spgi-accent);
+}
+
+.spg-btn-labels .spg-input-group > .spg-tool-btn:not([data-active]):hover,
+.spg-btn-labels .spg-input-group > .spg-export:hover {
+  border-color: color-mix(in srgb, var(--spgi-accent) 45%, var(--spgi-border-strong));
+  background: color-mix(in srgb, var(--spgi-accent) 8%, var(--spgi-bg));
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-submit {
+  border-color: var(--spgi-accent);
+  background: var(--spgi-accent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--spgi-accent) 40%, transparent);
+  color: var(--spgi-on-accent);
+  font-weight: 600;
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-submit:hover {
+  background: color-mix(in srgb, var(--spgi-accent) 88%, #000);
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-reset {
+  border-color: transparent;
+  background: none;
+  color: var(--spgi-muted);
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-reset:hover {
+  background: color-mix(in srgb, var(--spgi-neutral) 10%, var(--spgi-bg));
+  color: var(--spgi-text);
+}
+
+.spg-btn-labels .spg-input-group > .spg-search-submit:focus-visible,
+.spg-btn-labels .spg-input-group > .spg-search-reset:focus-visible,
+.spg-btn-labels .spg-input-group > .spg-tool-btn:focus-visible,
+.spg-btn-labels .spg-input-group > .spg-export:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .spg-btn-labels .spg-input-group > .spg-search-submit {
+    border-color: CanvasText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+}

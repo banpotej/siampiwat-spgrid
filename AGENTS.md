@@ -25,4 +25,5 @@ Plain JS with JSDoc types; every file under `src/` starts with `// @ts-check`.
 - Tests are required with every change.
 - Keep files under 300 lines.
 - `src/core/*` must be pure: no DOM access.
-- Update `docs/API.md` and `CHANGELOG.md` on any public API change.
+- Update `docs/API.md` and `CHANGELOG.md` on any public API change, and `docs/AGENT_GUIDE.md` when it adds, renames or removes an option or method
+  (`tests/unit/agent-guide.test.js` fails when the guide names one that does not exist).

@@ -88,6 +88,29 @@ const CLOCK = icon(
   'm612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z',
 );
 
+// "Open in a new window" (Material Symbols open_in_new) for the details button; a constant, no user data.
+const OPEN = icon(
+  'M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z',
+);
+
+// Who asked for each item, from which unit, and how long it has waited: what helps pick the next one. An item asked for
+// before today is overdue.
+const REQUESTERS = [
+  ['สมชาย ใจดี', 'จัดซื้อ'],
+  ['วิภา รักงาน', 'คลังสินค้า'],
+  ['ธนากร มั่นคง', 'บัญชี'],
+];
+rows.forEach((row, i) => {
+  const [requester, dept] = REQUESTERS[i % REQUESTERS.length];
+  const today = row.asked.startsWith('วันนี้');
+  Object.assign(row, {
+    requester,
+    dept,
+    waiting: today ? 'รอมาแล้ว 2 ชม.' : 'รอมาแล้ว 1 วัน',
+    overdue: !today,
+  });
+});
+
 const columns = [
   // The group column: its cells are the text of the document headers (a header shows the cell of its first row).
   // It is hidden, so it takes no column of its own.
@@ -107,6 +130,7 @@ const columns = [
       `<div class="task" data-cat="${escapeHtml(row.category)}">` +
       `<div class="task-head"><code class="task-code">${escapeHtml(row.code)}</code>` +
       `<strong class="task-title" title="หมวด">${escapeHtml(row.category)}</strong>` +
+      (row.overdue ? `<span class="task-overdue">เกินกำหนด</span>` : '') +
       `<span class="task-qty">${escapeHtml(row.qty)} ชิ้น</span></div>` +
       `<ul class="task-pieces">${row.pieces
         .map(
@@ -117,6 +141,12 @@ const columns = [
       `<div class="task-meta">` +
       `<span class="task-place" title="สถานที่เก็บ">${PIN}${escapeHtml(row.place)}</span>` +
       `<span class="task-asked" title="วันที่ขอ">${CLOCK}${escapeHtml(row.asked)}</span>` +
+      `<span class="task-who">ผู้ขอ: ${escapeHtml(row.requester)}</span>` +
+      `<span class="task-dept">หน่วยงาน: ${escapeHtml(row.dept)}</span>` +
+      `<span class="task-wait">${escapeHtml(row.waiting)}</span>` +
+      // The one way to open the details: a real button at the end of the card (a Tab stop, big enough to tap). The
+      // checkbox only selects the item. `data-cell-action` reports it through `onAction` (see below).
+      `<button type="button" class="task-detail" data-cell-action="view" aria-label="ดูรายละเอียด ${escapeHtml(row.code)}">${OPEN}<span>ดูรายละเอียด</span></button>` +
       `</div>` +
       `</div>`,
   },
@@ -129,6 +159,8 @@ const columns = [
   { key: 'place', label: 'สถานที่เก็บ', sortable: true },
   { key: 'asked', label: 'วันที่ขอ' },
   { key: 'piecesText', label: 'รายการชิ้น' },
+  { key: 'requester', label: 'ผู้ขอ' },
+  { key: 'dept', label: 'หน่วยงาน' },
 ];
 
 const log = document.getElementById('log');
@@ -153,6 +185,17 @@ const grid = new SPGrid(document.getElementById('grid'), {
   columns,
   // Newest document first: a group column the sort is on follows the sort's direction.
   defaultSort: { key: 'doc', direction: 'desc' },
+  selectable: true, // checkbox column: Space or the checkboxes select, getSelectedRows() reads them
+  // The bar over the list: how many are selected and what to do with them (the header row is not drawn, so the bar also
+  // holds "select all on this page"). Approve asks first.
+  selectionActions: [
+    { name: 'approve', label: 'อนุมัติ', confirm: true, primary: true },
+    { name: 'return', label: 'ส่งกลับ' },
+  ],
+  onSelectionAction: ({ action, rows: picked }) => {
+    log.textContent = `${action}: ${picked.map((r) => r.code).join(', ')}`; // textContent: never parsed as HTML
+  },
+  clearFiltersButton: true, // clears the search and every filter at once
   groupBy: ['doc'],
   hiddenColumns: [
     'doc',
@@ -164,6 +207,8 @@ const grid = new SPGrid(document.getElementById('grid'), {
     'place',
     'asked',
     'piecesText',
+    'requester',
+    'dept',
   ],
   gridLines: 'horizontal',
   title: 'Worklist — รออนุมัติ',
@@ -176,6 +221,7 @@ const grid = new SPGrid(document.getElementById('grid'), {
   exportButton: true,
   exportColumnSelect: true,
   advancedFilter: true,
+  buttonLabels: true,
   columnPicker: true,
   columnStorageKey: 'worklist',
   filterSummary: true,
@@ -216,6 +262,12 @@ const grid = new SPGrid(document.getElementById('grid'), {
     // The count of a document header: its items, right after the text.
     groupCount: (count) => `· ${count} รายการ`,
   },
+  onAction: ({ action, row }) => {
+    if (action !== 'view') return;
+    log.textContent = `เปิดรายการ: ${row.code}`; // textContent: never parsed as HTML
+    showDetails(row, columns, details);
+  },
+  // A double-click (or Enter) on a card opens the same details; the button is the visible way.
   onRowActivate: ({ row }) => {
     log.textContent = `เปิดรายการ: ${row.code}`; // textContent: never parsed as HTML
     showDetails(row, columns, details);

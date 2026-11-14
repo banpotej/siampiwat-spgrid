@@ -7,7 +7,7 @@
  * Bind the ONE delegated click listener for action buttons (`button[data-action]`) and cell actions
  * (`[data-cell-action]`, put there by a column's `render()`) to the persistent table host, and return a
  * function that removes it. The row is looked up in the rows currently shown (never parsed from text),
- * the column by the cell's position. Disabled buttons emit nothing. Native buttons already click on
+ * the column by the cell's position (not counting the selection column). Disabled buttons emit nothing. Native buttons already click on
  * Enter and Space, so keyboard users are covered.
  *
  * Cell actions emit 'cellClick' (with the original event, so a link's default can be prevented) and
@@ -30,7 +30,9 @@ export function bindActionEvents(host, { getRows, getColumns, rowKey, emit }) {
     if (!target || !tr || !td || !host.contains(target)) return;
     if (target instanceof HTMLButtonElement && target.disabled) return;
     const row = getRows()[Number(tr instanceof HTMLElement ? tr.dataset.rowIndex : NaN)];
-    const column = getColumns()[td.cellIndex];
+    // The selection column (`selectable`) is a cell before the first column's.
+    const lead = td.parentElement?.querySelector(':scope > .spg-select-cell') ? 1 : 0;
+    const column = getColumns()[td.cellIndex - lead];
     if (!row || !column) return;
 
     const base = { key: column.key, row, rowKey: rowKey === undefined ? undefined : row[rowKey] };

@@ -15,10 +15,10 @@ const DEFAULT_DEBOUNCE = 200;
  * What the toolbar needs to count and list the rows an export would hold, bound to the grid's live state.
  *
  * @param {() => import('../types.js').GridState} state
- * @param {import('../types.js').SPGridOptions} options `locale` and `exportFilename` (the download name when an export gives none).
+ * @param {import('../types.js').SPGridOptions} options `locale`, `rowKey` (for `selectedOnly`) and `exportFilename` (the download name when an export gives none).
  * @param {{ get: () => string[] }} hidden
  */
-export const exportHost = (state, { locale, exportFilename: filename }, hidden) => ({
+export const exportHost = (state, { locale, rowKey, exportFilename: filename }, hidden) => ({
   columns: () => state().columns,
   /** @param {import('../types.js').GridState['conditions']} conditions */
   previewCount: (conditions) => previewCount(state(), { locale, hidden: hidden.get() }, conditions),
@@ -28,6 +28,7 @@ export const exportHost = (state, { locale, exportFilename: filename }, hidden) 
   exportFile: (options) =>
     exportExcel(state(), {
       locale,
+      rowKey,
       hidden: hidden.get(),
       ...(filename !== undefined && { filename: resolveFilename(filename) }),
       ...options,
@@ -48,6 +49,7 @@ export const exportHost = (state, { locale, exportFilename: filename }, hidden) 
  *   exportRows: (search: string | undefined) => import('../types.js').Row[],
  *   exportFile: (options: import('../types.js').ExportOptions) => Blob,
  *   previewCount: (conditions: import('../types.js').GridState['conditions']) => { shown: number, total: number },
+ *   selection?: { change: (rows: import('../types.js').Row[], on: boolean) => void },
  *   emit: (event: any, payload: any) => void,
  * }} host What the grid keeps private.
  * @returns {() => void} Removes every listener.
@@ -186,6 +188,7 @@ export function bindGridControls(grid, shell, options, labels, host) {
       rowKey: options.rowKey,
       emit: host.emit,
     },
+    selection: host.selection && { getRows: host.visible, change: host.selection.change },
   });
   return () => {
     unbindAdvanced();

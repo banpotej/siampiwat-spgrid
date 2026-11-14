@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPGrid selection</title>
+  </head>
+  <body>
+    <div id="grid"></div>
+    <output id="log"></output>
+    <script type="module">
+      import { SPGrid } from '/src/index.js';
+
+      // 12 rows (ids 1-12), pageSize 5; rows open on double-click or Enter, and can be selected.
+      const rows = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}` }));
+      const grid = new SPGrid(document.getElementById('grid'), {
+        columns: [
+          { key: 'id', label: 'ID', sortable: true },
+          { key: 'name', label: 'Name', sortable: true },
+        ],
+        rows,
+        rowKey: 'id',
+        selectable: true,
+        pageSize: 5,
+        freezeColumns: 1,
+        onRowActivate: ({ row }) => {
+          document.getElementById('log').textContent = `open ${row.id}`;
+        },
+        onSelectionChange: (selected) => {
+          document.getElementById('log').textContent = `selected ${selected.map((r) => r.id)}`;
+        },
+      });
+      window.grid = grid;
+    </script>
+  </body>
+</html>

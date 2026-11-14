@@ -21,5 +21,7 @@
  * @property {string} [search] Text to filter the rows by for this export only (whitespace-separated words are ANDed, over
  *   the visible data columns). It replaces the grid's search text and its search column; the per-column filters still apply.
  *   Default: the rows the grid is filtered to. The grid itself is not changed.
+ * @property {boolean} [selectedOnly] Export only the selected rows (see `selectable`) among the rows the export would hold, in
+ *   the same order; none selected gives a sheet with just the header. Default `false`: every row.
  */
 export {};

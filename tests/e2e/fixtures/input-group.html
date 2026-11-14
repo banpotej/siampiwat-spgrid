@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPGrid input group</title>
+  </head>
+  <body>
+    <div id="grid"></div>
+    <script type="module">
+      import { SPGrid, thaiLabels } from '/src/index.js';
+
+      // The filter bar in its default look (no buttonLabels): one joined input group with the search box, the column select and the
+      // icon buttons. A text column, an enum column (สถานะ) and a date column (วันที่จัดส่งเอกสาร) give the three kinds of search box.
+      const rows = Array.from({ length: 12 }, (_, i) => ({
+        id: i + 1,
+        poNumber: `PO26-${318700 + i}`,
+        vendor: i % 2 ? 'บริษัท ลานนา จำกัด' : 'บริษัท สยาม จำกัด',
+        status: ['เสร็จสิ้น', 'ยกเลิก', 'ไม่อนุมัติ'][i % 3],
+        deliveryDate: `2026-11-${String((i % 28) + 1).padStart(2, '0')}`,
+      }));
+      new SPGrid(document.getElementById('grid'), {
+        rowKey: 'id',
+        columns: [
+          { key: 'poNumber', label: 'เลขที่ใบสั่งซื้อ', sortable: true },
+          { key: 'vendor', label: 'ผู้ขาย', sortable: true },
+          { key: 'status', label: 'สถานะ', options: ['เสร็จสิ้น', 'ยกเลิก', 'ไม่อนุมัติ'] },
+          { key: 'deliveryDate', label: 'วันที่จัดส่งเอกสาร', type: 'date', sortable: true },
+        ],
+        rows,
+        title: 'รายการใบสั่งซื้อ',
+        searchable: true,
+        searchColumnSelect: true,
+        searchButton: true,
+        refreshButton: true,
+        advancedFilter: true,
+        exportButton: true,
+        columnPicker: true,
+        labels: thaiLabels,
+      });
+    </script>
+  </body>
+</html>

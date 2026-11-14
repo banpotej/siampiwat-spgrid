@@ -111,6 +111,19 @@ const moves = [...dueDays].map(([time, docs], i) => ({
   itemsText: docs.map((d) => d.itemsText).join(', '),
 }));
 
+// An all-day event (`calendar.allDay`): a day the counter is closed, shown in the "ตลอดวัน" row above the time grid.
+const holiday = {
+  id: received.length + moves.length + 1,
+  kind: 'วันหยุด',
+  title: 'ปิดเคาน์เตอร์ (วันหยุดชดเชย)',
+  place: 'ห้อง L&F',
+  status: 'วันหยุด',
+  code: '-',
+  start: '2026-11-12',
+  allDay: true,
+  itemsText: '',
+};
+
 const columns = [
   { key: 'code', label: 'รหัส' },
   { key: 'kind', label: 'ประเภท' },
@@ -130,7 +143,7 @@ const container = document.getElementById('grid');
 const grid = new SPGrid(container, {
   rowKey: 'id',
   columns,
-  rows: [...received, ...moves],
+  rows: [...received, ...moves, holiday],
   locale: 'th',
   labels: thaiLabels,
   searchable: true,
@@ -141,11 +154,20 @@ const grid = new SPGrid(container, {
   calendar: {
     start: 'start',
     end: 'end',
+    allDay: 'allDay',
     title: 'title',
     subtitle: 'place',
     date: '2026-11-11',
     hours: [9, 17],
     views: ['agenda', 'day', 'workWeek', 'week', 'month'],
+    // Colour by status: the field's value picks the colour (`colors`); a status that is not listed keeps the accent.
+    color: 'status',
+    colors: {
+      รับเข้า: '#2e7d32',
+      'เบิกออกจาก Storage': '#1565c0',
+      รอย้าย: '#e65100',
+      วันหยุด: '#c62828',
+    },
   },
   // A click on an event (or Enter on it) reports its row.
   onRowActivate: ({ row }) => {

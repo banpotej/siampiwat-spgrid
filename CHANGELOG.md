@@ -7,13 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-14
+
 ### Added
 
+- คู่มือสำหรับเอเจนต์ (`docs/AGENT_GUIDE.md` และหน้า "สำหรับ Claude Code"): บอกเวอร์ชันที่คู่มือเขียนถึงและตารางว่าฟีเจอร์ไหนมีตั้งแต่เวอร์ชันใด สูตรสำเร็จของหน้ารายการธุรกิจ (toolbar ชื่อไทย เลือกแถว คำสั่ง ปุ่มแถว) และการ์ด/ปฏิทิน กฎใหม่เรื่อง `selectable` (เซลล์ checkbox นำหน้า ห้ามหาคอลัมน์ด้วยตำแหน่ง ต้องมี `rowKey`) `selectionActions` และ roving tabindex แก้ข้อความเดิมที่ว่า "ไม่รองรับการเลือกแถว" เพิ่มเทสต์ `tests/unit/agent-guide.test.js` ที่ล้มเมื่อคู่มือเอ่ยถึงตัวเลือก event หรือเมธอดที่ไม่มีอยู่จริง
+- toolbar เมื่อเปิด `buttonLabels` ออกแบบใหม่ให้มีลำดับความสำคัญ: "ค้นหา" เป็นปุ่มหลักสีเต็ม (accent) "ล้างเฉพาะคำค้นหา" เป็นปุ่มเงียบ ปุ่มเครื่องมือเป็นสีขาวกรอบบางพร้อมไอคอนสี accent ยกสีอ่อนเมื่อชี้ ใช้ได้ทั้งโหมดสว่างและมืด (ใช้ตัวแปร `--spg-accent` / `--spg-accent-contrast`) ปุ่มที่เปิดใช้ (`data-active`) คงสีเดิม ตารางที่ไม่เปิด `buttonLabels` ไม่เปลี่ยน
+- ปุ่มแอคชั่นของแถว: class โทนใหม่ `spg-action-primary` (สีหลัก/accent ของธีม) สำหรับคำสั่งหลัก ใช้คู่กับ `spg-action-danger` ของคำสั่งที่ทำลายข้อมูลเพื่อให้สองปุ่มดูต่างกันชัด หน้าตัวอย่าง Purchase Order ใช้ปุ่ม "ดู" (primary) และ "ยกเลิก" (danger) ที่มีไอคอนกับข้อความไทย (`showLabel`) และหัวคอลัมน์ "การดำเนินการ"
+- หน้าตัวอย่าง Purchase Order (PO List): เปิด `buttonLabels` (ปุ่ม toolbar มีชื่อไทยกำกับ), `clearFiltersButton`, `advancedFilterStorageKey` และ `selectable` พร้อมแถบ "ส่งออกที่เลือก" (`exportExcel({ selectedOnly: true })`) คอลัมน์ข้อมูลจึงเริ่มที่เซลล์ที่ 2 (เซลล์แรกคือ checkbox)
+- หน้าตัวอย่าง Worklist: ปุ่ม "ดูรายละเอียด" ที่ท้ายการ์ดคำขอทุกใบ (ปุ่มจริง โฟกัสด้วย Tab ได้ สูง 44px กดบนมือถือสะดวก) เปิดรายละเอียดของรายการนั้นผ่าน `onAction`; checkbox ใช้เลือกแถวอย่างเดียว ดับเบิลคลิก / Enter ที่การ์ดยังเปิดรายละเอียดได้เหมือนเดิม
+- แถบคำสั่งของการเลือกแถว (`selectionActions: [{ name, label, confirm?, primary? }]`, `onSelectionAction`, event `selectionAction`): แสดง "เลือกแล้ว N รายการ" ปุ่มคำสั่ง และ "ล้างการเลือก" เหนือตารางขณะมีแถวที่เลือก `confirm` ถามก่อนทำด้วย dialog ของไลบรารี (ยกเลิกแล้วไม่ยิง event) เมื่อ `showHeader: false` แถบมี "เลือกทั้งหมดในหน้านี้" และแสดงตลอด label ใหม่ `selectedCount`, `clearSelection`, `selectionActions`, `selectAllOnPage`, `confirmSelectionAction` (มีใน `thaiLabels`) สไตล์อยู่ใน `src/styles/selectionBar.css`
+- ตัวเลือก `clearFiltersButton`: ปุ่ม "ล้างทั้งหมด (คำค้นหาและตัวกรอง)" ที่ปรากฏเมื่อมีตัวกรอง ล้างการค้นหา ตัวกรองคอลัมน์ และตัวกรองขั้นสูงพร้อมกัน (label `clearFilters`)
+- หน้าตัวอย่าง Worklist: แถบ อนุมัติ (ถามก่อน) / ส่งกลับ, ปุ่มล้างทั้งหมด, ผู้ขอ / หน่วยงาน / ระยะเวลาที่รอ และป้าย "เกินกำหนด" ในการ์ดแต่ละรายการ
+- ตัวเลือก `buttonLabels`: เขียนชื่อของปุ่มบน toolbar (ค้นหา ล้าง Refresh Export ตัวกรองขั้นสูง ตั้งค่า ย่อทุกกลุ่ม สลับมุมมอง) กำกับข้างไอคอน ใช้ `labels.*` (`thaiLabels` เป็นภาษาไทย) จึงไม่ต้องพึ่ง tooltip และเปลี่ยนตามเมื่อ label เปลี่ยน กลุ่มปุ่มขึ้นบรรทัดใหม่ได้เมื่อไม่พอดี ค่าเริ่มต้นคือไอคอนล้วนเหมือนเดิม หน้าตัวอย่าง Worklist เปิดไว้
+- การเลือกแถว (`selectable: true | 'single' | 'multiple'`): คอลัมน์ checkbox นำหน้า, checkbox ที่หัวตารางเลือกทั้งหน้า (ครึ่งหนึ่งเมื่อเลือกบางแถว), Space บนแถวที่โฟกัสเลือก/ยกเลิก, `aria-selected` และ class `is-selected` บนแถว เมธอด `getSelectedRows()` / `setSelectedRows(rows)` (จับคู่ด้วย `rowKey`) event `selectionChange` (option `onSelectionChange`) การเลือกคงอยู่เมื่อเรียง กรอง เปลี่ยนหน้า และ `setRows()` (ตัดเฉพาะแถวที่หายไป) `exportExcel({ selectedOnly: true })` ส่งออกเฉพาะแถวที่เลือก label ใหม่ `selectRow`, `selectAllRows`, `selectColumn` (มีใน `thaiLabels`) คอลัมน์ checkbox ถูกค้างไปพร้อม `freezeColumns` สไตล์อยู่ใน `src/styles/selection.css`
+- คีย์บอร์ดของแถว: ปุ่มลูกศรขึ้น/ลง, Home, End, PageUp, PageDown เลื่อนโฟกัสระหว่างแถว (เมื่อตั้ง `onRowActivate` หรือ `selectable`) และตารางวาดใหม่แล้วคืนโฟกัสให้แถวหรือ checkbox เดิม
+- ปฏิทิน: นัดตลอดวัน (`calendar.allDay`: ชื่อฟิลด์ที่เป็น `true` / `1` / `'yes'`) ครอบคลุมทั้งวันตั้งแต่วันของ `start` ถึงวันของ `end` แสดงเป็นแถว "ตลอดวัน" ในหัวตารางเวลา (มีเฉพาะเมื่อวันที่แสดงมีนัดตลอดวัน) บนสุดของวันในมุมมองกำหนดการ และก่อนนัดอื่นในมุมมองเดือน label ใหม่ `calendarAllDay` (มีใน `thaiLabels` ด้วย) สไตล์อยู่ใน `src/styles/calendarAllDay.css`
+- ปฏิทิน: สีนัดตามค่าของแถว (`calendar.color` + `calendar.colors`) รับเฉพาะสี hex / ชื่อสี / `rgb()` / `hsl()` ค่าอื่นถูกเมินและใช้ accent ของธีม ตั้งผ่าน CSS variable `--spg-cal-event-color`
+- ปฏิทิน: `getCalendarView()` / `setCalendarView({ view, date })` และ event `calendarChange` (option `onCalendarChange`) ที่ยิงทุกครั้งที่มุมมองหรือช่วงวันเปลี่ยน ไม่ว่าจากปุ่มของปฏิทินหรือจากโค้ด payload คือ `{ view, date, start, end }` (`end` ไม่รวม)
+- ตัวเลือก `advancedFilterStorageKey`: จำตัวกรองขั้นสูงไว้ใน `localStorage` (`spgrid:advancedFilter:<ชื่อ>`) แล้วคืนค่าตอนสร้างกริดครั้งถัดไป การล้างตัวกรองก็ถูกจำ ค่าที่ใช้ไม่ได้แล้วถูกเมินเฉย ไม่ระบุ = ไม่บันทึก
 - ธีม Siam Piwat Purple (opt-in): ใส่ class `spg-theme-purple` หรือ `data-spg-theme="purple"` ที่ `.spg-root` หรือ element แม่ ใช้สีแบรนด์ `#3a2d4b` เป็น accent (ข้อความบน accent เป็นสีขาว) หัวตารางไล่สีม่วงอ่อน แถบสลับสีและ hover โทนม่วงนวล และมีชุดสีโหมดมืดตาม `prefers-color-scheme` / `data-theme="dark"` (accent เป็นม่วงอ่อน ข้อความบน accent เป็นสีเข้ม) ตั้งเฉพาะตัวแปร `--spg-*` สาธารณะ ตารางที่ไม่ใช้ธีมไม่เปลี่ยน สไตล์อยู่ใน `src/styles/themePurple.css`
 - ธีม Siam Piwat Solid Gold (opt-in): ใส่ class `spg-theme-gold` หรือ `data-spg-theme="gold"` ที่ `.spg-root` หรือ element แม่ ใช้สีแบรนด์ `#a28448` เป็น accent (ข้อความบน accent เป็นสีเข้มผ่าน `--spg-accent-contrast`) หัวตารางไล่สีทองอ่อน แถบสลับสีและ hover โทนทองครีม และมีชุดสีโหมดมืดตาม `prefers-color-scheme` / `data-theme="dark"` ตั้งเฉพาะตัวแปร `--spg-*` สาธารณะ ตารางที่ไม่ใช้ธีมไม่เปลี่ยน สไตล์อยู่ใน `src/styles/themeGold.css`
 
+### Fixed
+
+- ปุ่ม "ตัวกรองขั้นสูง" ไม่แสดงสถานะ active (`data-active`) เมื่อตัวกรองที่จำไว้ด้วย `advancedFilterStorageKey` ถูกนำมาใช้ตอนสร้างกริด (ตัวกรองทำงานและชิปแสดงถูก แต่ปุ่มไม่เปลี่ยนสี) แก้แล้ว
+- ปุ่มแอคชั่นและ `[data-cell-action]` ในตารางที่เปิด `selectable` รายงาน `key` ของคอลัมน์ผิดไปหนึ่งช่อง (นับเซลล์ checkbox เป็นคอลัมน์) แก้แล้ว
+- หน้าตัวอย่าง Worklist เลื่อนข้างบนจอแคบเพราะส่วนหัวของการ์ดไม่ขึ้นบรรทัดใหม่ แก้แล้ว
+
 ### Changed
 
+- เลย์เอาต์ toolbar เมื่อเปิด `buttonLabels`: ชื่อกริดกับจำนวนแถวอยู่บรรทัดแรก แถวค้นหา (คอลัมน์ ช่องค้นหา ค้นหา ล้างเฉพาะคำค้นหา) บรรทัดที่สอง และปุ่มเครื่องมือทั้งหมดบรรทัดเดียวใต้นั้น (ไม่ทิ้งปุ่มเดียวไว้บรรทัดท้าย) ตัวเลือก `buttonLabels` ยังเป็น opt-in ตารางที่ไม่เปิดไม่เปลี่ยน
+- `thaiLabels.clear` เปลี่ยนจาก "ล้างการค้นหา" เป็น "ล้างเฉพาะคำค้นหา" ให้ชัดว่าปุ่มล้างแค่ข้อความค้นหา (ไม่ล้างตัวกรอง) ถ้าต้องการข้อความเดิม ตั้ง `labels.clear` เอง
+- Accessibility: แถวที่โฟกัสได้ (`onRowActivate` / `selectable`) ใช้ roving tabindex แทนที่ทุกแถวเป็นจุด Tab: มีแถวปัจจุบันเพียงแถวเดียวที่มี `tabindex="0"` (ที่เหลือ `-1`) กด Tab ครั้งเดียวผ่านทั้งตาราง แล้วเลื่อนด้วยปุ่มลูกศร แถวมี class `spg-focusable` เพิ่ม และกรอบโฟกัสของแถวใช้กับทุกแถวที่โฟกัสได้ ถ้าโค้ดของคุณพึ่ง `tabindex="0"` ของทุกแถว ให้ปรับ
+- ภายใน: ย้ายการประกอบส่วนต่างๆ ของกริดจาก constructor ไปไว้ที่ `src/render/gridWiring.js` และ `assertCalendar` ไปไว้ที่ `src/render/calendarOptions.js` (ไม่มีผลต่อ API)
 - หน้าตัวอย่าง "ธีมลาเวนเดอร์" (`/theme-lavender.html`) เปลี่ยนเป็น "ธีมสีเริ่มต้น (Default)" (`/theme-default.html`) ไม่ใส่ class ธีมใดๆ ธีม `spg-theme-lavender` ในไลบรารียังใช้ได้เหมือนเดิม
 
 ## [2.0.17] - 2026-11-13

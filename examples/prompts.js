@@ -12,7 +12,7 @@ export const PROMPTS = {
 สร้างหน้า [ชื่อหน้า เช่น รายการใบสั่งซื้อ] เป็นรายการข้อมูลแบบเต็มฟีเจอร์ เหมือนตัวอย่าง "Purchase Order list" ของ SPGrid
 - ข้อมูล: [ที่มา เช่น API /api/xxx] ฟิลด์ [รายการฟิลด์] คอลัมน์ [ชื่อ ชนิด (text/number/date/badge) และคอลัมน์ที่ sortable]
 - คอลัมน์ _actions: ปุ่ม [เช่น ดู, ยกเลิก] ผ่าน actions และ onAction (ปุ่มที่ทำลายข้อมูลต้องถามยืนยัน) ดับเบิลคลิกแถวหรือ Enter เปิดรายละเอียดด้วย onRowActivate + showDetails
-- options: searchable, searchColumnSelect, searchButton, searchDebounce: 50, exportButton + exportColumnSelect, advancedFilter, filterSummary, columnPicker, resetButton, refreshButton (onRefresh โหลดข้อมูลใหม่แล้ว setRows), pageSize + pageSizeOptions, defaultSort, striped, gridLines: 'both', density: 'compact', resizableColumns, reorderableColumns, labels: thaiLabels
+- options: searchable, searchColumnSelect, searchButton, searchDebounce: 50, buttonLabels (ปุ่ม toolbar มีชื่อไทยกำกับ), clearFiltersButton, exportButton + exportColumnSelect, advancedFilter + advancedFilterStorageKey, filterSummary, columnPicker, resetButton, refreshButton (onRefresh โหลดข้อมูลใหม่แล้ว setRows), pageSize + pageSizeOptions, defaultSort, striped, gridLines: 'both', density: 'compact', resizableColumns, reorderableColumns, labels: thaiLabels
 - ปุ่มตั้งค่า: stripedToggle, textWrapToggle, gridLinesToggle, lineStyleToggle, groupByToggle, freezeColumnsToggle
 - ทุก *StorageKey ใช้ชื่อ [ชื่อหน้า] เดียวกัน เพื่อให้ระบบจำค่าที่ผู้ใช้เลือก
 

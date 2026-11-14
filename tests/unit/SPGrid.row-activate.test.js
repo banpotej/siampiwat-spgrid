@@ -62,8 +62,12 @@ describe('onRowActivate', () => {
 
   it('makes the rows focusable with a pointer cursor class, and only when the option is set', () => {
     const { el } = make();
+    const tabindexes = [...el.querySelectorAll('tbody tr')].map((tr) =>
+      tr.getAttribute('tabindex'),
+    );
+    expect(tabindexes[0]).toBe('0'); // one Tab stop for the rows (roving tabindex); the arrow keys move between them
+    expect(tabindexes.slice(1).every((value) => value === '-1')).toBe(true);
     for (const tr of el.querySelectorAll('tbody tr')) {
-      expect(tr.getAttribute('tabindex')).toBe('0');
       expect(tr.classList.contains('spg-activatable')).toBe(true);
     }
     const plain = make({ onRowActivate: undefined });

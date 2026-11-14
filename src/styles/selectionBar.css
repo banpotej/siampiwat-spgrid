@@ -1,0 +1,80 @@
+/* The selection bar (`selectionActions`, or `showHeader: false` with `selectable`): over the table, it says how many rows
+   are selected and holds the actions. */
+.spg-selection-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-block: 1px solid var(--spgi-border);
+  background: color-mix(in srgb, var(--spgi-accent) 8%, var(--spgi-bg));
+}
+
+.spg-selection-bar[hidden],
+.spg-selection-bar [hidden] {
+  display: none;
+}
+
+.spg-sel-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.spg-sel-all input {
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0;
+  accent-color: var(--spgi-accent);
+}
+
+.spg-sel-count {
+  font-weight: 600;
+}
+
+.spg-sel-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.spg-sel-action,
+.spg-sel-clear {
+  min-height: var(--spgi-control-h);
+  padding: 0 16px;
+  border: 1px solid var(--spgi-accent);
+  border-radius: var(--spgi-input-radius);
+  background: var(--spgi-bg);
+  color: var(--spgi-accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.spg-sel-action.is-primary {
+  background: var(--spgi-accent);
+  color: var(--spgi-accent-contrast, #fff);
+}
+
+.spg-sel-clear {
+  border-color: transparent;
+  background: none;
+  color: var(--spgi-muted);
+}
+
+.spg-sel-action:hover,
+.spg-sel-clear:hover {
+  filter: brightness(0.95);
+}
+
+.spg-sel-action:focus-visible,
+.spg-sel-clear:focus-visible,
+.spg-sel-all input:focus-visible {
+  outline: 2px solid var(--spgi-focus);
+  outline-offset: 2px;
+}
+
+.spg-tool-btn.spg-clear-filters[hidden] {
+  display: none;
+}

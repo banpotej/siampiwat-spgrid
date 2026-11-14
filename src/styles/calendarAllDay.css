@@ -1,0 +1,35 @@
+/* All-day events (`calendar.allDay`): a second row in the sticky head of the time grid, one cell per day.
+   Colours (`calendar.color`): an event sets --spg-cal-event-color; without it the theme's accent is used. */
+.spg-cal-event {
+  --spgi-cal-color: var(--spg-cal-event-color, var(--spgi-accent));
+  border-inline-start-color: var(--spgi-cal-color);
+  background: color-mix(in srgb, var(--spgi-cal-color) 14%, var(--spgi-bg));
+}
+
+.spg-cal-allday-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 2px 6px;
+  border-top: 1px solid var(--spgi-border);
+  color: var(--spgi-muted);
+  font-size: 0.7em;
+  font-weight: 400;
+  text-align: end;
+}
+
+.spg-cal-allday {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 3px 2px;
+  border-top: 1px solid var(--spgi-border);
+  border-inline-start: 1px solid var(--spgi-border);
+  color: var(--spgi-text);
+  font-weight: 400;
+}
+
+.spg-cal-allday > .spg-cal-chip {
+  overflow: hidden;
+}

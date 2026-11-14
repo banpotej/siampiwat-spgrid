@@ -29,7 +29,7 @@ test('builds a multi-condition filter in the modal, shows chips, and removes the
 
   await expect(dialog).toBeHidden();
   await expect(button).toHaveAttribute('data-active', '');
-  const statuses = await rows.locator('td:nth-child(7)').allTextContents();
+  const statuses = await rows.locator('td:nth-child(8)').allTextContents();
   expect(statuses.length).toBeGreaterThan(0);
   for (const text of statuses) expect(text).toMatch(/เสร็จสิ้น|ยกเลิก/);
   const chips = page.locator('.spg-chip-text');

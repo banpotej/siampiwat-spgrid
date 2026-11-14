@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-/** Search columns of the example, one per kind of search box the group can show. */
+// tests/e2e/fixtures/input-group.html: the filter bar in its default (icon-only) look; the PO example has `buttonLabels` on.
+/** Search columns of the fixture, one per kind of search box the group can show. */
 const KINDS = [
   { name: 'text', label: null },
   { name: 'enum', label: 'สถานะ' },
@@ -9,7 +10,7 @@ const KINDS = [
 
 for (const { name, label } of KINDS) {
   test(`the filter bar is one input group with a ${name} search box`, async ({ page }) => {
-    await page.goto('/purchase-order.html');
+    await page.goto('/tests/e2e/fixtures/input-group.html');
     if (label) {
       await page.getByRole('combobox', { name: 'ค้นหาใน' }).selectOption({ label });
     }
@@ -39,7 +40,7 @@ for (const { name, label } of KINDS) {
 }
 
 test('the column select keeps the neutral tone when a column is chosen', async ({ page }) => {
-  await page.goto('/purchase-order.html');
+  await page.goto('/tests/e2e/fixtures/input-group.html');
   const select = page.getByRole('combobox', { name: 'ค้นหาใน' });
   const rest = await select.evaluate((el) => getComputedStyle(el).backgroundColor);
   await select.selectOption({ label: 'สถานะ' });

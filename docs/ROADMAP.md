@@ -26,16 +26,16 @@
     - [x] core: `src/core/conditions.js` (`filterByConditions`, `normalizeConditions`, `operatorsFor`) ยังไม่ export จาก `src/index.js` (ใช้ผ่าน `setAdvancedFilter`)
     - [x] state + API (`setAdvancedFilter`, `getAdvancedFilter`), event `filterChange`, ชิปใน filter summary, `resetView()`, ต่อเข้า `computeView` และ export
     - [x] UI: ปุ่ม `advancedFilter` และ modal ตัวสร้างเงื่อนไข (ชั้นเดียว AND/OR) ใช้ในตัวอย่าง Purchase Order
-    - [ ] จำค่าใน `localStorage`
+    - [x] จำค่าใน `localStorage` (`advancedFilterStorageKey`)
   - [ ] โหมดปฏิทิน (`calendar`): แสดงแถวเป็นนัดหมายตามเวลา ทำทีละขั้น
     - [x] รอบแรก (อ่านอย่างเดียว): มุมมอง Agenda / Day / Work week / Week, ปุ่มก่อนหน้า-ถัดไป-วันนี้, นัดที่ซ้อนกันแบ่งคอลัมน์, เส้นเวลาปัจจุบัน, คลิกนัดแล้วเรียก `onRowActivate`; ใช้ search / filter เดิมได้
     - [x] สลับระหว่างตารางกับปฏิทิน: `viewToggle`, `defaultView`, `getView()` / `setView()`, event `viewChange`
-    - [ ] เมธอด `getCalendarView()` / `setCalendarView()` และ event เมื่อเปลี่ยนมุมมองหรือช่วงวันของปฏิทิน
+    - [x] เมธอด `getCalendarView()` / `setCalendarView()` และ event `calendarChange` เมื่อเปลี่ยนมุมมองหรือช่วงวันของปฏิทิน
     - [x] มุมมองเดือน (`views: [..., 'month']`)
-    - [ ] นัดตลอดวัน, สีตามค่าของแถว
+    - [x] นัดตลอดวัน (`calendar.allDay`), สีตามค่าของแถว (`calendar.color` / `calendar.colors`)
     - [ ] ลากย้าย/ปรับขนาดนัด, สร้างนัดจากการคลิกช่องว่าง, นัดซ้ำ (recurring), time zone
-  - [ ] การเลือกแถว (selection): `selectable`, `getSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
-  - [ ] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด, `aria-selected`, roving tabindex (ทำควบคู่กับ selection)
+  - [x] การเลือกแถว (selection): `selectable`, `getSelectedRows()` / `setSelectedRows()`, event `selectionChange`, `exportExcel({ selectedOnly })`
+  - [x] ปรับปรุง accessibility: การนำทางด้วยคีย์บอร์ด (ลูกศร, Home, End, PageUp / PageDown), `aria-selected`, roving tabindex (ทำควบคู่กับ selection)
 - **ภายหลัง (ยังไม่ตัดสินใจ):**
   - โหมดข้อมูลจาก server (sort, filter, pagination ฝั่ง server)
   - virtual scrolling (ชนกับ grouping, freeze columns และความสูงแถวที่ไม่คงที่)

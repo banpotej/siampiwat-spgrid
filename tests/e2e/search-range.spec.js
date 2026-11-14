@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('the date range boxes fit inside the filter bar and the frame shows the focus', async ({
   page,
 }) => {
-  await page.goto('/purchase-order.html');
+  await page.goto('/tests/e2e/fixtures/input-group.html');
   await page
     .getByRole('combobox', { name: 'ค้นหาใน' })
     .selectOption({ label: 'วันที่จัดส่งเอกสาร' });
